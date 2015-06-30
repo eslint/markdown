@@ -23,10 +23,13 @@
     "linter"
   ],
   "scripts": {
-    "test": "eslint ."
+    "test": "eslint lib"
   },
   "main": "index.js",
   "devDependencies": {
     "eslint": "^0.24.0"
+  },
+  "dependencies": {
+    "marked": "^0.3.3"
   }
 }
