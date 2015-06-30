@@ -1,0 +1,32 @@
+{
+  "name": "eslint-plugin-markdown",
+  "version": "0.0.0",
+  "description": "ESLint plugin to lint JavaScript in Markdown code fences.",
+  "license": "MIT",
+  "author": {
+    "name": "Brandon Mills",
+    "url": "https://github.com/btmills"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/btmills/eslint-plugin-markdown.git"
+  },
+  "bugs": {
+    "url": "https://github.com/btmills/eslint-plugin-markdown/issues"
+  },
+  "homepage": "https://github.com/btmills/eslint-plugin-markdown#readme",
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "markdown",
+    "lint",
+    "linter"
+  ],
+  "scripts": {
+    "test": "eslint ."
+  },
+  "main": "index.js",
+  "devDependencies": {
+    "eslint": "^0.24.0"
+  }
+}
