@@ -1,7 +1,4 @@
 {
-  "env": {
-    "mocha": true
-  },
   "rules": {
     "strict": [2, "global"]
   }
