@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Tests for the Markdown processor.
+ * @author Brandon Mills
+ * @copyright 2015 Brandon Mills. All rights reserved.
+ */
+
 "use strict";
 
 var assert = require("chai").assert,
