@@ -46,3 +46,15 @@ Blocks that don't specify either `js` or `javascript` syntax are ignored:
     ```
     This is plain text and doesn't get linted.
     ```
+
+## Contributing
+
+```sh
+$ git clone https://github.com/btmills/eslint-plugin-markdown.git
+$ cd eslint-plugin-markdown
+$ npm link
+$ npm link eslint-plugin-markdown
+$ npm test
+```
+
+This project follows the [ESLint contribution guidelines](http://eslint.org/docs/developer-guide/contributing.html).
