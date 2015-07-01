@@ -50,7 +50,7 @@ Blocks that don't specify either `js` or `javascript` syntax are ignored:
 ## Contributing
 
 ```sh
-$ git clone https://github.com/btmills/eslint-plugin-markdown.git
+$ git clone https://github.com/eslint/eslint-plugin-markdown.git
 $ cd eslint-plugin-markdown
 $ npm link
 $ npm link eslint-plugin-markdown

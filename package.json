@@ -9,12 +9,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/btmills/eslint-plugin-markdown.git"
+    "url": "https://github.com/eslint/eslint-plugin-markdown.git"
   },
   "bugs": {
-    "url": "https://github.com/btmills/eslint-plugin-markdown/issues"
+    "url": "https://github.com/eslint/eslint-plugin-markdown/issues"
   },
-  "homepage": "https://github.com/btmills/eslint-plugin-markdown#readme",
+  "homepage": "https://github.com/eslint/eslint-plugin-markdown#readme",
   "keywords": [
     "eslint",
     "eslintplugin",
