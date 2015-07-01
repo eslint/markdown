@@ -26,9 +26,15 @@
     "test": "eslint lib && eslint test && mocha"
   },
   "main": "index.js",
+  "peerDependencies": {
+    "eslint": ">=0.16.0"
+  },
   "devDependencies": {
     "chai": "^3.0.0",
     "eslint": "^0.24.0",
     "mocha": "^2.2.5"
+  },
+  "dependencies": {
+    "object-assign": "^3.0.0"
   }
 }

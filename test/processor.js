@@ -21,11 +21,13 @@ describe("processor", function() {
 
 		it("should ignore normal text", function() {
 			var blocks = processor.preprocess("Hello, world!");
+
 			assert.equal(blocks.length, 0);
 		});
 
 		it("should ignore inline code", function() {
 			var blocks = processor.preprocess("Hello, `{{name}}!");
+
 			assert.equal(blocks.length, 0);
 		});
 
@@ -38,6 +40,7 @@ describe("processor", function() {
 				"Goodbye"
 			].join("\n");
 			var blocks = processor.preprocess(code);
+
 			assert.equal(blocks.length, 0);
 		});
 
@@ -50,6 +53,7 @@ describe("processor", function() {
 				"Goodbye"
 			].join("\n");
 			var blocks = processor.preprocess(code);
+
 			assert.equal(blocks.length, 0);
 		});
 
@@ -60,6 +64,7 @@ describe("processor", function() {
 				"```"
 			].join("\n");
 			var blocks = processor.preprocess(code);
+
 			assert.equal(blocks.length, 0);
 		});
 
@@ -70,6 +75,7 @@ describe("processor", function() {
 				"```"
 			].join("\n");
 			var blocks = processor.preprocess(code);
+
 			assert.equal(blocks.length, 1);
 		});
 
@@ -80,6 +86,7 @@ describe("processor", function() {
 				"```"
 			].join("\n");
 			var blocks = processor.preprocess(code);
+
 			assert.equal(blocks.length, 1);
 		});
 
@@ -90,6 +97,7 @@ describe("processor", function() {
 				"```"
 			].join("\n");
 			var blocks = processor.preprocess(code);
+
 			assert.equal(blocks.length, 1);
 		});
 
@@ -100,6 +108,7 @@ describe("processor", function() {
 				"```"
 			].join("\n");
 			var blocks = processor.preprocess(code);
+
 			assert.equal(blocks[0], "var answer = 6 * 7;\n");
 		});
 
@@ -111,6 +120,7 @@ describe("processor", function() {
 				"```"
 			].join("\n");
 			var blocks = processor.preprocess(code);
+
 			assert.equal(blocks[0], "var answer = 6 * 7;\nconsole.log(answer);\n");
 		});
 
@@ -122,6 +132,7 @@ describe("processor", function() {
 				"```"
 			].join("\r\n");
 			var blocks = processor.preprocess(code);
+
 			assert.equal(blocks[0], "var answer = 6 * 7;\r\nconsole.log(answer);\r\n");
 		});
 
@@ -132,6 +143,7 @@ describe("processor", function() {
 				"    ```"
 			].join("\n");
 			var blocks = processor.preprocess(code);
+
 			assert.equal(blocks[0], "var answer = 6 * 7;\n");
 		});
 
@@ -142,6 +154,7 @@ describe("processor", function() {
 				"\t```"
 			].join("\n");
 			var blocks = processor.preprocess(code);
+
 			assert.equal(blocks[0], "var answer = 6 * 7;\n");
 		});
 
@@ -160,9 +173,106 @@ describe("processor", function() {
 				"Goodbye"
 			].join("\n");
 			var blocks = processor.preprocess(code);
+
 			assert.equal(blocks.length, 2);
 			assert.equal(blocks[0], "var answer = 6 * 7;\n");
 			assert.equal(blocks[1], "console.log(answer);\n");
+		});
+
+	});
+
+	describe("postprocess", function() {
+		var code = [
+			"Hello, world!",
+			"",
+			"```js",
+			"var answer = 6 * 7;",
+			"if (answer === 42) {",
+			"    console.log(answer);",
+			"}",
+			"```",
+			"",
+			"Let's make a list.",
+			"",
+			"1. First item",
+			"",
+			"    ```JavaScript",
+			"    var arr = [",
+			"        1,",
+			"        2",
+			"    ];",
+			"    ```",
+			"",
+			"1. Second item",
+			"",
+			"\t```JS",
+			"\tfunction boolean(arg) {",
+			"\t\treturn",
+			"\t\t!!arg;",
+			"\t};",
+			"\t```"
+		].join("\n");
+		var messages = [
+			[
+				{ line: 1, column: 0, message: "Use the global form of \"use strict\"." },
+				{ line: 3, column: 4, message: "Unexpected console statement." }
+			], [
+				{ line: 3, column: 5, message: "Missing trailing comma." }
+			], [
+				{ line: 3, column: 1, message: "Unreachable code after return." },
+				{ line: 4, column: 1, message: "Unnecessary semicolon." }
+			]
+		];
+
+		beforeEach(function() {
+			processor.preprocess(code);
+		});
+
+		it("should allow for no messages", function() {
+			var result = processor.postprocess([[], [], []]);
+
+			assert.equal(result.length, 0);
+		});
+
+		it("should flatten messages", function() {
+			var result = processor.postprocess(messages);
+
+			assert.equal(result.length, 5);
+			assert.equal(result[0].message, "Use the global form of \"use strict\".");
+			assert.equal(result[1].message, "Unexpected console statement.");
+			assert.equal(result[2].message, "Missing trailing comma.");
+			assert.equal(result[3].message, "Unreachable code after return.");
+			assert.equal(result[4].message, "Unnecessary semicolon.");
+		});
+
+		it("should translate line numbers", function() {
+			var result = processor.postprocess(messages);
+
+			assert.equal(result[0].line, 4);
+			assert.equal(result[1].line, 6);
+			assert.equal(result[2].line, 17);
+			assert.equal(result[3].line, 26);
+			assert.equal(result[4].line, 27);
+		});
+
+		it("should translate column numbers", function() {
+			var result = processor.postprocess(messages);
+
+			assert.equal(result[0].column, 0);
+			assert.equal(result[1].column, 4);
+		});
+
+		it("should translate space-indented column numbers", function() {
+			var result = processor.postprocess(messages);
+
+			assert.equal(result[2].column, 9);
+		});
+
+		it("should translate tab-indented column numbers", function() {
+			var result = processor.postprocess(messages);
+
+			assert.equal(result[3].column, 2);
+			assert.equal(result[3].column, 2);
 		});
 
 	});
