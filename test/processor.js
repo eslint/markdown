@@ -153,6 +153,29 @@ describe("processor", function() {
             assert.equal(blocks[0], "var answer = 6 * 7;\n");
         });
 
+        it("should unindent 2 space-indented code fences", function() {
+            var code = [
+                "  ```js",
+                "  var answer = 6 * 7;",
+                "  ```"
+            ].join("\n");
+            var blocks = processor.preprocess(code);
+
+            assert.equal(blocks[0], "var answer = 6 * 7;\n");
+        });
+
+        it("should unindent 6 space-indented code fences", function() {
+            var code = [
+                "      ```js",
+                "      var answer = 6 * 7;",
+                "      ```"
+            ].join("\n");
+            var blocks = processor.preprocess(code);
+
+            assert.equal(blocks[0], "var answer = 6 * 7;\n");
+        });
+
+
         it("should unindent tab-indented code fences", function() {
             var code = [
                 "\t```js",
