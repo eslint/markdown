@@ -50,6 +50,33 @@ describe("processor", function() {
             assert.equal(blocks.length, 0);
         });
 
+        it("should ignore 4-space-indented code fences", function() {
+            var code = [
+                "Hello, world!",
+                "    ```js",
+                "    var answer = 6 * 7;",
+                "    ```",
+                "Goodbye"
+            ].join("\n");
+            var blocks = processor.preprocess(code);
+
+            assert.equal(blocks.length, 0);
+        });
+
+        it("should ignore 4-space-indented fence ends", function() {
+            var code = [
+                "Hello, world!",
+                "```js",
+                "var answer = 6 * 7;",
+                "    ```",
+                "Goodbye"
+            ].join("\n");
+            var blocks = processor.preprocess(code);
+
+            assert.equal(blocks.length, 1);
+            assert.equal(blocks[0], "var answer = 6 * 7;\n    ```\nGoodbye");
+        });
+
         it("should ignore tab-indented code blocks", function() {
             var code = [
                 "Hello, world!",
@@ -63,7 +90,109 @@ describe("processor", function() {
             assert.equal(blocks.length, 0);
         });
 
-        it("should ignore code fences with ambiguous syntax", function() {
+        it("should terminate blocks at EOF", function() {
+            var code = [
+                "Hello, world!",
+                "```js",
+                "var answer = 6 * 7;"
+            ].join("\n");
+            var blocks = processor.preprocess(code);
+
+            assert.equal(blocks.length, 1);
+            assert.equal(blocks[0], "var answer = 6 * 7;");
+        });
+
+        it("should allow backticks or tildes", function() {
+            var code = [
+                "```js",
+                "backticks",
+                "```",
+                "~~~javascript",
+                "tildes",
+                "~~~"
+            ].join("\n");
+            var blocks = processor.preprocess(code);
+
+            assert.equal(blocks.length, 2);
+            assert.equal(blocks[0], "backticks\n");
+            assert.equal(blocks[1], "tildes\n");
+        });
+
+        it("should allow more than three fence characters", function() {
+            var code = [
+                "````js",
+                "four",
+                "````"
+            ].join("\n");
+            var blocks = processor.preprocess(code);
+
+            assert.equal(blocks.length, 1);
+            assert.equal(blocks[0], "four\n");
+        });
+
+        it("should require end fences at least as long as the starting fence", function() {
+            var code = [
+                "````js",
+                "four",
+                "```",
+                "````",
+                "`````js",
+                "five",
+                "`````",
+                "``````js",
+                "six",
+                "```````"
+            ].join("\n");
+            var blocks = processor.preprocess(code);
+
+            assert.equal(blocks.length, 3);
+            assert.equal(blocks[0], "four\n```\n");
+            assert.equal(blocks[1], "five\n");
+            assert.equal(blocks[2], "six\n");
+        });
+
+        it("should not allow other content on ending fence line", function() {
+            var code = [
+                "```js",
+                "test();",
+                "``` end",
+                "```"
+            ].join("\n");
+            var blocks = processor.preprocess(code);
+
+            assert.equal(blocks.length, 1);
+            assert.equal(blocks[0], "test();\n``` end\n");
+        });
+
+        it("should allow empty blocks", function() {
+            var code = [
+                "```js",
+                "",
+                "````"
+            ].join("\n");
+            var blocks = processor.preprocess(code);
+
+            assert.equal(blocks.length, 1);
+            assert.equal(blocks[0], "\n");
+        });
+
+        it("should allow whitespace-only blocks", function() {
+            var code = [
+                "  ```js",
+                "",
+                " ",
+                "  ",
+                "   ",
+                "    ",
+                "```"
+            ].join("\n");
+            var blocks = processor.preprocess(code);
+
+            assert.equal(blocks.length, 1);
+            assert.equal(blocks[0], "\n\n\n \n  \n");
+        });
+
+        it("should ignore code fences with unspecified info string", function() {
             var code = [
                 "```",
                 "var answer = 6 * 7;",
@@ -74,7 +203,7 @@ describe("processor", function() {
             assert.equal(blocks.length, 0);
         });
 
-        it("should find code fences with js syntax", function() {
+        it("should find code fences with js info string", function() {
             var code = [
                 "```js",
                 "var answer = 6 * 7;",
@@ -85,7 +214,7 @@ describe("processor", function() {
             assert.equal(blocks.length, 1);
         });
 
-        it("should find code fences with javascript syntax", function() {
+        it("should find code fences with javascript info string", function() {
             var code = [
                 "```javascript",
                 "var answer = 6 * 7;",
@@ -96,7 +225,7 @@ describe("processor", function() {
             assert.equal(blocks.length, 1);
         });
 
-        it("should find code fences ignoring syntax case", function() {
+        it("should find code fences ignoring info string case", function() {
             var code = [
                 "```JavaScript",
                 "var answer = 6 * 7;",
@@ -144,24 +273,15 @@ describe("processor", function() {
 
         it("should unindent space-indented code fences", function() {
             var code = [
-                "    ```js",
-                "    var answer = 6 * 7;",
-                "    ```"
+                "  ```js",
+                "  var answer = 6 * 7;",
+                "    console.log(answer);",
+                " // Fin.",
+                "```"
             ].join("\n");
             var blocks = processor.preprocess(code);
 
-            assert.equal(blocks[0], "var answer = 6 * 7;\n");
-        });
-
-        it("should unindent tab-indented code fences", function() {
-            var code = [
-                "\t```js",
-                "\tvar answer = 6 * 7;",
-                "\t```"
-            ].join("\n");
-            var blocks = processor.preprocess(code);
-
-            assert.equal(blocks[0], "var answer = 6 * 7;\n");
+            assert.equal(blocks[0], "var answer = 6 * 7;\n  console.log(answer);\n// Fin.\n");
         });
 
         it("should find multiple code fences", function() {
@@ -172,9 +292,9 @@ describe("processor", function() {
                 "var answer = 6 * 7;",
                 "```",
                 "",
-                "    ```javascript",
-                "    console.log(answer);",
-                "    ```",
+                "```javascript",
+                "console.log(answer);",
+                "```",
                 "",
                 "Goodbye"
             ].join("\n");
@@ -202,31 +322,31 @@ describe("processor", function() {
             "",
             "1. First item",
             "",
-            "    ```JavaScript",
-            "    var arr = [",
-            "        1,",
-            "        2",
-            "    ];",
-            "    ```",
+            "   ```JavaScript",
+            "   var arr = [",
+            "       1,",
+            "       2",
+            "   ];",
+            "   ```",
             "",
             "1. Second item",
             "",
-            "\t```JS",
-            "\tfunction boolean(arg) {",
-            "\t\treturn",
-            "\t\t!!arg;",
-            "\t};",
-            "\t```"
+            "  ```JS",
+            "  function boolean(arg) {",
+            "  \treturn",
+            "  \t!!arg;",
+            "};",
+            "  ```"
         ].join("\n");
         var messages = [
             [
-                { line: 1, column: 0, message: "Use the global form of \"use strict\"." },
-                { line: 3, column: 4, message: "Unexpected console statement." }
+                { line: 1, column: 1, message: "Use the global form of \"use strict\"." },
+                { line: 3, column: 5, message: "Unexpected console statement." }
             ], [
-                { line: 3, column: 5, message: "Missing trailing comma." }
+                { line: 3, column: 6, message: "Missing trailing comma." }
             ], [
-                { line: 3, column: 1, message: "Unreachable code after return." },
-                { line: 4, column: 1, message: "Unnecessary semicolon." }
+                { line: 3, column: 2, message: "Unreachable code after return." },
+                { line: 4, column: 2, message: "Unnecessary semicolon." }
             ]
         ];
 
@@ -264,21 +384,16 @@ describe("processor", function() {
         it("should translate column numbers", function() {
             var result = processor.postprocess(messages);
 
-            assert.equal(result[0].column, 0);
-            assert.equal(result[1].column, 4);
+            assert.equal(result[0].column, 1);
+            assert.equal(result[1].column, 5);
         });
 
-        it("should translate space-indented column numbers", function() {
+        it("should translate indented column numbers", function() {
             var result = processor.postprocess(messages);
 
             assert.equal(result[2].column, 9);
-        });
-
-        it("should translate tab-indented column numbers", function() {
-            var result = processor.postprocess(messages);
-
-            assert.equal(result[3].column, 2);
-            assert.equal(result[3].column, 2);
+            assert.equal(result[3].column, 4);
+            assert.equal(result[4].column, 2);
         });
     });
 
