@@ -280,6 +280,135 @@ describe("processor", function() {
             assert.equal(result[3].column, 2);
             assert.equal(result[3].column, 2);
         });
+    });
+
+    describe("expected error messages", function () {
+        var code,
+            messages;
+
+        it("should prevent a message from being reported", function() {
+            code = [
+                "Here's some code:",
+                "",
+                "```js",
+                "foo = 2; /*error \"foo\" is not defined.*/",
+                "```"
+            ].join("\n");
+            messages = [
+                [
+                    { line: 1, column: 0, message: "\"foo\" is not defined." }
+                ]
+            ];
+
+            processor.preprocess(code);
+            var result = processor.postprocess(messages);
+
+            assert.equal(result.length, 0);
+        });
+
+        it("should work correctly with leading spaces", function() {
+            code = [
+                "Here's some code:",
+                "",
+                "```js",
+                "foo = 2; /*  error \"foo\" is not defined.*/",
+                "```"
+            ].join("\n");
+            messages = [
+                [
+                    { line: 1, column: 0, message: "\"foo\" is not defined." }
+                ]
+            ];
+
+            processor.preprocess(code);
+            var result = processor.postprocess(messages);
+
+            assert.equal(result.length, 0);
+        });
+
+        it("should work correctly with trailing spaces", function() {
+            code = [
+                "Here's some code:",
+                "",
+                "```js",
+                "foo = 2; /*error \"foo\" is not defined.  */",
+                "```"
+            ].join("\n");
+            messages = [
+                [
+                    { line: 1, column: 0, message: "\"foo\" is not defined." }
+                ]
+            ];
+
+            processor.preprocess(code);
+            var result = processor.postprocess(messages);
+
+            assert.equal(result.length, 0);
+        });
+
+        it("should only prevent reports with the same message", function() {
+            code = [
+                "Here's some code:",
+                "",
+                "```js",
+                "foo = 2; /*error not a real error message  */",
+                "```"
+            ].join("\n");
+            messages = [
+                [
+                    { line: 1, column: 0, message: "\"foo\" is not defined." }
+                ]
+            ];
+
+            processor.preprocess(code);
+            var result = processor.postprocess(messages);
+
+            assert.equal(result.length, 1);
+            assert.equal(result[0].message, "\"foo\" is not defined.");
+        });
+
+        it("should only prevent messages on the same line", function() {
+            code = [
+                "Here's some code:",
+                "",
+                "```js",
+                "foo = 2;",
+                "var bar; /*error \"foo\" is not defined.*/",
+                "```"
+            ].join("\n");
+            messages = [
+                [
+                    { line: 1, column: 0, message: "\"foo\" is not defined." }
+                ]
+            ];
+
+            processor.preprocess(code);
+            var result = processor.postprocess(messages);
+
+            assert.equal(result.length, 1);
+            assert.equal(result[0].message, "\"foo\" is not defined.");
+        });
+
+        it("should work with more than one on the same line", function() {
+            code = [
+                "Here's some code:",
+                "",
+                "```js",
+                "foo = 2;; /*error \"foo\" is not defined.*/ /*error Unnecessary semicolon.*/",
+                "```"
+            ].join("\n");
+            messages = [
+                [
+                    { line: 1, column: 0, message: "\"foo\" is not defined." },
+                    { line: 1, column: 0, message: "Unnecessary semicolon." }
+                ]
+            ];
+
+            processor.preprocess(code);
+            var result = processor.postprocess(messages);
+
+            assert.equal(result.length, 0);
+        });
 
     });
 
