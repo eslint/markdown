@@ -397,7 +397,7 @@ describe("processor", function() {
         });
     });
 
-    describe("expected error messages", function () {
+    describe("expected error messages", function() {
         var code,
             messages;
 
