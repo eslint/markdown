@@ -536,6 +536,48 @@ describe("processor", function() {
             assert.equal(result.length, 0);
         });
 
+        it("should filter based on a number of expected errors for the line", function() {
+            code = [
+                "Here's some code:",
+                "",
+                "```js",
+                "foo = 2;; // 2 errors",
+                "```"
+            ].join("\n");
+            messages = [
+                [
+                    { line: 1, column: 0, message: "\"foo\" is not defined." },
+                    { line: 1, column: 0, message: "Unnecessary semicolon." }
+                ]
+            ];
+
+            processor.preprocess(code);
+            var result = processor.postprocess(messages);
+
+            assert.equal(result.length, 0);
+        });
+
+        it("should not filter based on a wrong number of expected errors for the line", function() {
+            code = [
+                "Here's some code:",
+                "",
+                "```js",
+                "foo = 2;; // 3 errors",
+                "```"
+            ].join("\n");
+            messages = [
+                [
+                    { line: 1, column: 0, message: "\"foo\" is not defined." },
+                    { line: 1, column: 0, message: "Unnecessary semicolon." }
+                ]
+            ];
+
+            processor.preprocess(code);
+            var result = processor.postprocess(messages);
+
+            assert.equal(result.length, 2);
+        });
+
     });
 
 });
