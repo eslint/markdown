@@ -438,11 +438,13 @@ describe("processor", function() {
                 "",
                 "```js",
                 "foo = 2; /*  error \"foo\" is not defined.*/",
+                "bar = 42;  //  error \"bar\" is not defined.",
                 "```"
             ].join("\n");
             messages = [
                 [
-                    { line: 1, column: 0, message: "\"foo\" is not defined." }
+                    { line: 1, column: 0, message: "\"foo\" is not defined." },
+                    { line: 2, column: 0, message: "\"bar\" is not defined." }
                 ]
             ];
 
@@ -527,6 +529,26 @@ describe("processor", function() {
                 [
                     { line: 1, column: 0, message: "\"foo\" is not defined." },
                     { line: 1, column: 0, message: "Unnecessary semicolon." }
+                ]
+            ];
+
+            processor.preprocess(code);
+            var result = processor.postprocess(messages);
+
+            assert.equal(result.length, 0);
+        });
+
+        it("should be able to be provided as a line comment", function() {
+            code = [
+                "Here's some code:",
+                "",
+                "```js",
+                "foo = 2; //error \"foo\" is not defined.",
+                "```"
+            ].join("\n");
+            messages = [
+                [
+                    { line: 1, column: 0, message: "\"foo\" is not defined." }
                 ]
             ];
 
