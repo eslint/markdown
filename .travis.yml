@@ -1,8 +1,12 @@
 language: node_js
 node_js:
-    - "0.10"
-    - "0.12"
-    - iojs
-    - "4"
+  - "0.10"
+  - "0.12"
+  - iojs
+  - "4"
 sudo: false
-script: "npm link && npm link eslint-plugin-markdown && npm test"
+notifications:
+  email: false
+install:
+  - npm link
+  - npm link eslint-plugin-markdown
