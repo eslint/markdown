@@ -236,6 +236,17 @@ describe("processor", function() {
             assert.equal(blocks.length, 1);
         });
 
+        it("should find code fences with jsx info string", function() {
+            var code = [
+                "```jsx",
+                "var answer = 6 * 7;",
+                "```"
+            ].join("\n");
+            var blocks = processor.preprocess(code);
+
+            assert.equal(blocks.length, 1);
+        });
+
         it("should find code fences ignoring info string case", function() {
             var code = [
                 "```JavaScript",
