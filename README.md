@@ -22,7 +22,7 @@ Add it to your `.eslintrc`:
 }
 ```
 
-It will lint `js`, `javascript`, or `node` [fenced code blocks](https://help.github.com/articles/github-flavored-markdown/#fenced-code-blocks) in your Markdown documents:
+It will lint `js`, `javascript`, `jsx`, or `node` [fenced code blocks](https://help.github.com/articles/github-flavored-markdown/#fenced-code-blocks) in your Markdown documents:
 
     ```js
     // This gets linted
@@ -41,10 +41,24 @@ It will lint `js`, `javascript`, or `node` [fenced code blocks](https://help.git
     hello();
     ```
 
-Blocks that don't specify either `js` or `javascript` syntax are ignored:
+    ```jsx
+    // This gets linted too
+    var div = <div className="jsx"></div>;
+    ```
+
+    ```node
+    // And this
+    console.log(process.version);
+    ```
+
+Blocks that don't specify either `js`, `javascript`, `jsx`, or `node` syntax are ignored:
 
     ```
     This is plain text and doesn't get linted.
+    ```
+
+    ```python
+    print("This doesn't get linted either.")
     ```
 
 ## Contributing
