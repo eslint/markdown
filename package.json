@@ -23,7 +23,7 @@
     "linter"
   ],
   "scripts": {
-    "test": "eslint --ext .js --ext .md . && mocha"
+    "test": "eslint --ext .js --ext .md . && mocha tests"
   },
   "main": "index.js",
   "peerDependencies": {
