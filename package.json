@@ -26,16 +26,13 @@
     "test": "eslint --ext .js --ext .md . && mocha tests"
   },
   "main": "index.js",
-  "peerDependencies": {
-    "eslint": ">=0.16.0"
-  },
   "devDependencies": {
     "chai": "^3.0.0",
-    "eslint": "^1.10.3",
-    "eslint-config-eslint": "^1.0.1",
+    "eslint": "^2.0.0-beta.1",
+    "eslint-config-eslint": "^2.0.0",
     "mocha": "^2.2.5"
   },
   "dependencies": {
-    "object-assign": "^3.0.0"
+    "object-assign": "^4.0.1"
   }
 }
