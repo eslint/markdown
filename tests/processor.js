@@ -115,8 +115,8 @@ describe("processor", function() {
             var blocks = processor.preprocess(code);
 
             assert.equal(blocks.length, 2);
-            assert.equal(blocks[0], "backticks\n");
-            assert.equal(blocks[1], "tildes\n");
+            assert.equal(blocks[0], "backticks");
+            assert.equal(blocks[1], "tildes");
         });
 
         it("should allow more than three fence characters", function() {
@@ -128,7 +128,7 @@ describe("processor", function() {
             var blocks = processor.preprocess(code);
 
             assert.equal(blocks.length, 1);
-            assert.equal(blocks[0], "four\n");
+            assert.equal(blocks[0], "four");
         });
 
         it("should require end fences at least as long as the starting fence", function() {
@@ -147,9 +147,9 @@ describe("processor", function() {
             var blocks = processor.preprocess(code);
 
             assert.equal(blocks.length, 3);
-            assert.equal(blocks[0], "four\n```\n");
-            assert.equal(blocks[1], "five\n");
-            assert.equal(blocks[2], "six\n");
+            assert.equal(blocks[0], "four\n```");
+            assert.equal(blocks[1], "five");
+            assert.equal(blocks[2], "six");
         });
 
         it("should not allow other content on ending fence line", function() {
@@ -162,7 +162,7 @@ describe("processor", function() {
             var blocks = processor.preprocess(code);
 
             assert.equal(blocks.length, 1);
-            assert.equal(blocks[0], "test();\n``` end\n");
+            assert.equal(blocks[0], "test();\n``` end");
         });
 
         it("should allow empty blocks", function() {
@@ -174,7 +174,7 @@ describe("processor", function() {
             var blocks = processor.preprocess(code);
 
             assert.equal(blocks.length, 1);
-            assert.equal(blocks[0], "\n");
+            assert.equal(blocks[0], "");
         });
 
         it("should allow whitespace-only blocks", function() {
@@ -190,7 +190,7 @@ describe("processor", function() {
             var blocks = processor.preprocess(code);
 
             assert.equal(blocks.length, 1);
-            assert.equal(blocks[0], "\n\n\n \n  \n");
+            assert.equal(blocks[0], "\n\n \n  ");
         });
 
         it("should ignore code fences with unspecified info string", function() {
@@ -267,7 +267,7 @@ describe("processor", function() {
             ].join("\n");
             var blocks = processor.preprocess(code);
 
-            assert.equal(blocks[0], "var answer = 6 * 7;\n");
+            assert.equal(blocks[0], "var answer = 6 * 7;");
         });
 
         it("should allow multi-line source code", function() {
@@ -279,7 +279,7 @@ describe("processor", function() {
             ].join("\n");
             var blocks = processor.preprocess(code);
 
-            assert.equal(blocks[0], "var answer = 6 * 7;\nconsole.log(answer);\n");
+            assert.equal(blocks[0], "var answer = 6 * 7;\nconsole.log(answer);");
         });
 
         it("should preserve original line endings", function() {
@@ -291,7 +291,7 @@ describe("processor", function() {
             ].join("\r\n");
             var blocks = processor.preprocess(code);
 
-            assert.equal(blocks[0], "var answer = 6 * 7;\r\nconsole.log(answer);\r\n");
+            assert.equal(blocks[0], "var answer = 6 * 7;\nconsole.log(answer);");
         });
 
         it("should unindent space-indented code fences", function() {
@@ -304,7 +304,7 @@ describe("processor", function() {
             ].join("\n");
             var blocks = processor.preprocess(code);
 
-            assert.equal(blocks[0], "var answer = 6 * 7;\n  console.log(answer);\n// Fin.\n");
+            assert.equal(blocks[0], "var answer = 6 * 7;\n  console.log(answer);\n// Fin.");
         });
 
         it("should find multiple code fences", function() {
@@ -324,8 +324,8 @@ describe("processor", function() {
             var blocks = processor.preprocess(code);
 
             assert.equal(blocks.length, 2);
-            assert.equal(blocks[0], "var answer = 6 * 7;\n");
-            assert.equal(blocks[1], "console.log(answer);\n");
+            assert.equal(blocks[0], "var answer = 6 * 7;");
+            assert.equal(blocks[1], "console.log(answer);");
         });
 
     });
@@ -415,7 +415,7 @@ describe("processor", function() {
             var result = processor.postprocess(messages);
 
             assert.equal(result[2].column, 9);
-            assert.equal(result[3].column, 4);
+            assert.equal(result[3].column, 2);
             assert.equal(result[4].column, 2);
         });
     });

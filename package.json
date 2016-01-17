@@ -33,6 +33,7 @@
     "mocha": "^2.2.5"
   },
   "dependencies": {
-    "object-assign": "^4.0.1"
+    "object-assign": "^4.0.1",
+    "remark": "^3.2.0"
   }
 }
