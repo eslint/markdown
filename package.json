@@ -26,6 +26,12 @@
     "test": "eslint --ext .js --ext .md . && mocha tests"
   },
   "main": "index.js",
+  "files": [
+    "lib/*.js",
+    "index.js",
+    "LICENSE",
+    "README.md"
+  ],
   "devDependencies": {
     "chai": "^3.0.0",
     "eslint": "^2.0.0-beta.1",
