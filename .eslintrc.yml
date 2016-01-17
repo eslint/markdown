@@ -1,10 +1,14 @@
 root: true
 
 plugins:
-  - "markdown"
+    - "markdown"
 
 env:
     node: true
 
 extends:
     "eslint"
+
+rules:
+    strict: 0
+    eol-last: 0
