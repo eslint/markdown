@@ -1,0 +1,6 @@
+env:
+    mocha: true
+
+rules:
+    eol-last: 2
+    strict: [2, "global"]
