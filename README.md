@@ -11,7 +11,7 @@ Supported extensions are `.markdown`, `.mdown`, `.mkdn`, and `.md`.
 Install the plugin:
 
 ```sh
-npm install --save-dev eslint-plugin-markdown
+npm install --save-dev eslint eslint-plugin-markdown
 ```
 
 Add it to your `.eslintrc`:
@@ -22,6 +22,12 @@ Add it to your `.eslintrc`:
         "markdown"
     ]
 }
+```
+
+Run ESLint on `.md` files:
+
+```sh
+eslint --ext md .
 ```
 
 It will lint `js`, `javascript`, `jsx`, or `node` [fenced code blocks](https://help.github.com/articles/github-flavored-markdown/#fenced-code-blocks) in your Markdown documents:
