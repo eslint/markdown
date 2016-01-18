@@ -79,4 +79,4 @@ $ npm link eslint-plugin-markdown
 $ npm test
 ```
 
-This project follows the [ESLint contribution guidelines](http://eslint.org/docs/developer-guide/contributing.html).
+This project follows the [ESLint contribution guidelines](http://eslint.org/docs/developer-guide/contributing/).
