@@ -26,6 +26,7 @@ describe("plugin", function() {
             extensions: ["md", "mkdn", "mdown", "markdown"],
             ignore: false,
             rules: {
+                "eol-last": 2,
                 "no-console": 2
             },
             useEslintrc: false
