@@ -363,13 +363,13 @@ describe("processor", function() {
         ].join("\n");
         var messages = [
             [
-                { line: 1, column: 1, message: "Use the global form of \"use strict\"." },
-                { line: 3, column: 5, message: "Unexpected console statement." }
+                { line: 1, column: 1, message: "Use the global form of \"use strict\".", ruleId: "strict" },
+                { line: 3, column: 5, message: "Unexpected console statement.", ruleId: "no-console" }
             ], [
-                { line: 3, column: 6, message: "Missing trailing comma." }
+                { line: 3, column: 6, message: "Missing trailing comma.", ruleId: "comma-dangle" }
             ], [
-                { line: 3, column: 2, message: "Unreachable code after return." },
-                { line: 4, column: 2, message: "Unnecessary semicolon." }
+                { line: 3, column: 2, message: "Unreachable code after return.", ruleId: "no-unreachable" },
+                { line: 4, column: 2, message: "Unnecessary semicolon.", ruleId: "no-extra-semi" }
             ]
         ];
 
@@ -417,6 +417,16 @@ describe("processor", function() {
             assert.equal(result[2].column, 9);
             assert.equal(result[3].column, 2);
             assert.equal(result[4].column, 2);
+        });
+
+        it("should exclude eol-last messages", function() {
+            var result = processor.postprocess([
+                [
+                    { line: 4, column: 3, message: "Newline required at end of file but not found.", ruleId: "eol-last" }
+                ]
+            ]);
+
+            assert.equal(result.length, 0);
         });
     });
 

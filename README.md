@@ -69,6 +69,12 @@ Blocks that don't specify either `js`, `javascript`, `jsx`, or `node` syntax are
     print("This doesn't get linted either.")
     ```
 
+## Unsatisfiable Rules
+
+Since code blocks are not files themselves but embedded inside a Markdown document, some rules do not apply to Markdown code blocks, and messages from these rules are automatically suppressed:
+
+- `eol-last`
+
 ## Contributing
 
 ```sh
