@@ -1,5 +1,7 @@
 # eslint-plugin-markdown
 
+![Screenshot](screenshot.png)
+
 [![Join the chat at https://gitter.im/eslint/eslint-plugin-markdown](https://badges.gitter.im/eslint/eslint-plugin-markdown.svg)](https://gitter.im/eslint/eslint-plugin-markdown?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 An [ESLint](http://eslint.org/) plugin to lint JavaScript in Markdown.
