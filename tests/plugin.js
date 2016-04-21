@@ -1,8 +1,6 @@
 /**
  * @fileoverview Tests for the preprocessor plugin.
  * @author Brandon Mills
- * @copyright 2015 Brandon Mills. All rights reserved.
- * See LICENSE in root directory for full license.
  */
 
 "use strict";
