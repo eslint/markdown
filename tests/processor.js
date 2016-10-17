@@ -326,6 +326,35 @@ describe("processor", function() {
             assert.equal(blocks[1], "console.log(answer);");
         });
 
+        it("should insert leading configuration comments", function() {
+            var code = [
+                "<!-- eslint-env browser -->",
+                "<!--",
+                "    eslint quotes: [",
+                "        \"error\",",
+                "        \"single\"",
+                "    ]",
+                "-->",
+                "",
+                "```js",
+                "alert('Hello, world!');",
+                "```"
+            ].join("\n");
+            var blocks = processor.preprocess(code);
+
+            assert.equal(blocks.length, 1);
+            assert.equal(blocks[0], [
+                "/* eslint-env browser */",
+                "/*",
+                "    eslint quotes: [",
+                "        \"error\",",
+                "        \"single\"",
+                "    ]",
+                "*/",
+                "alert('Hello, world!');"
+            ].join("\n"));
+        });
+
     });
 
     describe("postprocess", function() {
