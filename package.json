@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-markdown",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "An ESLint plugin to lint JavaScript in Markdown code fences.",
   "license": "MIT",
   "author": {
