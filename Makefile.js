@@ -24,26 +24,8 @@ var NODE_MODULES = "./node_modules/",
 
     // Files
     MAKEFILE = "./Makefile.js",
-    /* eslint-disable no-use-before-define */
-    JS_FILES = find("lib/").filter(fileType("js")).join(" "),
-    TEST_FILES = find("tests/lib/").filter(fileType("js")).join(" ");
-    /* eslint-enable no-use-before-define */
-
-//------------------------------------------------------------------------------
-// Helpers
-//------------------------------------------------------------------------------
-
-/**
- * Generates a function that matches files with a particular extension.
- * @param {string} extension The file extension (i.e. "js")
- * @returns {Function} The function to pass into a filter method.
- * @private
- */
-function fileType(extension) {
-    return function(filename) {
-        return filename.substring(filename.lastIndexOf(".") + 1) === extension;
-    };
-}
+    JS_FILES = find("lib/**/*.js").join(" "),
+    TEST_FILES = find("tests/lib/**/*.js").join(" ");
 
 //------------------------------------------------------------------------------
 // Tasks
