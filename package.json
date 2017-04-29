@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "object-assign": "^4.0.1",
-    "parse5": "^2.2.2",
-    "remark": "^5.0.0"
+    "remark-parse": "^3.0.0",
+    "unified": "^6.1.2"
   }
 }
