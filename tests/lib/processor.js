@@ -355,6 +355,40 @@ describe("processor", function() {
             ].join("\n"));
         });
 
+        it("should ignore non-eslint comments", function() {
+            var code = [
+                "<!-- eslint-env browser -->",
+                "<!-- not an eslint comment -->",
+                "",
+                "```js",
+                "alert('Hello, world!');",
+                "```"
+            ].join("\n");
+            var blocks = processor.preprocess(code);
+
+            assert.equal(blocks.length, 1);
+            assert.equal(blocks[0], [
+                "alert('Hello, world!');"
+            ].join("\n"));
+        });
+
+        it("should ignore non-comment html", function() {
+            var code = [
+                "<!-- eslint-env browser -->",
+                "<p>For example:</p>",
+                "",
+                "```js",
+                "alert('Hello, world!');",
+                "```"
+            ].join("\n");
+            var blocks = processor.preprocess(code);
+
+            assert.equal(blocks.length, 1);
+            assert.equal(blocks[0], [
+                "alert('Hello, world!');"
+            ].join("\n"));
+        });
+
     });
 
     describe("postprocess", function() {
