@@ -23,7 +23,13 @@
     "linter"
   ],
   "scripts": {
-    "test": "eslint --ext .js --ext .md . && mocha tests"
+    "test": "node Makefile.js test",
+    "lint": "node Makefile.js lint",
+    "release": "eslint-release",
+    "ci-release": "eslint-ci-release",
+    "gh-release": "eslint-gh-release",
+    "alpharelease": "eslint-prerelease alpha",
+    "betarelease": "eslint-prerelease beta"
   },
   "main": "index.js",
   "files": [
@@ -36,7 +42,10 @@
     "chai": "^3.0.0",
     "eslint": "^2.2.0",
     "eslint-config-eslint": "^3.0.0",
-    "mocha": "^2.2.5"
+    "istanbul": "^0.4.5",
+    "mocha": "^2.2.5",
+    "shelljs": "^0.7.7",
+    "shelljs-nodecli": "^0.1.1"
   },
   "dependencies": {
     "object-assign": "^4.0.1",

@@ -6,7 +6,7 @@
 "use strict";
 
 var assert = require("chai").assert,
-    processor = require("../lib/processor");
+    processor = require("../../lib/processor");
 
 describe("processor", function() {
 

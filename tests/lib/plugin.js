@@ -8,7 +8,7 @@
 var assert = require("chai").assert,
     CLIEngine = require("eslint").CLIEngine,
     path = require("path"),
-    plugin = require("..");
+    plugin = require("../..");
 
 describe("plugin", function() {
 
@@ -73,7 +73,7 @@ describe("plugin", function() {
     });
 
     it("should extract blocks and remap messages", function() {
-        var report = cli.executeOnFiles([path.resolve(__dirname, "fixtures/long.md")]);
+        var report = cli.executeOnFiles([path.resolve(__dirname, "../fixtures/long.md")]);
 
         assert.equal(report.results.length, 1);
         assert.equal(report.results[0].messages.length, 5);
