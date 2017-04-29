@@ -2,7 +2,7 @@
  * @fileoverview Build file
  * @author nzakas
  */
-/* global echo, exit, find, target */
+/* global echo, exec, exit, find, target */
 
 "use strict";
 
@@ -12,8 +12,6 @@
 //------------------------------------------------------------------------------
 
 require("shelljs/make");
-
-var nodeCLI = require("shelljs-nodecli");
 
 //------------------------------------------------------------------------------
 // Data
@@ -60,19 +58,19 @@ target.lint = function() {
         lastReturn;
 
     echo("Validating Makefile.js");
-    lastReturn = nodeCLI.exec("eslint", MAKEFILE);
+    lastReturn = exec("eslint " + MAKEFILE);
     if (lastReturn.code !== 0) {
         errors++;
     }
 
     echo("Validating JavaScript files");
-    lastReturn = nodeCLI.exec("eslint", JS_FILES);
+    lastReturn = exec("eslint " + JS_FILES);
     if (lastReturn.code !== 0) {
         errors++;
     }
 
     echo("Validating JavaScript test files");
-    lastReturn = nodeCLI.exec("eslint", TEST_FILES);
+    lastReturn = exec("eslint " + TEST_FILES);
     if (lastReturn.code !== 0) {
         errors++;
     }
@@ -88,7 +86,7 @@ target.test = function() {
     var errors = 0,
         lastReturn;
 
-    lastReturn = nodeCLI.exec("istanbul", "cover", MOCHA, "-- -c", TEST_FILES);
+    lastReturn = exec("istanbul cover " + MOCHA + "-- -c " + TEST_FILES);
 
     if (lastReturn.code !== 0) {
         errors++;
@@ -101,6 +99,6 @@ target.test = function() {
 
 target.docs = function() {
     echo("Generating documentation");
-    nodeCLI.exec("jsdoc", "-d jsdoc lib");
+    exec("jsdoc", "-d jsdoc lib");
     echo("Documentation has been output to /jsdoc");
 };

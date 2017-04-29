@@ -44,8 +44,7 @@
     "eslint-config-eslint": "^3.0.0",
     "istanbul": "^0.4.5",
     "mocha": "^2.2.5",
-    "shelljs": "^0.7.7",
-    "shelljs-nodecli": "^0.1.1"
+    "shelljs": "^0.7.7"
   },
   "dependencies": {
     "object-assign": "^4.0.1",
