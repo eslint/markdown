@@ -10,6 +10,3 @@ node_js:
 sudo: false
 notifications:
   email: false
-install:
-  - npm link
-  - npm link eslint-plugin-markdown
