@@ -23,8 +23,9 @@
     "linter"
   ],
   "scripts": {
-    "test": "node Makefile.js test",
-    "lint": "node Makefile.js lint",
+    "lint": "eslint Makefile.js lib/**/*.js tests/lib/plugin.js",
+    "test": "npm run lint && npm run test-cov",
+    "test-cov": "istanbul cover _mocha -- -c tests/lib/**/*.js",
     "release": "eslint-release",
     "ci-release": "eslint-ci-release",
     "gh-release": "eslint-gh-release",
@@ -43,8 +44,7 @@
     "eslint": "^2.2.0",
     "eslint-config-eslint": "^3.0.0",
     "istanbul": "^0.4.5",
-    "mocha": "^2.2.5",
-    "shelljs": "^0.7.7"
+    "mocha": "^2.2.5"
   },
   "dependencies": {
     "object-assign": "^4.0.1",
