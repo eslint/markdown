@@ -43,6 +43,7 @@
     "chai": "^3.0.0",
     "eslint": "^2.2.0",
     "eslint-config-eslint": "^3.0.0",
+    "eslint-release": "^0.10.2",
     "istanbul": "^0.4.5",
     "mocha": "^2.2.5"
   },
