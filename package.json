@@ -34,10 +34,9 @@
   },
   "main": "index.js",
   "files": [
-    "lib/*.js",
     "index.js",
-    "LICENSE",
-    "README.md"
+    "lib/index.js",
+    "lib/processor.js"
   ],
   "devDependencies": {
     "chai": "^3.0.0",
