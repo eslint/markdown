@@ -113,8 +113,7 @@ Since code blocks are not files themselves but embedded inside a Markdown docume
 ```sh
 $ git clone https://github.com/eslint/eslint-plugin-markdown.git
 $ cd eslint-plugin-markdown
-$ npm link
-$ npm link eslint-plugin-markdown
+$ npm install
 $ npm test
 ```
 
