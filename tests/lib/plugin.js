@@ -94,7 +94,40 @@ describe("plugin", function() {
         assert.equal(report.results[0].messages[4].column, 2);
     });
 
-    describe("disable comments", function() {
+    describe("configuration comments", function() {
+
+        it("apply only to the code block immediately following", function() {
+            var code = [
+                "<!-- eslint \"quotes\": [\"error\", \"single\"] -->",
+                "<!-- eslint-disable no-console -->",
+                "",
+                "```js",
+                "var single = 'single';",
+                "console.log(single);",
+                "var double = \"double\";",
+                "console.log(double);",
+                "```",
+                "",
+                "```js",
+                "var single = 'single';",
+                "console.log(single);",
+                "var double = \"double\";",
+                "console.log(double);",
+                "```"
+            ].join("\n");
+            var report = cli.executeOnText(code, "test.md");
+
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].messages.length, 4);
+            assert.equal(report.results[0].messages[0].message, "Strings must use singlequote.");
+            assert.equal(report.results[0].messages[0].line, 7);
+            assert.equal(report.results[0].messages[1].message, "Strings must use doublequote.");
+            assert.equal(report.results[0].messages[1].line, 12);
+            assert.equal(report.results[0].messages[2].message, "Unexpected console statement.");
+            assert.equal(report.results[0].messages[2].line, 13);
+            assert.equal(report.results[0].messages[3].message, "Unexpected console statement.");
+            assert.equal(report.results[0].messages[3].line, 15);
+        });
 
     });
 
