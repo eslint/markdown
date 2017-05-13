@@ -22,10 +22,5 @@ module.exports = {
         "node": true
     },
 
-    "extends": "eslint",
-
-    "rules": {
-        "strict": "off",
-        "eol-last": "off"
-    }
+    "extends": "eslint"
 };
