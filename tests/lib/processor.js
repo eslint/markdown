@@ -257,6 +257,22 @@ describe("processor", function() {
             assert.equal(blocks.length, 1);
         });
 
+        it("should find code fences not surrounded by blank lines", function() {
+            var code = [
+                "<!-- eslint-disable -->",
+                "```js",
+                "var answer = 6 * 7;",
+                "```",
+                "Paragraph text",
+                "```js",
+                "var answer = 6 * 7;",
+                "```"
+            ].join("\n");
+            var blocks = processor.preprocess(code);
+
+            assert.equal(blocks.length, 2);
+        });
+
         it("should return the source code in the block", function() {
             var code = [
                 "```js",
