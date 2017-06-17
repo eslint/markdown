@@ -405,6 +405,61 @@ describe("processor", function() {
             ].join("\n"));
         });
 
+        describe("eslint-skip", function() {
+
+            it("should skip the next block", function() {
+                var code = [
+                    "<!-- eslint-skip -->",
+                    "",
+                    "```js",
+                    "alert('Hello, world!');",
+                    "```"
+                ].join("\n");
+                var blocks = processor.preprocess(code);
+
+                assert.equal(blocks.length, 0);
+            });
+
+            it("should skip only one block", function() {
+                var code = [
+                    "<!-- eslint-skip -->",
+                    "",
+                    "```js",
+                    "alert('Hello, world!');",
+                    "```",
+                    "",
+                    "```js",
+                    "var answer = 6 * 7;",
+                    "```"
+                ].join("\n");
+                var blocks = processor.preprocess(code);
+
+                assert.equal(blocks.length, 1);
+                assert.equal(blocks[0], "var answer = 6 * 7;");
+            });
+
+            it("should still work surrounded by other comments", function() {
+                var code = [
+                    "<!-- eslint-disable no-console -->",
+                    "<!-- eslint-skip -->",
+                    "<!-- eslint-disable quotes -->",
+                    "",
+                    "```js",
+                    "alert('Hello, world!');",
+                    "```",
+                    "",
+                    "```js",
+                    "var answer = 6 * 7;",
+                    "```"
+                ].join("\n");
+                var blocks = processor.preprocess(code);
+
+                assert.equal(blocks.length, 1);
+                assert.equal(blocks[0], "var answer = 6 * 7;");
+            });
+
+        });
+
     });
 
     describe("postprocess", function() {
