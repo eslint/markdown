@@ -551,15 +551,30 @@ describe("processor", function() {
             assert.equal(result[4].column, 2);
         });
 
-        it("should exclude eol-last messages", function() {
-            var result = processor.postprocess([
-                [
-                    { line: 4, column: 3, message: "Newline required at end of file but not found.", ruleId: "eol-last" }
-                ]
-            ]);
+        describe("should exclude messages from unsatisfiable rules", function() {
 
-            assert.equal(result.length, 0);
+            it("eol-last", function() {
+                var result = processor.postprocess([
+                    [
+                        { line: 4, column: 3, message: "Newline required at end of file but not found.", ruleId: "eol-last" }
+                    ]
+                ]);
+
+                assert.equal(result.length, 0);
+            });
+
+            it("unicode-bom", function() {
+                var result = processor.postprocess([
+                    [
+                        { line: 1, column: 1, message: "Expected Unicode BOM (Byte Order Mark).", ruleId: "unicode-bom" }
+                    ]
+                ]);
+
+                assert.equal(result.length, 0);
+            });
+
         });
+
     });
 
 });
