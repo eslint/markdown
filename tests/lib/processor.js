@@ -371,6 +371,25 @@ describe("processor", function() {
             ].join("\n"));
         });
 
+        it("should insert global comments", function() {
+            var code = [
+                "<!-- global foo -->",
+                "<!-- global bar:false, baz:true -->",
+                "",
+                "```js",
+                "alert(foo, bar, baz);",
+                "```"
+            ].join("\n");
+            var blocks = processor.preprocess(code);
+
+            assert.equal(blocks.length, 1);
+            assert.equal(blocks[0], [
+                "/* global foo */",
+                "/* global bar:false, baz:true */",
+                "alert(foo, bar, baz);"
+            ].join("\n"));
+        });
+
         it("should ignore non-eslint comments", function() {
             var code = [
                 "<!-- eslint-env browser -->",
