@@ -46,4 +46,14 @@ console.log("Error!");
 !@#$%^&*()
 ```
 
+```js
+foo
+```
+
+<!-- global foo -->
+
+```js
+foo
+```
+
 The end.
