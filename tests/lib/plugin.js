@@ -76,7 +76,7 @@ describe("plugin", function() {
         var report = cli.executeOnFiles([path.resolve(__dirname, "../fixtures/long.md")]);
 
         assert.equal(report.results.length, 1);
-        assert.equal(report.results[0].messages.length, 6);
+        assert.equal(report.results[0].messages.length, 5);
         assert.equal(report.results[0].messages[0].message, "Unexpected console statement.");
         assert.equal(report.results[0].messages[0].line, 10);
         assert.equal(report.results[0].messages[0].column, 1);
@@ -92,9 +92,6 @@ describe("plugin", function() {
         assert.equal(report.results[0].messages[4].message, "Parsing error: Unexpected character '@'");
         assert.equal(report.results[0].messages[4].line, 46);
         assert.equal(report.results[0].messages[4].column, 2);
-        assert.equal(report.results[0].messages[5].message, "'foo' is not defined.");
-        assert.equal(report.results[0].messages[5].line, 50);
-        assert.equal(report.results[0].messages[5].column, 1);
     });
 
     describe("configuration comments", function() {
