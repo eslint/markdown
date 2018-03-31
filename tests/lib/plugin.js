@@ -45,6 +45,27 @@ describe("plugin", function() {
         assert.equal(report.results[0].messages[0].line, 2);
     });
 
+    it("should emit correct line numbers", function() {
+        var code = [
+            "# Hello, world!",
+            "",
+            "",
+            "```js",
+            "var bar = baz",
+            "",
+            "",
+            "var foo = blah",
+            "```"
+        ].join("\n");
+        var report = cli.executeOnText(code, "test.md");
+        assert.equal(report.results[0].messages[0].message, "'baz' is not defined.");
+        assert.equal(report.results[0].messages[0].line, 5);
+        assert.equal(report.results[0].messages[0].endLine, 5);
+        assert.equal(report.results[0].messages[1].message, "'blah' is not defined.");
+        assert.equal(report.results[0].messages[1].line, 8);
+        assert.equal(report.results[0].messages[1].endLine, 8);
+    });
+
     it("should run on .mkdn files", function() {
         var report = cli.executeOnText(shortText, "test.mkdn");
 
