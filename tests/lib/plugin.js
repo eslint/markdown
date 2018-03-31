@@ -60,10 +60,10 @@ describe("plugin", function() {
         var report = cli.executeOnText(code, "test.md");
         assert.equal(report.results[0].messages[0].message, "'baz' is not defined.");
         assert.equal(report.results[0].messages[0].line, 5);
-        assert.equal(report.results[0].messages[0].endLine, 4);
+        assert.equal(report.results[0].messages[0].endLine, 5);
         assert.equal(report.results[0].messages[1].message, "'blah' is not defined.");
         assert.equal(report.results[0].messages[1].line, 8);
-        assert.equal(report.results[0].messages[1].endLine, 7);
+        assert.equal(report.results[0].messages[1].endLine, 8);
     });
 
     it("should emit correct line numbers with leading comments", function() {
@@ -71,6 +71,7 @@ describe("plugin", function() {
             "# Hello, world!",
             "",
             "<!-- eslint-disable quotes -->",
+            "<!-- eslint-disable semi -->",
             "",
             "```js",
             "var bar = baz",
@@ -82,11 +83,11 @@ describe("plugin", function() {
         ].join("\n");
         var report = cli.executeOnText(code, "test.md");
         assert.equal(report.results[0].messages[0].message, "'baz' is not defined.");
-        assert.equal(report.results[0].messages[0].line, 6);
-        assert.equal(report.results[0].messages[0].endLine, 6);
+        assert.equal(report.results[0].messages[0].line, 7);
+        assert.equal(report.results[0].messages[0].endLine, 7);
         assert.equal(report.results[0].messages[1].message, "'blah' is not defined.");
-        assert.equal(report.results[0].messages[1].line, 10);
-        assert.equal(report.results[0].messages[1].endLine, 10);
+        assert.equal(report.results[0].messages[1].line, 11);
+        assert.equal(report.results[0].messages[1].endLine, 11);
     });
 
     it("should run on .mkdn files", function() {
