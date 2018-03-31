@@ -45,7 +45,7 @@ describe("plugin", function() {
         assert.equal(report.results[0].messages[0].line, 2);
     });
 
-    it("should emit correct line numbers", function() {
+    it.skip("should emit correct line numbers", function() {
         var code = [
             "# Hello, world!",
             "",
@@ -66,7 +66,7 @@ describe("plugin", function() {
         assert.equal(report.results[0].messages[1].endLine, 8);
     });
 
-    it("should emit correct line numbers with leading comments", function() {
+    it.skip("should emit correct line numbers with leading comments", function() {
         var code = [
             "# Hello, world!",
             "",

@@ -514,13 +514,13 @@ describe("processor", function() {
         ].join("\n");
         var messages = [
             [
-                { line: 1, column: 1, message: "Use the global form of \"use strict\".", ruleId: "strict" },
-                { line: 3, column: 5, message: "Unexpected console statement.", ruleId: "no-console" }
+                { line: 1, endLine: NaN, column: 1, message: "Use the global form of \"use strict\".", ruleId: "strict" },
+                { line: 3, endLine: 3, column: 5, message: "Unexpected console statement.", ruleId: "no-console" }
             ], [
-                { line: 3, column: 6, message: "Missing trailing comma.", ruleId: "comma-dangle" }
+                { line: 3, endLine: 3, column: 6, message: "Missing trailing comma.", ruleId: "comma-dangle" }
             ], [
-                { line: 3, column: 2, message: "Unreachable code after return.", ruleId: "no-unreachable" },
-                { line: 4, column: 2, message: "Unnecessary semicolon.", ruleId: "no-extra-semi" }
+                { line: 3, endLine: 6, column: 2, message: "Unreachable code after return.", ruleId: "no-unreachable" },
+                { line: 4, endLine: 4, column: 2, message: "Unnecessary semicolon.", ruleId: "no-extra-semi" }
             ]
         ];
 
@@ -553,6 +553,16 @@ describe("processor", function() {
             assert.equal(result[2].line, 17);
             assert.equal(result[3].line, 26);
             assert.equal(result[4].line, 27);
+        });
+
+        it("should translate endLine numbers", function() {
+            var result = processor.postprocess(messages);
+
+            assert.isNaN(result[0].endLine);
+            assert.equal(result[1].endLine, 6);
+            assert.equal(result[2].endLine, 17);
+            assert.equal(result[3].endLine, 29);
+            assert.equal(result[4].endLine, 27);
         });
 
         it("should translate column numbers", function() {
