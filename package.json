@@ -40,7 +40,7 @@
   ],
   "devDependencies": {
     "chai": "^3.0.0",
-    "eslint": "^2.2.0",
+    "eslint": "^4.19.1",
     "eslint-config-eslint": "^3.0.0",
     "eslint-release": "^0.11.1",
     "istanbul": "^0.4.5",
@@ -50,5 +50,8 @@
     "object-assign": "^4.0.1",
     "remark-parse": "^3.0.0",
     "unified": "^6.1.2"
+  },
+  "engines": {
+    "node": "^6.14.0 || ^8.11.0 || >=9.10.0"
   }
 }
