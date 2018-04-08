@@ -1,3 +1,10 @@
+v1.0.0-beta.8 - April 8, 2018
+
+* a1544c2 Chore: Add .npmrc to disable creating package-lock.json (#90) (Brandon Mills)
+* 47ad3f9 Chore: Replace global comment integration test with unit test (refs #81) (#85) (Brandon Mills)
+* e34acc6 Fix: Add unicode-bom to unsatisfiable rules (refs #75) (#84) (Brandon Mills)
+* 7c19f8b Fix: Support globals (fixes #79) (#81) (Anders D. Johnson)
+
 v1.0.0-beta.7 - July 2, 2017
 
 * f8ba18a New: Custom eslint-skip HTML comment skips blocks (fixes #69) (#73) (Brandon Mills)
