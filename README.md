@@ -127,6 +127,7 @@ Sometimes it can be useful to have code blocks marked with `js` even though they
 Since code blocks are not files themselves but embedded inside a Markdown document, some rules do not apply to Markdown code blocks, and messages from these rules are automatically suppressed:
 
 - `eol-last`
+- `unicode-bom`
 
 ## Contributing
 
