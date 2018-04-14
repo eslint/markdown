@@ -1,6 +1,6 @@
 # Contributing Code
 
-Please sign the ESLint [Contributor License Agreement](http://eslint.org/cla)
+Please sign the ESLint [Contributor License Agreement](https://cla.js.foundation/eslint/eslint-plugin-markdown)
 
 ## Full Documentation
 
