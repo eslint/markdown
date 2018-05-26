@@ -129,6 +129,23 @@ Since code blocks are not files themselves but embedded inside a Markdown docume
 - `eol-last`
 - `unicode-bom`
 
+### Strict
+
+The `strict` rule is technically satisfiable inside of code blocks, but most users will likely want to disable it. To disable `strict` inside all `.md` files, add the following override to your `.eslintrc.json`:
+
+```js
+// .eslintrc.json
+{
+    // ...
+    "overrides": [{
+        "files": ["**/*.md"],
+        "rules": {
+            "strict": "off"
+        }
+    }]
+}
+```
+
 ## Contributing
 
 ```sh
