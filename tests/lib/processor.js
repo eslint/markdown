@@ -514,7 +514,7 @@ describe("processor", function() {
         ].join("\n");
         var messages = [
             [
-                { line: 1, endLine: NaN, column: 1, message: "Use the global form of \"use strict\".", ruleId: "strict" },
+                { line: 1, endLine: 1, column: 1, message: "Use the global form of \"use strict\".", ruleId: "strict" },
                 { line: 3, endLine: 3, column: 5, message: "Unexpected console statement.", ruleId: "no-console" }
             ], [
                 { line: 3, endLine: 3, column: 6, message: "Missing trailing comma.", ruleId: "comma-dangle" }
@@ -558,7 +558,7 @@ describe("processor", function() {
         it("should translate endLine numbers", function() {
             var result = processor.postprocess(messages);
 
-            assert.isNaN(result[0].endLine);
+            assert.equal(result[0].endLine, 4);
             assert.equal(result[1].endLine, 6);
             assert.equal(result[2].endLine, 17);
             assert.equal(result[3].endLine, 29);
