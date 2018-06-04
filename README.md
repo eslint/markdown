@@ -129,6 +129,28 @@ Since code blocks are not files themselves but embedded inside a Markdown docume
 - `eol-last`
 - `unicode-bom`
 
+### Strict
+
+The `strict` rule is technically satisfiable inside of Markdown code blocks, but writing a `"use strict"` directive at the top of every code block is tedious and distracting. We recommend using a [glob pattern override](https://eslint.org/docs/user-guide/configuring#configuration-based-on-glob-patterns) for `.md` files to disable `strict` and enable the `impliedStrict` [parser option](https://eslint.org/docs/user-guide/configuring#specifying-parser-options) so the code blocks still parse in strict mode:
+
+```js
+// .eslintrc.json
+{
+    // ...
+    "overrides": [{
+        "files": ["**/*.md"],
+        "parserOptions": {
+            "ecmaFeatures": {
+                "impliedStrict": true
+            }
+        },
+        "rules": {
+            "strict": "off"
+        }
+    }]
+}
+```
+
 ## Contributing
 
 ```sh
