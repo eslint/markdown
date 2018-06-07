@@ -517,10 +517,10 @@ describe("processor", function() {
                 { line: 1, endLine: 1, column: 1, message: "Use the global form of \"use strict\".", ruleId: "strict" },
                 { line: 3, endLine: 3, column: 5, message: "Unexpected console statement.", ruleId: "no-console" }
             ], [
-                { line: 3, endLine: 3, column: 6, message: "Missing trailing comma.", ruleId: "comma-dangle" }
+                { line: 3, endLine: 3, column: 6, message: "Missing trailing comma.", ruleId: "comma-dangle", fix: { range: [24, 24], text: "," } }
             ], [
                 { line: 3, endLine: 6, column: 2, message: "Unreachable code after return.", ruleId: "no-unreachable" },
-                { line: 4, endLine: 4, column: 2, message: "Unnecessary semicolon.", ruleId: "no-extra-semi" }
+                { line: 4, endLine: 4, column: 2, message: "Unnecessary semicolon.", ruleId: "no-extra-semi", fix: { range: [38, 39], text: "" } }
             ]
         ];
 
@@ -580,6 +580,13 @@ describe("processor", function() {
             assert.equal(result[4].column, 2);
         });
 
+        it("should adjust fix range properties", function() {
+            var result = processor.postprocess(messages);
+
+            assert(result[2].fix.range, [185, 185]);
+            assert(result[4].fix.range, [264, 265]);
+        });
+
         describe("should exclude messages from unsatisfiable rules", function() {
 
             it("eol-last", function() {
@@ -604,6 +611,12 @@ describe("processor", function() {
 
         });
 
+    });
+
+    describe("supportsAutofix", function() {
+        it("should equal true", function() {
+            assert.equal(processor.supportsAutofix, true);
+        });
     });
 
 });
