@@ -10,6 +10,31 @@ var assert = require("chai").assert,
     path = require("path"),
     plugin = require("../..");
 
+/**
+ * Helper function which creates CLIEngine instance with enabled/disabled autofix feature.
+ * @param {boolean} [isAutofixEnabled=false] Whether to enable autofix feature.
+ * @returns {CLIEngine} CLIEngine instance to execute in tests.
+ */
+function initCLI(isAutofixEnabled) {
+    var fix = isAutofixEnabled || false;
+    var cli = new CLIEngine({
+        envs: ["browser"],
+        extensions: ["md", "mkdn", "mdown", "markdown"],
+        fix: fix,
+        ignore: false,
+        rules: {
+            "eol-last": 2,
+            "no-console": 2,
+            "no-undef": 2,
+            "quotes": 2,
+            "spaced-comment": 2
+        },
+        useEslintrc: false
+    });
+    cli.addPlugin("markdown", plugin);
+    return cli;
+}
+
 describe("plugin", function() {
 
     var cli;
@@ -20,20 +45,7 @@ describe("plugin", function() {
     ].join("\n");
 
     before(function() {
-        cli = new CLIEngine({
-            envs: ["browser"],
-            extensions: ["md", "mkdn", "mdown", "markdown"],
-            ignore: false,
-            rules: {
-                "eol-last": 2,
-                "no-console": 2,
-                "no-undef": 2,
-                "quotes": 2,
-                "spaced-comment": 2
-            },
-            useEslintrc: false
-        });
-        cli.addPlugin("markdown", plugin);
+        cli = initCLI();
     });
 
     it("should run on .md files", function() {
@@ -172,6 +184,35 @@ describe("plugin", function() {
             assert.equal(report.results[0].messages[2].line, 13);
             assert.equal(report.results[0].messages[3].message, "Unexpected console statement.");
             assert.equal(report.results[0].messages[3].line, 15);
+        });
+
+    });
+
+    describe("autofix feature", function() {
+
+        before(function() {
+            cli = initCLI(true);
+        });
+
+        it("should be able to fix code", function() {
+            var code = [
+                "# Hello, world!",
+                "",
+                "```js",
+                "var bar = baz",
+                "",
+                "var str = 'single quotes'",
+                "",
+                "var foo = blah",
+                "```"
+            ].join("\n");
+            var report = cli.executeOnText(code, "test.md");
+
+            assert.equal(report.results.length, 1);
+            assert.equal(report.results[0].messages.length, 2);
+            assert.equal(report.results[0].fixableErrorCount, 0);
+            assert.equal(report.results[0].fixableWarningCount, 0);
+            assert.equal(report.results[0].output, "# Hello, world!\n\n```js\nvar bar = baz\n\nvar str = \"single quotes\"\n\nvar foo = blah\n```");
         });
 
     });
