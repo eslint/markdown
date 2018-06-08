@@ -188,31 +188,233 @@ describe("plugin", function() {
 
     });
 
-    describe("autofix feature", function() {
+    describe.only("should fix code", function() {
+
+        // THIS EXISTS ONLY TO DEBUG AUTOFIX. REMOVE BEFORE MERGING TO MASTER
+        // eslint-disable-next-line require-jsdoc
+        function debug(input, actual, expected) {
+            try {
+                assert.equal(actual, expected);
+            } catch (error) {
+                console.log("Rendered input:\n<hr />\n" + input + "\n<hr />\n");
+                console.log("Raw input:\n\n`````md\n" + input + "\n`````\n");
+                console.log("Actual:\n\n`````md\n" + actual + "\n`````\n");
+                console.log("Expected:\n\n`````md\n" + expected + "\n`````\n");
+                throw error;
+            }
+        }
 
         before(function() {
             cli = initCLI(true);
         });
 
-        it("should be able to fix code", function() {
-            var code = [
-                "# Hello, world!",
+        it("in the simplest case", function() {
+            var input = [
+                "This is Markdown.",
                 "",
                 "```js",
-                "var bar = baz",
-                "",
-                "var str = 'single quotes'",
-                "",
-                "var foo = blah",
-                "```"
+                "console.log('Hello, world!')",
+                "```",
             ].join("\n");
-            var report = cli.executeOnText(code, "test.md");
+            var expected = [
+                "This is Markdown.",
+                "",
+                "```js",
+                "console.log(\"Hello, world!\")",
+                "```",
+            ].join("\n");
+            var report = cli.executeOnText(input, "test.md");
+            var actual = report.results[0].output;
 
-            assert.equal(report.results.length, 1);
-            assert.equal(report.results[0].messages.length, 2);
-            assert.equal(report.results[0].fixableErrorCount, 0);
-            assert.equal(report.results[0].fixableWarningCount, 0);
-            assert.equal(report.results[0].output, "# Hello, world!\n\n```js\nvar bar = baz\n\nvar str = \"single quotes\"\n\nvar foo = blah\n```");
+            debug(input, actual, expected);
+        });
+
+        it("across multiple lines", function() {
+            var input = [
+                "This is Markdown.",
+                "",
+                "```js",
+                "console.log('Hello, world!')",
+                "console.log('Hello, world!')",
+                "```",
+            ].join("\n");
+            var expected = [
+                "This is Markdown.",
+                "",
+                "```js",
+                "console.log(\"Hello, world!\")",
+                "console.log(\"Hello, world!\")",
+                "```",
+            ].join("\n");
+            var report = cli.executeOnText(input, "test.md");
+            var actual = report.results[0].output;
+
+            debug(input, actual, expected);
+        });
+
+        it("across multiple blocks", function() {
+            var input = [
+                "This is Markdown.",
+                "",
+                "```js",
+                "console.log('Hello, world!')",
+                "```",
+                "",
+                "```js",
+                "console.log('Hello, world!')",
+                "```",
+            ].join("\n");
+            var expected = [
+                "This is Markdown.",
+                "",
+                "```js",
+                "console.log(\"Hello, world!\")",
+                "```",
+                "",
+                "```js",
+                "console.log(\"Hello, world!\")",
+                "```",
+            ].join("\n");
+            var report = cli.executeOnText(input, "test.md");
+            var actual = report.results[0].output;
+
+            debug(input, actual, expected);
+        });
+
+        it("when indented", function() {
+            var input = [
+                "This is Markdown.",
+                "",
+                "```js",
+                "function test() {",
+                "    console.log('Hello, world!')",
+                "}",
+                "```",
+            ].join("\n");
+            var expected = [
+                "This is Markdown.",
+                "",
+                "```js",
+                "function test() {",
+                "    console.log(\"Hello, world!\")",
+                "}",
+                "```",
+            ].join("\n");
+            var report = cli.executeOnText(input, "test.md");
+            var actual = report.results[0].output;
+
+            debug(input, actual, expected);
+        });
+
+        it("when indented with tabs", function() {
+            var input = [
+                "This is Markdown.",
+                "",
+                "```js",
+                "function test() {",
+                "\tconsole.log('Hello, world!')",
+                "}",
+                "```",
+            ].join("\n");
+            var expected = [
+                "This is Markdown.",
+                "",
+                "```js",
+                "function test() {",
+                "\tconsole.log(\"Hello, world!\")",
+                "}",
+                "```",
+            ].join("\n");
+            var report = cli.executeOnText(input, "test.md");
+            var actual = report.results[0].output;
+
+            debug(input, actual, expected);
+        });
+
+        it("in blocks with uncommon tags", function() {
+            var input = [
+                "This is Markdown.",
+                "",
+                "```JavaScript",
+                "console.log('Hello, world!')",
+                "```",
+            ].join("\n");
+            var expected = [
+                "This is Markdown.",
+                "",
+                "```JavaScript",
+                "console.log(\"Hello, world!\")",
+                "```",
+            ].join("\n");
+            var report = cli.executeOnText(input, "test.md");
+            var actual = report.results[0].output;
+
+            debug(input, actual, expected);
+        });
+
+        it("in blocks with extra backticks", function() {
+            var input = [
+                "This is Markdown.",
+                "",
+                "````js",
+                "console.log('Hello, world!')",
+                "````",
+            ].join("\n");
+            var expected = [
+                "This is Markdown.",
+                "",
+                "````js",
+                "console.log(\"Hello, world!\")",
+                "````",
+            ].join("\n");
+            var report = cli.executeOnText(input, "test.md");
+            var actual = report.results[0].output;
+
+            debug(input, actual, expected);
+        });
+
+        it("inside a list", function() {
+            var input = [
+                "- Inside a list",
+                "",
+                "   ```js",
+                "   console.log('Hello, world!')",
+                "   console.log('Hello, world!')",
+                "   ```",
+            ].join("\n");
+            var expected = [
+                "- Inside a list",
+                "",
+                "   ```js",
+                "   console.log(\"Hello, world!\")",
+                "   console.log(\"Hello, world!\")",
+                "   ```",
+            ].join("\n");
+            var report = cli.executeOnText(input, "test.md");
+            var actual = report.results[0].output;
+
+            debug(input, actual, expected);
+        });
+
+        it("with configuration comments", function() {
+            var input = [
+                "<!-- eslint semi: 2 -->",
+                "",
+                "```js",
+                "console.log('Hello, world!')",
+                "```",
+            ].join("\n");
+            var expected = [
+                "<!-- eslint semi: 2 -->",
+                "",
+                "```js",
+                "console.log(\"Hello, world!\");",
+                "```",
+            ].join("\n");
+            var report = cli.executeOnText(input, "test.md");
+            var actual = report.results[0].output;
+
+            debug(input, actual, expected);
         });
 
     });
