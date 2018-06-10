@@ -373,29 +373,6 @@ describe("plugin", function() {
             debug(input, actual, expected);
         });
 
-        it("inside a list", function() {
-            var input = [
-                "- Inside a list",
-                "",
-                "   ```js",
-                "   console.log('Hello, world!')",
-                "   console.log('Hello, world!')",
-                "   ```",
-            ].join("\n");
-            var expected = [
-                "- Inside a list",
-                "",
-                "   ```js",
-                "   console.log(\"Hello, world!\")",
-                "   console.log(\"Hello, world!\")",
-                "   ```",
-            ].join("\n");
-            var report = cli.executeOnText(input, "test.md");
-            var actual = report.results[0].output;
-
-            debug(input, actual, expected);
-        });
-
         it("with configuration comments", function() {
             var input = [
                 "<!-- eslint semi: 2 -->",
@@ -410,6 +387,50 @@ describe("plugin", function() {
                 "```js",
                 "console.log(\"Hello, world!\");",
                 "```",
+            ].join("\n");
+            var report = cli.executeOnText(input, "test.md");
+            var actual = report.results[0].output;
+
+            debug(input, actual, expected);
+        });
+
+        it("inside a list single line", function() {
+            var input = [
+                "- Inside a list",
+                "",
+                "  ```js",
+                "  console.log('Hello, world!')",
+                "  ```",
+            ].join("\n");
+            var expected = [
+                "- Inside a list",
+                "",
+                "  ```js",
+                "  console.log(\"Hello, world!\")",
+                "  ```",
+            ].join("\n");
+            var report = cli.executeOnText(input, "test.md");
+            var actual = report.results[0].output;
+
+            debug(input, actual, expected);
+        });
+
+        it("inside a list multi line", function() {
+            var input = [
+                "- Inside a list",
+                "",
+                "  ```js",
+                "  console.log('Hello, world!')",
+                "  console.log('Hello, world!')",
+                "  ```",
+            ].join("\n");
+            var expected = [
+                "- Inside a list",
+                "",
+                "  ```js",
+                "  console.log(\"Hello, world!\")",
+                "  console.log(\"Hello, world!\")",
+                "  ```",
             ].join("\n");
             var report = cli.executeOnText(input, "test.md");
             var actual = report.results[0].output;
