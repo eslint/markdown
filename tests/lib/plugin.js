@@ -190,20 +190,6 @@ describe("plugin", function() {
 
     describe.only("should fix code", function() {
 
-        // THIS EXISTS ONLY TO DEBUG AUTOFIX. REMOVE BEFORE MERGING TO MASTER
-        // eslint-disable-next-line require-jsdoc
-        function debug(input, actual, expected) {
-            try {
-                assert.equal(actual, expected);
-            } catch (error) {
-                console.log("Rendered input:\n<hr />\n" + input + "\n<hr />\n");
-                console.log("Raw input:\n\n`````md\n" + input + "\n`````\n");
-                console.log("Actual:\n\n`````md\n" + actual + "\n`````\n");
-                console.log("Expected:\n\n`````md\n" + expected + "\n`````\n");
-                throw error;
-            }
-        }
-
         before(function() {
             cli = initCLI(true);
         });
@@ -226,7 +212,7 @@ describe("plugin", function() {
             var report = cli.executeOnText(input, "test.md");
             var actual = report.results[0].output;
 
-            debug(input, actual, expected);
+            assert.equal(actual, expected);
         });
 
         it("across multiple lines", function() {
@@ -249,7 +235,7 @@ describe("plugin", function() {
             var report = cli.executeOnText(input, "test.md");
             var actual = report.results[0].output;
 
-            debug(input, actual, expected);
+            assert.equal(actual, expected);
         });
 
         it("across multiple blocks", function() {
@@ -278,7 +264,7 @@ describe("plugin", function() {
             var report = cli.executeOnText(input, "test.md");
             var actual = report.results[0].output;
 
-            debug(input, actual, expected);
+            assert.equal(actual, expected);
         });
 
         it("when indented", function() {
@@ -303,7 +289,7 @@ describe("plugin", function() {
             var report = cli.executeOnText(input, "test.md");
             var actual = report.results[0].output;
 
-            debug(input, actual, expected);
+            assert.equal(actual, expected);
         });
 
         it("when indented with tabs", function() {
@@ -328,7 +314,7 @@ describe("plugin", function() {
             var report = cli.executeOnText(input, "test.md");
             var actual = report.results[0].output;
 
-            debug(input, actual, expected);
+            assert.equal(actual, expected);
         });
 
         it("in blocks with uncommon tags", function() {
@@ -349,7 +335,7 @@ describe("plugin", function() {
             var report = cli.executeOnText(input, "test.md");
             var actual = report.results[0].output;
 
-            debug(input, actual, expected);
+            assert.equal(actual, expected);
         });
 
         it("in blocks with extra backticks", function() {
@@ -370,7 +356,7 @@ describe("plugin", function() {
             var report = cli.executeOnText(input, "test.md");
             var actual = report.results[0].output;
 
-            debug(input, actual, expected);
+            assert.equal(actual, expected);
         });
 
         it("with configuration comments", function() {
@@ -391,7 +377,7 @@ describe("plugin", function() {
             var report = cli.executeOnText(input, "test.md");
             var actual = report.results[0].output;
 
-            debug(input, actual, expected);
+            assert.equal(actual, expected);
         });
 
         it("inside a list single line", function() {
@@ -412,7 +398,7 @@ describe("plugin", function() {
             var report = cli.executeOnText(input, "test.md");
             var actual = report.results[0].output;
 
-            debug(input, actual, expected);
+            assert.equal(actual, expected);
         });
 
         it("inside a list multi line", function() {
@@ -443,7 +429,7 @@ describe("plugin", function() {
             var report = cli.executeOnText(input, "test.md");
             var actual = report.results[0].output;
 
-            debug(input, actual, expected);
+            assert.equal(actual, expected);
         });
 
         it("with multiple rules", function() {
@@ -484,7 +470,7 @@ describe("plugin", function() {
             var report = cli.executeOnText(input, "test.md");
             var actual = report.results[0].output;
 
-            debug(input, actual, expected);
+            assert.equal(actual, expected);
         });
 
     });
