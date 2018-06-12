@@ -422,6 +422,10 @@ describe("plugin", function() {
                 "  ```js",
                 "  console.log('Hello, world!')",
                 "  console.log('Hello, world!')",
+                "  ",
+                "  var obj = {",
+                "    hello: 'value'",
+                "  }",
                 "  ```",
             ].join("\n");
             var expected = [
@@ -430,6 +434,10 @@ describe("plugin", function() {
                 "  ```js",
                 "  console.log(\"Hello, world!\")",
                 "  console.log(\"Hello, world!\")",
+                "  ",
+                "  var obj = {",
+                "    hello: \"value\"",
+                "  }",
                 "  ```",
             ].join("\n");
             var report = cli.executeOnText(input, "test.md");
