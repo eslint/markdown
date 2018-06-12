@@ -438,6 +438,47 @@ describe("plugin", function() {
             debug(input, actual, expected);
         });
 
+        it("with multiple rules", function() {
+            var input = [
+                "## Hello!",
+                "",
+                "<!-- eslint semi: 2 -->",
+                "",
+                "```js",
+                "var obj = {",
+                "  some: 'value'",
+                "}",
+                "",
+                "console.log('opop');",
+                "",
+                "function hello() {",
+                "  return false",
+                "};",
+                "```",
+            ].join("\n");
+            var expected = [
+                "## Hello!",
+                "",
+                "<!-- eslint semi: 2 -->",
+                "",
+                "```js",
+                "var obj = {",
+                "  some: \"value\"",
+                "};",
+                "",
+                "console.log(\"opop\");",
+                "",
+                "function hello() {",
+                "  return false;",
+                "};",
+                "```",
+            ].join("\n");
+            var report = cli.executeOnText(input, "test.md");
+            var actual = report.results[0].output;
+
+            debug(input, actual, expected);
+        });
+
     });
 
 });
