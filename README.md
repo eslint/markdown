@@ -121,6 +121,29 @@ Sometimes it can be useful to have code blocks marked with `js` even though they
     ```js
     console.log("This code block is linted normally.");
     ```
+    
+## Fix issues automatically
+
+This plugin can attempt to fix some of the issues automatically using [`fix` ESLint option](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems). This option instructs ESLint to try to fix as many issues as possible. To enable this option you can add `--fix` to your ESLint call, for example: 
+
+```bash
+eslint --fix
+```
+
+### Usage with lists
+
+Make sure you indent fenced code blocks with exactly `2 spaces` if you're planning to use fenced code blocks inside lists and rely on this feature to work as expected. For example:
+
+    # Hello world!
+    
+    - I'm a list
+    - With indented JS code inside me
+    
+      ```javascript
+      console.log('Hello again!');
+      ```
+
+This is the limitation we had to apply due to the way parser works. Check [this issue](https://github.com/remarkjs/remark/issues/340) for more information.
 
 ## Unsatisfiable Rules
 
