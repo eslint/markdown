@@ -188,7 +188,7 @@ describe("plugin", function() {
 
     });
 
-    describe.only("should fix code", function() {
+    describe("should fix code", function() {
 
         before(function() {
             cli = initCLI(true);
@@ -267,7 +267,7 @@ describe("plugin", function() {
             assert.equal(actual, expected);
         });
 
-        it("when indented", function() {
+        it("with lines indented by spaces", function() {
             var input = [
                 "This is Markdown.",
                 "",
@@ -292,7 +292,7 @@ describe("plugin", function() {
             assert.equal(actual, expected);
         });
 
-        it("when indented with tabs", function() {
+        it("with lines indented by tabs", function() {
             var input = [
                 "This is Markdown.",
                 "",
@@ -405,31 +405,259 @@ describe("plugin", function() {
             var input = [
                 "- Inside a list",
                 "",
-                "  ```js",
-                "  console.log('Hello, world!')",
-                "  console.log('Hello, world!')",
-                "  ",
-                "  var obj = {",
-                "    hello: 'value'",
-                "  }",
-                "  ```",
+                "   ```js",
+                "   console.log('Hello, world!')",
+                "   console.log('Hello, world!')",
+                "   ",
+                "   var obj = {",
+                "     hello: 'value'",
+                "   }",
+                "   ```",
             ].join("\n");
             var expected = [
                 "- Inside a list",
                 "",
-                "  ```js",
-                "  console.log(\"Hello, world!\")",
-                "  console.log(\"Hello, world!\")",
-                "  ",
-                "  var obj = {",
-                "    hello: \"value\"",
-                "  }",
-                "  ```",
+                "   ```js",
+                "   console.log(\"Hello, world!\")",
+                "   console.log(\"Hello, world!\")",
+                "   ",
+                "   var obj = {",
+                "     hello: \"value\"",
+                "   }",
+                "   ```",
             ].join("\n");
             var report = cli.executeOnText(input, "test.md");
             var actual = report.results[0].output;
 
             assert.equal(actual, expected);
+        });
+
+        // https://spec.commonmark.org/0.28/#fenced-code-blocks
+        describe("when indented", function() {
+            it("by one space", function() {
+                var input = [
+                    "This is Markdown.",
+                    "",
+                    " ```js",
+                    " console.log('Hello, world!')",
+                    " console.log('Hello, world!')",
+                    " ```"
+                ].join("\n");
+                var expected = [
+                    "This is Markdown.",
+                    "",
+                    " ```js",
+                    " console.log(\"Hello, world!\")",
+                    " console.log(\"Hello, world!\")",
+                    " ```"
+                ].join("\n");
+                var report = cli.executeOnText(input, "test.md");
+                var actual = report.results[0].output;
+
+                assert.equal(actual, expected);
+            });
+
+            it("by two spaces", function() {
+                var input = [
+                    "This is Markdown.",
+                    "",
+                    "  ```js",
+                    "  console.log('Hello, world!')",
+                    "  console.log('Hello, world!')",
+                    "  ```"
+                ].join("\n");
+                var expected = [
+                    "This is Markdown.",
+                    "",
+                    "  ```js",
+                    "  console.log(\"Hello, world!\")",
+                    "  console.log(\"Hello, world!\")",
+                    "  ```"
+                ].join("\n");
+                var report = cli.executeOnText(input, "test.md");
+                var actual = report.results[0].output;
+
+                assert.equal(actual, expected);
+            });
+
+            it("by three spaces", function() {
+                var input = [
+                    "This is Markdown.",
+                    "",
+                    "   ```js",
+                    "   console.log('Hello, world!')",
+                    "   console.log('Hello, world!')",
+                    "   ```"
+                ].join("\n");
+                var expected = [
+                    "This is Markdown.",
+                    "",
+                    "   ```js",
+                    "   console.log(\"Hello, world!\")",
+                    "   console.log(\"Hello, world!\")",
+                    "   ```"
+                ].join("\n");
+                var report = cli.executeOnText(input, "test.md");
+                var actual = report.results[0].output;
+
+                assert.equal(actual, expected);
+            });
+
+            it("and the closing fence is differently indented", function() {
+                var input = [
+                    "This is Markdown.",
+                    "",
+                    " ```js",
+                    " console.log('Hello, world!')",
+                    " console.log('Hello, world!')",
+                    "   ```"
+                ].join("\n");
+                var expected = [
+                    "This is Markdown.",
+                    "",
+                    " ```js",
+                    " console.log(\"Hello, world!\")",
+                    " console.log(\"Hello, world!\")",
+                    "   ```"
+                ].join("\n");
+                var report = cli.executeOnText(input, "test.md");
+                var actual = report.results[0].output;
+
+                assert.equal(actual, expected);
+            });
+
+            it("underindented", function() {
+                var input = [
+                    "This is Markdown.",
+                    "",
+                    "   ```js",
+                    " console.log('Hello, world!')",
+                    "  console.log('Hello, world!')",
+                    "     console.log('Hello, world!')",
+                    "   ```"
+                ].join("\n");
+                var expected = [
+                    "This is Markdown.",
+                    "",
+                    "   ```js",
+                    " console.log(\"Hello, world!\")",
+                    "  console.log(\"Hello, world!\")",
+                    "     console.log(\"Hello, world!\")",
+                    "   ```"
+                ].join("\n");
+                var report = cli.executeOnText(input, "test.md");
+                var actual = report.results[0].output;
+
+                assert.equal(actual, expected);
+            });
+
+            it("by one space with comments", function() {
+                var input = [
+                    "This is Markdown.",
+                    "",
+                    "<!-- eslint semi: 2 -->",
+                    "<!-- global foo: true -->",
+                    "",
+                    " ```js",
+                    " console.log('Hello, world!')",
+                    " console.log('Hello, world!')",
+                    " ```"
+                ].join("\n");
+                var expected = [
+                    "This is Markdown.",
+                    "",
+                    "<!-- eslint semi: 2 -->",
+                    "<!-- global foo: true -->",
+                    "",
+                    " ```js",
+                    " console.log(\"Hello, world!\");",
+                    " console.log(\"Hello, world!\");",
+                    " ```"
+                ].join("\n");
+                var report = cli.executeOnText(input, "test.md");
+                var actual = report.results[0].output;
+
+                assert.equal(actual, expected);
+            });
+
+            it("unevenly by two spaces with comments", function() {
+                var input = [
+                    "This is Markdown.",
+                    "",
+                    "<!-- eslint semi: 2 -->",
+                    "<!-- global foo: true -->",
+                    "",
+                    "  ```js",
+                    " console.log('Hello, world!')",
+                    "  console.log('Hello, world!')",
+                    "   console.log('Hello, world!')",
+                    "  ```"
+                ].join("\n");
+                var expected = [
+                    "This is Markdown.",
+                    "",
+                    "<!-- eslint semi: 2 -->",
+                    "<!-- global foo: true -->",
+                    "",
+                    "  ```js",
+                    " console.log(\"Hello, world!\");",
+                    "  console.log(\"Hello, world!\");",
+                    "   console.log(\"Hello, world!\");",
+                    "  ```"
+                ].join("\n");
+                var report = cli.executeOnText(input, "test.md");
+                var actual = report.results[0].output;
+
+                assert.equal(actual, expected);
+            });
+
+            describe("inside a list", function() {
+                it("normally", function() {
+                    var input = [
+                        "- This is a Markdown list.",
+                        "",
+                        "  ```js",
+                        "  console.log('Hello, world!')",
+                        "  console.log('Hello, world!')",
+                        "  ```"
+                    ].join("\n");
+                    var expected = [
+                        "- This is a Markdown list.",
+                        "",
+                        "  ```js",
+                        "  console.log(\"Hello, world!\")",
+                        "  console.log(\"Hello, world!\")",
+                        "  ```"
+                    ].join("\n");
+                    var report = cli.executeOnText(input, "test.md");
+                    var actual = report.results[0].output;
+
+                    assert.equal(actual, expected);
+                });
+
+                it("by one space", function() {
+                    var input = [
+                        "- This is a Markdown list.",
+                        "",
+                        "   ```js",
+                        "   console.log('Hello, world!')",
+                        "   console.log('Hello, world!')",
+                        "   ```"
+                    ].join("\n");
+                    var expected = [
+                        "- This is a Markdown list.",
+                        "",
+                        "   ```js",
+                        "   console.log(\"Hello, world!\")",
+                        "   console.log(\"Hello, world!\")",
+                        "   ```"
+                    ].join("\n");
+                    var report = cli.executeOnText(input, "test.md");
+                    var actual = report.results[0].output;
+
+                    assert.equal(actual, expected);
+                });
+            });
         });
 
         it("with multiple rules", function() {
