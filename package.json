@@ -7,10 +7,7 @@
     "name": "Brandon Mills",
     "url": "https://github.com/btmills"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/eslint/eslint-plugin-markdown.git"
-  },
+  "repository": "eslint/eslint-plugin-markdown",
   "bugs": {
     "url": "https://github.com/eslint/eslint-plugin-markdown/issues"
   },
@@ -26,11 +23,11 @@
     "lint": "eslint Makefile.js lib/**/*.js tests/lib/plugin.js",
     "test": "npm run lint && npm run test-cov",
     "test-cov": "istanbul cover _mocha -- -c tests/lib/**/*.js",
-    "release": "eslint-release",
-    "ci-release": "eslint-ci-release",
-    "gh-release": "eslint-gh-release",
-    "alpharelease": "eslint-prerelease alpha",
-    "betarelease": "eslint-prerelease beta"
+    "generate-release": "eslint-generate-release",
+    "generate-alpharelease": "eslint-generate-prerelease alpha",
+    "generate-betarelease": "eslint-generate-prerelease beta",
+    "generate-rcrelease": "eslint-generate-prerelease rc",
+    "publish-release": "eslint-publish-release"
   },
   "main": "index.js",
   "files": [
@@ -42,7 +39,7 @@
     "chai": "^3.0.0",
     "eslint": "^4.19.1",
     "eslint-config-eslint": "^3.0.0",
-    "eslint-release": "^0.11.1",
+    "eslint-release": "^1.0.0",
     "istanbul": "^0.4.5",
     "mocha": "^2.2.5"
   },
