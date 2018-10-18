@@ -257,6 +257,17 @@ describe("processor", function() {
             assert.equal(blocks.length, 1);
         });
 
+        it("should ignore anything after the first word of the info string", function() {
+            var code = [
+                "```js more words are ignored",
+                "var answer = 6 * 7;",
+                "```"
+            ].join("\n");
+            var blocks = processor.preprocess(code);
+
+            assert.equal(blocks.length, 1);
+        });
+
         it("should find code fences not surrounded by blank lines", function() {
             var code = [
                 "<!-- eslint-disable -->",
