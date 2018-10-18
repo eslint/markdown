@@ -127,7 +127,7 @@ Sometimes it can be useful to have code blocks marked with `js` even though they
 This plugin can attempt to fix some of the issues automatically using [`fix` ESLint option](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems). This option instructs ESLint to try to fix as many issues as possible. To enable this option you can add `--fix` to your ESLint call, for example:
 
 ```bash
-eslint --fix
+eslint --fix --ext md .
 ```
 
 ## Unsatisfiable Rules
