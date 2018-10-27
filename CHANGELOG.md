@@ -1,3 +1,16 @@
+v1.0.0-rc.0 - October 27, 2018
+
+* 8fe9a0e New: Enable autofix with --fix (fixes #58) (#97) (Bohdan Khodakivskyi)
+* a5d0cce Fix: Ignore anything after space in code fence's language (fixes #98) (#99) (Francisco Ryan Tolmasky I)
+* 6fd340d Upgrade: eslint-release@1.0.0 (#100) (Teddy Katz)
+* dff8e9c Fix: Emit correct endLine numbers (#88) (Paul Murray)
+* 83f00d0 Docs: Suggest disabling strict in .md files (fixes #94) (#95) (Brandon Mills)
+* 3b4ff95 Build: Test against Node v10 (#96) (Brandon Mills)
+* 6777977 Breaking: required node version 6+ (#89) (薛定谔的猫)
+* 5582fce Docs: Updating CLA link (#93) (Pablo Nevares)
+* 24070e6 Build: Upgrade to eslint-release@0.11.1 (#92) (Brandon Mills)
+* 6cfd1f0 Docs: Add unicode-bom to list of unsatisfiable rules (#91) (Brandon Mills)
+
 v1.0.0-beta.8 - April 8, 2018
 
 * a1544c2 Chore: Add .npmrc to disable creating package-lock.json (#90) (Brandon Mills)
