@@ -1,3 +1,7 @@
+v1.0.0-rc.1 - November 5, 2018
+
+* a2f4492 Fix: Allowing eslint-plugin-prettier to work (fixes #101) (#107) (simlu)
+
 v1.0.0-rc.0 - October 27, 2018
 
 * 8fe9a0e New: Enable autofix with --fix (fixes #58) (#97) (Bohdan Khodakivskyi)
