@@ -5,10 +5,10 @@
 
 "use strict";
 
-let assert = require("chai").assert,
-    CLIEngine = require("eslint").CLIEngine,
-    path = require("path"),
-    plugin = require("../..");
+const assert = require("chai").assert;
+const CLIEngine = require("eslint").CLIEngine;
+const path = require("path");
+const plugin = require("../..");
 
 /**
  * Helper function which creates CLIEngine instance with enabled/disabled autofix feature.
