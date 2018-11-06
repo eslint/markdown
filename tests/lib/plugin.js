@@ -52,10 +52,10 @@ describe("plugin", () => {
     it("should run on .md files", () => {
         const report = cli.executeOnText(shortText, "test.md");
 
-        assert.equal(report.results.length, 1);
-        assert.equal(report.results[0].messages.length, 1);
-        assert.equal(report.results[0].messages[0].message, "Unexpected console statement.");
-        assert.equal(report.results[0].messages[0].line, 2);
+        assert.strictEqual(report.results.length, 1);
+        assert.strictEqual(report.results[0].messages.length, 1);
+        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(report.results[0].messages[0].line, 2);
     });
 
     it("should emit correct line numbers", () => {
@@ -72,12 +72,12 @@ describe("plugin", () => {
         ].join("\n");
         const report = cli.executeOnText(code, "test.md");
 
-        assert.equal(report.results[0].messages[0].message, "'baz' is not defined.");
-        assert.equal(report.results[0].messages[0].line, 5);
-        assert.equal(report.results[0].messages[0].endLine, 5);
-        assert.equal(report.results[0].messages[1].message, "'blah' is not defined.");
-        assert.equal(report.results[0].messages[1].line, 8);
-        assert.equal(report.results[0].messages[1].endLine, 8);
+        assert.strictEqual(report.results[0].messages[0].message, "'baz' is not defined.");
+        assert.strictEqual(report.results[0].messages[0].line, 5);
+        assert.strictEqual(report.results[0].messages[0].endLine, 5);
+        assert.strictEqual(report.results[0].messages[1].message, "'blah' is not defined.");
+        assert.strictEqual(report.results[0].messages[1].line, 8);
+        assert.strictEqual(report.results[0].messages[1].endLine, 8);
     });
 
     it("should emit correct line numbers with leading comments", () => {
@@ -97,61 +97,61 @@ describe("plugin", () => {
         ].join("\n");
         const report = cli.executeOnText(code, "test.md");
 
-        assert.equal(report.results[0].messages[0].message, "'baz' is not defined.");
-        assert.equal(report.results[0].messages[0].line, 7);
-        assert.equal(report.results[0].messages[0].endLine, 7);
-        assert.equal(report.results[0].messages[1].message, "'blah' is not defined.");
-        assert.equal(report.results[0].messages[1].line, 11);
-        assert.equal(report.results[0].messages[1].endLine, 11);
+        assert.strictEqual(report.results[0].messages[0].message, "'baz' is not defined.");
+        assert.strictEqual(report.results[0].messages[0].line, 7);
+        assert.strictEqual(report.results[0].messages[0].endLine, 7);
+        assert.strictEqual(report.results[0].messages[1].message, "'blah' is not defined.");
+        assert.strictEqual(report.results[0].messages[1].line, 11);
+        assert.strictEqual(report.results[0].messages[1].endLine, 11);
     });
 
     it("should run on .mkdn files", () => {
         const report = cli.executeOnText(shortText, "test.mkdn");
 
-        assert.equal(report.results.length, 1);
-        assert.equal(report.results[0].messages.length, 1);
-        assert.equal(report.results[0].messages[0].message, "Unexpected console statement.");
-        assert.equal(report.results[0].messages[0].line, 2);
+        assert.strictEqual(report.results.length, 1);
+        assert.strictEqual(report.results[0].messages.length, 1);
+        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(report.results[0].messages[0].line, 2);
     });
 
     it("should run on .mdown files", () => {
         const report = cli.executeOnText(shortText, "test.mdown");
 
-        assert.equal(report.results.length, 1);
-        assert.equal(report.results[0].messages.length, 1);
-        assert.equal(report.results[0].messages[0].message, "Unexpected console statement.");
-        assert.equal(report.results[0].messages[0].line, 2);
+        assert.strictEqual(report.results.length, 1);
+        assert.strictEqual(report.results[0].messages.length, 1);
+        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(report.results[0].messages[0].line, 2);
     });
 
     it("should run on .markdown files", () => {
         const report = cli.executeOnText(shortText, "test.markdown");
 
-        assert.equal(report.results.length, 1);
-        assert.equal(report.results[0].messages.length, 1);
-        assert.equal(report.results[0].messages[0].message, "Unexpected console statement.");
-        assert.equal(report.results[0].messages[0].line, 2);
+        assert.strictEqual(report.results.length, 1);
+        assert.strictEqual(report.results[0].messages.length, 1);
+        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(report.results[0].messages[0].line, 2);
     });
 
     it("should extract blocks and remap messages", () => {
         const report = cli.executeOnFiles([path.resolve(__dirname, "../fixtures/long.md")]);
 
-        assert.equal(report.results.length, 1);
-        assert.equal(report.results[0].messages.length, 5);
-        assert.equal(report.results[0].messages[0].message, "Unexpected console statement.");
-        assert.equal(report.results[0].messages[0].line, 10);
-        assert.equal(report.results[0].messages[0].column, 1);
-        assert.equal(report.results[0].messages[1].message, "Unexpected console statement.");
-        assert.equal(report.results[0].messages[1].line, 16);
-        assert.equal(report.results[0].messages[1].column, 5);
-        assert.equal(report.results[0].messages[2].message, "Unexpected console statement.");
-        assert.equal(report.results[0].messages[2].line, 24);
-        assert.equal(report.results[0].messages[2].column, 1);
-        assert.equal(report.results[0].messages[3].message, "Strings must use singlequote.");
-        assert.equal(report.results[0].messages[3].line, 38);
-        assert.equal(report.results[0].messages[3].column, 13);
-        assert.equal(report.results[0].messages[4].message, "Parsing error: Unexpected character '@'");
-        assert.equal(report.results[0].messages[4].line, 46);
-        assert.equal(report.results[0].messages[4].column, 2);
+        assert.strictEqual(report.results.length, 1);
+        assert.strictEqual(report.results[0].messages.length, 5);
+        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(report.results[0].messages[0].line, 10);
+        assert.strictEqual(report.results[0].messages[0].column, 1);
+        assert.strictEqual(report.results[0].messages[1].message, "Unexpected console statement.");
+        assert.strictEqual(report.results[0].messages[1].line, 16);
+        assert.strictEqual(report.results[0].messages[1].column, 5);
+        assert.strictEqual(report.results[0].messages[2].message, "Unexpected console statement.");
+        assert.strictEqual(report.results[0].messages[2].line, 24);
+        assert.strictEqual(report.results[0].messages[2].column, 1);
+        assert.strictEqual(report.results[0].messages[3].message, "Strings must use singlequote.");
+        assert.strictEqual(report.results[0].messages[3].line, 38);
+        assert.strictEqual(report.results[0].messages[3].column, 13);
+        assert.strictEqual(report.results[0].messages[4].message, "Parsing error: Unexpected character '@'");
+        assert.strictEqual(report.results[0].messages[4].line, 46);
+        assert.strictEqual(report.results[0].messages[4].column, 2);
     });
 
     describe("configuration comments", () => {
@@ -177,16 +177,16 @@ describe("plugin", () => {
             ].join("\n");
             const report = cli.executeOnText(code, "test.md");
 
-            assert.equal(report.results.length, 1);
-            assert.equal(report.results[0].messages.length, 4);
-            assert.equal(report.results[0].messages[0].message, "Strings must use singlequote.");
-            assert.equal(report.results[0].messages[0].line, 7);
-            assert.equal(report.results[0].messages[1].message, "Strings must use doublequote.");
-            assert.equal(report.results[0].messages[1].line, 12);
-            assert.equal(report.results[0].messages[2].message, "Unexpected console statement.");
-            assert.equal(report.results[0].messages[2].line, 13);
-            assert.equal(report.results[0].messages[3].message, "Unexpected console statement.");
-            assert.equal(report.results[0].messages[3].line, 15);
+            assert.strictEqual(report.results.length, 1);
+            assert.strictEqual(report.results[0].messages.length, 4);
+            assert.strictEqual(report.results[0].messages[0].message, "Strings must use singlequote.");
+            assert.strictEqual(report.results[0].messages[0].line, 7);
+            assert.strictEqual(report.results[0].messages[1].message, "Strings must use doublequote.");
+            assert.strictEqual(report.results[0].messages[1].line, 12);
+            assert.strictEqual(report.results[0].messages[2].message, "Unexpected console statement.");
+            assert.strictEqual(report.results[0].messages[2].line, 13);
+            assert.strictEqual(report.results[0].messages[3].message, "Unexpected console statement.");
+            assert.strictEqual(report.results[0].messages[3].line, 15);
         });
 
     });
@@ -215,7 +215,7 @@ describe("plugin", () => {
             const report = cli.executeOnText(input, "test.md");
             const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
         it("across multiple lines", () => {
@@ -238,7 +238,7 @@ describe("plugin", () => {
             const report = cli.executeOnText(input, "test.md");
             const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
         it("across multiple blocks", () => {
@@ -267,7 +267,7 @@ describe("plugin", () => {
             const report = cli.executeOnText(input, "test.md");
             const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
         it("with lines indented by spaces", () => {
@@ -292,7 +292,7 @@ describe("plugin", () => {
             const report = cli.executeOnText(input, "test.md");
             const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
         it("with lines indented by tabs", () => {
@@ -317,7 +317,7 @@ describe("plugin", () => {
             const report = cli.executeOnText(input, "test.md");
             const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
         it("in blocks with uncommon tags", () => {
@@ -338,7 +338,7 @@ describe("plugin", () => {
             const report = cli.executeOnText(input, "test.md");
             const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
         it("in blocks with extra backticks", () => {
@@ -359,7 +359,7 @@ describe("plugin", () => {
             const report = cli.executeOnText(input, "test.md");
             const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
         it("with configuration comments", () => {
@@ -380,7 +380,7 @@ describe("plugin", () => {
             const report = cli.executeOnText(input, "test.md");
             const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
         it("inside a list single line", () => {
@@ -401,7 +401,7 @@ describe("plugin", () => {
             const report = cli.executeOnText(input, "test.md");
             const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
         it("inside a list multi line", () => {
@@ -432,7 +432,7 @@ describe("plugin", () => {
             const report = cli.executeOnText(input, "test.md");
             const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
         // https://spec.commonmark.org/0.28/#fenced-code-blocks
@@ -457,7 +457,7 @@ describe("plugin", () => {
                 const report = cli.executeOnText(input, "test.md");
                 const actual = report.results[0].output;
 
-                assert.equal(actual, expected);
+                assert.strictEqual(actual, expected);
             });
 
             it("by two spaces", () => {
@@ -480,7 +480,7 @@ describe("plugin", () => {
                 const report = cli.executeOnText(input, "test.md");
                 const actual = report.results[0].output;
 
-                assert.equal(actual, expected);
+                assert.strictEqual(actual, expected);
             });
 
             it("by three spaces", () => {
@@ -503,7 +503,7 @@ describe("plugin", () => {
                 const report = cli.executeOnText(input, "test.md");
                 const actual = report.results[0].output;
 
-                assert.equal(actual, expected);
+                assert.strictEqual(actual, expected);
             });
 
             it("and the closing fence is differently indented", () => {
@@ -526,7 +526,7 @@ describe("plugin", () => {
                 const report = cli.executeOnText(input, "test.md");
                 const actual = report.results[0].output;
 
-                assert.equal(actual, expected);
+                assert.strictEqual(actual, expected);
             });
 
             it("underindented", () => {
@@ -551,7 +551,7 @@ describe("plugin", () => {
                 const report = cli.executeOnText(input, "test.md");
                 const actual = report.results[0].output;
 
-                assert.equal(actual, expected);
+                assert.strictEqual(actual, expected);
             });
 
             it("by one space with comments", () => {
@@ -580,7 +580,7 @@ describe("plugin", () => {
                 const report = cli.executeOnText(input, "test.md");
                 const actual = report.results[0].output;
 
-                assert.equal(actual, expected);
+                assert.strictEqual(actual, expected);
             });
 
             it("unevenly by two spaces with comments", () => {
@@ -611,7 +611,7 @@ describe("plugin", () => {
                 const report = cli.executeOnText(input, "test.md");
                 const actual = report.results[0].output;
 
-                assert.equal(actual, expected);
+                assert.strictEqual(actual, expected);
             });
 
             describe("inside a list", () => {
@@ -635,7 +635,7 @@ describe("plugin", () => {
                     const report = cli.executeOnText(input, "test.md");
                     const actual = report.results[0].output;
 
-                    assert.equal(actual, expected);
+                    assert.strictEqual(actual, expected);
                 });
 
                 it("by one space", () => {
@@ -658,7 +658,7 @@ describe("plugin", () => {
                     const report = cli.executeOnText(input, "test.md");
                     const actual = report.results[0].output;
 
-                    assert.equal(actual, expected);
+                    assert.strictEqual(actual, expected);
                 });
             });
         });
@@ -701,7 +701,7 @@ describe("plugin", () => {
             const report = cli.executeOnText(input, "test.md");
             const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
     });
