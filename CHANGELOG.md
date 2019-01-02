@@ -1,3 +1,7 @@
+v1.0.0 - January 2, 2019
+
+* [`2a8482e`](https://github.com/eslint/eslint-plugin-markdown/commit/2a8482e8e39da2ab4a1d8aeb7459f26a8377905d) Fix: `overrides` general docs and Atom linter-eslint tips (fixes #109) (#111) (Brett Zamir)
+
 v1.0.0-rc.1 - November 5, 2018
 
 * a2f4492 Fix: Allowing eslint-plugin-prettier to work (fixes #101) (#107) (simlu)
