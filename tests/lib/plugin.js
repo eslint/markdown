@@ -5,10 +5,10 @@
 
 "use strict";
 
-var assert = require("chai").assert,
-    CLIEngine = require("eslint").CLIEngine,
-    path = require("path"),
-    plugin = require("../..");
+const assert = require("chai").assert;
+const CLIEngine = require("eslint").CLIEngine;
+const path = require("path");
+const plugin = require("../..");
 
 /**
  * Helper function which creates CLIEngine instance with enabled/disabled autofix feature.
@@ -16,49 +16,50 @@ var assert = require("chai").assert,
  * @returns {CLIEngine} CLIEngine instance to execute in tests.
  */
 function initCLI(isAutofixEnabled) {
-    var fix = isAutofixEnabled || false;
-    var cli = new CLIEngine({
+    const fix = isAutofixEnabled || false;
+    const cli = new CLIEngine({
         envs: ["browser"],
         extensions: ["md", "mkdn", "mdown", "markdown"],
-        fix: fix,
+        fix,
         ignore: false,
         rules: {
             "eol-last": 2,
             "no-console": 2,
             "no-undef": 2,
-            "quotes": 2,
+            quotes: 2,
             "spaced-comment": 2
         },
         useEslintrc: false
     });
+
     cli.addPlugin("markdown", plugin);
     return cli;
 }
 
-describe("plugin", function() {
+describe("plugin", () => {
 
-    var cli;
-    var shortText = [
+    let cli;
+    const shortText = [
         "```js",
         "console.log(42);",
         "```"
     ].join("\n");
 
-    before(function() {
+    before(() => {
         cli = initCLI();
     });
 
-    it("should run on .md files", function() {
-        var report = cli.executeOnText(shortText, "test.md");
+    it("should run on .md files", () => {
+        const report = cli.executeOnText(shortText, "test.md");
 
-        assert.equal(report.results.length, 1);
-        assert.equal(report.results[0].messages.length, 1);
-        assert.equal(report.results[0].messages[0].message, "Unexpected console statement.");
-        assert.equal(report.results[0].messages[0].line, 2);
+        assert.strictEqual(report.results.length, 1);
+        assert.strictEqual(report.results[0].messages.length, 1);
+        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(report.results[0].messages[0].line, 2);
     });
 
-    it("should emit correct line numbers", function() {
-        var code = [
+    it("should emit correct line numbers", () => {
+        const code = [
             "# Hello, world!",
             "",
             "",
@@ -69,17 +70,18 @@ describe("plugin", function() {
             "var foo = blah",
             "```"
         ].join("\n");
-        var report = cli.executeOnText(code, "test.md");
-        assert.equal(report.results[0].messages[0].message, "'baz' is not defined.");
-        assert.equal(report.results[0].messages[0].line, 5);
-        assert.equal(report.results[0].messages[0].endLine, 5);
-        assert.equal(report.results[0].messages[1].message, "'blah' is not defined.");
-        assert.equal(report.results[0].messages[1].line, 8);
-        assert.equal(report.results[0].messages[1].endLine, 8);
+        const report = cli.executeOnText(code, "test.md");
+
+        assert.strictEqual(report.results[0].messages[0].message, "'baz' is not defined.");
+        assert.strictEqual(report.results[0].messages[0].line, 5);
+        assert.strictEqual(report.results[0].messages[0].endLine, 5);
+        assert.strictEqual(report.results[0].messages[1].message, "'blah' is not defined.");
+        assert.strictEqual(report.results[0].messages[1].line, 8);
+        assert.strictEqual(report.results[0].messages[1].endLine, 8);
     });
 
-    it("should emit correct line numbers with leading comments", function() {
-        var code = [
+    it("should emit correct line numbers with leading comments", () => {
+        const code = [
             "# Hello, world!",
             "",
             "<!-- eslint-disable quotes -->",
@@ -93,68 +95,69 @@ describe("plugin", function() {
             "var foo = blah",
             "```"
         ].join("\n");
-        var report = cli.executeOnText(code, "test.md");
-        assert.equal(report.results[0].messages[0].message, "'baz' is not defined.");
-        assert.equal(report.results[0].messages[0].line, 7);
-        assert.equal(report.results[0].messages[0].endLine, 7);
-        assert.equal(report.results[0].messages[1].message, "'blah' is not defined.");
-        assert.equal(report.results[0].messages[1].line, 11);
-        assert.equal(report.results[0].messages[1].endLine, 11);
+        const report = cli.executeOnText(code, "test.md");
+
+        assert.strictEqual(report.results[0].messages[0].message, "'baz' is not defined.");
+        assert.strictEqual(report.results[0].messages[0].line, 7);
+        assert.strictEqual(report.results[0].messages[0].endLine, 7);
+        assert.strictEqual(report.results[0].messages[1].message, "'blah' is not defined.");
+        assert.strictEqual(report.results[0].messages[1].line, 11);
+        assert.strictEqual(report.results[0].messages[1].endLine, 11);
     });
 
-    it("should run on .mkdn files", function() {
-        var report = cli.executeOnText(shortText, "test.mkdn");
+    it("should run on .mkdn files", () => {
+        const report = cli.executeOnText(shortText, "test.mkdn");
 
-        assert.equal(report.results.length, 1);
-        assert.equal(report.results[0].messages.length, 1);
-        assert.equal(report.results[0].messages[0].message, "Unexpected console statement.");
-        assert.equal(report.results[0].messages[0].line, 2);
+        assert.strictEqual(report.results.length, 1);
+        assert.strictEqual(report.results[0].messages.length, 1);
+        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(report.results[0].messages[0].line, 2);
     });
 
-    it("should run on .mdown files", function() {
-        var report = cli.executeOnText(shortText, "test.mdown");
+    it("should run on .mdown files", () => {
+        const report = cli.executeOnText(shortText, "test.mdown");
 
-        assert.equal(report.results.length, 1);
-        assert.equal(report.results[0].messages.length, 1);
-        assert.equal(report.results[0].messages[0].message, "Unexpected console statement.");
-        assert.equal(report.results[0].messages[0].line, 2);
+        assert.strictEqual(report.results.length, 1);
+        assert.strictEqual(report.results[0].messages.length, 1);
+        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(report.results[0].messages[0].line, 2);
     });
 
-    it("should run on .markdown files", function() {
-        var report = cli.executeOnText(shortText, "test.markdown");
+    it("should run on .markdown files", () => {
+        const report = cli.executeOnText(shortText, "test.markdown");
 
-        assert.equal(report.results.length, 1);
-        assert.equal(report.results[0].messages.length, 1);
-        assert.equal(report.results[0].messages[0].message, "Unexpected console statement.");
-        assert.equal(report.results[0].messages[0].line, 2);
+        assert.strictEqual(report.results.length, 1);
+        assert.strictEqual(report.results[0].messages.length, 1);
+        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(report.results[0].messages[0].line, 2);
     });
 
-    it("should extract blocks and remap messages", function() {
-        var report = cli.executeOnFiles([path.resolve(__dirname, "../fixtures/long.md")]);
+    it("should extract blocks and remap messages", () => {
+        const report = cli.executeOnFiles([path.resolve(__dirname, "../fixtures/long.md")]);
 
-        assert.equal(report.results.length, 1);
-        assert.equal(report.results[0].messages.length, 5);
-        assert.equal(report.results[0].messages[0].message, "Unexpected console statement.");
-        assert.equal(report.results[0].messages[0].line, 10);
-        assert.equal(report.results[0].messages[0].column, 1);
-        assert.equal(report.results[0].messages[1].message, "Unexpected console statement.");
-        assert.equal(report.results[0].messages[1].line, 16);
-        assert.equal(report.results[0].messages[1].column, 5);
-        assert.equal(report.results[0].messages[2].message, "Unexpected console statement.");
-        assert.equal(report.results[0].messages[2].line, 24);
-        assert.equal(report.results[0].messages[2].column, 1);
-        assert.equal(report.results[0].messages[3].message, "Strings must use singlequote.");
-        assert.equal(report.results[0].messages[3].line, 38);
-        assert.equal(report.results[0].messages[3].column, 13);
-        assert.equal(report.results[0].messages[4].message, "Parsing error: Unexpected character '@'");
-        assert.equal(report.results[0].messages[4].line, 46);
-        assert.equal(report.results[0].messages[4].column, 2);
+        assert.strictEqual(report.results.length, 1);
+        assert.strictEqual(report.results[0].messages.length, 5);
+        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(report.results[0].messages[0].line, 10);
+        assert.strictEqual(report.results[0].messages[0].column, 1);
+        assert.strictEqual(report.results[0].messages[1].message, "Unexpected console statement.");
+        assert.strictEqual(report.results[0].messages[1].line, 16);
+        assert.strictEqual(report.results[0].messages[1].column, 5);
+        assert.strictEqual(report.results[0].messages[2].message, "Unexpected console statement.");
+        assert.strictEqual(report.results[0].messages[2].line, 24);
+        assert.strictEqual(report.results[0].messages[2].column, 1);
+        assert.strictEqual(report.results[0].messages[3].message, "Strings must use singlequote.");
+        assert.strictEqual(report.results[0].messages[3].line, 38);
+        assert.strictEqual(report.results[0].messages[3].column, 13);
+        assert.strictEqual(report.results[0].messages[4].message, "Parsing error: Unexpected character '@'");
+        assert.strictEqual(report.results[0].messages[4].line, 46);
+        assert.strictEqual(report.results[0].messages[4].column, 2);
     });
 
-    describe("configuration comments", function() {
+    describe("configuration comments", () => {
 
-        it("apply only to the code block immediately following", function() {
-            var code = [
+        it("apply only to the code block immediately following", () => {
+            const code = [
                 "<!-- eslint \"quotes\": [\"error\", \"single\"] -->",
                 "<!-- eslint-disable no-console -->",
                 "",
@@ -172,74 +175,74 @@ describe("plugin", function() {
                 "console.log(double);",
                 "```"
             ].join("\n");
-            var report = cli.executeOnText(code, "test.md");
+            const report = cli.executeOnText(code, "test.md");
 
-            assert.equal(report.results.length, 1);
-            assert.equal(report.results[0].messages.length, 4);
-            assert.equal(report.results[0].messages[0].message, "Strings must use singlequote.");
-            assert.equal(report.results[0].messages[0].line, 7);
-            assert.equal(report.results[0].messages[1].message, "Strings must use doublequote.");
-            assert.equal(report.results[0].messages[1].line, 12);
-            assert.equal(report.results[0].messages[2].message, "Unexpected console statement.");
-            assert.equal(report.results[0].messages[2].line, 13);
-            assert.equal(report.results[0].messages[3].message, "Unexpected console statement.");
-            assert.equal(report.results[0].messages[3].line, 15);
+            assert.strictEqual(report.results.length, 1);
+            assert.strictEqual(report.results[0].messages.length, 4);
+            assert.strictEqual(report.results[0].messages[0].message, "Strings must use singlequote.");
+            assert.strictEqual(report.results[0].messages[0].line, 7);
+            assert.strictEqual(report.results[0].messages[1].message, "Strings must use doublequote.");
+            assert.strictEqual(report.results[0].messages[1].line, 12);
+            assert.strictEqual(report.results[0].messages[2].message, "Unexpected console statement.");
+            assert.strictEqual(report.results[0].messages[2].line, 13);
+            assert.strictEqual(report.results[0].messages[3].message, "Unexpected console statement.");
+            assert.strictEqual(report.results[0].messages[3].line, 15);
         });
 
     });
 
-    describe("should fix code", function() {
+    describe("should fix code", () => {
 
-        before(function() {
+        before(() => {
             cli = initCLI(true);
         });
 
-        it("in the simplest case", function() {
-            var input = [
+        it("in the simplest case", () => {
+            const input = [
                 "This is Markdown.",
                 "",
                 "```js",
                 "console.log('Hello, world!')",
-                "```",
+                "```"
             ].join("\n");
-            var expected = [
+            const expected = [
                 "This is Markdown.",
                 "",
                 "```js",
                 "console.log(\"Hello, world!\")",
-                "```",
+                "```"
             ].join("\n");
-            var report = cli.executeOnText(input, "test.md");
-            var actual = report.results[0].output;
+            const report = cli.executeOnText(input, "test.md");
+            const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
-        it("across multiple lines", function() {
-            var input = [
+        it("across multiple lines", () => {
+            const input = [
                 "This is Markdown.",
                 "",
                 "```js",
                 "console.log('Hello, world!')",
                 "console.log('Hello, world!')",
-                "```",
+                "```"
             ].join("\n");
-            var expected = [
+            const expected = [
                 "This is Markdown.",
                 "",
                 "```js",
                 "console.log(\"Hello, world!\")",
                 "console.log(\"Hello, world!\")",
-                "```",
+                "```"
             ].join("\n");
-            var report = cli.executeOnText(input, "test.md");
-            var actual = report.results[0].output;
+            const report = cli.executeOnText(input, "test.md");
+            const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
-        it("across multiple blocks", function() {
-            var input = [
+        it("across multiple blocks", () => {
+            const input = [
                 "This is Markdown.",
                 "",
                 "```js",
@@ -248,9 +251,9 @@ describe("plugin", function() {
                 "",
                 "```js",
                 "console.log('Hello, world!')",
-                "```",
+                "```"
             ].join("\n");
-            var expected = [
+            const expected = [
                 "This is Markdown.",
                 "",
                 "```js",
@@ -259,150 +262,150 @@ describe("plugin", function() {
                 "",
                 "```js",
                 "console.log(\"Hello, world!\")",
-                "```",
+                "```"
             ].join("\n");
-            var report = cli.executeOnText(input, "test.md");
-            var actual = report.results[0].output;
+            const report = cli.executeOnText(input, "test.md");
+            const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
-        it("with lines indented by spaces", function() {
-            var input = [
+        it("with lines indented by spaces", () => {
+            const input = [
                 "This is Markdown.",
                 "",
                 "```js",
                 "function test() {",
                 "    console.log('Hello, world!')",
                 "}",
-                "```",
+                "```"
             ].join("\n");
-            var expected = [
+            const expected = [
                 "This is Markdown.",
                 "",
                 "```js",
                 "function test() {",
                 "    console.log(\"Hello, world!\")",
                 "}",
-                "```",
+                "```"
             ].join("\n");
-            var report = cli.executeOnText(input, "test.md");
-            var actual = report.results[0].output;
+            const report = cli.executeOnText(input, "test.md");
+            const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
-        it("with lines indented by tabs", function() {
-            var input = [
+        it("with lines indented by tabs", () => {
+            const input = [
                 "This is Markdown.",
                 "",
                 "```js",
                 "function test() {",
                 "\tconsole.log('Hello, world!')",
                 "}",
-                "```",
+                "```"
             ].join("\n");
-            var expected = [
+            const expected = [
                 "This is Markdown.",
                 "",
                 "```js",
                 "function test() {",
                 "\tconsole.log(\"Hello, world!\")",
                 "}",
-                "```",
+                "```"
             ].join("\n");
-            var report = cli.executeOnText(input, "test.md");
-            var actual = report.results[0].output;
+            const report = cli.executeOnText(input, "test.md");
+            const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
-        it("in blocks with uncommon tags", function() {
-            var input = [
+        it("in blocks with uncommon tags", () => {
+            const input = [
                 "This is Markdown.",
                 "",
                 "```JavaScript",
                 "console.log('Hello, world!')",
-                "```",
+                "```"
             ].join("\n");
-            var expected = [
+            const expected = [
                 "This is Markdown.",
                 "",
                 "```JavaScript",
                 "console.log(\"Hello, world!\")",
-                "```",
+                "```"
             ].join("\n");
-            var report = cli.executeOnText(input, "test.md");
-            var actual = report.results[0].output;
+            const report = cli.executeOnText(input, "test.md");
+            const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
-        it("in blocks with extra backticks", function() {
-            var input = [
+        it("in blocks with extra backticks", () => {
+            const input = [
                 "This is Markdown.",
                 "",
                 "````js",
                 "console.log('Hello, world!')",
-                "````",
+                "````"
             ].join("\n");
-            var expected = [
+            const expected = [
                 "This is Markdown.",
                 "",
                 "````js",
                 "console.log(\"Hello, world!\")",
-                "````",
+                "````"
             ].join("\n");
-            var report = cli.executeOnText(input, "test.md");
-            var actual = report.results[0].output;
+            const report = cli.executeOnText(input, "test.md");
+            const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
-        it("with configuration comments", function() {
-            var input = [
+        it("with configuration comments", () => {
+            const input = [
                 "<!-- eslint semi: 2 -->",
                 "",
                 "```js",
                 "console.log('Hello, world!')",
-                "```",
+                "```"
             ].join("\n");
-            var expected = [
+            const expected = [
                 "<!-- eslint semi: 2 -->",
                 "",
                 "```js",
                 "console.log(\"Hello, world!\");",
-                "```",
+                "```"
             ].join("\n");
-            var report = cli.executeOnText(input, "test.md");
-            var actual = report.results[0].output;
+            const report = cli.executeOnText(input, "test.md");
+            const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
-        it("inside a list single line", function() {
-            var input = [
+        it("inside a list single line", () => {
+            const input = [
                 "- Inside a list",
                 "",
                 "  ```js",
                 "  console.log('Hello, world!')",
-                "  ```",
+                "  ```"
             ].join("\n");
-            var expected = [
+            const expected = [
                 "- Inside a list",
                 "",
                 "  ```js",
                 "  console.log(\"Hello, world!\")",
-                "  ```",
+                "  ```"
             ].join("\n");
-            var report = cli.executeOnText(input, "test.md");
-            var actual = report.results[0].output;
+            const report = cli.executeOnText(input, "test.md");
+            const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
-        it("inside a list multi line", function() {
-            var input = [
+        it("inside a list multi line", () => {
+            const input = [
                 "- Inside a list",
                 "",
                 "   ```js",
@@ -412,9 +415,9 @@ describe("plugin", function() {
                 "   var obj = {",
                 "     hello: 'value'",
                 "   }",
-                "   ```",
+                "   ```"
             ].join("\n");
-            var expected = [
+            const expected = [
                 "- Inside a list",
                 "",
                 "   ```js",
@@ -424,18 +427,18 @@ describe("plugin", function() {
                 "   var obj = {",
                 "     hello: \"value\"",
                 "   }",
-                "   ```",
+                "   ```"
             ].join("\n");
-            var report = cli.executeOnText(input, "test.md");
-            var actual = report.results[0].output;
+            const report = cli.executeOnText(input, "test.md");
+            const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
         // https://spec.commonmark.org/0.28/#fenced-code-blocks
-        describe("when indented", function() {
-            it("by one space", function() {
-                var input = [
+        describe("when indented", () => {
+            it("by one space", () => {
+                const input = [
                     "This is Markdown.",
                     "",
                     " ```js",
@@ -443,7 +446,7 @@ describe("plugin", function() {
                     " console.log('Hello, world!')",
                     " ```"
                 ].join("\n");
-                var expected = [
+                const expected = [
                     "This is Markdown.",
                     "",
                     " ```js",
@@ -451,14 +454,14 @@ describe("plugin", function() {
                     " console.log(\"Hello, world!\")",
                     " ```"
                 ].join("\n");
-                var report = cli.executeOnText(input, "test.md");
-                var actual = report.results[0].output;
+                const report = cli.executeOnText(input, "test.md");
+                const actual = report.results[0].output;
 
-                assert.equal(actual, expected);
+                assert.strictEqual(actual, expected);
             });
 
-            it("by two spaces", function() {
-                var input = [
+            it("by two spaces", () => {
+                const input = [
                     "This is Markdown.",
                     "",
                     "  ```js",
@@ -466,7 +469,7 @@ describe("plugin", function() {
                     "  console.log('Hello, world!')",
                     "  ```"
                 ].join("\n");
-                var expected = [
+                const expected = [
                     "This is Markdown.",
                     "",
                     "  ```js",
@@ -474,14 +477,14 @@ describe("plugin", function() {
                     "  console.log(\"Hello, world!\")",
                     "  ```"
                 ].join("\n");
-                var report = cli.executeOnText(input, "test.md");
-                var actual = report.results[0].output;
+                const report = cli.executeOnText(input, "test.md");
+                const actual = report.results[0].output;
 
-                assert.equal(actual, expected);
+                assert.strictEqual(actual, expected);
             });
 
-            it("by three spaces", function() {
-                var input = [
+            it("by three spaces", () => {
+                const input = [
                     "This is Markdown.",
                     "",
                     "   ```js",
@@ -489,7 +492,7 @@ describe("plugin", function() {
                     "   console.log('Hello, world!')",
                     "   ```"
                 ].join("\n");
-                var expected = [
+                const expected = [
                     "This is Markdown.",
                     "",
                     "   ```js",
@@ -497,14 +500,14 @@ describe("plugin", function() {
                     "   console.log(\"Hello, world!\")",
                     "   ```"
                 ].join("\n");
-                var report = cli.executeOnText(input, "test.md");
-                var actual = report.results[0].output;
+                const report = cli.executeOnText(input, "test.md");
+                const actual = report.results[0].output;
 
-                assert.equal(actual, expected);
+                assert.strictEqual(actual, expected);
             });
 
-            it("and the closing fence is differently indented", function() {
-                var input = [
+            it("and the closing fence is differently indented", () => {
+                const input = [
                     "This is Markdown.",
                     "",
                     " ```js",
@@ -512,7 +515,7 @@ describe("plugin", function() {
                     " console.log('Hello, world!')",
                     "   ```"
                 ].join("\n");
-                var expected = [
+                const expected = [
                     "This is Markdown.",
                     "",
                     " ```js",
@@ -520,14 +523,14 @@ describe("plugin", function() {
                     " console.log(\"Hello, world!\")",
                     "   ```"
                 ].join("\n");
-                var report = cli.executeOnText(input, "test.md");
-                var actual = report.results[0].output;
+                const report = cli.executeOnText(input, "test.md");
+                const actual = report.results[0].output;
 
-                assert.equal(actual, expected);
+                assert.strictEqual(actual, expected);
             });
 
-            it("underindented", function() {
-                var input = [
+            it("underindented", () => {
+                const input = [
                     "This is Markdown.",
                     "",
                     "   ```js",
@@ -536,7 +539,7 @@ describe("plugin", function() {
                     "     console.log('Hello, world!')",
                     "   ```"
                 ].join("\n");
-                var expected = [
+                const expected = [
                     "This is Markdown.",
                     "",
                     "   ```js",
@@ -545,14 +548,14 @@ describe("plugin", function() {
                     "     console.log(\"Hello, world!\")",
                     "   ```"
                 ].join("\n");
-                var report = cli.executeOnText(input, "test.md");
-                var actual = report.results[0].output;
+                const report = cli.executeOnText(input, "test.md");
+                const actual = report.results[0].output;
 
-                assert.equal(actual, expected);
+                assert.strictEqual(actual, expected);
             });
 
-            it("by one space with comments", function() {
-                var input = [
+            it("by one space with comments", () => {
+                const input = [
                     "This is Markdown.",
                     "",
                     "<!-- eslint semi: 2 -->",
@@ -563,7 +566,7 @@ describe("plugin", function() {
                     " console.log('Hello, world!')",
                     " ```"
                 ].join("\n");
-                var expected = [
+                const expected = [
                     "This is Markdown.",
                     "",
                     "<!-- eslint semi: 2 -->",
@@ -574,14 +577,14 @@ describe("plugin", function() {
                     " console.log(\"Hello, world!\");",
                     " ```"
                 ].join("\n");
-                var report = cli.executeOnText(input, "test.md");
-                var actual = report.results[0].output;
+                const report = cli.executeOnText(input, "test.md");
+                const actual = report.results[0].output;
 
-                assert.equal(actual, expected);
+                assert.strictEqual(actual, expected);
             });
 
-            it("unevenly by two spaces with comments", function() {
-                var input = [
+            it("unevenly by two spaces with comments", () => {
+                const input = [
                     "This is Markdown.",
                     "",
                     "<!-- eslint semi: 2 -->",
@@ -593,7 +596,7 @@ describe("plugin", function() {
                     "   console.log('Hello, world!')",
                     "  ```"
                 ].join("\n");
-                var expected = [
+                const expected = [
                     "This is Markdown.",
                     "",
                     "<!-- eslint semi: 2 -->",
@@ -605,15 +608,15 @@ describe("plugin", function() {
                     "   console.log(\"Hello, world!\");",
                     "  ```"
                 ].join("\n");
-                var report = cli.executeOnText(input, "test.md");
-                var actual = report.results[0].output;
+                const report = cli.executeOnText(input, "test.md");
+                const actual = report.results[0].output;
 
-                assert.equal(actual, expected);
+                assert.strictEqual(actual, expected);
             });
 
-            describe("inside a list", function() {
-                it("normally", function() {
-                    var input = [
+            describe("inside a list", () => {
+                it("normally", () => {
+                    const input = [
                         "- This is a Markdown list.",
                         "",
                         "  ```js",
@@ -621,7 +624,7 @@ describe("plugin", function() {
                         "  console.log('Hello, world!')",
                         "  ```"
                     ].join("\n");
-                    var expected = [
+                    const expected = [
                         "- This is a Markdown list.",
                         "",
                         "  ```js",
@@ -629,14 +632,14 @@ describe("plugin", function() {
                         "  console.log(\"Hello, world!\")",
                         "  ```"
                     ].join("\n");
-                    var report = cli.executeOnText(input, "test.md");
-                    var actual = report.results[0].output;
+                    const report = cli.executeOnText(input, "test.md");
+                    const actual = report.results[0].output;
 
-                    assert.equal(actual, expected);
+                    assert.strictEqual(actual, expected);
                 });
 
-                it("by one space", function() {
-                    var input = [
+                it("by one space", () => {
+                    const input = [
                         "- This is a Markdown list.",
                         "",
                         "   ```js",
@@ -644,7 +647,7 @@ describe("plugin", function() {
                         "   console.log('Hello, world!')",
                         "   ```"
                     ].join("\n");
-                    var expected = [
+                    const expected = [
                         "- This is a Markdown list.",
                         "",
                         "   ```js",
@@ -652,16 +655,16 @@ describe("plugin", function() {
                         "   console.log(\"Hello, world!\")",
                         "   ```"
                     ].join("\n");
-                    var report = cli.executeOnText(input, "test.md");
-                    var actual = report.results[0].output;
+                    const report = cli.executeOnText(input, "test.md");
+                    const actual = report.results[0].output;
 
-                    assert.equal(actual, expected);
+                    assert.strictEqual(actual, expected);
                 });
             });
         });
 
-        it("with multiple rules", function() {
-            var input = [
+        it("with multiple rules", () => {
+            const input = [
                 "## Hello!",
                 "",
                 "<!-- eslint semi: 2 -->",
@@ -676,9 +679,9 @@ describe("plugin", function() {
                 "function hello() {",
                 "  return false",
                 "};",
-                "```",
+                "```"
             ].join("\n");
-            var expected = [
+            const expected = [
                 "## Hello!",
                 "",
                 "<!-- eslint semi: 2 -->",
@@ -693,12 +696,12 @@ describe("plugin", function() {
                 "function hello() {",
                 "  return false;",
                 "};",
-                "```",
+                "```"
             ].join("\n");
-            var report = cli.executeOnText(input, "test.md");
-            var actual = report.results[0].output;
+            const report = cli.executeOnText(input, "test.md");
+            const actual = report.results[0].output;
 
-            assert.equal(actual, expected);
+            assert.strictEqual(actual, expected);
         });
 
     });
