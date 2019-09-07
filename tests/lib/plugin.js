@@ -554,6 +554,52 @@ describe("plugin", () => {
                 assert.strictEqual(actual, expected);
             });
 
+            it("multiline autofix", () => {
+                const input = [
+                    "This is Markdown.",
+                    "",
+                    "   ```js",
+                    "   console.log('Hello, \\",
+                    "   world!')",
+                    "   ```"
+                ].join("\n");
+                const expected = [
+                    "This is Markdown.",
+                    "",
+                    "   ```js",
+                    "   console.log(\"Hello, \\",
+                    "   world!\")",
+                    "   ```"
+                ].join("\n");
+                const report = cli.executeOnText(input, "test.md");
+                const actual = report.results[0].output;
+
+                assert.strictEqual(actual, expected);
+            });
+
+            it("multiline autofix in blockquote", () => {
+                const input = [
+                    "This is Markdown.",
+                    "",
+                    ">   ```js",
+                    ">   console.log('Hello, \\",
+                    ">   world!')",
+                    ">   ```"
+                ].join("\n");
+                const expected = [
+                    "This is Markdown.",
+                    "",
+                    ">   ```js",
+                    ">   console.log(\"Hello, \\",
+                    ">   world!\")",
+                    ">   ```"
+                ].join("\n");
+                const report = cli.executeOnText(input, "test.md");
+                const actual = report.results[0].output;
+
+                assert.strictEqual(actual, expected);
+            });
+
             it("by one space with comments", () => {
                 const input = [
                     "This is Markdown.",
