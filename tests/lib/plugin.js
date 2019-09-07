@@ -320,6 +320,27 @@ describe("plugin", () => {
             assert.strictEqual(actual, expected);
         });
 
+        it("at the very start of a block", () => {
+            const input = [
+                "This is Markdown.",
+                "",
+                "```js",
+                "'use strict'",
+                "```"
+            ].join("\n");
+            const expected = [
+                "This is Markdown.",
+                "",
+                "```js",
+                "\"use strict\"",
+                "```"
+            ].join("\n");
+            const report = cli.executeOnText(input, "test.md");
+            const actual = report.results[0].output;
+
+            assert.strictEqual(actual, expected);
+        });
+
         it("in blocks with uncommon tags", () => {
             const input = [
                 "This is Markdown.",
