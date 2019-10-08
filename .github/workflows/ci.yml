@@ -7,6 +7,21 @@ on:
     branches: [master]
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Install Node.js
+      uses: actions/setup-node@v1
+    - name: Install Packages
+      run: npm install
+      env:
+        CI: true
+    - name: Lint
+      run: npm run lint
+
   test:
     name: Test
     runs-on: ubuntu-latest
@@ -24,7 +39,5 @@ jobs:
       run: npm install
       env:
         CI: true
-    - name: Lint
-      run: npm run lint
     - name: Test
       run: npm run test-cov
