@@ -561,6 +561,8 @@ describe("plugin", () => {
                     "   ```js",
                     "   console.log('Hello, \\",
                     "   world!')",
+                    "   console.log('Hello, \\",
+                    "   world!')",
                     "   ```"
                 ].join("\n");
                 const expected = [
@@ -569,6 +571,31 @@ describe("plugin", () => {
                     "   ```js",
                     "   console.log(\"Hello, \\",
                     "   world!\")",
+                    "   console.log(\"Hello, \\",
+                    "   world!\")",
+                    "   ```"
+                ].join("\n");
+                const report = cli.executeOnText(input, "test.md");
+                const actual = report.results[0].output;
+
+                assert.strictEqual(actual, expected);
+            });
+
+            it("underindented multiline autofix", () => {
+                const input = [
+                    "   ```js",
+                    " console.log('Hello, world!')",
+                    "  console.log('Hello, \\",
+                    "  world!')",
+                    "     console.log('Hello, world!')",
+                    "   ```"
+                ].join("\n");
+                const expected = [
+                    "   ```js",
+                    " console.log(\"Hello, world!\")",
+                    "  console.log(\"Hello, \\",
+                    "   world!\")",
+                    "     console.log(\"Hello, world!\")",
                     "   ```"
                 ].join("\n");
                 const report = cli.executeOnText(input, "test.md");
@@ -584,12 +611,16 @@ describe("plugin", () => {
                     ">   ```js",
                     ">   console.log('Hello, \\",
                     ">   world!')",
+                    ">   console.log('Hello, \\",
+                    ">   world!')",
                     ">   ```"
                 ].join("\n");
                 const expected = [
                     "This is Markdown.",
                     "",
                     ">   ```js",
+                    ">   console.log(\"Hello, \\",
+                    ">   world!\")",
                     ">   console.log(\"Hello, \\",
                     ">   world!\")",
                     ">   ```"
