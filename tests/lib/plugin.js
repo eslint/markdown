@@ -631,6 +631,37 @@ describe("plugin", () => {
                 assert.strictEqual(actual, expected);
             });
 
+            it("multiline autofix in nested blockquote", () => {
+                const input = [
+                    "This is Markdown.",
+                    "",
+                    "> This is a nested blockquote.",
+                    ">",
+                    "> >   ```js",
+                    "> >  console.log('Hello, \\",
+                    "> > world!')",
+                    "> >  console.log('Hello, \\",
+                    "> >    world!')",
+                    "> >   ```"
+                ].join("\n");
+                const expected = [
+                    "This is Markdown.",
+                    "",
+                    "> This is a nested blockquote.",
+                    ">",
+                    "> >   ```js",
+                    "> >  console.log(\"Hello, \\",
+                    "> >   world!\")",
+                    "> >  console.log(\"Hello, \\",
+                    "> >    world!\")",
+                    "> >   ```"
+                ].join("\n");
+                const report = cli.executeOnText(input, "test.md");
+                const actual = report.results[0].output;
+
+                assert.strictEqual(actual, expected);
+            });
+
             it("by one space with comments", () => {
                 const input = [
                     "This is Markdown.",
