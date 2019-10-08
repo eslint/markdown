@@ -456,6 +456,33 @@ describe("plugin", () => {
             assert.strictEqual(actual, expected);
         });
 
+        it("with multiline autofix and CRLF", () => {
+            const input = [
+                "This is Markdown.",
+                "",
+                "```js",
+                "console.log('Hello, \\",
+                "world!')",
+                "console.log('Hello, \\",
+                "world!')",
+                "```"
+            ].join("\r\n");
+            const expected = [
+                "This is Markdown.",
+                "",
+                "```js",
+                "console.log(\"Hello, \\",
+                "world!\")",
+                "console.log(\"Hello, \\",
+                "world!\")",
+                "```"
+            ].join("\r\n");
+            const report = cli.executeOnText(input, "test.md");
+            const actual = report.results[0].output;
+
+            assert.strictEqual(actual, expected);
+        });
+
         // https://spec.commonmark.org/0.28/#fenced-code-blocks
         describe("when indented", () => {
             it("by one space", () => {
