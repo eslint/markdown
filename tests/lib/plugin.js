@@ -590,6 +590,11 @@ describe("plugin", () => {
                     "     console.log('Hello, world!')",
                     "   ```"
                 ].join("\n");
+
+                // The Markdown parser doesn't have any concept of a "negative"
+                // indent left of the opening code fence, so autofixes move
+                // lines that were previously underindented to the same level
+                // as the opening code fence.
                 const expected = [
                     "   ```js",
                     " console.log(\"Hello, world!\")",
@@ -644,6 +649,11 @@ describe("plugin", () => {
                     "> >    world!')",
                     "> >   ```"
                 ].join("\n");
+
+                // The Markdown parser doesn't have any concept of a "negative"
+                // indent left of the opening code fence, so autofixes move
+                // lines that were previously underindented to the same level
+                // as the opening code fence.
                 const expected = [
                     "This is Markdown.",
                     "",
