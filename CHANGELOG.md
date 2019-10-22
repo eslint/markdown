@@ -1,3 +1,12 @@
+v1.0.1 - October 21, 2019
+
+* [`fb0b5a3`](https://github.com/eslint/eslint-plugin-markdown/commit/fb0b5a3fc36ad362556cafc49929f49e3b4bc6b0) Fix: Indent multiline fixes (fixes #120) (#124) (Brandon Mills)
+* [`07c9017`](https://github.com/eslint/eslint-plugin-markdown/commit/07c9017551d3a3382126882cf08bc162afcab734) Chore: Use GitHub Actions (#123) (Brandon Mills)
+* [`b5bf014`](https://github.com/eslint/eslint-plugin-markdown/commit/b5bf01465252a5d5ae3e1849b99b7d37bcd5a030) Chore: Add Node 12 to Travis (#122) (Brandon Mills)
+* [`dc90961`](https://github.com/eslint/eslint-plugin-markdown/commit/dc909618aa8f39e84279f5bdeb4a888d56d919b1) Fix: Support autofix at the very start of blocks (fixes #117) (#119) (Simon Lydell)
+* [`2de2490`](https://github.com/eslint/eslint-plugin-markdown/commit/2de2490f6d9dd5073bd9662d7ec6d61ceb13a811) Docs: Syntax highlight Markdown (#116) (Brett Zamir)
+* [`fdacf0c`](https://github.com/eslint/eslint-plugin-markdown/commit/fdacf0c29e4c9267816df0918f1b372fbd8eef32) Chore: Upgrade to eslint-config-eslint@5.0.1 (#110) (Brandon Mills)
+
 v1.0.0 - January 2, 2019
 
 * [`2a8482e`](https://github.com/eslint/eslint-plugin-markdown/commit/2a8482e8e39da2ab4a1d8aeb7459f26a8377905d) Fix: `overrides` general docs and Atom linter-eslint tips (fixes #109) (#111) (Brett Zamir)
