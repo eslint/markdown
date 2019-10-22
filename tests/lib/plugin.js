@@ -575,6 +575,124 @@ describe("plugin", () => {
                 assert.strictEqual(actual, expected);
             });
 
+            it("multiline autofix", () => {
+                const input = [
+                    "This is Markdown.",
+                    "",
+                    "   ```js",
+                    "   console.log('Hello, \\",
+                    "   world!')",
+                    "   console.log('Hello, \\",
+                    "   world!')",
+                    "   ```"
+                ].join("\n");
+                const expected = [
+                    "This is Markdown.",
+                    "",
+                    "   ```js",
+                    "   console.log(\"Hello, \\",
+                    "   world!\")",
+                    "   console.log(\"Hello, \\",
+                    "   world!\")",
+                    "   ```"
+                ].join("\n");
+                const report = cli.executeOnText(input, "test.md");
+                const actual = report.results[0].output;
+
+                assert.strictEqual(actual, expected);
+            });
+
+            it("underindented multiline autofix", () => {
+                const input = [
+                    "   ```js",
+                    " console.log('Hello, world!')",
+                    "  console.log('Hello, \\",
+                    "  world!')",
+                    "     console.log('Hello, world!')",
+                    "   ```"
+                ].join("\n");
+
+                // The Markdown parser doesn't have any concept of a "negative"
+                // indent left of the opening code fence, so autofixes move
+                // lines that were previously underindented to the same level
+                // as the opening code fence.
+                const expected = [
+                    "   ```js",
+                    " console.log(\"Hello, world!\")",
+                    "  console.log(\"Hello, \\",
+                    "   world!\")",
+                    "     console.log(\"Hello, world!\")",
+                    "   ```"
+                ].join("\n");
+                const report = cli.executeOnText(input, "test.md");
+                const actual = report.results[0].output;
+
+                assert.strictEqual(actual, expected);
+            });
+
+            it("multiline autofix in blockquote", () => {
+                const input = [
+                    "This is Markdown.",
+                    "",
+                    ">   ```js",
+                    ">   console.log('Hello, \\",
+                    ">   world!')",
+                    ">   console.log('Hello, \\",
+                    ">   world!')",
+                    ">   ```"
+                ].join("\n");
+                const expected = [
+                    "This is Markdown.",
+                    "",
+                    ">   ```js",
+                    ">   console.log(\"Hello, \\",
+                    ">   world!\")",
+                    ">   console.log(\"Hello, \\",
+                    ">   world!\")",
+                    ">   ```"
+                ].join("\n");
+                const report = cli.executeOnText(input, "test.md");
+                const actual = report.results[0].output;
+
+                assert.strictEqual(actual, expected);
+            });
+
+            it("multiline autofix in nested blockquote", () => {
+                const input = [
+                    "This is Markdown.",
+                    "",
+                    "> This is a nested blockquote.",
+                    ">",
+                    "> >   ```js",
+                    "> >  console.log('Hello, \\",
+                    "> > world!')",
+                    "> >  console.log('Hello, \\",
+                    "> >    world!')",
+                    "> >   ```"
+                ].join("\n");
+
+                // The Markdown parser doesn't have any concept of a "negative"
+                // indent left of the opening code fence, so autofixes move
+                // lines that were previously underindented to the same level
+                // as the opening code fence.
+                const expected = [
+                    "This is Markdown.",
+                    "",
+                    "> This is a nested blockquote.",
+                    ">",
+                    "> >   ```js",
+                    "> >  console.log(\"Hello, \\",
+                    "> >   world!\")",
+                    "> >  console.log(\"Hello, \\",
+                    "> >    world!\")",
+                    "> >   ```"
+                ].join("\n");
+                const report = cli.executeOnText(input, "test.md");
+                const actual = report.results[0].output;
+
+                assert.strictEqual(actual, expected);
+            });
+
             it("by one space with comments", () => {
                 const input = [
                     "This is Markdown.",
