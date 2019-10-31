@@ -22,7 +22,7 @@
   "scripts": {
     "lint": "eslint Makefile.js lib/**/*.js tests/lib/plugin.js",
     "test": "npm run lint && npm run test-cov",
-    "test-cov": "istanbul cover _mocha -- -c tests/lib/**/*.js",
+    "test-cov": "nyc _mocha -- -c tests/lib/**/*.js",
     "generate-release": "eslint-generate-release",
     "generate-alpharelease": "eslint-generate-prerelease alpha",
     "generate-betarelease": "eslint-generate-prerelease beta",
@@ -36,18 +36,18 @@
     "lib/processor.js"
   ],
   "devDependencies": {
-    "chai": "^3.0.0",
-    "eslint": "^4.19.1",
+    "chai": "^4.2.0",
+    "eslint": "^6.6.0",
     "eslint-config-eslint": "^5.0.1",
     "eslint-plugin-node": "^6.0.1",
-    "eslint-release": "^1.0.0",
-    "istanbul": "^0.4.5",
-    "mocha": "^2.2.5"
+    "eslint-release": "^1.2.0",
+    "mocha": "^6.2.2",
+    "nyc": "^14.1.1"
   },
   "dependencies": {
-    "object-assign": "^4.0.1",
-    "remark-parse": "^5.0.0",
-    "unified": "^6.1.2"
+    "object-assign": "^4.1.1",
+    "remark-parse": "^7.0.1",
+    "unified": "^8.4.1"
   },
   "engines": {
     "node": "^6.14.0 || ^8.10.0 || >=9.10.0"

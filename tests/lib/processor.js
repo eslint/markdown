@@ -188,7 +188,7 @@ describe("processor", function() {
             var blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 1);
-            assert.strictEqual(blocks[0], "\n\n \n  \n");
+            assert.strictEqual(blocks[0], "\n\n\n \n  \n");
         });
 
         it("should ignore code fences with unspecified info string", function() {
