@@ -1,1 +1,5 @@
+node_modules
+coverage
 tests/fixtures
+tests/lib/processor.js
+index.js

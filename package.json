@@ -20,7 +20,7 @@
     "linter"
   ],
   "scripts": {
-    "lint": "eslint Makefile.js lib/**/*.js tests/lib/plugin.js",
+    "lint": "eslint .",
     "test": "npm run lint && npm run test-cov",
     "test-cov": "nyc _mocha -- -c tests/lib/**/*.js",
     "generate-release": "eslint-generate-release",
