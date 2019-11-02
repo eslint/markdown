@@ -20,6 +20,7 @@ function initCLI(isAutofixEnabled) {
     const cli = new CLIEngine({
         envs: ["browser"],
         extensions: ["md", "mkdn", "mdown", "markdown"],
+        plugins: ["markdown"],
         fix,
         ignore: false,
         rules: {
