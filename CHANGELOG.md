@@ -1,3 +1,9 @@
+v1.0.2 - February 24, 2020
+
+* [`52e0984`](https://github.com/eslint/eslint-plugin-markdown/commit/52e098483fdf958a8dce96ab66c52b4337d522fe) Upgrade: Update devDeps and change istanbul -> nyc (#130) (Brett Zamir)
+* [`d52988f`](https://github.com/eslint/eslint-plugin-markdown/commit/d52988f5efcacb16862c79c1857e9b912cf3ffb0) Chore: Remove call to lint absent `Makefile.js` (#129) (Brett Zamir)
+* [`5640ea6`](https://github.com/eslint/eslint-plugin-markdown/commit/5640ea65730abab5c9c97d77b5708f3499ec62f3) Fix: Apply base indent to multiple line breaks (fixes #127) (#128) (Brett Zamir)
+
 v1.0.1 - October 21, 2019
 
 * [`fb0b5a3`](https://github.com/eslint/eslint-plugin-markdown/commit/fb0b5a3fc36ad362556cafc49929f49e3b4bc6b0) Fix: Indent multiline fixes (fixes #120) (#124) (Brandon Mills)
