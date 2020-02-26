@@ -14,6 +14,10 @@ if (!fs.existsSync(SYMLINK_LOCATION)) {
 module.exports = {
     "root": true,
 
+    "parserOptions": {
+        "ecmaVersion": 2018
+    },
+
     "plugins": [
         PACKAGE_NAME
     ],
