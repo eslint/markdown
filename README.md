@@ -1,5 +1,8 @@
 # eslint-plugin-markdown
 
+[![npm Version](https://img.shields.io/npm/v/eslint-plugin-markdown.svg)](https://www.npmjs.com/package/eslint-plugin-markdown)
+[![Build Status](https://img.shields.io/github/workflow/status/eslint/eslint-plugin-markdown/CI/master.svg)](https://github.com/eslint/eslint-plugin-markdown/actions)
+
 ![Screenshot](screenshot.png)
 
 An [ESLint](http://eslint.org/) plugin to lint JavaScript in Markdown.
