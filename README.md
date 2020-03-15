@@ -7,8 +7,6 @@
 
 An [ESLint](http://eslint.org/) plugin to lint JavaScript in Markdown.
 
-Supported extensions are `.markdown`, `.mdown`, `.mkdn`, and `.md`.
-
 ## Usage
 
 Install the plugin:
@@ -33,7 +31,9 @@ Add it to your `.eslintrc` and enable the processor on Markdown files:
 }
 ```
 
-Run ESLint on `.md` files:
+If you use ESLint v7, it automatically lints file extensions from config files, so you don't have to use the `--ext` option.
+
+If you use ESLint v6, use the `--ext` option to run ESLint on `.md` files:
 
 ```sh
 eslint --ext js,md .
