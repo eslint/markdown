@@ -5,8 +5,8 @@
 
 "use strict";
 
-const assert = require("chai").assert,
-    processor = require("../../lib/processor");
+const assert = require("chai").assert;
+const processor = require("../../lib/processor");
 
 describe("processor", () => {
 
@@ -73,7 +73,8 @@ describe("processor", () => {
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 1);
-            assert.strictEqual(blocks[0], "var answer = 6 * 7;\n    ```\nGoodbye\n");
+            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].text, "var answer = 6 * 7;\n    ```\nGoodbye\n");
         });
 
         it("should ignore tab-indented code blocks", () => {
@@ -98,7 +99,8 @@ describe("processor", () => {
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 1);
-            assert.strictEqual(blocks[0], "var answer = 6 * 7;\n");
+            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].text, "var answer = 6 * 7;\n");
         });
 
         it("should allow backticks or tildes", () => {
@@ -113,8 +115,10 @@ describe("processor", () => {
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 2);
-            assert.strictEqual(blocks[0], "backticks\n");
-            assert.strictEqual(blocks[1], "tildes\n");
+            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].text, "backticks\n");
+            assert.strictEqual(blocks[1].filename, "1.javascript");
+            assert.strictEqual(blocks[1].text, "tildes\n");
         });
 
         it("should allow more than three fence characters", () => {
@@ -126,7 +130,8 @@ describe("processor", () => {
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 1);
-            assert.strictEqual(blocks[0], "four\n");
+            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].text, "four\n");
         });
 
         it("should require end fences at least as long as the starting fence", () => {
@@ -145,9 +150,12 @@ describe("processor", () => {
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 3);
-            assert.strictEqual(blocks[0], "four\n```\n");
-            assert.strictEqual(blocks[1], "five\n");
-            assert.strictEqual(blocks[2], "six\n");
+            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].text, "four\n```\n");
+            assert.strictEqual(blocks[1].filename, "1.js");
+            assert.strictEqual(blocks[1].text, "five\n");
+            assert.strictEqual(blocks[2].filename, "2.js");
+            assert.strictEqual(blocks[2].text, "six\n");
         });
 
         it("should not allow other content on ending fence line", () => {
@@ -160,7 +168,8 @@ describe("processor", () => {
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 1);
-            assert.strictEqual(blocks[0], "test();\n``` end\n");
+            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].text, "test();\n``` end\n");
         });
 
         it("should allow empty blocks", () => {
@@ -172,7 +181,8 @@ describe("processor", () => {
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 1);
-            assert.strictEqual(blocks[0], "\n");
+            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].text, "\n");
         });
 
         it("should allow whitespace-only blocks", () => {
@@ -188,7 +198,8 @@ describe("processor", () => {
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 1);
-            assert.strictEqual(blocks[0], "\n\n \n  \n");
+            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].text, "\n\n \n  \n");
         });
 
         it("should ignore code fences with unspecified info string", () => {
@@ -292,7 +303,8 @@ describe("processor", () => {
             ].join("\n");
             const blocks = processor.preprocess(code);
 
-            assert.strictEqual(blocks[0], "var answer = 6 * 7;\n");
+            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].text, "var answer = 6 * 7;\n");
         });
 
         it("should allow multi-line source code", () => {
@@ -304,7 +316,8 @@ describe("processor", () => {
             ].join("\n");
             const blocks = processor.preprocess(code);
 
-            assert.strictEqual(blocks[0], "var answer = 6 * 7;\nconsole.log(answer);\n");
+            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].text, "var answer = 6 * 7;\nconsole.log(answer);\n");
         });
 
         it("should preserve original line endings", () => {
@@ -316,7 +329,8 @@ describe("processor", () => {
             ].join("\r\n");
             const blocks = processor.preprocess(code);
 
-            assert.strictEqual(blocks[0], "var answer = 6 * 7;\nconsole.log(answer);\n");
+            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].text, "var answer = 6 * 7;\nconsole.log(answer);\n");
         });
 
         it("should unindent space-indented code fences", () => {
@@ -329,7 +343,8 @@ describe("processor", () => {
             ].join("\n");
             const blocks = processor.preprocess(code);
 
-            assert.strictEqual(blocks[0], "var answer = 6 * 7;\n  console.log(answer);\n// Fin.\n");
+            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].text, "var answer = 6 * 7;\n  console.log(answer);\n// Fin.\n");
         });
 
         it("should find multiple code fences", () => {
@@ -349,8 +364,10 @@ describe("processor", () => {
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 2);
-            assert.strictEqual(blocks[0], "var answer = 6 * 7;\n");
-            assert.strictEqual(blocks[1], "console.log(answer);\n");
+            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].text, "var answer = 6 * 7;\n");
+            assert.strictEqual(blocks[1].filename, "1.javascript");
+            assert.strictEqual(blocks[1].text, "console.log(answer);\n");
         });
 
         it("should insert leading configuration comments", () => {
@@ -370,7 +387,8 @@ describe("processor", () => {
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 1);
-            assert.strictEqual(blocks[0], [
+            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].text, [
                 "/* eslint-env browser */",
                 "/*",
                 "    eslint quotes: [",
@@ -395,7 +413,8 @@ describe("processor", () => {
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 1);
-            assert.strictEqual(blocks[0], [
+            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].text, [
                 "/* global foo */",
                 "/* global bar:false, baz:true */",
                 "alert(foo, bar, baz);",
@@ -415,7 +434,8 @@ describe("processor", () => {
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 1);
-            assert.strictEqual(blocks[0], [
+            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].text, [
                 "alert('Hello, world!');",
                 ""
             ].join("\n"));
@@ -433,7 +453,8 @@ describe("processor", () => {
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 1);
-            assert.strictEqual(blocks[0], [
+            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].text, [
                 "alert('Hello, world!');",
                 ""
             ].join("\n"));
@@ -469,7 +490,8 @@ describe("processor", () => {
                 const blocks = processor.preprocess(code);
 
                 assert.strictEqual(blocks.length, 1);
-                assert.strictEqual(blocks[0], "var answer = 6 * 7;\n");
+                assert.strictEqual(blocks[0].filename, "0.js");
+                assert.strictEqual(blocks[0].text, "var answer = 6 * 7;\n");
             });
 
             it("should still work surrounded by other comments", () => {
@@ -489,7 +511,8 @@ describe("processor", () => {
                 const blocks = processor.preprocess(code);
 
                 assert.strictEqual(blocks.length, 1);
-                assert.strictEqual(blocks[0], "var answer = 6 * 7;\n");
+                assert.strictEqual(blocks[0].filename, "0.js");
+                assert.strictEqual(blocks[0].text, "var answer = 6 * 7;\n");
             });
 
         });

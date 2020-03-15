@@ -17,12 +17,18 @@ Install the plugin:
 npm install --save-dev eslint eslint-plugin-markdown
 ```
 
-Add it to your `.eslintrc`:
+Add it to your `.eslintrc` and enable the processor on Markdown files:
 
 ```json
 {
     "plugins": [
         "markdown"
+    ],
+    "overrides": [
+        {
+            "files": ["*.md"],
+            "processor": "markdown/markdown"
+        }
     ]
 }
 ```
@@ -30,10 +36,10 @@ Add it to your `.eslintrc`:
 Run ESLint on `.md` files:
 
 ```sh
-eslint --ext md .
+eslint --ext js,md .
 ```
 
-It will lint `js`, `javascript`, `jsx`, or `node` [fenced code blocks](https://help.github.com/articles/github-flavored-markdown/#fenced-code-blocks) in your Markdown documents:
+It will lint [fenced code blocks](https://help.github.com/articles/github-flavored-markdown/#fenced-code-blocks) in your Markdown documents:
 
 ````markdown
 ```js
@@ -42,7 +48,9 @@ var answer = 6 * 7;
 console.log(answer);
 ```
 
-```JavaScript
+Here is some regular Markdown text that will be ignored.
+
+```js
 // This also gets linted
 
 /* eslint quotes: [2, "double"] */
@@ -54,17 +62,12 @@ hello();
 ```
 
 ```jsx
-// This gets linted too
+// This gets linted too if you enable --ext jsx
 var div = <div className="jsx"></div>;
-```
-
-```node
-// And this
-console.log(process.version);
 ```
 ````
 
-Blocks that don't specify either `js`, `javascript`, `jsx`, or `node` syntax are ignored:
+Blocks that don't specify a syntax are ignored:
 
 ````markdown
 ```

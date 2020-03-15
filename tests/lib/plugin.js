@@ -18,19 +18,10 @@ const plugin = require("../..");
 function initCLI(isAutofixEnabled) {
     const fix = isAutofixEnabled || false;
     const cli = new CLIEngine({
-        envs: ["browser"],
-        extensions: ["md", "mkdn", "mdown", "markdown"],
-        plugins: ["markdown"],
         fix,
         ignore: false,
-        rules: {
-            "eol-last": 2,
-            "no-console": 2,
-            "no-undef": 2,
-            quotes: 2,
-            "spaced-comment": 2
-        },
-        useEslintrc: false
+        useEslintrc: false,
+        configFile: path.resolve(__dirname, "../fixtures/eslintrc.json")
     });
 
     cli.addPlugin("markdown", plugin);
@@ -126,6 +117,15 @@ describe("plugin", () => {
 
     it("should run on .markdown files", () => {
         const report = cli.executeOnText(shortText, "test.markdown");
+
+        assert.strictEqual(report.results.length, 1);
+        assert.strictEqual(report.results[0].messages.length, 1);
+        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(report.results[0].messages[0].line, 2);
+    });
+
+    it("should run on files with any custom extension", () => {
+        const report = cli.executeOnText(shortText, "test.custom");
 
         assert.strictEqual(report.results.length, 1);
         assert.strictEqual(report.results[0].messages.length, 1);
@@ -334,27 +334,6 @@ describe("plugin", () => {
                 "",
                 "```js",
                 "\"use strict\"",
-                "```"
-            ].join("\n");
-            const report = cli.executeOnText(input, "test.md");
-            const actual = report.results[0].output;
-
-            assert.strictEqual(actual, expected);
-        });
-
-        it("in blocks with uncommon tags", () => {
-            const input = [
-                "This is Markdown.",
-                "",
-                "```JavaScript",
-                "console.log('Hello, world!')",
-                "```"
-            ].join("\n");
-            const expected = [
-                "This is Markdown.",
-                "",
-                "```JavaScript",
-                "console.log(\"Hello, world!\")",
                 "```"
             ].join("\n");
             const report = cli.executeOnText(input, "test.md");

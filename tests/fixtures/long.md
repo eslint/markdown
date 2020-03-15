@@ -10,7 +10,7 @@ This is some code:
 console.log(42);
 ```
 
-```JavaScript
+```js
 // Comment
 function foo() {
     console.log("Hello");
@@ -20,7 +20,7 @@ function foo() {
 <!-- eslint-env node -->
 <!-- eslint-disable eol-last, quotes -->
 
-```node
+```js
 console.log(process.version);
 ```
 
@@ -34,7 +34,7 @@ How about some JSX?
 -->
 <!--eslint-disable no-console-->
 
-```jsx
+```js
 console.log("Error!");
 ```
 
