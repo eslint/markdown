@@ -172,6 +172,9 @@ for code snippets. It also points to the fact that some rules
 one may wish for documentation to be more liberal in providing padding for
 readability.
 
+<!-- This is actually JSON, but using JS lets it include comments. -->
+<!-- eslint-skip -->
+
 ```js
 // .eslintrc.json
 {
@@ -191,6 +194,9 @@ readability.
 #### Overriding `strict`
 
 The `strict` rule is technically satisfiable inside of Markdown code blocks, but writing a `"use strict"` directive at the top of every code block is tedious and distracting. We recommend a glob pattern for `.md` files to disable `strict` and enable the `impliedStrict` [parser option](https://eslint.org/docs/user-guide/configuring#specifying-parser-options) so the code blocks still parse in strict mode:
+
+<!-- This is actually JSON, but using JS lets it include comments. -->
+<!-- eslint-skip -->
 
 ```js
 // .eslintrc.json
