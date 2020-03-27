@@ -65,6 +65,22 @@ hello();
 // This gets linted too if you enable --ext jsx
 var div = <div className="jsx"></div>;
 ```
+
+```vue
+<template>
+    <p>{{ greeting }}, world!</p>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            greeting: "Hello"
+        };
+    }
+}
+</script>
+```
 ````
 
 Blocks that don't specify a syntax are ignored:
