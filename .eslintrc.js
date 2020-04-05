@@ -22,6 +22,13 @@ module.exports = {
         PACKAGE_NAME
     ],
 
+    "overrides": [
+        {
+            "files": ["*.md"],
+            "processor": "markdown/markdown"
+        }
+    ],
+
     "env": {
         "node": true
     },
