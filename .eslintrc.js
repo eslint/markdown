@@ -22,16 +22,27 @@ module.exports = {
         PACKAGE_NAME
     ],
 
-    "overrides": [
-        {
-            "files": ["*.md"],
-            "processor": "markdown/markdown"
-        }
-    ],
-
     "env": {
         "node": true
     },
 
-    "extends": "eslint"
+    "extends": "eslint",
+
+    "overrides": [
+        {
+            "files": ["**/*.md"],
+            "processor": "markdown/markdown"
+        },
+        {
+            "files": ["**/*.md/*.js"],
+            "parserOptions": {
+                "ecmaFeatures": {
+                    "impliedStrict": true
+                }
+            },
+            "rules": {
+                "lines-around-comment": "off"
+            }
+        }
+    ]
 };
