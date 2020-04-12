@@ -1,3 +1,16 @@
+v2.0.0-alpha.0 - April 12, 2020
+
+* [`51e48c6`](https://github.com/eslint/eslint-plugin-markdown/commit/51e48c68535964b1fe0f5c949d721baca4e6a1d6) Docs: Revamp documentation for v2 (#149) (Brandon Mills)
+* [`b221391`](https://github.com/eslint/eslint-plugin-markdown/commit/b2213919e3973ebb3788295143c17e14f5fc3f3b) Docs: Dogfood plugin by linting readme (#145) (Brandon Mills)
+* [`7423610`](https://github.com/eslint/eslint-plugin-markdown/commit/74236108b5c996b5f73046c2112270c7458cbae9) Docs: Explain use of --ext option in ESLint v7 (#146) (Brandon Mills)
+* [`0d4dbe8`](https://github.com/eslint/eslint-plugin-markdown/commit/0d4dbe8a50852516e14f656007c60e9e7a180b0a) Breaking: Implement new processor API (fixes #138) (#144) (Brandon Mills)
+* [`7eeafb8`](https://github.com/eslint/eslint-plugin-markdown/commit/7eeafb83e446f76bc4581381cd68dacc484b2249) Chore: Update ESLint config and plugins (#143) (Brandon Mills)
+* [`f483343`](https://github.com/eslint/eslint-plugin-markdown/commit/f4833438fa2c06941f05e994eb1084321ce4cfb3) Breaking: Require ESLint v6 (#142) (Brandon Mills)
+* [`9aa1fdc`](https://github.com/eslint/eslint-plugin-markdown/commit/9aa1fdca62733543d2c26a755ad14dbc02926f27) Chore: Use ES2018 object spread syntax (#141) (Brandon Mills)
+* [`f584cc6`](https://github.com/eslint/eslint-plugin-markdown/commit/f584cc6f08f0eeac0e657ae45cbf561764fab696) Build: Remove Travis (#140) (Brandon Mills)
+* [`35f9a11`](https://github.com/eslint/eslint-plugin-markdown/commit/35f9a11b407078774eef37295ba7ddb95c56f419) Breaking: Drop support for Node.js v6 (refs #138) (#137) (Brandon Mills)
+* [`6f02ef5`](https://github.com/eslint/eslint-plugin-markdown/commit/6f02ef53abc08b5e35b56361f2bd7cbc7ea8e993) Chore: Add npm version and build status badges (#139) (Brandon Mills)
+
 v1.0.2 - February 24, 2020
 
 * [`52e0984`](https://github.com/eslint/eslint-plugin-markdown/commit/52e098483fdf958a8dce96ab66c52b4337d522fe) Upgrade: Update devDeps and change istanbul -> nyc (#130) (Brett Zamir)
