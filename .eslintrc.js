@@ -28,6 +28,8 @@ module.exports = {
 
     "extends": "eslint",
 
+    "ignorePatterns": ["examples"],
+
     "overrides": [
         {
             "files": ["**/*.md"],
