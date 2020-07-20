@@ -72,6 +72,20 @@ describe("plugin", () => {
         assert.strictEqual(report.results[0].messages[1].endLine, 8);
     });
 
+    it("doesn't add end locations to messages without them", () => {
+        const code = [
+            "```js",
+            "!@#$%^&*()",
+            "```"
+        ].join("\n");
+        const report = cli.executeOnText(code, "test.md");
+
+        assert.strictEqual(report.results.length, 1);
+        assert.strictEqual(report.results[0].messages.length, 1);
+        assert.notProperty(report.results[0].messages[0], "endLine");
+        assert.notProperty(report.results[0].messages[0], "endColumn");
+    });
+
     it("should emit correct line numbers with leading comments", () => {
         const code = [
             "# Hello, world!",
