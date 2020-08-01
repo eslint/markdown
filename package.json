@@ -22,7 +22,7 @@
   "scripts": {
     "lint": "eslint --ext js,md .",
     "test": "npm run lint && npm run test-cov",
-    "test-cov": "nyc _mocha -- -c tests/lib/**/*.js",
+    "test-cov": "nyc _mocha -- -c tests/{examples,lib}/**/*.js",
     "generate-release": "eslint-generate-release",
     "generate-alpharelease": "eslint-generate-prerelease alpha",
     "generate-betarelease": "eslint-generate-prerelease beta",
