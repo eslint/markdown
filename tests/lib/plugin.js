@@ -6,27 +6,81 @@
 "use strict";
 
 const assert = require("chai").assert;
+const execSync = require("child_process").execSync;
 const CLIEngine = require("eslint").CLIEngine;
 const path = require("path");
 const plugin = require("../..");
 
 /**
  * Helper function which creates CLIEngine instance with enabled/disabled autofix feature.
+ * @param {string} fixtureConfigName ESLint JSON config fixture filename.
  * @param {boolean} [isAutofixEnabled=false] Whether to enable autofix feature.
  * @returns {CLIEngine} CLIEngine instance to execute in tests.
  */
-function initCLI(isAutofixEnabled) {
+function initCLI(fixtureConfigName, isAutofixEnabled) {
     const fix = isAutofixEnabled || false;
     const cli = new CLIEngine({
         fix,
         ignore: false,
         useEslintrc: false,
-        configFile: path.resolve(__dirname, "../fixtures/eslintrc.json")
+        configFile: path.resolve(__dirname, "../fixtures/", fixtureConfigName)
     });
 
     cli.addPlugin("markdown", plugin);
     return cli;
 }
+
+describe("recommended config", () => {
+
+    let cli;
+    const shortText = [
+        "```js",
+        "console.log(42);",
+        "```"
+    ].join("\n");
+
+    before(function() {
+        try {
+
+            // The tests for the recommended config will have ESLint import
+            // the plugin, so we need to make sure it's resolvable and link it
+            // if not.
+            // eslint-disable-next-line node/no-extraneous-require
+            require.resolve("eslint-plugin-markdown");
+        } catch (error) {
+            if (error.code === "MODULE_NOT_FOUND") {
+
+                // The npm link step can take longer than Mocha's default 2s
+                // timeout, so give it more time. Mocha's API for customizing
+                // hook-level timeouts uses `this`, so disable the rule.
+                // https://mochajs.org/#hook-level
+                // eslint-disable-next-line no-invalid-this
+                this.timeout(9999);
+
+                execSync("npm link && npm link eslint-plugin-markdown");
+            } else {
+                throw error;
+            }
+        }
+
+        cli = initCLI("recommended.json");
+    });
+
+    it("should include the plugin", () => {
+        const config = cli.getConfigForFile("test.md");
+
+        assert.include(config.plugins, "markdown");
+    });
+
+    it("overrides configure processor to parse .md file code blocks", () => {
+        const report = cli.executeOnText(shortText, "test.md");
+
+        assert.strictEqual(report.results.length, 1);
+        assert.strictEqual(report.results[0].messages.length, 1);
+        assert.strictEqual(report.results[0].messages[0].ruleId, "no-console");
+    });
+
+});
 
 describe("plugin", () => {
 
@@ -38,7 +92,7 @@ describe("plugin", () => {
     ].join("\n");
 
     before(() => {
-        cli = initCLI();
+        cli = initCLI("eslintrc.json");
     });
 
     it("should run on .md files", () => {
@@ -209,7 +263,7 @@ describe("plugin", () => {
     describe("should fix code", () => {
 
         before(() => {
-            cli = initCLI(true);
+            cli = initCLI("eslintrc.json", true);
         });
 
         it("in the simplest case", () => {

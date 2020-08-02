@@ -26,6 +26,17 @@ npm install --save-dev eslint eslint-plugin-markdown@next
 
 ### Configuring
 
+Extending the `plugin:markdown/recommended` config will enable the Markdown processor on all `.md` files:
+
+```js
+// .eslintrc.js
+module.exports = {
+    extends: "plugin:markdown/recommended"
+};
+```
+
+#### Advanced Configuration
+
 Add the plugin to your `.eslintrc` and use the `processor` option in an `overrides` entry to enable the plugin's `markdown/markdown` processor on Markdown files.
 Each fenced code block inside a Markdown document has a virtual filename appended to the Markdown file's path.
 The virtual filename's extension will match the fenced code block's syntax tag, so for example, <code>```js</code> code blocks in <code>README.md</code> would match <code>README.md/*.js</code>.
