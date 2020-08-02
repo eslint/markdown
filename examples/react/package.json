@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "scripts": {
+    "test": "eslint ."
+  },
+  "devDependencies": {
+    "eslint": "^7.5.0",
+    "eslint-plugin-markdown": "file:../..",
+    "eslint-plugin-react": "^7.20.3"
+  }
+}
