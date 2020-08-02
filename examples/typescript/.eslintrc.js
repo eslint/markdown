@@ -5,7 +5,6 @@ module.exports = {
     extends: [
         "eslint:recommended",
         "plugin:markdown/recommended",
-        "plugin:@typescript-eslint/recommended"
     ],
     overrides: [
         {
@@ -16,7 +15,15 @@ module.exports = {
         },
         {
             files: ["*.ts"],
-            parser: "@typescript-eslint/parser"
+            parser: "@typescript-eslint/parser",
+            parserOptions: {
+                tsconfigRootDir: __dirname,
+                project: ["./tsconfig.json"]
+            },
+            extends: [
+                "plugin:@typescript-eslint/recommended",
+                "plugin:@typescript-eslint/recommended-requiring-type-checking"
+            ]
         },
     ]
 };
