@@ -44,5 +44,10 @@ jobs:
       run: npm install
       env:
         CI: true
+    - name: Install examples/typescript Packages
+      working-directory: ./examples/typescript
+      run: npm install
+      env:
+        CI: true
     - name: Test
       run: npm run test-cov
