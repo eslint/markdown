@@ -40,6 +40,7 @@ module.exports = {
 Add the plugin to your `.eslintrc` and use the `processor` option in an `overrides` entry to enable the plugin's `markdown/markdown` processor on Markdown files.
 Each fenced code block inside a Markdown document has a virtual filename appended to the Markdown file's path.
 The virtual filename's extension will match the fenced code block's syntax tag, so for example, <code>```js</code> code blocks in <code>README.md</code> would match <code>README.md/*.js</code>.
+[`overrides` glob patterns](https://eslint.org/docs/user-guide/configuring#configuration-based-on-glob-patterns) for these virtual filenames can customize configuration for code blocks without affecting regular code.
 For more information on configuring processors, refer to the [ESLint documentation](https://eslint.org/docs/user-guide/configuring#specifying-processor).
 
 ```js
@@ -65,6 +66,51 @@ module.exports = {
     ]
 };
 ```
+
+#### Frequently-Disabled Rules
+
+Some rules that catch mistakes in regular code are less helpful in documentation.
+For example, `no-undef` would flag variables that are declared outside of a code snippet because they aren't relevant to the example.
+The `plugin:markdown/recommended` config disables these rules in Markdown files:
+
+- [`no-undef`](https://eslint.org/docs/rules/no-undef)
+- [`no-unused-expressions`](https://eslint.org/docs/rules/no-unused-expressions)
+- [`no-unused-vars`](https://eslint.org/docs/rules/no-unused-vars)
+- [`padded-blocks`](https://eslint.org/docs/rules/padded-blocks)
+
+Use [`overrides` glob patterns](https://eslint.org/docs/user-guide/configuring#configuration-based-on-glob-patterns) to disable more rules just for Markdown code blocks:
+
+```js
+module.exports = {
+    // ...
+    overrides: [
+        // ...
+        {
+            // 1. Target ```js code blocks in .md files.
+            files: ["**/*.md/*.js"],
+            rules: {
+                // 2. Disable other rules.
+                "no-console": "off",
+                "import/no-unresolved": "off"
+            }
+        }
+    ]
+};
+```
+
+#### Strict Mode
+
+`"use strict"` directives in every code block would be annoying.
+The `plugin:markdown/recommended` config enables the [`impliedStrict` parser option](https://eslint.org/docs/user-guide/configuring#specifying-parser-options) and disables the [`strict` rule](https://eslint.org/docs/rules/strict) in Markdown files.
+This opts into strict mode parsing without repeated `"use strict"` directives.
+
+#### Unsatisfiable Rules
+
+Markdown code blocks are not real files, so ESLint's file-format rules do not apply.
+The `plugin:markdown/recommended` config disables these rules in Markdown files:
+
+- [`eol-last`](https://eslint.org/docs/rules/eol-last): The Markdown parser trims trailing newlines from code blocks.
+- [`unicode-bom`](https://eslint.org/docs/rules/unicode-bom): Markdown code blocks do not have Unicode Byte Order Marks.
 
 #### Migrating from `eslint-plugin-markdown` v1
 
@@ -291,70 +337,6 @@ highlighting. Skip the block to prevent warnings about invalid syntax.
 console.log("This code block is linted normally.");
 ```
 ````
-
-## Unsatisfiable Rules
-
-Since code blocks are not files themselves but embedded inside a Markdown document, some rules do not apply to Markdown code blocks, and messages from these rules are automatically suppressed:
-
-- `eol-last`
-- `unicode-bom`
-
-### Project or directory-wide overrides for code snippets
-
-Given that code snippets often lack full context, and adding full context through configuration comments may be too cumbersome to apply for each snippet, one may wish to instead set defaults for all one's JavaScript snippets in a manner that applies to all Markdown files within your project (or a specific directory).
-
-ESLint allows a configuration property `overrides` which has a `files` property which accepts a [glob pattern](https://eslint.org/docs/user-guide/configuring#configuration-based-on-glob-patterns), allowing you to designate files (such as all `md` files) whose rules will be overridden.
-
-The following example shows the disabling of a few commonly problematic rules for code snippets.
-It also points to the fact that some rules (e.g., `padded-blocks`) may be more appealing for disabling given that one may wish for documentation to be more liberal in providing padding for readability.
-
-```js
-// .eslintrc.js
-module.exports = {
-    plugins: ["markdown"],
-    overrides: [
-        {
-            files: ["**/*.md"],
-            processor: "markdown/markdown"
-        },
-        {
-            files: ["**/*.md/*.js"],
-            rules: {
-                "no-undef": "off",
-                "no-unused-vars": "off",
-                "no-console": "off",
-                "padded-blocks": "off"
-            }
-        }
-    ]
-};
-```
-
-### Overriding `strict`
-
-The `strict` rule is technically satisfiable inside of Markdown code blocks, but writing a `"use strict"` directive at the top of every code block is tedious and distracting.
-We recommend a glob pattern for `.md` files containing `.js` blocks to disable `strict` and enable the `impliedStrict` [parser option](https://eslint.org/docs/user-guide/configuring#specifying-parser-options) so the code blocks still parse in strict mode:
-
-```js
-// .eslintrc.js
-module.exports = {
-    plugins: ["markdown"],
-    overrides: [
-        {
-            files: ["**/*.md"],
-            processor: "markdown/markdown"
-        },
-        {
-            files: ["**/*.md/*.js"],
-            parserOptions: {
-                ecmaFeatures: {
-                    impliedStrict: true
-                }
-            }
-        }
-    ]
-};
-```
 
 ## Editor Integrations
 
