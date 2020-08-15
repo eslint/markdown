@@ -40,7 +40,7 @@ module.exports = {
 Add the plugin to your `.eslintrc` and use the `processor` option in an `overrides` entry to enable the plugin's `markdown/markdown` processor on Markdown files.
 Each fenced code block inside a Markdown document has a virtual filename appended to the Markdown file's path.
 The virtual filename's extension will match the fenced code block's syntax tag, so for example, <code>```js</code> code blocks in <code>README.md</code> would match <code>README.md/*.js</code>.
-When a configuration should apply to code blocks inside Markdown files but not to other source files, use [`overrides` and glob patterns](https://eslint.org/docs/user-guide/configuring#configuration-based-on-glob-patterns) to specifically target Markdown fenced code blocks by their virtual filename.
+[`overrides` glob patterns](https://eslint.org/docs/user-guide/configuring#configuration-based-on-glob-patterns) for these virtual filenames can customize configuration for code blocks without affecting regular code.
 For more information on configuring processors, refer to the [ESLint documentation](https://eslint.org/docs/user-guide/configuring#specifying-processor).
 
 ```js
@@ -69,17 +69,16 @@ module.exports = {
 
 #### Frequently-Disabled Rules
 
-Some rules that are useful for catching mistakes in regular source code are counterproductive to clarity and brevity in code snippets and examples.
-For example `no-undef` might flag uses of variables that code examples assume are already in scope, and declaring or importing them in every code block would distract from the point of each example.
-The `plugin:markdown/recommended` config disables these rules:
+Some rules that catch mistakes in regular code are less helpful in documentation.
+For example, `no-undef` would flag variables that are declared outside of a code snippet because they aren't relevant to the example.
+The `plugin:markdown/recommended` config disables these rules in Markdown files:
 
 - [`no-undef`](https://eslint.org/docs/rules/no-undef)
 - [`no-unused-expressions`](https://eslint.org/docs/rules/no-unused-expressions)
 - [`no-unused-vars`](https://eslint.org/docs/rules/no-unused-vars)
 - [`padded-blocks`](https://eslint.org/docs/rules/padded-blocks)
 
-The same reasons might apply to some plugin rules, but the recommended config does not disable them automatically.
-If you use these rules and wish to disable them, you can use [`overrides` and glob patterns](https://eslint.org/docs/user-guide/configuring#configuration-based-on-glob-patterns) as described in the [Advanced Configuration section](#advanced-configuration) to disable them just for Markdown code blocks while leaving them enabled for all other source files.
+Use [`overrides` glob patterns](https://eslint.org/docs/user-guide/configuring#configuration-based-on-glob-patterns) to disable more rules just for Markdown code blocks:
 
 ```js
 module.exports = {
@@ -87,8 +86,11 @@ module.exports = {
     overrides: [
         // ...
         {
+            // 1. Target ```js code blocks in .md files.
             files: ["**/*.md/*.js"],
             rules: {
+                // 2. Disable other rules.
+                "no-console": "off",
                 "import/no-unresolved": "off"
             }
         }
@@ -98,16 +100,17 @@ module.exports = {
 
 #### Strict Mode
 
-Writing a `"use strict"` directive at the top of every code block is tedious and distracting.
-The `plugin:markdown/recommended` config enables the [`impliedStrict` parser option](https://eslint.org/docs/user-guide/configuring#specifying-parser-options) and disables the [`strict` rule](https://eslint.org/docs/rules/strict) to opt into strict mode parsing without the directive.
+`"use strict"` directives in every code block would be annoying.
+The `plugin:markdown/recommended` config enables the [`impliedStrict` parser option](https://eslint.org/docs/user-guide/configuring#specifying-parser-options) and disables the [`strict` rule](https://eslint.org/docs/rules/strict) in Markdown files.
+This opts into strict mode parsing without repeated `"use strict"` directives.
 
 #### Unsatisfiable Rules
 
-Since code blocks are not files themselves but embedded inside a Markdown document, some rules do not apply to Markdown code blocks.
-The processor automatically suppresses messages from these rules, and the `plugin:markdown/recommended` config disables them.
+Markdown code blocks are not real files, so ESLint's file-format rules do not apply.
+The `plugin:markdown/recommended` config disables these rules in Markdown files:
 
-- [`eol-last`](https://eslint.org/docs/rules/eol-last): The Markdown parser automatically trims trailing newlines from code blocks.
-- [`unicode-bom`](https://eslint.org/docs/rules/unicode-bom): The processor will not receive a Unicode Byte Order Mark from the Markdown parser.
+- [`eol-last`](https://eslint.org/docs/rules/eol-last): The Markdown parser trims trailing newlines from code blocks.
+- [`unicode-bom`](https://eslint.org/docs/rules/unicode-bom): Markdown code blocks do not have Unicode Byte Order Marks.
 
 #### Migrating from `eslint-plugin-markdown` v1
 
