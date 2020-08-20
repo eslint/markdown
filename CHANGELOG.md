@@ -1,3 +1,14 @@
+v2.0.0-rc.0 - August 19, 2020
+
+* [`d94c22f`](https://github.com/eslint/eslint-plugin-markdown/commit/d94c22fa908c5ea93f5ca083438af3b108f440c2) Build: Install example test dependencies in Jenkins (#160) (Brandon Mills)
+* [`7f26cb9`](https://github.com/eslint/eslint-plugin-markdown/commit/7f26cb9a9d1b3c169f532200d12aee80d41bb3e7) Docs: Reference recommended config disabled rules (#159) (Brandon Mills)
+* [`bf7648f`](https://github.com/eslint/eslint-plugin-markdown/commit/bf7648f0ebdb5ac967059ee83708b46f389aa4a9) Docs: Add TypeScript example (#155) (Brandon Mills)
+* [`d80be9e`](https://github.com/eslint/eslint-plugin-markdown/commit/d80be9e0b668c0bf3b2176f0f82b5852d4559b59) New: Add rules to recommended config (#157) (Nikolay Stoynov)
+* [`fc4d7aa`](https://github.com/eslint/eslint-plugin-markdown/commit/fc4d7aa0612a3fdeeb26fbaf261e94547393ab48) Chore: run CI in Node 14.x (#158) (Kai Cataldo)
+* [`f2d4923`](https://github.com/eslint/eslint-plugin-markdown/commit/f2d4923d3b974a201077574fd6e6e7535152db96) Docs: Add React example (#152) (Brandon Mills)
+* [`eb66833`](https://github.com/eslint/eslint-plugin-markdown/commit/eb6683351f72735f52dad5018d4fa0c1b3f0f2a1) New: Add recommended config (fixes #151) (#153) (Brandon Mills)
+* [`0311640`](https://github.com/eslint/eslint-plugin-markdown/commit/03116401ae7be0c86b5a48d22aacd94df387a5df) Fix: Don't require message end locations (fixes #112) (#154) (Brandon Mills)
+
 v2.0.0-alpha.0 - April 12, 2020
 
 * [`51e48c6`](https://github.com/eslint/eslint-plugin-markdown/commit/51e48c68535964b1fe0f5c949d721baca4e6a1d6) Docs: Revamp documentation for v2 (#149) (Brandon Mills)
