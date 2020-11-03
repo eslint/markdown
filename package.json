@@ -37,23 +37,27 @@
     "lib/processor.js"
   ],
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.6.1",
+    "@typescript-eslint/parser": "^4.6.1",
     "chai": "^4.2.0",
-    "eslint": "^6.8.0",
+    "eslint": "^7.12.1",
     "eslint-config-eslint": "^6.0.0",
-    "eslint-plugin-jsdoc": "^15.9.5",
+    "eslint-plugin-jsdoc": "^30.7.6",
     "eslint-plugin-node": "^9.0.0",
+    "eslint-plugin-react": "^7.21.5",
     "eslint-release": "^1.2.0",
     "mocha": "^6.2.2",
-    "nyc": "^14.1.1"
+    "nyc": "^14.1.1",
+    "typescript": "^4.0.5"
   },
   "dependencies": {
     "remark-parse": "^5.0.0",
     "unified": "^6.1.2"
   },
   "peerDependencies": {
-    "eslint": ">=6.0.0"
+    "eslint": ">=7.0.0"
   },
   "engines": {
-    "node": "^8.10.0 || ^10.12.0 || >= 12.0.0"
+    "node": "^10.12.0 || >= 12.0.0"
   }
 }
