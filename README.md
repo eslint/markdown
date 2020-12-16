@@ -1,7 +1,7 @@
 # eslint-plugin-markdown
 
 [![npm Version](https://img.shields.io/npm/v/eslint-plugin-markdown.svg)](https://www.npmjs.com/package/eslint-plugin-markdown)
-[![Build Status](https://img.shields.io/github/workflow/status/eslint/eslint-plugin-markdown/CI/master.svg)](https://github.com/eslint/eslint-plugin-markdown/actions)
+[![Build Status](https://img.shields.io/github/workflow/status/eslint/eslint-plugin-markdown/CI/main.svg)](https://github.com/eslint/eslint-plugin-markdown/actions)
 
 Lint JS, JSX, TypeScript, and more inside Markdown.
 
@@ -12,7 +12,7 @@ Lint JS, JSX, TypeScript, and more inside Markdown.
     alt="A JS code snippet in a Markdown editor has red squiggly underlines. A tooltip explains the problem."
 />
 
-> 🚧 This documentation is for an unfinished v2 release in progress in the `master` branch. The latest stable documentation is in the [`v1` branch](https://github.com/eslint/eslint-plugin-markdown/tree/v1).
+> 🚧 This documentation is for an unfinished v2 release in progress in the `main` branch. The latest stable documentation is in the [`v1` branch](https://github.com/eslint/eslint-plugin-markdown/tree/v1).
 
 ## Usage
 
