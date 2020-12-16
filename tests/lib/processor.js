@@ -297,6 +297,18 @@ describe("processor", () => {
             assert.strictEqual(blocks[0].filename, "0.js");
         });
 
+        it("should ignore trailing whitespace in the info string", () => {
+            const code = [
+                "```js    ",
+                "var answer = 6 * 7;",
+                "```"
+            ].join("\n");
+            const blocks = processor.preprocess(code);
+
+            assert.strictEqual(blocks.length, 1);
+            assert.strictEqual(blocks[0].filename, "0.js");
+        });
+
         it("should find code fences not surrounded by blank lines", () => {
             const code = [
                 "<!-- eslint-disable -->",
