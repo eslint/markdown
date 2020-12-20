@@ -1,3 +1,10 @@
+v2.0.0-rc.1 - December 20, 2020
+
+* [`1dd7089`](https://github.com/eslint/eslint-plugin-markdown/commit/1dd70890b92827a5fbd3a86a62c3f2bc30389340) Fix: npm prepare script on Windows (refs #166) (#168) (Brandon Mills)
+* [`23ac2b9`](https://github.com/eslint/eslint-plugin-markdown/commit/23ac2b95b1c2666baf422c24f5b73607d315a700) Fix: Ignore words in info string after syntax (fixes #166) (#167) (Brandon Mills)
+* [`8f729d3`](https://github.com/eslint/eslint-plugin-markdown/commit/8f729d3f286820da8099aaf2708d54aa9edcc000) Chore: Switch to main for primary branch (fixes #161) (#165) (Brandon Mills)
+* [`d30c50f`](https://github.com/eslint/eslint-plugin-markdown/commit/d30c50f46237af2fdef0a8a21fb547ed8e6c4d80) Chore: Automatically install example dependencies (#164) (Brandon Mills)
+
 v2.0.0-rc.0 - August 19, 2020
 
 * [`d94c22f`](https://github.com/eslint/eslint-plugin-markdown/commit/d94c22fa908c5ea93f5ca083438af3b108f440c2) Build: Install example test dependencies in Jenkins (#160) (Brandon Mills)
