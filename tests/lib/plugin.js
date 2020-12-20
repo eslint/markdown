@@ -55,7 +55,7 @@ describe("recommended config", () => {
                 // hook-level timeouts uses `this`, so disable the rule.
                 // https://mochajs.org/#hook-level
                 // eslint-disable-next-line no-invalid-this
-                this.timeout(9999);
+                this.timeout(30000);
 
                 execSync("npm link && npm link eslint-plugin-markdown");
             } else {

@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "lint": "eslint --ext js,md .",
-    "prepare": "for example in examples/*; do (cd \"$example\" && npm install); done",
+    "prepare": "node ./npm-prepare.js",
     "test": "npm run lint && npm run test-cov",
     "test-cov": "nyc _mocha -- -c tests/{examples,lib}/**/*.js",
     "generate-release": "eslint-generate-release",
