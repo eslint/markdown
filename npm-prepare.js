@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Install examples' dependencies as part of local npm install for
+ * development and CI.
+ * @author btmills
+ */
+
 "use strict";
 
 const childProcess = require("child_process");
