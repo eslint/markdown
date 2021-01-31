@@ -20,6 +20,7 @@ const plugin = require("../..");
 function initCLI(fixtureConfigName, isAutofixEnabled) {
     const fix = isAutofixEnabled || false;
     const cli = new CLIEngine({
+        cwd: path.resolve(__dirname, "../fixtures/"),
         fix,
         ignore: false,
         useEslintrc: false,
@@ -35,7 +36,8 @@ describe("recommended config", () => {
     let cli;
     const shortText = [
         "```js",
-        "console.log(42);",
+        "var unusedVar = console.log(undef);",
+        "'unused expression';",
         "```"
     ].join("\n");
 
@@ -70,6 +72,23 @@ describe("recommended config", () => {
         const config = cli.getConfigForFile("test.md");
 
         assert.include(config.plugins, "markdown");
+    });
+
+    it("applies convenience configuration", () => {
+        const config = cli.getConfigForFile("subdir/test.md/0.js");
+
+        assert.deepStrictEqual(config.parserOptions, {
+            ecmaFeatures: {
+                impliedStrict: true
+            }
+        });
+        assert.deepStrictEqual(config.rules["eol-last"], ["off"]);
+        assert.deepStrictEqual(config.rules["no-undef"], ["off"]);
+        assert.deepStrictEqual(config.rules["no-unused-expressions"], ["off"]);
+        assert.deepStrictEqual(config.rules["no-unused-vars"], ["off"]);
+        assert.deepStrictEqual(config.rules["padded-blocks"], ["off"]);
+        assert.deepStrictEqual(config.rules.strict, ["off"]);
+        assert.deepStrictEqual(config.rules["unicode-bom"], ["off"]);
     });
 
     it("overrides configure processor to parse .md file code blocks", () => {
