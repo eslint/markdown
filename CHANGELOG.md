@@ -1,3 +1,7 @@
+v2.0.0-rc.2 - January 30, 2021
+
+* [`f6a3fad`](https://github.com/eslint/eslint-plugin-markdown/commit/f6a3fada43aaeb613aaf9168dfd06a53b9db0ab4) Fix: overrides pattern for virtual filenames in recommended config (#169) (Milos Djermanovic)
+
 v2.0.0-rc.1 - December 20, 2020
 
 * [`1dd7089`](https://github.com/eslint/eslint-plugin-markdown/commit/1dd70890b92827a5fbd3a86a62c3f2bc30389340) Fix: npm prepare script on Windows (refs #166) (#168) (Brandon Mills)
