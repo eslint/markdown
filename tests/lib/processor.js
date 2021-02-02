@@ -199,7 +199,7 @@ describe("processor", () => {
 
             assert.strictEqual(blocks.length, 1);
             assert.strictEqual(blocks[0].filename, "0.js");
-            assert.strictEqual(blocks[0].text, "\n\n \n  \n");
+            assert.strictEqual(blocks[0].text, "\n\n\n \n  \n");
         });
 
         it("should ignore code fences with unspecified info string", () => {
@@ -362,7 +362,7 @@ describe("processor", () => {
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks[0].filename, "0.js");
-            assert.strictEqual(blocks[0].text, "var answer = 6 * 7;\nconsole.log(answer);\n");
+            assert.strictEqual(blocks[0].text, "var answer = 6 * 7;\r\nconsole.log(answer);\n");
         });
 
         it("should unindent space-indented code fences", () => {
