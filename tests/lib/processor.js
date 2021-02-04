@@ -273,16 +273,16 @@ describe("processor", () => {
             assert.strictEqual(blocks[0].filename, "0.JavaScript");
         });
 
-        it("should ignore anything after the first word of the info string", () => {
+        it("should should handle meta info", () => {
             const code = [
-                "```js more words are ignored",
-                "var answer = 6 * 7;",
+                "```js esm",
+                "export {};",
                 "```"
             ].join("\n");
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 1);
-            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].filename, "0.js:esm");
         });
 
         it("should ignore leading whitespace in the info string", () => {
@@ -294,7 +294,7 @@ describe("processor", () => {
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 1);
-            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].filename, "0.js:ignores leading whitespace");
         });
 
         it("should ignore trailing whitespace in the info string", () => {

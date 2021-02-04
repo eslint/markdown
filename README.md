@@ -57,7 +57,7 @@ module.exports = {
         {
             // 3. Optionally, customize the configuration ESLint uses for ```js
             // fenced code blocks inside .md files.
-            files: ["**/*.md/*.js"],
+            files: ["**/*.md/*.js", "**/*.md/*.js:*"],
             // ...
             rules: {
                 // ...
@@ -87,12 +87,17 @@ module.exports = {
         // ...
         {
             // 1. Target ```js code blocks in .md files.
-            files: ["**/*.md/*.js"],
+            files: ["**/*.md/*.js", "**/*.md/*.js:*"],
             rules: {
                 // 2. Disable other rules.
                 "no-console": "off",
                 "import/no-unresolved": "off"
             }
+        },
+        {
+            // 2. Target "```js esm" code blocks
+            files: ["**/*.md/*.js:esm"],
+            parserOptions: { type: "module" }
         }
     ]
 };
@@ -167,7 +172,7 @@ module.exports = {
             // In v2, configuration for fenced code blocks is separate from the
             // containing Markdown file. Each code block has a virtual filename
             // appended to the Markdown file's path.
-            files: ["**/*.md/*.js"],
+            files: ["**/*.md/*.js", "**/*.md/*.js:*"],
             // Configuration for fenced code blocks goes with the override for
             // the code block's virtual filename, for example:
             parserOptions: {
@@ -195,7 +200,10 @@ module.exports = {
             processor: "markdown/markdown"
         },
         {
-            files: ["**/*.{md,mkdn,mdown,markdown}/*.{js,javascript,jsx,node}"]
+            files: [
+                "**/*.{md,mkdn,mdown,markdown}/*.{js,javascript,jsx,node}",
+                "**/*.{md,mkdn,mdown,markdown}/*.{js,javascript,jsx,node}:*"
+            ]
             // ...
         }
     ]
