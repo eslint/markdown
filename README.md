@@ -12,8 +12,6 @@ Lint JS, JSX, TypeScript, and more inside Markdown.
     alt="A JS code snippet in a Markdown editor has red squiggly underlines. A tooltip explains the problem."
 />
 
-> 🚧 This documentation is for an unfinished v2 release in progress in the `main` branch. The latest stable documentation is in the [`v1` branch](https://github.com/eslint/eslint-plugin-markdown/tree/v1).
-
 ## Usage
 
 ### Installing
@@ -21,7 +19,7 @@ Lint JS, JSX, TypeScript, and more inside Markdown.
 Install the plugin alongside ESLint v6 or greater:
 
 ```sh
-npm install --save-dev eslint eslint-plugin-markdown@next
+npm install --save-dev eslint eslint-plugin-markdown
 ```
 
 ### Configuring
@@ -144,7 +142,7 @@ module.exports = {
 `eslint-plugin-markdown` v2 uses this new API.
 
 ```bash
-$ npm install --save-dev eslint@latest eslint-plugin-markdown@next
+$ npm install --save-dev eslint@latest eslint-plugin-markdown@latest
 ```
 
 All of the Markdown file extensions that were previously hard-coded are now fully configurable in `.eslintrc.js`.
