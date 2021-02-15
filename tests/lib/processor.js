@@ -199,7 +199,21 @@ describe("processor", () => {
 
             assert.strictEqual(blocks.length, 1);
             assert.strictEqual(blocks[0].filename, "0.js");
-            assert.strictEqual(blocks[0].text, "\n\n \n  \n");
+            assert.strictEqual(blocks[0].text, "\n\n\n \n  \n");
+        });
+
+        it("should preserve leading and trailing empty lines", () => {
+            const code = [
+                "```js",
+                "",
+                "console.log(42);",
+                "",
+                "```"
+            ].join("\n");
+            const blocks = processor.preprocess(code);
+
+            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].text, "\nconsole.log(42);\n\n");
         });
 
         it("should ignore code fences with unspecified info string", () => {
