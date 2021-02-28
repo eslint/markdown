@@ -454,6 +454,37 @@ describe("processor", () => {
             ].join("\n"));
         });
 
+        // https://github.com/eslint/eslint-plugin-markdown/issues/76
+        it("should insert comments inside list items", () => {
+            const code = [
+                "* List item followed by a blank line",
+                "",
+                "<!-- eslint-disable no-console -->",
+                "```js",
+                "console.log(\"Blank line\");",
+                "```",
+                "",
+                "* List item without a blank line",
+                "<!-- eslint-disable no-console -->",
+                "```js",
+                "console.log(\"No blank line\");",
+                "```"
+            ].join("\n");
+            const blocks = processor.preprocess(code);
+
+            assert.strictEqual(blocks.length, 2);
+            assert.strictEqual(blocks[0].text, [
+                "/* eslint-disable no-console */",
+                "console.log(\"Blank line\");",
+                ""
+            ].join("\n"));
+            assert.strictEqual(blocks[1].text, [
+                "/* eslint-disable no-console */",
+                "console.log(\"No blank line\");",
+                ""
+            ].join("\n"));
+        });
+
         it("should ignore non-eslint comments", () => {
             const code = [
                 "<!-- eslint-env browser -->",
