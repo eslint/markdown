@@ -117,7 +117,7 @@ describe("processor", () => {
             assert.strictEqual(blocks.length, 2);
             assert.strictEqual(blocks[0].filename, "0.js");
             assert.strictEqual(blocks[0].text, "backticks\n");
-            assert.strictEqual(blocks[1].filename, "1.javascript");
+            assert.strictEqual(blocks[1].filename, "1.js");
             assert.strictEqual(blocks[1].text, "tildes\n");
         });
 
@@ -199,7 +199,7 @@ describe("processor", () => {
 
             assert.strictEqual(blocks.length, 1);
             assert.strictEqual(blocks[0].filename, "0.js");
-            assert.strictEqual(blocks[0].text, "\n\n \n  \n");
+            assert.strictEqual(blocks[0].text, "\n\n\n \n  \n");
         });
 
         it("should ignore code fences with unspecified info string", () => {
@@ -234,7 +234,7 @@ describe("processor", () => {
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 1);
-            assert.strictEqual(blocks[0].filename, "0.javascript");
+            assert.strictEqual(blocks[0].filename, "0.js");
         });
 
         it("should find code fences with node info string", () => {
@@ -270,7 +270,7 @@ describe("processor", () => {
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 1);
-            assert.strictEqual(blocks[0].filename, "0.JavaScript");
+            assert.strictEqual(blocks[0].filename, "0.js");
         });
 
         it("should ignore anything after the first word of the info string", () => {
@@ -398,7 +398,7 @@ describe("processor", () => {
             assert.strictEqual(blocks.length, 2);
             assert.strictEqual(blocks[0].filename, "0.js");
             assert.strictEqual(blocks[0].text, "var answer = 6 * 7;\n");
-            assert.strictEqual(blocks[1].filename, "1.javascript");
+            assert.strictEqual(blocks[1].filename, "1.js");
             assert.strictEqual(blocks[1].text, "console.log(answer);\n");
         });
 

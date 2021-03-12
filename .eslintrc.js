@@ -33,7 +33,11 @@ module.exports = {
     "overrides": [
         {
             "files": ["**/*.md"],
-            "processor": "markdown/markdown"
+            "extends": ["plugin:mdx/recommended"],
+            "processor": "markdown/markdown",
+            "rules": {
+                "mdx/remark": 0
+            }
         },
         {
             "files": ["**/*.md/*.js"],
