@@ -24,6 +24,7 @@
     "prepare": "node ./npm-prepare.js",
     "test": "npm run lint && npm run test-cov",
     "test-cov": "nyc _mocha -- -c tests/{examples,lib}/**/*.js",
+    "types": "tsc lib/*.js -d --allowJs --emitDeclarationOnly --lib ES2015 --outDir types",
     "generate-release": "eslint-generate-release",
     "generate-alpharelease": "eslint-generate-prerelease alpha",
     "generate-betarelease": "eslint-generate-prerelease beta",
@@ -31,12 +32,14 @@
     "publish-release": "eslint-publish-release"
   },
   "main": "index.js",
+  "types": "types/index.d.ts",
   "files": [
     "index.js",
-    "lib/index.js",
-    "lib/processor.js"
+    "lib",
+    "types"
   ],
   "devDependencies": {
+    "@types/eslint": "^7.2.7",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
     "eslint-config-eslint": "^6.0.0",
@@ -45,7 +48,8 @@
     "eslint-plugin-node": "^9.0.0",
     "eslint-release": "^3.1.2",
     "mocha": "^6.2.2",
-    "nyc": "^14.1.1"
+    "nyc": "^14.1.1",
+    "typescript": "^4.2.3"
   },
   "dependencies": {
     "remark-parse": ">=5.0.0 <9.0.0",
