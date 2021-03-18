@@ -1,4 +1,4 @@
-# React Example
+# TypeScript Example
 
 The `@typescript-eslint` parser and the `recommended` config's rules will work in `ts` code blocks. However, [type-aware rules](https://github.com/typescript-eslint/typescript-eslint/blob/master/docs/getting-started/linting/TYPED_LINTING.md) will not work because the code blocks are not part of a compilable `tsconfig.json` project.
 

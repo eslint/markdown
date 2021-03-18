@@ -47,8 +47,8 @@
     "nyc": "^14.1.1"
   },
   "dependencies": {
-    "remark-parse": "^5.0.0",
-    "unified": "^6.1.2"
+    "remark-parse": ">=5.0.0 <9.0.0",
+    "unified": ">=6.0.0"
   },
   "peerDependencies": {
     "eslint": ">=6.0.0"
