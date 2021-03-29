@@ -37,8 +37,6 @@
     "lib/processor.js"
   ],
   "devDependencies": {
-    "@types/eslint": "^7.2.7",
-    "@types/unist": "^2.0.3",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
     "eslint-config-eslint": "^6.0.0",

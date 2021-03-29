@@ -4,5 +4,3 @@ node_modules/
 npm-debug.log
 .eslint-release-info.json
 .nyc_output
-/yarn.lock
-/package-lock.json
