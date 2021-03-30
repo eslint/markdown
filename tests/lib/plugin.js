@@ -12,19 +12,22 @@ const path = require("path");
 const plugin = require("../..");
 
 /**
+ * @typedef {import('eslint/lib/cli-engine/cli-engine').CLIEngineOptions} CLIEngineOptions
+ */
+
+/**
  * Helper function which creates CLIEngine instance with enabled/disabled autofix feature.
  * @param {string} fixtureConfigName ESLint JSON config fixture filename.
- * @param {boolean} [isAutofixEnabled=false] Whether to enable autofix feature.
+ * @param {CLIEngineOptions} [options={}] Whether to enable autofix feature.
  * @returns {CLIEngine} CLIEngine instance to execute in tests.
  */
-function initCLI(fixtureConfigName, isAutofixEnabled) {
-    const fix = isAutofixEnabled || false;
+function initCLI(fixtureConfigName, options = {}) {
     const cli = new CLIEngine({
         cwd: path.resolve(__dirname, "../fixtures/"),
-        fix,
         ignore: false,
         useEslintrc: false,
-        configFile: path.resolve(__dirname, "../fixtures/", fixtureConfigName)
+        configFile: path.resolve(__dirname, "../fixtures/", fixtureConfigName),
+        ...options
     });
 
     cli.addPlugin("markdown", plugin);
@@ -242,6 +245,45 @@ describe("plugin", () => {
         assert.strictEqual(report.results[0].messages[4].column, 2);
     });
 
+    // https://github.com/eslint/eslint-plugin-markdown/issues/181
+    it("should work when called on nested code blocks in the same file", () => {
+
+        /*
+          * As of this writing, the nested code block, though it uses the same
+          * Markdown processor, must use a different extension or ESLint will not
+          * re-apply the processor on the nested code block. To work around that,
+          * a file named `test.md` contains a nested `markdown` code block in
+          * this test.
+          *
+          * https://github.com/eslint/eslint/pull/14227/files#r602802758
+          */
+        const code = [
+            "<!-- test.md -->",
+            "",
+            "````markdown",
+            "<!-- test.md/0_0.markdown -->",
+            "",
+            "This test only repros if the MD files have a different number of lines before code blocks.",
+            "",
+            "```js",
+            "// test.md/0_0.markdown/0_0.js",
+            "console.log('single quotes')",
+            "```",
+            "````"
+        ].join("\n");
+        const recursiveCli = initCLI("eslintrc.json", {
+            extensions: [".js", ".markdown", ".md"]
+        });
+        const report = recursiveCli.executeOnText(code, "test.md");
+
+        assert.strictEqual(report.results.length, 1);
+        assert.strictEqual(report.results[0].messages.length, 2);
+        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(report.results[0].messages[0].line, 10);
+        assert.strictEqual(report.results[0].messages[1].message, "Strings must use doublequote.");
+        assert.strictEqual(report.results[0].messages[1].line, 10);
+    });
+
     describe("configuration comments", () => {
 
         it("apply only to the code block immediately following", () => {
@@ -282,7 +324,7 @@ describe("plugin", () => {
     describe("should fix code", () => {
 
         before(() => {
-            cli = initCLI("eslintrc.json", true);
+            cli = initCLI("eslintrc.json", { fix: true });
         });
 
         it("in the simplest case", () => {
