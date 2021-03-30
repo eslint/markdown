@@ -12,19 +12,22 @@ const path = require("path");
 const plugin = require("../..");
 
 /**
+ * @typedef {import('eslint/lib/cli-engine/cli-engine').CLIEngineOptions} CLIEngineOptions
+ */
+
+/**
  * Helper function which creates CLIEngine instance with enabled/disabled autofix feature.
  * @param {string} fixtureConfigName ESLint JSON config fixture filename.
- * @param {boolean} [isAutofixEnabled=false] Whether to enable autofix feature.
+ * @param {CLIEngineOptions} [options={}] Whether to enable autofix feature.
  * @returns {CLIEngine} CLIEngine instance to execute in tests.
  */
-function initCLI(fixtureConfigName, isAutofixEnabled) {
-    const fix = isAutofixEnabled || false;
+function initCLI(fixtureConfigName, options = {}) {
     const cli = new CLIEngine({
         cwd: path.resolve(__dirname, "../fixtures/"),
-        fix,
         ignore: false,
         useEslintrc: false,
-        configFile: path.resolve(__dirname, "../fixtures/", fixtureConfigName)
+        configFile: path.resolve(__dirname, "../fixtures/", fixtureConfigName),
+        ...options
     });
 
     cli.addPlugin("markdown", plugin);
@@ -282,7 +285,7 @@ describe("plugin", () => {
     describe("should fix code", () => {
 
         before(() => {
-            cli = initCLI("eslintrc.json", true);
+            cli = initCLI("eslintrc.json", { fix: true });
         });
 
         it("in the simplest case", () => {
