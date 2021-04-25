@@ -1,3 +1,7 @@
+v2.1.0 - April 25, 2021
+
+* [`f1e153b`](https://github.com/eslint/eslint-plugin-markdown/commit/f1e153b8b634af7121e87b505c3c882536f4e3a5) Update: Upgrade remark-parse to v7 (fixes #77, fixes #78) (#175) (Brandon Mills)
+
 v2.0.1 - April 5, 2021
 
 * [`d23d5f7`](https://github.com/eslint/eslint-plugin-markdown/commit/d23d5f739943d136669aac945ef25528f31cd7db) Fix: use blocksCache instead of single blocks instance (fixes #181) (#183) (JounQin)
