@@ -148,6 +148,21 @@ describe("plugin", () => {
         assert.strictEqual(report.results[0].messages[1].endLine, 8);
     });
 
+    // https://github.com/eslint/eslint-plugin-markdown/issues/77
+    it("should emit correct line numbers with leading blank line", () => {
+        const code = [
+            "### Heading",
+            "",
+            "```js",
+            "",
+            "console.log('a')",
+            "```"
+        ].join("\n");
+        const report = cli.executeOnText(code, "test.md");
+
+        assert.strictEqual(report.results[0].messages[0].line, 5);
+    });
+
     it("doesn't add end locations to messages without them", () => {
         const code = [
             "```js",
@@ -319,6 +334,23 @@ describe("plugin", () => {
             assert.strictEqual(report.results[0].messages[3].line, 15);
         });
 
+        // https://github.com/eslint/eslint-plugin-markdown/issues/78
+        it("preserves leading empty lines", () => {
+            const code = [
+                "<!-- eslint lines-around-directive: ['error', 'never'] -->",
+                "",
+                "```js",
+                "",
+                "\"use strict\";",
+                "```"
+            ].join("\n");
+            const report = cli.executeOnText(code, "test.md");
+
+            assert.strictEqual(report.results.length, 1);
+            assert.strictEqual(report.results[0].messages.length, 1);
+            assert.strictEqual(report.results[0].messages[0].message, "Unexpected newline before \"use strict\" directive.");
+            assert.strictEqual(report.results[0].messages[0].line, 5);
+        });
     });
 
     describe("should fix code", () => {
