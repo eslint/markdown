@@ -691,7 +691,7 @@ describe("processor", () => {
             const result = processor.postprocess(messages);
 
             assert.strictEqual(result[2].column, 9);
-            assert.strictEqual(result[3].column, 2);
+            assert.strictEqual(result[3].column, 4);
             assert.strictEqual(result[4].column, 2);
         });
 
