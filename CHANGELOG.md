@@ -1,3 +1,7 @@
+v2.2.0 - May 26, 2021
+
+* [`32203f6`](https://github.com/eslint/eslint-plugin-markdown/commit/32203f6ec86ec5e220d18099863d94408f334665) Update: Replace Markdown parser (fixes #125, fixes #186) (#188) (Brandon Mills)
+
 v2.1.0 - April 25, 2021
 
 * [`f1e153b`](https://github.com/eslint/eslint-plugin-markdown/commit/f1e153b8b634af7121e87b505c3c882536f4e3a5) Update: Upgrade remark-parse to v7 (fixes #77, fixes #78) (#175) (Brandon Mills)
