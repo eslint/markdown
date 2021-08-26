@@ -726,6 +726,14 @@ describe("processor", () => {
 
         });
 
+        it("should preserve messages without valid `line` property", () => {
+            const message = { message: "Parsing error: \"parserOptions.project\" has been set for @typescript-eslint/parser.", ruleId: null };
+            const result = processor.postprocess([[message]]);
+
+            assert.strictEqual(result.length, 1);
+            assert.strictEqual(result[0], message);
+        });
+
     });
 
     describe("supportsAutofix", () => {
