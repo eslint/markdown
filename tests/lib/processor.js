@@ -726,23 +726,25 @@ describe("processor", () => {
 
         });
 
-        it("should preserve messages without valid `line` property", () => {
-
-            // change cache for `postprocess`
-            processor.preprocess([
-                "```ts",
-                "const num: number = 0;",
-                "```"]
-                .join("\n"));
-
+        it("should attach messages without `line` to opening code fence", () => {
             const message = { message: "Parsing error: \"parserOptions.project\" has been set for @typescript-eslint/parser.", ruleId: null };
-            const result = processor.postprocess([[message]]);
+            const result = processor.postprocess([[message], [message], [message]]);
 
-            assert.strictEqual(result.length, 1);
+            assert.strictEqual(result.length, 3);
             assert.deepStrictEqual(result[0], {
                 ...message,
-                line: 1,
+                line: 3,
                 column: 1
+            });
+            assert.deepStrictEqual(result[1], {
+                ...message,
+                line: 14,
+                column: 4
+            });
+            assert.deepStrictEqual(result[2], {
+                ...message,
+                line: 23,
+                column: 3
             });
         });
 
