@@ -1,3 +1,7 @@
+v2.2.1 - September 11, 2021
+
+* [`3a40160`](https://github.com/eslint/eslint-plugin-markdown/commit/3a401606cb2ac4dae6b95720799ed1c611af32d0) Fix: `message.line` could be `undefined` (#191) (JounQin)
+
 v2.2.0 - May 26, 2021
 
 * [`32203f6`](https://github.com/eslint/eslint-plugin-markdown/commit/32203f6ec86ec5e220d18099863d94408f334665) Update: Replace Markdown parser (fixes #125, fixes #186) (#188) (Brandon Mills)
