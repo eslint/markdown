@@ -6,3 +6,4 @@ npm-debug.log
 .nyc_output
 yarn.lock
 package-lock.json
+pnpm-lock.yaml
