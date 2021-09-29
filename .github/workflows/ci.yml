@@ -14,7 +14,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
     - name: Install Node.js
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
     - name: Install Packages
       run: npm install
       env:
@@ -38,7 +38,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
     - name: Install Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
     - name: Install Packages
