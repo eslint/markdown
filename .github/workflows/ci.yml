@@ -16,7 +16,7 @@ jobs:
     - name: Install Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '16.x'
+        node-version: 16
     - name: Install Packages
       run: npm install
       env:
@@ -29,13 +29,19 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        eslint: [6, 7]
-        node: ['8.10.0', 8, 10, 12, 14, 16]
+        eslint: [6, 7, 8]
+        node: [8.10.0, 8, 10, 12, 14, 16]
         exclude:
+          - eslint: 8
+            node: 10
+          - eslint: 8
+            node: 8
+          - eslint: 8
+            node: 8.10.0
           - eslint: 7
             node: 8
           - eslint: 7
-            node: '8.10.0'
+            node: 8.10.0
         include:
           - os: windows-latest
             eslint: 7
