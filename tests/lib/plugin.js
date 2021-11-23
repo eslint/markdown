@@ -7,7 +7,7 @@
 
 const assert = require("chai").assert;
 const execSync = require("child_process").execSync;
-const CLIEngine = require("eslint").CLIEngine;
+const { CLIEngine, ESLint } = require("eslint");
 const path = require("path");
 const plugin = require("../..");
 
@@ -19,9 +19,20 @@ const plugin = require("../..");
  * Helper function which creates CLIEngine instance with enabled/disabled autofix feature.
  * @param {string} fixtureConfigName ESLint JSON config fixture filename.
  * @param {CLIEngineOptions} [options={}] Whether to enable autofix feature.
- * @returns {CLIEngine} CLIEngine instance to execute in tests.
+ * @returns {ESLint} ESLint instance to execute in tests.
  */
-function initCLI(fixtureConfigName, options = {}) {
+function initESLint(fixtureConfigName, options = {}) {
+    if (ESLint) { // ESLint v7+
+        return new ESLint({
+            cwd: path.resolve(__dirname, "../fixtures/"),
+            ignore: false,
+            useEslintrc: false,
+            overrideConfigFile: path.resolve(__dirname, "../fixtures/", fixtureConfigName),
+            plugins: { markdown: plugin },
+            ...options
+        });
+    }
+
     const cli = new CLIEngine({
         cwd: path.resolve(__dirname, "../fixtures/"),
         ignore: false,
@@ -31,12 +42,21 @@ function initCLI(fixtureConfigName, options = {}) {
     });
 
     cli.addPlugin("markdown", plugin);
-    return cli;
+    return {
+        async calculateConfigForFile(filename) {
+            return cli.getConfigForFile(filename);
+        },
+        async lintFiles(files) {
+            return cli.executeOnFiles(files).results;
+        },
+        async lintText(text, { filePath }) {
+            return cli.executeOnText(text, filePath).results;
+        }
+    };
 }
 
 describe("recommended config", () => {
-
-    let cli;
+    let eslint;
     const shortText = [
         "```js",
         "var unusedVar = console.log(undef);",
@@ -68,17 +88,17 @@ describe("recommended config", () => {
             }
         }
 
-        cli = initCLI("recommended.json");
+        eslint = initESLint("recommended.json");
     });
 
-    it("should include the plugin", () => {
-        const config = cli.getConfigForFile("test.md");
+    it("should include the plugin", async () => {
+        const config = await eslint.calculateConfigForFile("test.md");
 
         assert.include(config.plugins, "markdown");
     });
 
-    it("applies convenience configuration", () => {
-        const config = cli.getConfigForFile("subdir/test.md/0.js");
+    it("applies convenience configuration", async () => {
+        const config = await eslint.calculateConfigForFile("subdir/test.md/0.js");
 
         assert.deepStrictEqual(config.parserOptions, {
             ecmaFeatures: {
@@ -94,19 +114,18 @@ describe("recommended config", () => {
         assert.deepStrictEqual(config.rules["unicode-bom"], ["off"]);
     });
 
-    it("overrides configure processor to parse .md file code blocks", () => {
-        const report = cli.executeOnText(shortText, "test.md");
+    it("overrides configure processor to parse .md file code blocks", async () => {
+        const results = await eslint.lintText(shortText, { filePath: "test.md" });
 
-        assert.strictEqual(report.results.length, 1);
-        assert.strictEqual(report.results[0].messages.length, 1);
-        assert.strictEqual(report.results[0].messages[0].ruleId, "no-console");
+        assert.strictEqual(results.length, 1);
+        assert.strictEqual(results[0].messages.length, 1);
+        assert.strictEqual(results[0].messages[0].ruleId, "no-console");
     });
 
 });
 
 describe("plugin", () => {
-
-    let cli;
+    let eslint;
     const shortText = [
         "```js",
         "console.log(42);",
@@ -114,19 +133,19 @@ describe("plugin", () => {
     ].join("\n");
 
     before(() => {
-        cli = initCLI("eslintrc.json");
+        eslint = initESLint("eslintrc.json");
     });
 
-    it("should run on .md files", () => {
-        const report = cli.executeOnText(shortText, "test.md");
+    it("should run on .md files", async () => {
+        const results = await eslint.lintText(shortText, { filePath: "test.md" });
 
-        assert.strictEqual(report.results.length, 1);
-        assert.strictEqual(report.results[0].messages.length, 1);
-        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
-        assert.strictEqual(report.results[0].messages[0].line, 2);
+        assert.strictEqual(results.length, 1);
+        assert.strictEqual(results[0].messages.length, 1);
+        assert.strictEqual(results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(results[0].messages[0].line, 2);
     });
 
-    it("should emit correct line numbers", () => {
+    it("should emit correct line numbers", async () => {
         const code = [
             "# Hello, world!",
             "",
@@ -138,18 +157,18 @@ describe("plugin", () => {
             "var foo = blah",
             "```"
         ].join("\n");
-        const report = cli.executeOnText(code, "test.md");
+        const results = await eslint.lintText(code, { filePath: "test.md" });
 
-        assert.strictEqual(report.results[0].messages[0].message, "'baz' is not defined.");
-        assert.strictEqual(report.results[0].messages[0].line, 5);
-        assert.strictEqual(report.results[0].messages[0].endLine, 5);
-        assert.strictEqual(report.results[0].messages[1].message, "'blah' is not defined.");
-        assert.strictEqual(report.results[0].messages[1].line, 8);
-        assert.strictEqual(report.results[0].messages[1].endLine, 8);
+        assert.strictEqual(results[0].messages[0].message, "'baz' is not defined.");
+        assert.strictEqual(results[0].messages[0].line, 5);
+        assert.strictEqual(results[0].messages[0].endLine, 5);
+        assert.strictEqual(results[0].messages[1].message, "'blah' is not defined.");
+        assert.strictEqual(results[0].messages[1].line, 8);
+        assert.strictEqual(results[0].messages[1].endLine, 8);
     });
 
     // https://github.com/eslint/eslint-plugin-markdown/issues/77
-    it("should emit correct line numbers with leading blank line", () => {
+    it("should emit correct line numbers with leading blank line", async () => {
         const code = [
             "### Heading",
             "",
@@ -158,26 +177,26 @@ describe("plugin", () => {
             "console.log('a')",
             "```"
         ].join("\n");
-        const report = cli.executeOnText(code, "test.md");
+        const results = await eslint.lintText(code, { filePath: "test.md" });
 
-        assert.strictEqual(report.results[0].messages[0].line, 5);
+        assert.strictEqual(results[0].messages[0].line, 5);
     });
 
-    it("doesn't add end locations to messages without them", () => {
+    it("doesn't add end locations to messages without them", async () => {
         const code = [
             "```js",
             "!@#$%^&*()",
             "```"
         ].join("\n");
-        const report = cli.executeOnText(code, "test.md");
+        const results = await eslint.lintText(code, { filePath: "test.md" });
 
-        assert.strictEqual(report.results.length, 1);
-        assert.strictEqual(report.results[0].messages.length, 1);
-        assert.notProperty(report.results[0].messages[0], "endLine");
-        assert.notProperty(report.results[0].messages[0], "endColumn");
+        assert.strictEqual(results.length, 1);
+        assert.strictEqual(results[0].messages.length, 1);
+        assert.notProperty(results[0].messages[0], "endLine");
+        assert.notProperty(results[0].messages[0], "endColumn");
     });
 
-    it("should emit correct line numbers with leading comments", () => {
+    it("should emit correct line numbers with leading comments", async () => {
         const code = [
             "# Hello, world!",
             "",
@@ -192,76 +211,76 @@ describe("plugin", () => {
             "var foo = blah",
             "```"
         ].join("\n");
-        const report = cli.executeOnText(code, "test.md");
+        const results = await eslint.lintText(code, { filePath: "test.md" });
 
-        assert.strictEqual(report.results[0].messages[0].message, "'baz' is not defined.");
-        assert.strictEqual(report.results[0].messages[0].line, 7);
-        assert.strictEqual(report.results[0].messages[0].endLine, 7);
-        assert.strictEqual(report.results[0].messages[1].message, "'blah' is not defined.");
-        assert.strictEqual(report.results[0].messages[1].line, 11);
-        assert.strictEqual(report.results[0].messages[1].endLine, 11);
+        assert.strictEqual(results[0].messages[0].message, "'baz' is not defined.");
+        assert.strictEqual(results[0].messages[0].line, 7);
+        assert.strictEqual(results[0].messages[0].endLine, 7);
+        assert.strictEqual(results[0].messages[1].message, "'blah' is not defined.");
+        assert.strictEqual(results[0].messages[1].line, 11);
+        assert.strictEqual(results[0].messages[1].endLine, 11);
     });
 
-    it("should run on .mkdn files", () => {
-        const report = cli.executeOnText(shortText, "test.mkdn");
+    it("should run on .mkdn files", async () => {
+        const results = await eslint.lintText(shortText, { filePath: "test.mkdn" });
 
-        assert.strictEqual(report.results.length, 1);
-        assert.strictEqual(report.results[0].messages.length, 1);
-        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
-        assert.strictEqual(report.results[0].messages[0].line, 2);
+        assert.strictEqual(results.length, 1);
+        assert.strictEqual(results[0].messages.length, 1);
+        assert.strictEqual(results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(results[0].messages[0].line, 2);
     });
 
-    it("should run on .mdown files", () => {
-        const report = cli.executeOnText(shortText, "test.mdown");
+    it("should run on .mdown files", async () => {
+        const results = await eslint.lintText(shortText, { filePath: "test.mdown" });
 
-        assert.strictEqual(report.results.length, 1);
-        assert.strictEqual(report.results[0].messages.length, 1);
-        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
-        assert.strictEqual(report.results[0].messages[0].line, 2);
+        assert.strictEqual(results.length, 1);
+        assert.strictEqual(results[0].messages.length, 1);
+        assert.strictEqual(results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(results[0].messages[0].line, 2);
     });
 
-    it("should run on .markdown files", () => {
-        const report = cli.executeOnText(shortText, "test.markdown");
+    it("should run on .markdown files", async () => {
+        const results = await eslint.lintText(shortText, { filePath: "test.markdown" });
 
-        assert.strictEqual(report.results.length, 1);
-        assert.strictEqual(report.results[0].messages.length, 1);
-        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
-        assert.strictEqual(report.results[0].messages[0].line, 2);
+        assert.strictEqual(results.length, 1);
+        assert.strictEqual(results[0].messages.length, 1);
+        assert.strictEqual(results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(results[0].messages[0].line, 2);
     });
 
-    it("should run on files with any custom extension", () => {
-        const report = cli.executeOnText(shortText, "test.custom");
+    it("should run on files with any custom extension", async () => {
+        const results = await eslint.lintText(shortText, { filePath: "test.custom" });
 
-        assert.strictEqual(report.results.length, 1);
-        assert.strictEqual(report.results[0].messages.length, 1);
-        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
-        assert.strictEqual(report.results[0].messages[0].line, 2);
+        assert.strictEqual(results.length, 1);
+        assert.strictEqual(results[0].messages.length, 1);
+        assert.strictEqual(results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(results[0].messages[0].line, 2);
     });
 
-    it("should extract blocks and remap messages", () => {
-        const report = cli.executeOnFiles([path.resolve(__dirname, "../fixtures/long.md")]);
+    it("should extract blocks and remap messages", async () => {
+        const results = await eslint.lintFiles([path.resolve(__dirname, "../fixtures/long.md")]);
 
-        assert.strictEqual(report.results.length, 1);
-        assert.strictEqual(report.results[0].messages.length, 5);
-        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
-        assert.strictEqual(report.results[0].messages[0].line, 10);
-        assert.strictEqual(report.results[0].messages[0].column, 1);
-        assert.strictEqual(report.results[0].messages[1].message, "Unexpected console statement.");
-        assert.strictEqual(report.results[0].messages[1].line, 16);
-        assert.strictEqual(report.results[0].messages[1].column, 5);
-        assert.strictEqual(report.results[0].messages[2].message, "Unexpected console statement.");
-        assert.strictEqual(report.results[0].messages[2].line, 24);
-        assert.strictEqual(report.results[0].messages[2].column, 1);
-        assert.strictEqual(report.results[0].messages[3].message, "Strings must use singlequote.");
-        assert.strictEqual(report.results[0].messages[3].line, 38);
-        assert.strictEqual(report.results[0].messages[3].column, 13);
-        assert.strictEqual(report.results[0].messages[4].message, "Parsing error: Unexpected character '@'");
-        assert.strictEqual(report.results[0].messages[4].line, 46);
-        assert.strictEqual(report.results[0].messages[4].column, 2);
+        assert.strictEqual(results.length, 1);
+        assert.strictEqual(results[0].messages.length, 5);
+        assert.strictEqual(results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(results[0].messages[0].line, 10);
+        assert.strictEqual(results[0].messages[0].column, 1);
+        assert.strictEqual(results[0].messages[1].message, "Unexpected console statement.");
+        assert.strictEqual(results[0].messages[1].line, 16);
+        assert.strictEqual(results[0].messages[1].column, 5);
+        assert.strictEqual(results[0].messages[2].message, "Unexpected console statement.");
+        assert.strictEqual(results[0].messages[2].line, 24);
+        assert.strictEqual(results[0].messages[2].column, 1);
+        assert.strictEqual(results[0].messages[3].message, "Strings must use singlequote.");
+        assert.strictEqual(results[0].messages[3].line, 38);
+        assert.strictEqual(results[0].messages[3].column, 13);
+        assert.strictEqual(results[0].messages[4].message, "Parsing error: Unexpected character '@'");
+        assert.strictEqual(results[0].messages[4].line, 46);
+        assert.strictEqual(results[0].messages[4].column, 2);
     });
 
     // https://github.com/eslint/eslint-plugin-markdown/issues/181
-    it("should work when called on nested code blocks in the same file", () => {
+    it("should work when called on nested code blocks in the same file", async () => {
 
         /*
           * As of this writing, the nested code block, though it uses the same
@@ -286,22 +305,21 @@ describe("plugin", () => {
             "```",
             "````"
         ].join("\n");
-        const recursiveCli = initCLI("eslintrc.json", {
+        const recursiveCli = initESLint("eslintrc.json", {
             extensions: [".js", ".markdown", ".md"]
         });
-        const report = recursiveCli.executeOnText(code, "test.md");
+        const results = await recursiveCli.lintText(code, { filePath: "test.md" });
 
-        assert.strictEqual(report.results.length, 1);
-        assert.strictEqual(report.results[0].messages.length, 2);
-        assert.strictEqual(report.results[0].messages[0].message, "Unexpected console statement.");
-        assert.strictEqual(report.results[0].messages[0].line, 10);
-        assert.strictEqual(report.results[0].messages[1].message, "Strings must use doublequote.");
-        assert.strictEqual(report.results[0].messages[1].line, 10);
+        assert.strictEqual(results.length, 1);
+        assert.strictEqual(results[0].messages.length, 2);
+        assert.strictEqual(results[0].messages[0].message, "Unexpected console statement.");
+        assert.strictEqual(results[0].messages[0].line, 10);
+        assert.strictEqual(results[0].messages[1].message, "Strings must use doublequote.");
+        assert.strictEqual(results[0].messages[1].line, 10);
     });
 
     describe("configuration comments", () => {
-
-        it("apply only to the code block immediately following", () => {
+        it("apply only to the code block immediately following", async () => {
             const code = [
                 "<!-- eslint \"quotes\": [\"error\", \"single\"] -->",
                 "<!-- eslint-disable no-console -->",
@@ -320,22 +338,22 @@ describe("plugin", () => {
                 "console.log(double);",
                 "```"
             ].join("\n");
-            const report = cli.executeOnText(code, "test.md");
+            const results = await eslint.lintText(code, { filePath: "test.md" });
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].messages.length, 4);
-            assert.strictEqual(report.results[0].messages[0].message, "Strings must use singlequote.");
-            assert.strictEqual(report.results[0].messages[0].line, 7);
-            assert.strictEqual(report.results[0].messages[1].message, "Strings must use doublequote.");
-            assert.strictEqual(report.results[0].messages[1].line, 12);
-            assert.strictEqual(report.results[0].messages[2].message, "Unexpected console statement.");
-            assert.strictEqual(report.results[0].messages[2].line, 13);
-            assert.strictEqual(report.results[0].messages[3].message, "Unexpected console statement.");
-            assert.strictEqual(report.results[0].messages[3].line, 15);
+            assert.strictEqual(results.length, 1);
+            assert.strictEqual(results[0].messages.length, 4);
+            assert.strictEqual(results[0].messages[0].message, "Strings must use singlequote.");
+            assert.strictEqual(results[0].messages[0].line, 7);
+            assert.strictEqual(results[0].messages[1].message, "Strings must use doublequote.");
+            assert.strictEqual(results[0].messages[1].line, 12);
+            assert.strictEqual(results[0].messages[2].message, "Unexpected console statement.");
+            assert.strictEqual(results[0].messages[2].line, 13);
+            assert.strictEqual(results[0].messages[3].message, "Unexpected console statement.");
+            assert.strictEqual(results[0].messages[3].line, 15);
         });
 
         // https://github.com/eslint/eslint-plugin-markdown/issues/78
-        it("preserves leading empty lines", () => {
+        it("preserves leading empty lines", async () => {
             const code = [
                 "<!-- eslint lines-around-directive: ['error', 'never'] -->",
                 "",
@@ -344,22 +362,21 @@ describe("plugin", () => {
                 "\"use strict\";",
                 "```"
             ].join("\n");
-            const report = cli.executeOnText(code, "test.md");
+            const results = await eslint.lintText(code, { filePath: "test.md" });
 
-            assert.strictEqual(report.results.length, 1);
-            assert.strictEqual(report.results[0].messages.length, 1);
-            assert.strictEqual(report.results[0].messages[0].message, "Unexpected newline before \"use strict\" directive.");
-            assert.strictEqual(report.results[0].messages[0].line, 5);
+            assert.strictEqual(results.length, 1);
+            assert.strictEqual(results[0].messages.length, 1);
+            assert.strictEqual(results[0].messages[0].message, "Unexpected newline before \"use strict\" directive.");
+            assert.strictEqual(results[0].messages[0].line, 5);
         });
     });
 
     describe("should fix code", () => {
-
         before(() => {
-            cli = initCLI("eslintrc.json", { fix: true });
+            eslint = initESLint("eslintrc.json", { fix: true });
         });
 
-        it("in the simplest case", () => {
+        it("in the simplest case", async () => {
             const input = [
                 "This is Markdown.",
                 "",
@@ -374,13 +391,13 @@ describe("plugin", () => {
                 "console.log(\"Hello, world!\")",
                 "```"
             ].join("\n");
-            const report = cli.executeOnText(input, "test.md");
-            const actual = report.results[0].output;
+            const results = await eslint.lintText(input, { filePath: "test.md" });
+            const actual = results[0].output;
 
             assert.strictEqual(actual, expected);
         });
 
-        it("across multiple lines", () => {
+        it("across multiple lines", async () => {
             const input = [
                 "This is Markdown.",
                 "",
@@ -397,13 +414,13 @@ describe("plugin", () => {
                 "console.log(\"Hello, world!\")",
                 "```"
             ].join("\n");
-            const report = cli.executeOnText(input, "test.md");
-            const actual = report.results[0].output;
+            const results = await eslint.lintText(input, { filePath: "test.md" });
+            const actual = results[0].output;
 
             assert.strictEqual(actual, expected);
         });
 
-        it("across multiple blocks", () => {
+        it("across multiple blocks", async () => {
             const input = [
                 "This is Markdown.",
                 "",
@@ -426,13 +443,13 @@ describe("plugin", () => {
                 "console.log(\"Hello, world!\")",
                 "```"
             ].join("\n");
-            const report = cli.executeOnText(input, "test.md");
-            const actual = report.results[0].output;
+            const results = await eslint.lintText(input, { filePath: "test.md" });
+            const actual = results[0].output;
 
             assert.strictEqual(actual, expected);
         });
 
-        it("with lines indented by spaces", () => {
+        it("with lines indented by spaces", async () => {
             const input = [
                 "This is Markdown.",
                 "",
@@ -451,13 +468,13 @@ describe("plugin", () => {
                 "}",
                 "```"
             ].join("\n");
-            const report = cli.executeOnText(input, "test.md");
-            const actual = report.results[0].output;
+            const results = await eslint.lintText(input, { filePath: "test.md" });
+            const actual = results[0].output;
 
             assert.strictEqual(actual, expected);
         });
 
-        it("with lines indented by tabs", () => {
+        it("with lines indented by tabs", async () => {
             const input = [
                 "This is Markdown.",
                 "",
@@ -476,13 +493,13 @@ describe("plugin", () => {
                 "}",
                 "```"
             ].join("\n");
-            const report = cli.executeOnText(input, "test.md");
-            const actual = report.results[0].output;
+            const results = await eslint.lintText(input, { filePath: "test.md" });
+            const actual = results[0].output;
 
             assert.strictEqual(actual, expected);
         });
 
-        it("at the very start of a block", () => {
+        it("at the very start of a block", async () => {
             const input = [
                 "This is Markdown.",
                 "",
@@ -497,13 +514,13 @@ describe("plugin", () => {
                 "\"use strict\"",
                 "```"
             ].join("\n");
-            const report = cli.executeOnText(input, "test.md");
-            const actual = report.results[0].output;
+            const results = await eslint.lintText(input, { filePath: "test.md" });
+            const actual = results[0].output;
 
             assert.strictEqual(actual, expected);
         });
 
-        it("in blocks with extra backticks", () => {
+        it("in blocks with extra backticks", async () => {
             const input = [
                 "This is Markdown.",
                 "",
@@ -518,13 +535,13 @@ describe("plugin", () => {
                 "console.log(\"Hello, world!\")",
                 "````"
             ].join("\n");
-            const report = cli.executeOnText(input, "test.md");
-            const actual = report.results[0].output;
+            const results = await eslint.lintText(input, { filePath: "test.md" });
+            const actual = results[0].output;
 
             assert.strictEqual(actual, expected);
         });
 
-        it("with configuration comments", () => {
+        it("with configuration comments", async () => {
             const input = [
                 "<!-- eslint semi: 2 -->",
                 "",
@@ -539,13 +556,13 @@ describe("plugin", () => {
                 "console.log(\"Hello, world!\");",
                 "```"
             ].join("\n");
-            const report = cli.executeOnText(input, "test.md");
-            const actual = report.results[0].output;
+            const results = await eslint.lintText(input, { filePath: "test.md" });
+            const actual = results[0].output;
 
             assert.strictEqual(actual, expected);
         });
 
-        it("inside a list single line", () => {
+        it("inside a list single line", async () => {
             const input = [
                 "- Inside a list",
                 "",
@@ -560,13 +577,13 @@ describe("plugin", () => {
                 "  console.log(\"Hello, world!\")",
                 "  ```"
             ].join("\n");
-            const report = cli.executeOnText(input, "test.md");
-            const actual = report.results[0].output;
+            const results = await eslint.lintText(input, { filePath: "test.md" });
+            const actual = results[0].output;
 
             assert.strictEqual(actual, expected);
         });
 
-        it("inside a list multi line", () => {
+        it("inside a list multi line", async () => {
             const input = [
                 "- Inside a list",
                 "",
@@ -591,13 +608,13 @@ describe("plugin", () => {
                 "   }",
                 "   ```"
             ].join("\n");
-            const report = cli.executeOnText(input, "test.md");
-            const actual = report.results[0].output;
+            const results = await eslint.lintText(input, { filePath: "test.md" });
+            const actual = results[0].output;
 
             assert.strictEqual(actual, expected);
         });
 
-        it("with multiline autofix and CRLF", () => {
+        it("with multiline autofix and CRLF", async () => {
             const input = [
                 "This is Markdown.",
                 "",
@@ -618,15 +635,15 @@ describe("plugin", () => {
                 "world!\")",
                 "```"
             ].join("\r\n");
-            const report = cli.executeOnText(input, "test.md");
-            const actual = report.results[0].output;
+            const results = await eslint.lintText(input, { filePath: "test.md" });
+            const actual = results[0].output;
 
             assert.strictEqual(actual, expected);
         });
 
         // https://spec.commonmark.org/0.28/#fenced-code-blocks
         describe("when indented", () => {
-            it("by one space", () => {
+            it("by one space", async () => {
                 const input = [
                     "This is Markdown.",
                     "",
@@ -643,13 +660,13 @@ describe("plugin", () => {
                     " console.log(\"Hello, world!\")",
                     " ```"
                 ].join("\n");
-                const report = cli.executeOnText(input, "test.md");
-                const actual = report.results[0].output;
+                const results = await eslint.lintText(input, { filePath: "test.md" });
+                const actual = results[0].output;
 
                 assert.strictEqual(actual, expected);
             });
 
-            it("by two spaces", () => {
+            it("by two spaces", async () => {
                 const input = [
                     "This is Markdown.",
                     "",
@@ -666,13 +683,13 @@ describe("plugin", () => {
                     "  console.log(\"Hello, world!\")",
                     "  ```"
                 ].join("\n");
-                const report = cli.executeOnText(input, "test.md");
-                const actual = report.results[0].output;
+                const results = await eslint.lintText(input, { filePath: "test.md" });
+                const actual = results[0].output;
 
                 assert.strictEqual(actual, expected);
             });
 
-            it("by three spaces", () => {
+            it("by three spaces", async () => {
                 const input = [
                     "This is Markdown.",
                     "",
@@ -689,13 +706,13 @@ describe("plugin", () => {
                     "   console.log(\"Hello, world!\")",
                     "   ```"
                 ].join("\n");
-                const report = cli.executeOnText(input, "test.md");
-                const actual = report.results[0].output;
+                const results = await eslint.lintText(input, { filePath: "test.md" });
+                const actual = results[0].output;
 
                 assert.strictEqual(actual, expected);
             });
 
-            it("and the closing fence is differently indented", () => {
+            it("and the closing fence is differently indented", async () => {
                 const input = [
                     "This is Markdown.",
                     "",
@@ -712,13 +729,13 @@ describe("plugin", () => {
                     " console.log(\"Hello, world!\")",
                     "   ```"
                 ].join("\n");
-                const report = cli.executeOnText(input, "test.md");
-                const actual = report.results[0].output;
+                const results = await eslint.lintText(input, { filePath: "test.md" });
+                const actual = results[0].output;
 
                 assert.strictEqual(actual, expected);
             });
 
-            it("underindented", () => {
+            it("underindented", async () => {
                 const input = [
                     "This is Markdown.",
                     "",
@@ -737,13 +754,13 @@ describe("plugin", () => {
                     "     console.log(\"Hello, world!\")",
                     "   ```"
                 ].join("\n");
-                const report = cli.executeOnText(input, "test.md");
-                const actual = report.results[0].output;
+                const results = await eslint.lintText(input, { filePath: "test.md" });
+                const actual = results[0].output;
 
                 assert.strictEqual(actual, expected);
             });
 
-            it("multiline autofix", () => {
+            it("multiline autofix", async () => {
                 const input = [
                     "This is Markdown.",
                     "",
@@ -764,13 +781,13 @@ describe("plugin", () => {
                     "   world!\")",
                     "   ```"
                 ].join("\n");
-                const report = cli.executeOnText(input, "test.md");
-                const actual = report.results[0].output;
+                const results = await eslint.lintText(input, { filePath: "test.md" });
+                const actual = results[0].output;
 
                 assert.strictEqual(actual, expected);
             });
 
-            it("underindented multiline autofix", () => {
+            it("underindented multiline autofix", async () => {
                 const input = [
                     "   ```js",
                     " console.log('Hello, world!')",
@@ -792,13 +809,13 @@ describe("plugin", () => {
                     "     console.log(\"Hello, world!\")",
                     "   ```"
                 ].join("\n");
-                const report = cli.executeOnText(input, "test.md");
-                const actual = report.results[0].output;
+                const results = await eslint.lintText(input, { filePath: "test.md" });
+                const actual = results[0].output;
 
                 assert.strictEqual(actual, expected);
             });
 
-            it("multiline autofix in blockquote", () => {
+            it("multiline autofix in blockquote", async () => {
                 const input = [
                     "This is Markdown.",
                     "",
@@ -819,13 +836,13 @@ describe("plugin", () => {
                     ">   world!\")",
                     ">   ```"
                 ].join("\n");
-                const report = cli.executeOnText(input, "test.md");
-                const actual = report.results[0].output;
+                const results = await eslint.lintText(input, { filePath: "test.md" });
+                const actual = results[0].output;
 
                 assert.strictEqual(actual, expected);
             });
 
-            it("multiline autofix in nested blockquote", () => {
+            it("multiline autofix in nested blockquote", async () => {
                 const input = [
                     "This is Markdown.",
                     "",
@@ -857,13 +874,13 @@ describe("plugin", () => {
                     "> >    world!\")",
                     "> >   ```"
                 ].join("\n");
-                const report = cli.executeOnText(input, "test.md");
-                const actual = report.results[0].output;
+                const results = await eslint.lintText(input, { filePath: "test.md" });
+                const actual = results[0].output;
 
                 assert.strictEqual(actual, expected);
             });
 
-            it("by one space with comments", () => {
+            it("by one space with comments", async () => {
                 const input = [
                     "This is Markdown.",
                     "",
@@ -886,13 +903,13 @@ describe("plugin", () => {
                     " console.log(\"Hello, world!\");",
                     " ```"
                 ].join("\n");
-                const report = cli.executeOnText(input, "test.md");
-                const actual = report.results[0].output;
+                const results = await eslint.lintText(input, { filePath: "test.md" });
+                const actual = results[0].output;
 
                 assert.strictEqual(actual, expected);
             });
 
-            it("unevenly by two spaces with comments", () => {
+            it("unevenly by two spaces with comments", async () => {
                 const input = [
                     "This is Markdown.",
                     "",
@@ -917,14 +934,14 @@ describe("plugin", () => {
                     "   console.log(\"Hello, world!\");",
                     "  ```"
                 ].join("\n");
-                const report = cli.executeOnText(input, "test.md");
-                const actual = report.results[0].output;
+                const results = await eslint.lintText(input, { filePath: "test.md" });
+                const actual = results[0].output;
 
                 assert.strictEqual(actual, expected);
             });
 
             describe("inside a list", () => {
-                it("normally", () => {
+                it("normally", async () => {
                     const input = [
                         "- This is a Markdown list.",
                         "",
@@ -941,13 +958,13 @@ describe("plugin", () => {
                         "  console.log(\"Hello, world!\")",
                         "  ```"
                     ].join("\n");
-                    const report = cli.executeOnText(input, "test.md");
-                    const actual = report.results[0].output;
+                    const results = await eslint.lintText(input, { filePath: "test.md" });
+                    const actual = results[0].output;
 
                     assert.strictEqual(actual, expected);
                 });
 
-                it("by one space", () => {
+                it("by one space", async () => {
                     const input = [
                         "- This is a Markdown list.",
                         "",
@@ -964,15 +981,15 @@ describe("plugin", () => {
                         "   console.log(\"Hello, world!\")",
                         "   ```"
                     ].join("\n");
-                    const report = cli.executeOnText(input, "test.md");
-                    const actual = report.results[0].output;
+                    const results = await eslint.lintText(input, { filePath: "test.md" });
+                    const actual = results[0].output;
 
                     assert.strictEqual(actual, expected);
                 });
             });
         });
 
-        it("with multiple rules", () => {
+        it("with multiple rules", async () => {
             const input = [
                 "## Hello!",
                 "",
@@ -1007,8 +1024,8 @@ describe("plugin", () => {
                 "};",
                 "```"
             ].join("\n");
-            const report = cli.executeOnText(input, "test.md");
-            const actual = report.results[0].output;
+            const results = await eslint.lintText(input, { filePath: "test.md" });
+            const actual = results[0].output;
 
             assert.strictEqual(actual, expected);
         });
