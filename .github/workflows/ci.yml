@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
     - name: Install Node.js
       uses: actions/setup-node@v2
     - name: Install Packages
@@ -27,23 +27,33 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node-version: ["8.10.0", 8.x, 10.x, 12.x, 13.x, 14.x]
+        eslint: [6, 7]
+        node: ['8.10.0', 8, 10, 12, 14, 16]
+        exclude:
+          - eslint: 7
+            node: 8
+          - eslint: 7
+            node: '8.10.0'
         include:
-        - os: windows-latest
-          node: "12.x"
-        - os: macOS-latest
-          node: "12.x"
+          - os: windows-latest
+            eslint: 7
+            node: 16
+          - os: macOS-latest
+            eslint: 7
+            node: 16
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
-    - name: Install Node.js ${{ matrix.node-version }}
+      uses: actions/checkout@v2
+    - name: Install Node.js ${{ matrix.node }}
       uses: actions/setup-node@v2
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: ${{ matrix.node }}
     - name: Install Packages
       run: npm install
       env:
         CI: true
+    - name: Install ESLint@${{  matrix.eslint  }}
+      run: npm install eslint@${{  matrix.eslint  }}
     - name: Test
       run: npm run test-cov
