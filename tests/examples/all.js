@@ -5,9 +5,13 @@ const fs = require("fs");
 const path = require("path");
 const semver = require("semver");
 
-const examples = path.resolve(__dirname, "../../examples/");
-for (const example of fs.readdirSync(examples)) {
-    const cwd = path.join(examples, example);
+const examplesDir = path.resolve(__dirname, "../../examples/");
+const examples = fs.readdirSync(examplesDir)
+    .filter(exampleDir => fs.statSync(path.join(examplesDir, exampleDir)).isDirectory())
+    .filter(exampleDir => fs.existsSync(path.join(examplesDir, exampleDir, "package.json")));
+
+for (const example of examples) {
+    const cwd = path.join(examplesDir, example);
 
     // The plugin officially supports ESLint as early as v6, but the examples
     // use ESLint v7, which has a higher minimum Node.js version than does v6.
