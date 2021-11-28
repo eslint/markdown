@@ -38,10 +38,10 @@
   ],
   "devDependencies": {
     "chai": "^4.2.0",
-    "eslint": "^6.8.0",
-    "eslint-config-eslint": "^6.0.0",
-    "eslint-plugin-jsdoc": "^15.9.5",
-    "eslint-plugin-node": "^9.0.0",
+    "eslint": "^7.32.0",
+    "eslint-config-eslint": "^7.0.0",
+    "eslint-plugin-jsdoc": "^37.0.3",
+    "eslint-plugin-node": "^11.1.0",
     "eslint-release": "^3.1.2",
     "mocha": "^6.2.2",
     "nyc": "^14.1.1"
@@ -53,6 +53,6 @@
     "eslint": ">=6.0.0"
   },
   "engines": {
-    "node": "^8.10.0 || ^10.12.0 || >= 12.0.0"
+    "node": "^8.10.0 || ^10.12.0 || >=12.0.0"
   }
 }
