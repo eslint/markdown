@@ -11,7 +11,9 @@ const fs = require("fs");
 const path = require("path");
 
 const examplesDir = path.resolve(__dirname, "examples");
-const examples = fs.readdirSync(examplesDir);
+const examples = fs.readdirSync(examplesDir)
+    .filter(exampleDir => fs.statSync(path.join(examplesDir, exampleDir)).isDirectory())
+    .filter(exampleDir => fs.existsSync(path.join(examplesDir, exampleDir, "package.json")));
 
 for (const example of examples) {
     childProcess.execSync("npm install", {
