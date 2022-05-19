@@ -1,7 +1,8 @@
 # eslint-plugin-markdown
 
 [![npm Version](https://img.shields.io/npm/v/eslint-plugin-markdown.svg)](https://www.npmjs.com/package/eslint-plugin-markdown)
-[![Build Status](https://img.shields.io/github/workflow/status/eslint/eslint-plugin-markdown/CI/main.svg)](https://github.com/eslint/eslint-plugin-markdown/actions)
+[![Downloads](https://img.shields.io/npm/dm/eslint-plugin-markdown.svg)](https://www.npmjs.com/package/eslint-plugin-markdown)
+[![Build Status](https://github.com/eslint/eslint-plugin-markdown/workflows/CI/badge.svg)](https://github.com/eslint/eslint-plugin-markdown/actions)
 
 Lint JS, JSX, TypeScript, and more inside Markdown.
 
