@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, bisect-node-16-breakage]
   pull_request:
-    branches: [main]
+    branches: [main, bisect-node-16-breakage]
 
 jobs:
   lint:
@@ -29,26 +29,9 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        eslint: [6, 7, 8]
-        node: [8.10.0, 8, 10, 12, 14, 16]
-        exclude:
-          - eslint: 8
-            node: 10
-          - eslint: 8
-            node: 8
-          - eslint: 8
-            node: 8.10.0
-          - eslint: 7
-            node: 8
-          - eslint: 7
-            node: 8.10.0
-        include:
-          - os: windows-latest
-            eslint: 7
-            node: 16
-          - os: macOS-latest
-            eslint: 7
-            node: 16
+        eslint: [8]
+        node: [16]
+        npm: [8.5.5, 8.6, 8.7, 8.8, 8.9, 8.10.0, 8.11.0, 8.12.0, 8.12.1, 8.12.2, 8]
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
@@ -57,6 +40,8 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node }}
+    - name: Install npm ${{ matrix.npm }}
+      run: npm install -g npm@${{ matrix.npm }}
     - name: Install Packages
       run: npm install
       env:
