@@ -82,7 +82,7 @@ describe("recommended config", () => {
                 // eslint-disable-next-line no-invalid-this
                 this.timeout(30000);
 
-                execSync("npm link && npm link eslint-plugin-markdown");
+                execSync("npm link && npm link eslint-plugin-markdown --legacy-peer-deps");
             } else {
                 throw error;
             }
