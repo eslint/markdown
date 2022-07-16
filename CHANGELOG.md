@@ -1,3 +1,19 @@
+v3.0.0 - July 16, 2022
+
+* [`558ae3c`](https://github.com/eslint/eslint-plugin-markdown/commit/558ae3ca2b2b35f7a389aa37389d322dc3d3630c) chore: add node v18 (#205) (Amaresh  S M)
+* [`071fa66`](https://github.com/eslint/eslint-plugin-markdown/commit/071fa661875e4bd88a91dcd39eee9276bf3f2b0a) feat!: drop node v8 and v10 (#203) (Amaresh  S M)
+* [`f186730`](https://github.com/eslint/eslint-plugin-markdown/commit/f186730bd7420e251da6469f07f3d873d9259abd) ci: update github actions (#207) (Deepshika S)
+* [`6570c82`](https://github.com/eslint/eslint-plugin-markdown/commit/6570c829155a2ca802195c1efd3623e62ca18f4e) ci: Work around npm behavior changes to fix CI on main (#206) (Brandon Mills)
+* [`87c2b53`](https://github.com/eslint/eslint-plugin-markdown/commit/87c2b536fd80b15e134766d92b90048ae45cbe1f) docs: update badges (#202) (Milos Djermanovic)
+* [`2fd5b89`](https://github.com/eslint/eslint-plugin-markdown/commit/2fd5b89a589a5b25677983c0228bd2a27e60ba00) chore: add tests for ESLint 8 (#195) (Michaël De Boey)
+* [`8db0978`](https://github.com/eslint/eslint-plugin-markdown/commit/8db097895222a8b0ac0e85b68728829dc508701f) chore: Check for package.json in examples (#200) (Brandon Mills)
+* [`b695396`](https://github.com/eslint/eslint-plugin-markdown/commit/b69539679a2bd4f9dc1b0b52bae68fba85749187) test: test with `ESLint` instead of `CLIEngine` when available (#198) (Michaël De Boey)
+* [`e1ddcc5`](https://github.com/eslint/eslint-plugin-markdown/commit/e1ddcc5a274bbb4902b8ac8029928a3b2aff5a51) ci: use node `v16` (#199) (Nitin Kumar)
+* [`8f590fc`](https://github.com/eslint/eslint-plugin-markdown/commit/8f590fc3bc61df4e72a06da3e6bf3264df9eea54) chore: update `devDependencies` (#197) (Michaël De Boey)
+* [`3667566`](https://github.com/eslint/eslint-plugin-markdown/commit/36675663b83bf02bcde5b7bd8895f7fd4d0b7451) chore: test all supported ESLint versions (#196) (Michaël De Boey)
+* [`ecae4fe`](https://github.com/eslint/eslint-plugin-markdown/commit/ecae4fe7ee53afeefbb8a2627b6bde38a4e5d297) Chore: ignore pnpm-lock.yaml (#193) (Nitin Kumar)
+* [`ffdb245`](https://github.com/eslint/eslint-plugin-markdown/commit/ffdb24573dff0728342e21c44013fa78882352d9) Chore: use `actions/setup-node@v2` in CI (#192) (Nitin Kumar)
+
 v2.2.1 - September 11, 2021
 
 * [`3a40160`](https://github.com/eslint/eslint-plugin-markdown/commit/3a401606cb2ac4dae6b95720799ed1c611af32d0) Fix: `message.line` could be `undefined` (#191) (JounQin)
