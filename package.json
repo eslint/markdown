@@ -31,10 +31,19 @@
     "publish-release": "eslint-publish-release"
   },
   "main": "index.js",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js"
+    },
+    "./recommended": "./lib/configs/recommended.mjs"
+  },
   "files": [
     "index.js",
+    "index.mjs",
     "lib/index.js",
-    "lib/processor.js"
+    "lib/processor.js",
+    "lib/configs/recommended.mjs"
   ],
   "devDependencies": {
     "chai": "^4.2.0",
