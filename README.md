@@ -224,7 +224,7 @@ If your `eslint.config.js` is CJS, change it to ESM.
 
 Extending the the `recommended` config will enable the Markdown processor on all .md files.
 
-```js
+```ts
 import markdown from 'eslint-plugin-markdown/recommended'
 
 export default [
@@ -241,7 +241,7 @@ If the `recommended` shareable does not fit to you, use plugin directly and conf
 The default export of `eslint-plugin-markdown` is a plugin object.
 A basic usage skeleton would be like this.
 
-```js
+```ts
 import markdown from "eslint-plugin-markdown"
 
 export default [
