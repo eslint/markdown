@@ -23,7 +23,7 @@ Install the plugin alongside ESLint v6 or greater:
 npm install --save-dev eslint eslint-plugin-markdown
 ```
 
-### Configuring
+### Configuring (legacy: `.eslintrc*`)
 
 Extending the `plugin:markdown/recommended` config will enable the Markdown processor on all `.md` files:
 
@@ -200,6 +200,76 @@ module.exports = {
     ]
 };
 ```
+
+### Configuring (new: `eslint.config.js`)
+
+From [`v8.21.0`](https://github.com/eslint/eslint/releases/tag/v8.21.0), eslint announced a new config system.
+In the new system, `.eslintrc*` is no longer used. `eslint.config.js` would be the default config file name.
+In eslint `v8`, the legacy system (`.eslintrc*`) would still be supported, while in eslint `v9`, only the new system would be supported.
+
+And from [`v8.23.0`](https://github.com/eslint/eslint/releases/tag/v8.23.0), eslint CLI starts to look up `eslint.config.js`.
+**So, if your eslint is `>=8.23.0`, you're 100% ready to use the new config system.**
+
+You might want to check out the official blog posts,
+
+- <https://eslint.org/blog/2022/08/new-config-system-part-1/>
+- <https://eslint.org/blog/2022/08/new-config-system-part-2/>
+- <https://eslint.org/blog/2022/08/new-config-system-part-3/>
+
+and the [official docs](https://eslint.org/docs/latest/user-guide/configuring/configuration-files-new).
+
+If your `eslint.config.js` is CJS, change it to ESM.
+
+### Shareable config
+
+Extending the the `recommended` config will enable the Markdown processor on all .md files.
+
+```js
+import markdown from 'eslint-plugin-markdown/recommended'
+
+export default [
+  // --- snip ---
+  ...markdown,
+  // --- snip ---
+]
+```
+
+### Plugin
+
+The default export of `eslint-plugin-markdown` is a plugin object.
+
+For example, a basic skeleton would be like this.
+
+```js
+import markdown from "eslint-plugin-markdown"
+
+export default [
+  {
+    files: ["*.md"],
+    plugins: {
+      markdown
+    },
+    processor: "markdown/markdown"
+  },
+  {
+    files: ["**/*.md/*.js"],
+    plugins: {
+      markdown
+    },
+    languageOptions: {
+      parserOptions: {
+        // ...
+      },
+    },
+    // ...
+    rules: { 
+      // ...
+    },
+  },
+]
+```
+
+For more usage tips, refer to [Advanced Configuration](#advanced-configuration), [Frequently-Disabled Rules](#frequently-disabled-rules), [strict-mode](#strict-mode), [Unsatisfiable Rules](#unsatisfiable-rules), and [Migrating from `eslint-plugin-markdown` v1](#migrating-from-eslint-plugin-markdown-v1). Those usage details are different as they are based on the legacy config system, but the concepts behind of it is same between the legacy and the new. Thus you will be able to understand how to adapt it to the new config system.
 
 ### Running
 
