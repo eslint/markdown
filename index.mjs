@@ -1,6 +1,5 @@
-import processor from './lib/processor.js'
+import processor from "./lib/processor.js";
 
 export default {
     processor
-}
-
+};
