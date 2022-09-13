@@ -236,9 +236,10 @@ export default [
 
 ### Plugin
 
-The default export of `eslint-plugin-markdown` is a plugin object.
+If the `recommended` shareable does not fit to you, use plugin directly and configure from the ground up.
 
-For example, a basic skeleton would be like this.
+The default export of `eslint-plugin-markdown` is a plugin object.
+A basic usage skeleton would be like this.
 
 ```js
 import markdown from "eslint-plugin-markdown"
