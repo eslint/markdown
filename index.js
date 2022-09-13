@@ -1,8 +1,7 @@
-/**
- * @fileoverview Exports the processor.
- * @author Brandon Mills
- */
-
 "use strict";
 
-module.exports = require("./lib");
+const processor = require("./lib/processor");
+
+module.exports = {
+    processor
+};

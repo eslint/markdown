@@ -9,7 +9,7 @@ const assert = require("chai").assert;
 const execSync = require("child_process").execSync;
 const { CLIEngine, ESLint } = require("eslint");
 const path = require("path");
-const plugin = require("../..");
+const plugin = require("../../legacy");
 
 /**
  * @typedef {import('eslint/lib/cli-engine/cli-engine').CLIEngineOptions} CLIEngineOptions

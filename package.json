@@ -33,9 +33,10 @@
   "main": "index.js",
   "exports": {
     ".": {
-      "import": "./index.mjs",
-      "require": "./index.js"
+      "import": "./index.js",
+      "require": "./legacy.js"
     },
+    "./new": "./index.js",
     "./recommended": "./lib/configs/recommended.mjs"
   },
   "files": [

@@ -218,14 +218,12 @@ You might want to check out the official blog posts,
 
 and the [official docs](https://eslint.org/docs/latest/user-guide/configuring/configuration-files-new).
 
-If your `eslint.config.js` is CJS, change it to ESM.
-
 ### Shareable config
 
 Extending the the `recommended` config will enable the Markdown processor on all .md files.
 
 ```ts
-import markdown from 'eslint-plugin-markdown/recommended'
+import markdown from 'eslint-plugin-markdown/recommended' // <== trailing '/recommended'
 
 export default [
   // --- snip ---
@@ -236,41 +234,59 @@ export default [
 
 ### Plugin
 
-If the `recommended` shareable does not fit to you, use plugin directly and configure from the ground up.
+The `recommended` shareable config might not fit to you.
+Then use plugin object directly instead of the config object.
+Unlike `eslint-plugin-markdown/recommended`, the default export of `eslint-plugin-markdown` is a plugin object.
 
-The default export of `eslint-plugin-markdown` is a plugin object.
-A basic usage skeleton would be like this.
+If your `eslint.config.js` is ESM, you can import and use the plugin like this.
 
-```ts
+<!-- eslint-skip -->
+```js
 import markdown from "eslint-plugin-markdown"
 
 export default [
-  {
-    files: ["*.md"],
-    plugins: {
-      markdown
+    {
+        files: ["*.md"],
+        plugins: {
+            markdown
+        },
+        processor: "markdown/markdown"
     },
-    processor: "markdown/markdown"
-  },
-  {
-    files: ["**/*.md/*.js"],
-    plugins: {
-      markdown
-    },
-    languageOptions: {
-      parserOptions: {
+    {
+        files: ["**/*.md/*.js"],
+        plugins: {
+            markdown
+        },
+        languageOptions: {
+            parserOptions: {
+                // ...
+            },
+        },
         // ...
-      },
+        rules: {
+            // ...
+        },
     },
-    // ...
-    rules: { 
-      // ...
-    },
-  },
 ]
 ```
 
-For more usage tips, refer to [Advanced Configuration](#advanced-configuration), [Frequently-Disabled Rules](#frequently-disabled-rules), [strict-mode](#strict-mode), [Unsatisfiable Rules](#unsatisfiable-rules), and [Migrating from `eslint-plugin-markdown` v1](#migrating-from-eslint-plugin-markdown-v1). Those usage details are different as they are based on the legacy config system, but the concepts behind of it is same between the legacy and the new. Thus you will be able to understand how to adapt it to the new config system.
+If your `eslint.config.js` is CJS, you can import and use the plugin like this.
+
+<!-- eslint-skip -->
+```js
+const markdown = require("eslint-plugin-markdown/new"); // <== trailing '/new'
+
+module.exports = [
+    {
+    // ... others are omitted for brevity
+        plugins: {
+            markdown
+        }
+    }
+];
+```
+
+For more usage tips, refer to [Advanced Configuration](#advanced-configuration), [Frequently-Disabled Rules](#frequently-disabled-rules), [strict-mode](#strict-mode), [Unsatisfiable Rules](#unsatisfiable-rules), and [Migrating from `eslint-plugin-markdown` v1](#migrating-from-eslint-plugin-markdown-v1). Those usage details are different as they are based on the legacy config system, but the concepts behind of it is same between the legacy and the new. Thus if you already have prerequisite understanding of the new config system, you will be able to know how to adapt it to the new config system.
 
 ### Running
 
