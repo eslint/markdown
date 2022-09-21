@@ -37,14 +37,14 @@
       "require": "./legacy.js"
     },
     "./new": "./index.js",
-    "./recommended": "./lib/configs/recommended.mjs"
+    "./recommended": "./lib/configs/recommended.js"
   },
   "files": [
     "index.js",
-    "index.mjs",
+    "legacy.js"
     "lib/index.js",
     "lib/processor.js",
-    "lib/configs/recommended.mjs"
+    "lib/configs/recommended.js"
   ],
   "devDependencies": {
     "chai": "^4.2.0",
