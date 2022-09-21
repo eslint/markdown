@@ -41,7 +41,7 @@
   },
   "files": [
     "index.js",
-    "legacy.js"
+    "legacy.js",
     "lib/index.js",
     "lib/processor.js",
     "lib/configs/recommended.js"
