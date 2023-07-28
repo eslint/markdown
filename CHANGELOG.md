@@ -1,3 +1,16 @@
+# Changelog
+
+## [3.0.1](https://github.com/eslint/eslint-plugin-markdown/compare/v3.0.0...v3.0.1) (2023-07-15)
+
+
+### Chores
+
+* add Node v19 ([#212](https://github.com/eslint/eslint-plugin-markdown/issues/212)) ([81ff967](https://github.com/eslint/eslint-plugin-markdown/commit/81ff967a325608e44b7bb467f8359ab620528dac))
+* add triage action ([#213](https://github.com/eslint/eslint-plugin-markdown/issues/213)) ([ef7dcdc](https://github.com/eslint/eslint-plugin-markdown/commit/ef7dcdccfb94ac7e657a6c66998ce8831f3e58fd))
+* generate provenance statements when release ([#222](https://github.com/eslint/eslint-plugin-markdown/issues/222)) ([30ae649](https://github.com/eslint/eslint-plugin-markdown/commit/30ae6492e48328672c10da3a7a5bead850b03b52))
+* run tests on Node.js v20 ([#215](https://github.com/eslint/eslint-plugin-markdown/issues/215)) ([f5ce090](https://github.com/eslint/eslint-plugin-markdown/commit/f5ce090010659cd55e38348083585ab116d9b19a))
+* set up release-please ([#219](https://github.com/eslint/eslint-plugin-markdown/issues/219)) ([311c626](https://github.com/eslint/eslint-plugin-markdown/commit/311c626ac9f9ec05aa8bc6915e995f0a0c408891))
+
 v3.0.0 - July 16, 2022
 
 * [`558ae3c`](https://github.com/eslint/eslint-plugin-markdown/commit/558ae3ca2b2b35f7a389aa37389d322dc3d3630c) chore: add node v18 (#205) (Amaresh  S M)
@@ -164,4 +177,3 @@ v1.0.0-beta.5 - April 29, 2017
 * cc7deea Chore: Increase code coverage (#64) (Brandon Mills)
 * 29f2f05 Build: Use eslint-release (#63) (Brandon Mills)
 * d2f2962 Upgrade: remark (#62) (Titus)
-
