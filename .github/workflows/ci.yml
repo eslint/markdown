@@ -53,4 +53,4 @@ jobs:
     - name: Install ESLint@${{  matrix.eslint  }}
       run: npm install eslint@${{  matrix.eslint  }}
     - name: Test
-      run: npm run test-cov
+      run: npm run test
