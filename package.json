@@ -20,14 +20,14 @@
     "linter"
   ],
   "scripts": {
-    "lint": "eslint --ext js,md .",
+    "lint": "eslint .",
     "prepare": "node ./npm-prepare.js",
     "release:generate:latest": "eslint-generate-release",
     "release:generate:alpha": "eslint-generate-prerelease alpha",
     "release:generate:beta": "eslint-generate-prerelease beta",
     "release:generate:rc": "eslint-generate-prerelease rc",
     "release:publish": "eslint-publish-release",
-    "test": "nyc _mocha -- -c tests/{examples,lib}/**/*.js"
+    "test": "nyc _mocha -- -c tests/{examples,lib}/**/*.js --timeout 30000"
   },
   "main": "index.js",
   "files": [
@@ -36,12 +36,15 @@
     "lib/processor.js"
   ],
   "devDependencies": {
+    "@eslint/eslintrc": "^3.0.0",
+    "@eslint/js": "^8.56.0",
     "chai": "^4.2.0",
-    "eslint": "^7.32.0",
-    "eslint-config-eslint": "^7.0.0",
+    "eslint": "^8.56.0",
+    "eslint-config-eslint": "^9.0.0",
     "eslint-plugin-jsdoc": "^37.0.3",
     "eslint-plugin-node": "^11.1.0",
     "eslint-release": "^3.1.2",
+    "globals": "^13.24.0",
     "mocha": "^6.2.2",
     "nyc": "^14.1.1"
   },

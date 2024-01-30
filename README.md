@@ -17,7 +17,7 @@ Lint JS, JSX, TypeScript, and more inside Markdown.
 
 ### Installing
 
-Install the plugin alongside ESLint v6 or greater:
+Install the plugin alongside ESLint v8 or greater:
 
 ```sh
 npm install --save-dev eslint eslint-plugin-markdown
@@ -25,7 +25,20 @@ npm install --save-dev eslint eslint-plugin-markdown
 
 ### Configuring
 
-Extending the `plugin:markdown/recommended` config will enable the Markdown processor on all `.md` files:
+In your `eslint.config.js` file, import `eslint-plugin-markdown` and included the recommended config to enable the Markdown processor on all `.md` files:
+
+```js
+// / eslint.config.js
+import markdown from "eslint-plugin-markdown";
+
+export default [
+    ...markdown.configs.recommended
+
+    // your other configs here
+];
+```
+
+If you are still using the deprecated `.eslintrc.js` file format for ESLint, you can extend the `plugin:markdown/recommended` config to enable the Markdown processor on all `.md` files:
 
 ```js
 // .eslintrc.js
@@ -36,11 +49,47 @@ module.exports = {
 
 #### Advanced Configuration
 
-Add the plugin to your `.eslintrc` and use the `processor` option in an `overrides` entry to enable the plugin's `markdown/markdown` processor on Markdown files.
+You can manually include the Markdown processor by setting the `processor` option in your configuration file for all `.md` files.
+
 Each fenced code block inside a Markdown document has a virtual filename appended to the Markdown file's path.
+
 The virtual filename's extension will match the fenced code block's syntax tag, so for example, <code>```js</code> code blocks in <code>README.md</code> would match <code>README.md/*.js</code>.
-[`overrides` glob patterns](https://eslint.org/docs/user-guide/configuring#configuration-based-on-glob-patterns) for these virtual filenames can customize configuration for code blocks without affecting regular code.
+You can use glob patterns for these virtual filenames to customize configuration for code blocks without affecting regular code.
 For more information on configuring processors, refer to the [ESLint documentation](https://eslint.org/docs/user-guide/configuring#specifying-processor).
+
+Here's an example:
+
+```js
+// / eslint.config.js
+import markdown from "eslint-plugin-markdown";
+
+export default [
+    {
+        // 1. Add the plugin
+        plugins: {
+            markdown
+        }
+    },
+    {
+        // 2. Enable the Markdown processor for all .md files.
+        files: ["**/*.md"],
+        processor: "markdown/markdown"
+    },
+    {
+        // 3. Optionally, customize the configuration ESLint uses for ```js
+        // fenced code blocks inside .md files.
+        files: ["**/*.md/*.js"],
+        // ...
+        rules: {
+            // ...
+        }
+    }
+
+    // your other configs here
+];
+```
+
+In the deprecated `.eslintrc.js` format:
 
 ```js
 // .eslintrc.js
@@ -77,13 +126,47 @@ The `plugin:markdown/recommended` config disables these rules in Markdown files:
 - [`no-unused-vars`](https://eslint.org/docs/rules/no-unused-vars)
 - [`padded-blocks`](https://eslint.org/docs/rules/padded-blocks)
 
-Use [`overrides` glob patterns](https://eslint.org/docs/user-guide/configuring#configuration-based-on-glob-patterns) to disable more rules just for Markdown code blocks:
+Use glob patterns to disable more rules just for Markdown code blocks:
 
 ```js
+// / eslint.config.js
+import markdown from "eslint-plugin-markdown";
+
+export default [
+    {
+        plugins: {
+            markdown
+        }
+    },
+    {
+        files: ["**/*.md"],
+        processor: "markdown/markdown"
+    },
+    {
+        // 1. Target ```js code blocks in .md files.
+        files: ["**/*.md/*.js"],
+        rules: {
+            // 2. Disable other rules.
+            "no-console": "off",
+            "import/no-unresolved": "off"
+        }
+    }
+
+    // your other configs here
+];
+```
+
+And in the deprecated `.eslintrc.js` format:
+
+```js
+// .eslintrc.js
 module.exports = {
-    // ...
+    plugins: ["markdown"],
     overrides: [
-        // ...
+        {
+            files: ["**/*.md"],
+            processor: "markdown/markdown"
+        },
         {
             // 1. Target ```js code blocks in .md files.
             files: ["**/*.md/*.js"],
@@ -111,99 +194,9 @@ The `plugin:markdown/recommended` config disables these rules in Markdown files:
 - [`eol-last`](https://eslint.org/docs/rules/eol-last): The Markdown parser trims trailing newlines from code blocks.
 - [`unicode-bom`](https://eslint.org/docs/rules/unicode-bom): Markdown code blocks do not have Unicode Byte Order Marks.
 
-#### Migrating from `eslint-plugin-markdown` v1
-
-`eslint-plugin-markdown` v1 used an older version of ESLint's processor API.
-The Markdown processor automatically ran on `.md`, `.mkdn`, `.mdown`, and `.markdown` files, and it only extracted fenced code blocks marked with `js`, `javascript`, `jsx`, or `node` syntax.
-Configuration specifically for fenced code blocks went inside an `overrides` entry with a `files` pattern matching the containing Markdown document's filename that applied to all fenced code blocks inside the file.
-
-```js
-// .eslintrc.js for eslint-plugin-markdown v1
-module.exports = {
-    plugins: ["markdown"],
-    overrides: [
-        {
-            files: ["**/*.md"],
-            // In v1, configuration for fenced code blocks went inside an
-            // `overrides` entry with a .md pattern, for example:
-            parserOptions: {
-                ecmaFeatures: {
-                    impliedStrict: true
-                }
-            },
-            rules: {
-                "no-console": "off"
-            }
-        }
-    ]
-};
-```
-
-[RFC3](https://github.com/eslint/rfcs/blob/master/designs/2018-processors-improvements/README.md) designed a new processor API to remove these limitations, and the new API was [implemented](https://github.com/eslint/eslint/pull/11552) as part of ESLint v6.
-`eslint-plugin-markdown` v2 uses this new API.
-
-```bash
-$ npm install --save-dev eslint@latest eslint-plugin-markdown@latest
-```
-
-All of the Markdown file extensions that were previously hard-coded are now fully configurable in `.eslintrc.js`.
-Use the new `processor` option to apply the `markdown/markdown` processor on any Markdown documents matching a `files` pattern.
-Each fenced code block inside a Markdown document has a virtual filename appended to the Markdown file's path.
-The virtual filename's extension will match the fenced code block's syntax tag, so for example, <code>```js</code> code blocks in <code>README.md</code> would match <code>README.md/*.js</code>.
-
-```js
-// eslintrc.js for eslint-plugin-markdown v2
-module.exports = {
-    plugins: ["markdown"],
-    overrides: [
-        {
-            // In v2, explicitly apply eslint-plugin-markdown's `markdown`
-            // processor on any Markdown files you want to lint.
-            files: ["**/*.md"],
-            processor: "markdown/markdown"
-        },
-        {
-            // In v2, configuration for fenced code blocks is separate from the
-            // containing Markdown file. Each code block has a virtual filename
-            // appended to the Markdown file's path.
-            files: ["**/*.md/*.js"],
-            // Configuration for fenced code blocks goes with the override for
-            // the code block's virtual filename, for example:
-            parserOptions: {
-                ecmaFeatures: {
-                    impliedStrict: true
-                }
-            },
-            rules: {
-                "no-console": "off"
-            }
-        }
-    ]
-};
-```
-
-If you need to precisely mimic the behavior of v1 with the hard-coded Markdown extensions and fenced code block syntaxes, you can use those as glob patterns in `overrides[].files`:
-
-```js
-// eslintrc.js for v2 mimicking v1 behavior
-module.exports = {
-    plugins: ["markdown"],
-    overrides: [
-        {
-            files: ["**/*.{md,mkdn,mdown,markdown}"],
-            processor: "markdown/markdown"
-        },
-        {
-            files: ["**/*.{md,mkdn,mdown,markdown}/*.{js,javascript,jsx,node}"]
-            // ...
-        }
-    ]
-};
-```
-
 ### Running
 
-#### ESLint v7
+#### ESLint v7+
 
 You can run ESLint as usual and do not need to use the `--ext` option.
 ESLint v7 [automatically lints file extensions specified in `overrides[].files` patterns in config files](https://github.com/eslint/rfcs/blob/0253e3a95511c65d622eaa387eb73f824249b467/designs/2019-additional-lint-targets/README.md).
@@ -282,7 +275,7 @@ Comment bodies are passed through unmodified, so the plugin supports any [config
 This example enables the `browser` environment, disables the `no-alert` rule, and configures the `quotes` rule to prefer single quotes:
 
 ````markdown
-<!-- eslint-env browser -->
+<!-- global alert -->
 <!-- eslint-disable no-alert -->
 <!-- eslint quotes: ["error", "single"] -->
 
@@ -296,7 +289,7 @@ Each code block in a file is linted separately, so configuration comments apply 
 ````markdown
 Assuming `no-alert` is enabled in `.eslintrc`, the first code block will have no error from `no-alert`:
 
-<!-- eslint-env browser -->
+<!-- global alert -->
 <!-- eslint-disable no-alert -->
 
 ```js
@@ -305,7 +298,7 @@ alert("Hello, world!");
 
 But the next code block will have an error from `no-alert`:
 
-<!-- eslint-env browser -->
+<!-- global alert -->
 
 ```js
 alert("Hello, world!");
