@@ -46,7 +46,8 @@ module.exports = [
             }
         },
         rules: {
-            "lines-around-comment": "off"
+            "lines-around-comment": "off",
+            "n/no-missing-import": "off"
         }
     }
 ];

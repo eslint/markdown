@@ -76,7 +76,7 @@ describe("LegacyESLint", () => {
                 // the plugin, so we need to make sure it's resolvable and link it
                 // if not.
 
-
+                // eslint-disable-next-line n/no-missing-require -- Known possible failure.
                 require.resolve("eslint-plugin-markdown");
             } catch (error) {
                 if (error.code === "MODULE_NOT_FOUND") {
