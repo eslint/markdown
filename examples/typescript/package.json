@@ -8,7 +8,7 @@
     "@eslint/js": "^8.56.0",
     "@typescript-eslint/eslint-plugin": "^6.20.0",
     "@typescript-eslint/parser": "^6.20.0",
-    "eslint": "^7.5.0",
+    "eslint": "^8.56.0",
     "eslint-plugin-markdown": "file:../..",
     "typescript": "^3.9.7"
   }
