@@ -30,7 +30,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         eslint: [8]
-        node: [14, 16, 17, 18, 19, 20, 21]
+        node: [16, 17, 18, 19, 20, 21]
         include:
           - os: windows-latest
             eslint: 8
