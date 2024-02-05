@@ -25,7 +25,7 @@ npm install --save-dev eslint eslint-plugin-markdown
 
 ### Configuring
 
-In your `eslint.config.js` file, import `eslint-plugin-markdown` and included the recommended config to enable the Markdown processor on all `.md` files:
+In your `eslint.config.js` file, import `eslint-plugin-markdown` and include the recommended config to enable the Markdown processor on all `.md` files:
 
 ```js
 // eslint.config.js
