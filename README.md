@@ -43,7 +43,7 @@ If you are still using the deprecated `.eslintrc.js` file format for ESLint, you
 ```js
 // .eslintrc.js
 module.exports = {
-    extends: "plugin:markdown/recommended"
+    extends: "plugin:markdown/recommended-legacy"
 };
 ```
 
@@ -196,7 +196,13 @@ The `plugin:markdown/recommended` config disables these rules in Markdown files:
 
 ### Running
 
-#### ESLint v7+
+#### ESLint v8+
+
+If you are using an `eslint.config.js` file, then you can run ESLint as usual and it will pick up file patterns in your config file. The `--ext` option is not available when using flat config.
+
+If you are using an `.eslintrc.*` file, then you can run ESLint as usual and it will work as in ESLint v7.x.
+
+#### ESLint v7
 
 You can run ESLint as usual and do not need to use the `--ext` option.
 ESLint v7 [automatically lints file extensions specified in `overrides[].files` patterns in config files](https://github.com/eslint/rfcs/blob/0253e3a95511c65d622eaa387eb73f824249b467/designs/2019-additional-lint-targets/README.md).
