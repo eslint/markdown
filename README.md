@@ -38,7 +38,7 @@ export default [
 ];
 ```
 
-If you are still using the deprecated `.eslintrc.js` file format for ESLint, you can extend the `plugin:markdown/recommended` config to enable the Markdown processor on all `.md` files:
+If you are still using the deprecated `.eslintrc.js` file format for ESLint, you can extend the `plugin:markdown/recommended-legacy` config to enable the Markdown processor on all `.md` files:
 
 ```js
 // .eslintrc.js
