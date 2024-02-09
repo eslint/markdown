@@ -1,6 +1,6 @@
 "use strict";
 
-const markdown = require("../..");
+const markdown = require("eslint-plugin-markdown");
 const js = require("@eslint/js")
 const { FlatCompat } = require("@eslint/eslintrc");
 
