@@ -278,7 +278,7 @@ The processor will convert HTML comments immediately preceding a code block into
 This permits configuring ESLint via configuration comments while keeping the configuration comments themselves hidden when the markdown is rendered.
 Comment bodies are passed through unmodified, so the plugin supports any [configuration comments](http://eslint.org/docs/user-guide/configuring) supported by ESLint itself.
 
-This example enables the `browser` environment, disables the `no-alert` rule, and configures the `quotes` rule to prefer single quotes:
+This example enables the `alert` global variable, disables the `no-alert` rule, and configures the `quotes` rule to prefer single quotes:
 
 ````markdown
 <!-- global alert -->
