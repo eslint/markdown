@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = [
-    ...require("eslint-config-eslint").map(config => ({
+    ...require("eslint-config-eslint/cjs").map(config => ({
         ...config,
         files: ["**/*.js"]
     })),
