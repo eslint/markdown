@@ -18,12 +18,6 @@ module.exports = [
         ]
     },
     {
-        files: ["**/*.js"],
-        languageOptions: {
-            sourceType: "commonjs"
-        }
-    },
-    {
         files: ["tests/**/*.js"],
         languageOptions: {
             globals: {
