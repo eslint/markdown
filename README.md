@@ -293,7 +293,7 @@ alert('Hello, world!');
 Each code block in a file is linted separately, so configuration comments apply only to the code block that immediately follows.
 
 ````markdown
-Assuming `no-alert` is enabled in `.eslintrc`, the first code block will have no error from `no-alert`:
+Assuming `no-alert` is enabled in `eslint.config.js`, the first code block will have no error from `no-alert`:
 
 <!-- global alert -->
 <!-- eslint-disable no-alert -->
