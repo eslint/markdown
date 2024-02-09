@@ -60,7 +60,7 @@ For more information on configuring processors, refer to the [ESLint documentati
 Here's an example:
 
 ```js
-// / eslint.config.js
+// eslint.config.js
 import markdown from "eslint-plugin-markdown";
 
 export default [
