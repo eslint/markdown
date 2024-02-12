@@ -47,7 +47,6 @@ function initFlatESLint(fixtureConfigName, options = {}) {
         cwd: path.resolve(__dirname, "../fixtures/"),
         ignore: false,
         overrideConfigFile: path.resolve(__dirname, "../fixtures/", fixtureConfigName),
-        plugins: { markdown: plugin },
         ...options
     });
 }
@@ -69,31 +68,7 @@ describe("LegacyESLint", () => {
             "```"
         ].join("\n");
 
-        before(function() {
-            try {
-
-                // The tests for the recommended config will have ESLint import
-                // the plugin, so we need to make sure it's resolvable and link it
-                // if not.
-
-                // eslint-disable-next-line n/no-missing-require -- Known possible failure.
-                require.resolve("eslint-plugin-markdown");
-            } catch (error) {
-                if (error.code === "MODULE_NOT_FOUND") {
-
-                    // The npm link step can take longer than Mocha's default 2s
-                    // timeout, so give it more time. Mocha's API for customizing
-                    // hook-level timeouts uses `this`, so disable the rule.
-                    // https://mochajs.org/#hook-level
-                    // eslint-disable-next-line no-invalid-this -- need more time
-                    this.timeout(30000);
-
-                    execSync("npm link && npm link eslint-plugin-markdown --legacy-peer-deps");
-                } else {
-                    throw error;
-                }
-            }
-
+        before(() => {
             eslint = initLegacyESLint("recommended.json");
         });
 
@@ -1055,31 +1030,7 @@ describe("FlatESLint", () => {
             "```"
         ].join("\n");
 
-        before(function() {
-            try {
-
-                // The tests for the recommended config will have ESLint import
-                // the plugin, so we need to make sure it's resolvable and link it
-                // if not.
-
-                // eslint-disable-next-line n/no-missing-require -- Known possible failure.
-                require.resolve("eslint-plugin-markdown");
-            } catch (error) {
-                if (error.code === "MODULE_NOT_FOUND") {
-
-                    // The npm link step can take longer than Mocha's default 2s
-                    // timeout, so give it more time. Mocha's API for customizing
-                    // hook-level timeouts uses `this`, so disable the rule.
-                    // https://mochajs.org/#hook-level
-                    // eslint-disable-next-line no-invalid-this -- need more time
-                    this.timeout(30000);
-
-                    execSync("npm link && npm link eslint-plugin-markdown --legacy-peer-deps");
-                } else {
-                    throw error;
-                }
-            }
-
+        before(() => {
             eslint = initFlatESLint("recommended.js");
         });
 

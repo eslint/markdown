@@ -12,7 +12,7 @@ const compat = new FlatCompat({
 module.exports = [
     js.configs.recommended,
     ...markdown.configs.recommended,
-    ...compat.extends("plugin:react/recommended"),
+    require("eslint-plugin-react/configs/recommended"),
     {
         settings: {
             react: {
