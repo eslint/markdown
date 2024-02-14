@@ -10,7 +10,6 @@
 //-----------------------------------------------------------------------------
 
 const assert = require("chai").assert;
-const execSync = require("child_process").execSync;
 const { LegacyESLint, FlatESLint } = require("eslint/use-at-your-own-risk");
 const path = require("path");
 const plugin = require("../..");
