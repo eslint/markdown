@@ -13,6 +13,7 @@ const assert = require("chai").assert;
 const { LegacyESLint, FlatESLint } = require("eslint/use-at-your-own-risk");
 const path = require("path");
 const plugin = require("../..");
+const pkg = require("../../package.json");
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -54,6 +55,12 @@ function initFlatESLint(fixtureConfigName, options = {}) {
 //-----------------------------------------------------------------------------
 // Tests
 //-----------------------------------------------------------------------------
+
+describe("meta", () => {
+    it("should export meta property", () => {
+        assert.deepStrictEqual(plugin.meta, { name: "eslint-plugin-markdown", version: pkg.version });
+    });
+});
 
 describe("LegacyESLint", () => {
 
