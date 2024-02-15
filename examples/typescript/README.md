@@ -17,9 +17,9 @@ $ npm install
 $ npm test
 
 eslint-plugin-markdown/examples/typescript/README.md
-   6:22  error    Don’t use `String` as a type. Use string instead  @typescript-eslint/ban-types
-  10:13  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   6:22  error  Don't use `String` as a type. Use string instead  @typescript-eslint/ban-types
+  10:13  error  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
 
-✖ 2 problems (1 error, 1 warning)
+✖ 2 problems (2 errors, 0 warnings)
   1 error and 0 warnings potentially fixable with the `--fix` option.
 ```
