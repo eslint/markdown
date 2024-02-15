@@ -2,13 +2,9 @@
 
 const markdown = require("eslint-plugin-markdown");
 const js = require("@eslint/js")
-const { FlatCompat } = require("@eslint/eslintrc");
+const tseslint = require("typescript-eslint");
 
-const compat = new FlatCompat({
-    baseDirectory: __dirname
-});
-
-module.exports = [
+module.exports = tseslint.config(
     js.configs.recommended,
     ...markdown.configs.recommended,
     {
@@ -17,11 +13,8 @@ module.exports = [
             sourceType: "commonjs"
         }
     },
-    ...compat.config({
-        parser: "@typescript-eslint/parser",
-        extends: ["plugin:@typescript-eslint/recommended"]
-    }).map(config => ({
+    ...tseslint.configs.recommended.map(config => ({
         ...config,
         files: ["**/*.ts"]
     }))
-];
+);
