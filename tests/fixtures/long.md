@@ -17,7 +17,7 @@ function foo() {
 }
 ```
 
-<!-- eslint-env node -->
+<!-- global process -->
 <!-- eslint-disable eol-last, quotes -->
 
 ```js

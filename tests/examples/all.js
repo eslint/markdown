@@ -22,19 +22,19 @@ for (const example of examples) {
         paths: [cwd]
     });
     const eslintPackageJson = require(eslintPackageJsonPath);
+
     if (semver.satisfies(process.version, eslintPackageJson.engines.node)) {
-        describe("examples", function () {
+        describe("examples", () => {
             describe(example, () => {
                 it("reports errors on code blocks in .md files", async () => {
-                    const { ESLint } = require(
-                        require.resolve("eslint", { paths: [cwd] })
+                    const { FlatESLint } = require(
+                        require.resolve("eslint/use-at-your-own-risk", { paths: [cwd] })
                     );
-                    const eslint = new ESLint({ cwd });
-
-                    const results = await eslint.lintFiles(["."]);
+                    const eslint = new FlatESLint({ cwd });
+                    const results = await eslint.lintFiles(["README.md"]);
                     const readme = results.find(result =>
-                        path.basename(result.filePath) == "README.md"
-                    );
+                        path.basename(result.filePath) == "README.md");
+
                     assert.isNotNull(readme);
                     assert.isAbove(readme.messages.length, 0);
                 });
