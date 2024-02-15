@@ -7,8 +7,15 @@
 
 const assert = require("chai").assert;
 const processor = require("../../lib/processor");
+const pkg = require("../../package.json");
 
 describe("processor", () => {
+
+    describe("meta", () => {
+        it("should have meta property", () => {
+            assert.deepStrictEqual(processor.meta, { name: "eslint-plugin-markdown/markdown", version: pkg.version });
+        });
+    });
 
     describe("preprocess", () => {
 
