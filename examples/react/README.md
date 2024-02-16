@@ -17,8 +17,7 @@ $ npm install
 $ npm test
 
 eslint-plugin-markdown/examples/react/README.md
-  4:10  error  'App' is defined but never used        no-unused-vars
   4:16  error  'name' is missing in props validation  react/prop-types
 
-✖ 2 problems (2 errors, 0 warnings)
+✖ 1 problem (1 error, 0 warnings)
 ```
