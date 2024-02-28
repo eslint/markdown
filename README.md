@@ -198,7 +198,7 @@ The `markdown.configs.recommended` config disables these rules in Markdown files
 
 If you are using an `eslint.config.js` file, then you can run ESLint as usual and it will pick up file patterns in your config file. The `--ext` option is not available when using flat config.
 
-If you are using an `.eslintrc.*` file, then you can run ESLint as usual and it will work as in ESLint v7.x.
+If you are using an `.eslintrc.*` file, then you can run ESLint as usual and it will pick up file extensions specified in `overrides[].files` patterns in config files.
 
 
 ### Autofixing
@@ -249,7 +249,7 @@ This is plain text and doesn't get linted.
 ```
 ````
 
-Unless a fenced code block's syntax appears as a file extension in `overrides[].files` in ESLint v8, it will be ignored.
+Unless a fenced code block's syntax appears as a file extension in file patterns in your config file, it will be ignored.
 
 ## Configuration Comments
 
