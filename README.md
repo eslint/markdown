@@ -119,7 +119,7 @@ module.exports = {
 
 Some rules that catch mistakes in regular code are less helpful in documentation.
 For example, `no-undef` would flag variables that are declared outside of a code snippet because they aren't relevant to the example.
-The `plugin:markdown/recommended` config disables these rules in Markdown files:
+The `markdown.configs.recommended` config disables these rules in Markdown files:
 
 - [`no-undef`](https://eslint.org/docs/rules/no-undef)
 - [`no-unused-expressions`](https://eslint.org/docs/rules/no-unused-expressions)
@@ -183,37 +183,23 @@ module.exports = {
 #### Strict Mode
 
 `"use strict"` directives in every code block would be annoying.
-The `plugin:markdown/recommended` config enables the [`impliedStrict` parser option](https://eslint.org/docs/user-guide/configuring#specifying-parser-options) and disables the [`strict` rule](https://eslint.org/docs/rules/strict) in Markdown files.
+The `markdown.configs.recommended` config enables the [`impliedStrict` parser option](https://eslint.org/docs/user-guide/configuring#specifying-parser-options) and disables the [`strict` rule](https://eslint.org/docs/rules/strict) in Markdown files.
 This opts into strict mode parsing without repeated `"use strict"` directives.
 
 #### Unsatisfiable Rules
 
 Markdown code blocks are not real files, so ESLint's file-format rules do not apply.
-The `plugin:markdown/recommended` config disables these rules in Markdown files:
+The `markdown.configs.recommended` config disables these rules in Markdown files:
 
 - [`eol-last`](https://eslint.org/docs/rules/eol-last): The Markdown parser trims trailing newlines from code blocks.
 - [`unicode-bom`](https://eslint.org/docs/rules/unicode-bom): Markdown code blocks do not have Unicode Byte Order Marks.
 
 ### Running
 
-#### ESLint v8+
-
 If you are using an `eslint.config.js` file, then you can run ESLint as usual and it will pick up file patterns in your config file. The `--ext` option is not available when using flat config.
 
-If you are using an `.eslintrc.*` file, then you can run ESLint as usual and it will work as in ESLint v7.x.
+If you are using an `.eslintrc.*` file, then you can run ESLint as usual and it will pick up file extensions specified in `overrides[].files` patterns in config files.
 
-#### ESLint v7
-
-You can run ESLint as usual and do not need to use the `--ext` option.
-ESLint v7 [automatically lints file extensions specified in `overrides[].files` patterns in config files](https://github.com/eslint/rfcs/blob/0253e3a95511c65d622eaa387eb73f824249b467/designs/2019-additional-lint-targets/README.md).
-
-#### ESLint v6
-
-Use the [`--ext` option](https://eslint.org/docs/user-guide/command-line-interface#ext) to include `.js` and `.md` extensions in ESLint's file search:
-
-```sh
-eslint --ext js,md .
-```
 
 ### Autofixing
 
@@ -249,8 +235,8 @@ hello();
 ```
 
 ```jsx
-// This can be linted too if you add `.jsx` files to `overrides` in ESLint v7
-// or pass `--ext jsx` in ESLint v6.
+// This can be linted too if you add `.jsx` files to file patterns in the `eslint.config.js`.
+// Or `overrides[].files` in `eslintrc.*`.
 var div = <div className="jsx"></div>;
 ```
 ````
@@ -263,14 +249,7 @@ This is plain text and doesn't get linted.
 ```
 ````
 
-Unless a fenced code block's syntax appears as a file extension in `overrides[].files` in ESLint v7, it will be ignored.
-If using ESLint v6, you must also include the extension with the `--ext` option.
-
-````markdown
-```python
-print("This doesn't get linted either.")
-```
-````
+Unless a fenced code block's syntax appears as a file extension in file patterns in your config file, it will be ignored.
 
 ## Configuration Comments
 

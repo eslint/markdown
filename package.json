@@ -49,9 +49,9 @@
     "mdast-util-from-markdown": "^0.8.5"
   },
   "peerDependencies": {
-    "eslint": "^6.0.0 || ^7.0.0 || ^8.0.0"
+    "eslint": ">=8"
   },
   "engines": {
-    "node": "^12.22.0 || ^14.17.0 || >=16.0.0"
+    "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
   }
 }
