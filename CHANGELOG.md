@@ -1,5 +1,34 @@
 # Changelog
 
+## [4.0.0](https://github.com/eslint/eslint-plugin-markdown/compare/v3.0.1...v4.0.0) (2024-03-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop eslint < 8 & Node.js < 18 ([#238](https://github.com/eslint/eslint-plugin-markdown/issues/238))
+* Switch to flat config ([#232](https://github.com/eslint/eslint-plugin-markdown/issues/232))
+
+### Features
+
+* add `meta` property ([#233](https://github.com/eslint/eslint-plugin-markdown/issues/233)) ([eedda96](https://github.com/eslint/eslint-plugin-markdown/commit/eedda967069a665b800fcf95b985424e50c77df6))
+* drop eslint &lt; 8 & Node.js < 18 ([#238](https://github.com/eslint/eslint-plugin-markdown/issues/238)) ([f14f6a5](https://github.com/eslint/eslint-plugin-markdown/commit/f14f6a58ffe65cee8c31beb6d8ff8bcc1ae81383))
+* Switch to flat config ([#232](https://github.com/eslint/eslint-plugin-markdown/issues/232)) ([7a27eef](https://github.com/eslint/eslint-plugin-markdown/commit/7a27eef394dbc06f24b16d926946d60accb2d4c7))
+
+
+### Documentation
+
+* fix expected errors in react example ([#237](https://github.com/eslint/eslint-plugin-markdown/issues/237)) ([a758163](https://github.com/eslint/eslint-plugin-markdown/commit/a758163a05c8ff79fa6a67d907f6a6ae07f55b90))
+
+
+### Chores
+
+* add `.vscode` to `.gitignore` ([#236](https://github.com/eslint/eslint-plugin-markdown/issues/236)) ([cbb8e3a](https://github.com/eslint/eslint-plugin-markdown/commit/cbb8e3afc665d314570a9b087c7cef2e97d45860))
+* bump setup-node and checkout actions to v4 in release workflow ([#239](https://github.com/eslint/eslint-plugin-markdown/issues/239)) ([3fd99ad](https://github.com/eslint/eslint-plugin-markdown/commit/3fd99ad0a3787f2ce28b5eb74f5fc197974b0ede))
+* remove unused `@eslint/eslintrc` in test examples ([#234](https://github.com/eslint/eslint-plugin-markdown/issues/234)) ([4e2e160](https://github.com/eslint/eslint-plugin-markdown/commit/4e2e160e267b5bce91d2ec2795d6b0f13c7ea62c))
+* run tests in Node.js 21 ([#225](https://github.com/eslint/eslint-plugin-markdown/issues/225)) ([4d9f36f](https://github.com/eslint/eslint-plugin-markdown/commit/4d9f36f5c5fd1b5d3b1957913118cd76a92750f2))
+* standardize npm script names ([#223](https://github.com/eslint/eslint-plugin-markdown/issues/223)) ([6bdff60](https://github.com/eslint/eslint-plugin-markdown/commit/6bdff605b1d2793f9b20ec9cbadb5c55dbcb783a))
+* use latest `typescript-eslint` in examples ([#235](https://github.com/eslint/eslint-plugin-markdown/issues/235)) ([313959b](https://github.com/eslint/eslint-plugin-markdown/commit/313959bcaf1613a60fc60a42c52b78146934eae2))
+
 ## [3.0.1](https://github.com/eslint/eslint-plugin-markdown/compare/v3.0.0...v3.0.1) (2023-07-15)
 
 
