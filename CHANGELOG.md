@@ -2,6 +2,7 @@
 
 ## [4.0.0](https://github.com/eslint/eslint-plugin-markdown/compare/v3.0.1...v4.0.0) (2024-03-01)
 
+⚠️ This release was not published to npm due to technical problems.
 
 ### ⚠ BREAKING CHANGES
 
