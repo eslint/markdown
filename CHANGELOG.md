@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.1](https://github.com/eslint/eslint-plugin-markdown/compare/v4.0.0...v4.0.1) (2024-03-06)
+
+
+### Chores
+
+* update changelog with note that v4.0.0 was not published to npm ([#241](https://github.com/eslint/eslint-plugin-markdown/issues/241)) ([e80139d](https://github.com/eslint/eslint-plugin-markdown/commit/e80139da3f8be9179469a015e8345b460537e958))
+
 ## [4.0.0](https://github.com/eslint/eslint-plugin-markdown/compare/v3.0.1...v4.0.0) (2024-03-01)
 
 ⚠️ This release was not published to npm due to technical problems.
