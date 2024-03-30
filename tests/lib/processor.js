@@ -330,7 +330,7 @@ describe("processor", () => {
             assert.strictEqual(blocks[0].filename, "0.js");
         });
 
-        it("should the language to its file extension with leading whitespace and trailing characters", () => {
+        it("should translate the language to its file extension with leading whitespace and trailing characters", () => {
             const code = [
                 "```   javascript  CUSTOM",
                 "var answer = 6 * 7;",
