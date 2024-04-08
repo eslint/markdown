@@ -267,7 +267,7 @@ describe("processor", () => {
             const blocks = processor.preprocess(code);
 
             assert.strictEqual(blocks.length, 1);
-            assert.strictEqual(blocks[0].filename, "0.js");
+            assert.strictEqual(blocks[0].filename, "0.node");
         });
 
         it("should find code fences with jsx info string", () => {
