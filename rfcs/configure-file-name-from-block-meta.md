@@ -18,11 +18,11 @@ Short of hardcoding overrides or disabling the lint rule in the file, there is n
 
 ## Detailed Design
 
-This RFC proposes that code blocks be allowed to specify a file path in `meta` with `title="..."`.
+This RFC proposes that code blocks be allowed to specify a file path in `meta` with `filename="..."`.
 Doing so would replace the `filename` provided by `eslint-plugin-markdown`'s `preprocess` method.
 
 ````md
-```json title="package.json"
+```json filename="package.json"
 {}
 ```
 ````
@@ -54,11 +54,11 @@ For example, given three blocks with the same name, would in order become:
 Alternately, if multiple code blocks require the same _file_ name, developers can give different _directory paths_ to ensure uniqueness:
 
 ````md
-```json title="example-1/package.json"
+```json filename="example-1/package.json"
 {}
 ```
 
-```json title="example-2/package.json"
+```json filename="example-2/package.json"
 {}
 ```
 ````
