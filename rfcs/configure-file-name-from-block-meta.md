@@ -44,9 +44,14 @@ Roughly:
 ### Name Uniqueness
 
 Codeblocks must have unique file paths for ESLint processing.
-If a codeblock has the same file path as a previously processed codeblock, processing should throw an error.
+If a codeblock has the same file path as a previously processed codeblock, it will have a sequentially increasing number appended before their extensions.
+For example, given three blocks with the same name, would in order become:
 
-If multiple code blocks require the same _file_ name, they can be given different _directory paths_ to ensure uniqueness:
+-   `example`: `example`, `example-1`, `example-2`
+-   `example.js`: `example.js`, `example-1.js`, `example-2.js`
+-   `example.test.ts`: `example.test.ts`, `example-1.test.ts`, `example-2.test.ts`
+
+Alternately, if multiple code blocks require the same _file_ name, developers can give different _directory paths_ to ensure uniqueness:
 
 ````md
 ```json title="example-1/package.json"
@@ -61,7 +66,7 @@ If multiple code blocks require the same _file_ name, they can be given differen
 ### Parsing Meta
 
 There is no unified standard in the ecosystem for parsing codeblock metadata in Markdown.
-The syntax has roughly converged on the syntax looking like <code>\`\`\`lang key="value"</code>, and to a lesser extent, using `title` as the prop name.
+The syntax has roughly converged on the syntax looking like <code>\`\`\`lang key="value"</code>, and to a lesser extent, using `filename` as the prop name.
 
 -   [Docusaurus's `codeBlockTitleRegex`](https://github.com/facebook/docusaurus/blob/7650829e913ec4bb1263d855719779f6b97066b6/packages/docusaurus-theme-common/src/utils/codeBlockUtils.ts#L12): only supports a [code title prop](https://mdxjs.com/guides/syntax-highlighting/#syntax-highlighting-with-the-meta-field) like <code>\`\`\`jsx title="/src/components/HelloCodeTitle.js"</code>
 -   Gatsby plugins such as [`gatsby-remark-prismjs`](https://www.gatsbyjs.com/plugins/gatsby-remark-prismjs) rely on a syntax like <code>\`\`\`javascript{numberLines: true}`</code>.
@@ -73,8 +78,8 @@ The syntax has roughly converged on the syntax looking like <code>\`\`\`lang key
 -   [`remark-fenced-props`](https://github.com/shawnbot/remark-fenced-props): A proof-of-concept that augments Remark's codeblock parsing with arbitrary MDX props, written to support [mdx-js/mdx/issues/702](https://github.com/mdx-js/mdx/issues/702).
     It only specifies syntax like <code>\`\`\`jsx live style={{border: '1px solid red'}}</code>
 
-This RFC chooses `title` over alternatives such as `filename`.
-`title` appears to be the closest to a "popular" choice in existing projects today.
+This RFC chooses `filename` over alternatives such as `title`.
+`filename` appears to be the closest to a "popular" choice in existing projects today.
 
 ## Related Discussions
 
