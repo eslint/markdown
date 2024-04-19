@@ -3,8 +3,19 @@
 module.exports = [
     ...require("eslint-config-eslint/cjs").map(config => ({
         ...config,
-        files: ["**/*.js"]
+        files: ["**/*.js", "**/*.mjs"]
     })),
+    {
+        files: ["**/*.mjs"],
+        languageOptions: {
+            sourceType: "module",
+            parserOptions: {
+                ecmaFeatures: {
+                    impliedStrict: true
+                }
+            }
+        }
+    },
     {
         plugins: {
             markdown: require(".")
