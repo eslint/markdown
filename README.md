@@ -59,7 +59,7 @@ The virtual filename's extension will match the fenced code block's syntax tag, 
 * `typescript` is mapped to `ts`
 * `markdown` is mapped to `md`
 
-For example, <code>```js</code> code blocks in `README.md` would match `README.md/*.js` and <code>``typescript</code> in `CONTRIBUTING.md` would match `CONTRIBUTING.md/*.ts`.
+For example, ```` ```js ```` code blocks in `README.md` would match `README.md/*.js` and ```` ```typescript ```` in `CONTRIBUTING.md` would match `CONTRIBUTING.md/*.ts`.
 
 You can use glob patterns for these virtual filenames to customize configuration for code blocks without affecting regular code.
 For more information on configuring processors, refer to the [ESLint documentation](https://eslint.org/docs/user-guide/configuring#specifying-processor).
