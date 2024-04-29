@@ -41,7 +41,13 @@ module.exports = [
         },
         rules: {
             "lines-around-comment": "off",
-            "n/no-missing-import": "off"
+            "n/no-missing-import": "off",
+            "no-var": "off",
+            "padding-line-between-statements": "off",
+            "no-console": "off",
+            "no-alert": "off",
+            "eslint-comments/require-description": "off",
+            "jsdoc/require-jsdoc": "off"
         }
     }
 ];

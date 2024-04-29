@@ -53,7 +53,14 @@ You can manually include the Markdown processor by setting the `processor` optio
 
 Each fenced code block inside a Markdown document has a virtual filename appended to the Markdown file's path.
 
-The virtual filename's extension will match the fenced code block's syntax tag, so for example, <code>```js</code> code blocks in <code>README.md</code> would match <code>README.md/*.js</code>.
+The virtual filename's extension will match the fenced code block's syntax tag, except for the following: 
+
+* `javascript` and `ecmascript` are mapped to `js`
+* `typescript` is mapped to `ts`
+* `markdown` is mapped to `md`
+
+For example, ```` ```js ```` code blocks in `README.md` would match `README.md/*.js` and ```` ```typescript ```` in `CONTRIBUTING.md` would match `CONTRIBUTING.md/*.ts`.
+
 You can use glob patterns for these virtual filenames to customize configuration for code blocks without affecting regular code.
 For more information on configuring processors, refer to the [ESLint documentation](https://eslint.org/docs/user-guide/configuring#specifying-processor).
 
