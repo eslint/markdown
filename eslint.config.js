@@ -46,7 +46,7 @@ module.exports = [
             "padding-line-between-statements": "off",
             "no-console": "off",
             "no-alert": "off",
-            "eslint-comments/require-description": "off",
+            "@eslint-community/eslint-comments/require-description": "off",
             "jsdoc/require-jsdoc": "off"
         }
     }
