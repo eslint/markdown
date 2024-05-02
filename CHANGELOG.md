@@ -1,5 +1,27 @@
 # Changelog
 
+## [5.0.0](https://github.com/eslint/eslint-plugin-markdown/compare/v4.0.1...v5.0.0) (2024-05-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* map known code block languages to respective file extensions ([#246](https://github.com/eslint/eslint-plugin-markdown/issues/246))
+
+### Features
+
+* map known code block languages to respective file extensions ([#246](https://github.com/eslint/eslint-plugin-markdown/issues/246)) ([096cff4](https://github.com/eslint/eslint-plugin-markdown/commit/096cff4094dc9118a3538980ee56bfb8c5cb03d4))
+
+
+### Bug Fixes
+
+* check upper bounds of message line numbers for code blocks ([#247](https://github.com/eslint/eslint-plugin-markdown/issues/247)) ([00adccb](https://github.com/eslint/eslint-plugin-markdown/commit/00adccb49ed74e6b6ce43bc221a93d7c6782a83c))
+
+
+### Chores
+
+* run tests in Node.js 22, with ESLint 9 ([#250](https://github.com/eslint/eslint-plugin-markdown/issues/250)) ([085e6d5](https://github.com/eslint/eslint-plugin-markdown/commit/085e6d59737e22566d99ee1d09affdd1e2460112))
+* switch to eslint v9, eslint-config-eslint v10 ([#251](https://github.com/eslint/eslint-plugin-markdown/issues/251)) ([a76cdf5](https://github.com/eslint/eslint-plugin-markdown/commit/a76cdf53cb9d4cb27f53cfec9da960aea3997724))
+
 ## [4.0.1](https://github.com/eslint/eslint-plugin-markdown/compare/v4.0.0...v4.0.1) (2024-03-06)
 
 
