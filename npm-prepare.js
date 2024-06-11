@@ -7,9 +7,9 @@
 "use strict";
 
 if (!process.env.NO_RECURSIVE_PREPARE) {
-    const childProcess = require("child_process");
-    const fs = require("fs");
-    const path = require("path");
+    const childProcess = require("node:child_process");
+    const fs = require("node:fs");
+    const path = require("node:path");
 
     const examplesDir = path.resolve(__dirname, "examples");
     const examples = fs.readdirSync(examplesDir)

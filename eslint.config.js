@@ -6,6 +6,10 @@ module.exports = [
         files: ["**/*.js"]
     })),
     {
+        ...require("eslint-config-eslint/formatting"),
+        files: ["**/*.js"]
+    },
+    {
         plugins: {
             markdown: require(".")
         }

@@ -11,7 +11,7 @@
 
 const assert = require("chai").assert;
 const { LegacyESLint, FlatESLint } = require("eslint/use-at-your-own-risk");
-const path = require("path");
+const path = require("node:path");
 const plugin = require("../..");
 const pkg = require("../../package.json");
 
