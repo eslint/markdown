@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.0](https://github.com/eslint/eslint-plugin-markdown/compare/v5.0.0...v5.1.0) (2024-07-05)
+
+
+### Features
+
+* add name to flat configs ([#256](https://github.com/eslint/eslint-plugin-markdown/issues/256)) ([001d51e](https://github.com/eslint/eslint-plugin-markdown/commit/001d51e9a66bea80f0c971f05a9cf4e1126dfaa8))
+
 ## [5.0.0](https://github.com/eslint/eslint-plugin-markdown/compare/v4.0.1...v5.0.0) (2024-05-01)
 
 
