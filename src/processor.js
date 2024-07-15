@@ -3,29 +3,29 @@
  * @author Brandon Mills
  */
 
-//-----------------------------------------------------------------------------
-// Imports
-//-----------------------------------------------------------------------------
+/**
+ * @typedef {import('eslint/lib/shared/types').LintMessage} Message
+ * @typedef {Object} ASTNode
+ * @property {string} type The type of node.
+ * @property {string} [lang] The language that the node is in
+ * @typedef {Object} RangeMap
+ * @property {number} indent Number of code block indent characters trimmed from
+ *     the beginning of the line during extraction.
+ * @property {number} js Offset from the start of the code block's range in the
+ *     extracted JS.
+ * @property {number} md Offset from the start of the code block's range in the
+ *     original Markdown.
+ * @typedef {Object} BlockBase
+ * @property {string} baseIndentText Leading whitespace text for the block.
+ * @property {string[]} comments Comments inside of the JavaScript code.
+ * @property {RangeMap[]} rangeMap A list of offset-based adjustments, where
+ *    lookups are done based on the `js` key, which represents the range in the
+ *    linted JS, and the `md` key is the offset delta that, when added to the JS
+ *    range, returns the corresponding location in the original Markdown source.
+ * @typedef {ASTNode & BlockBase} Block
+ */
 
 import { fromMarkdown } from "mdast-util-from-markdown";
-
-//-----------------------------------------------------------------------------
-// Type Definitions
-//-----------------------------------------------------------------------------
-
-/** @typedef {import("./types.ts").Block} Block */
-/** @typedef {import("./types.ts").RangeMap} RangeMap */
-/** @typedef {import("mdast").Node} Node */
-/** @typedef {import("mdast").Parent} ParentNode */
-/** @typedef {import("mdast").Code} CodeNode */
-/** @typedef {import("mdast").Html} HtmlNode */
-/** @typedef {import("eslint").Linter.LintMessage} Message */
-/** @typedef {import("eslint").Rule.Fix} Fix */
-/** @typedef {import("eslint").AST.Range} Range */
-
-//-----------------------------------------------------------------------------
-// Helpers
-//-----------------------------------------------------------------------------
 
 const UNSATISFIABLE_RULES = new Set([
     "eol-last", // The Markdown parser strips trailing newlines in code fences
@@ -40,8 +40,8 @@ const blocksCache = new Map();
 
 /**
  * Performs a depth-first traversal of the Markdown AST.
- * @param {Node} node A Markdown AST node.
- * @param {{[key: string]: (node?: Node) => void}} callbacks A map of node types to callbacks.
+ * @param {ASTNode} node A Markdown AST node.
+ * @param {{[key: string]: (node: ASTNode) => void}} callbacks A map of node types to callbacks.
  * @returns {void}
  */
 function traverse(node, callbacks) {
@@ -51,11 +51,9 @@ function traverse(node, callbacks) {
         callbacks["*"]();
     }
 
-    const parent = /** @type {ParentNode} */ (node);
-
-    if (typeof parent.children !== "undefined") {
-        for (let i = 0; i < parent.children.length; i++) {
-            traverse(parent.children[i], callbacks);
+    if (typeof node.children !== "undefined") {
+        for (let i = 0; i < node.children.length; i++) {
+            traverse(node.children[i], callbacks);
         }
     }
 }
@@ -94,7 +92,7 @@ const leadingWhitespaceRegex = /^[>\s]*/u;
 /**
  * Gets the offset for the first column of the node's first line in the
  * original source text.
- * @param {Node} node A Markdown code block AST node.
+ * @param {ASTNode} node A Markdown code block AST node.
  * @returns {number} The offset for the first column of the node's first line.
  */
 function getBeginningOfLineOffset(node) {
@@ -105,7 +103,7 @@ function getBeginningOfLineOffset(node) {
  * Gets the leading text, typically whitespace with possible blockquote chars,
  * used to indent a code block.
  * @param {string} text The text of the file.
- * @param {Node} node A Markdown code block AST node.
+ * @param {ASTNode} node A Markdown code block AST node.
  * @returns {string} The text from the start of the first line to the opening
  *     fence of the code block.
  */
@@ -139,7 +137,7 @@ function getIndentText(text, node) {
  * differences within the line, so the mapping need only provide the offset
  * delta at the beginning of each line.
  * @param {string} text The text of the file.
- * @param {Node} node A Markdown code block AST node.
+ * @param {ASTNode} node A Markdown code block AST node.
  * @param {string[]} comments List of configuration comment strings that will be
  *     inserted at the beginning of the code block.
  * @returns {RangeMap[]} A list of offset-based adjustments, where lookups are
@@ -267,12 +265,6 @@ function preprocess(text, filename) {
         "*"() {
             htmlComments = [];
         },
-
-        /**
-         * Visit a code node.
-         * @param {CodeNode} node The visited node.
-         * @returns {void}
-         */
         code(node) {
             if (node.lang) {
                 const comments = [];
@@ -296,12 +288,6 @@ function preprocess(text, filename) {
                 });
             }
         },
-
-        /**
-         * Visit an HTML node.
-         * @param {HtmlNode} node The visited node.
-         * @returns {void}
-         */
         html(node) {
             const comment = getComment(node.value);
 
@@ -371,7 +357,7 @@ function adjustBlock(block) {
 
         if (message.fix) {
             adjustedFix.fix = {
-                range: /** @type {Range} */ (message.fix.range.map(range => {
+                range: message.fix.range.map(range => {
 
                     // Advance through the block's range map to find the last
                     // matching range by finding the first range too far and
@@ -384,7 +370,7 @@ function adjustBlock(block) {
 
                     // Apply the mapping delta for this range.
                     return range + block.rangeMap[i - 1].md;
-                })),
+                }),
                 text: message.fix.text.replace(/\n/gu, `\n${block.baseIndentText}`)
             };
         }

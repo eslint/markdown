@@ -23,21 +23,21 @@ import fs from "node:fs";
 const files = process.argv.slice(2);
 
 files.forEach(filePath => {
-	const lines = fs.readFileSync(filePath, "utf8").split(/\r?\n/gu);
-	const typedefs = new Set();
+    const lines = fs.readFileSync(filePath, "utf8").split(/\r?\n/gu);
+    const typedefs = new Set();
 
-	const remainingLines = lines.filter(line => {
-		if (!line.startsWith("/** @typedef {import")) {
-			return true;
-		}
+    const remainingLines = lines.filter(line => {
+        if (!line.startsWith("/** @typedef {import")) {
+            return true;
+        }
 
-		if (typedefs.has(line)) {
-			return false;
-		}
+        if (typedefs.has(line)) {
+            return false;
+        }
 
-		typedefs.add(line);
-		return true;
-	});
+        typedefs.add(line);
+        return true;
+    });
 
-	fs.writeFileSync(filePath, remainingLines.join("\n"), "utf8");
+    fs.writeFileSync(filePath, remainingLines.join("\n"), "utf8");
 });
