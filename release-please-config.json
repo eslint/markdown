@@ -1,0 +1,12 @@
+{
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "pull-request-title-pattern": "chore: release ${version} 🚀",
+      "extra-files": [
+        "lib/index.js",
+        "lib/processor.js"
+      ]
+    }
+  }
+}
