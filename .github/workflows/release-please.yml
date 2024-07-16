@@ -11,18 +11,8 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
-      - uses: google-github-actions/release-please-action@v3
+      - uses: googleapis/release-please-action@v4
         id: release
-        with:
-          release-type: node
-          package-name: 'eslint-plugin-markdown'
-          pull-request-title-pattern: 'chore: release ${version}'
-          changelog-types: >
-            [
-              { "type": "feat", "section": "Features", "hidden": false },
-              { "type": "fix", "section": "Bug Fixes", "hidden": false },
-              { "type": "perf", "section": "Performance Improvements", "hidden": false }
-            ]
       - uses: actions/checkout@v4
         if: ${{ steps.release.outputs.release_created }}
       - uses: actions/setup-node@v4
@@ -34,14 +24,14 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         if: ${{ steps.release.outputs.release_created }}
-      - run: 'npx @humanwhocodes/tweet "eslint-plugin-markdown ${{ steps.release.outputs.tag_name }} has been released: ${{ steps.release.outputs.html_url }}"'
+      - run: 'npx @humanwhocodes/tweet "eslint-plugin-markdown v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} has been released: ${{ steps.release.outputs.html_url }}"'
         if: ${{ steps.release.outputs.release_created }}
         env:
           TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
           TWITTER_CONSUMER_SECRET: ${{ secrets.TWITTER_CONSUMER_SECRET }}
           TWITTER_ACCESS_TOKEN_KEY: ${{ secrets.TWITTER_ACCESS_TOKEN_KEY }}
           TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
-      - run: 'npx @humanwhocodes/toot "eslint-plugin-markdown ${{ steps.release.outputs.tag_name }} has been released: ${{ steps.release.outputs.html_url }}"'
+      - run: 'npx @humanwhocodes/toot "eslint-plugin-markdown v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} has been released: ${{ steps.release.outputs.html_url }}"'
         if: ${{ steps.release.outputs.release_created }}
         env:
           MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}
