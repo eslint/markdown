@@ -38,15 +38,6 @@ export default [
 ];
 ```
 
-If you are still using the deprecated `.eslintrc.js` file format for ESLint, you can extend the `plugin:markdown/recommended-legacy` config to enable the Markdown processor on all `.md` files:
-
-```js
-// .eslintrc.js
-module.exports = {
-    extends: "plugin:markdown/recommended-legacy"
-};
-```
-
 #### Advanced Configuration
 
 You can manually include the Markdown processor by setting the `processor` option in your configuration file for all `.md` files.
@@ -96,32 +87,6 @@ export default [
 ];
 ```
 
-In the deprecated `.eslintrc.js` format:
-
-```js
-// .eslintrc.js
-module.exports = {
-    // 1. Add the plugin.
-    plugins: ["markdown"],
-    overrides: [
-        {
-            // 2. Enable the Markdown processor for all .md files.
-            files: ["**/*.md"],
-            processor: "markdown/markdown"
-        },
-        {
-            // 3. Optionally, customize the configuration ESLint uses for ```js
-            // fenced code blocks inside .md files.
-            files: ["**/*.md/*.js"],
-            // ...
-            rules: {
-                // ...
-            }
-        }
-    ]
-};
-```
-
 #### Frequently-Disabled Rules
 
 Some rules that catch mistakes in regular code are less helpful in documentation.
@@ -161,30 +126,6 @@ export default [
 
     // your other configs here
 ];
-```
-
-And in the deprecated `.eslintrc.js` format:
-
-```js
-// .eslintrc.js
-module.exports = {
-    plugins: ["markdown"],
-    overrides: [
-        {
-            files: ["**/*.md"],
-            processor: "markdown/markdown"
-        },
-        {
-            // 1. Target ```js code blocks in .md files.
-            files: ["**/*.md/*.js"],
-            rules: {
-                // 2. Disable other rules.
-                "no-console": "off",
-                "import/no-unresolved": "off"
-            }
-        }
-    ]
-};
 ```
 
 #### Strict Mode
