@@ -1,10 +1,8 @@
-"use strict";
+import js from "@eslint/js";
+import markdown from "../../src/index.js";
+import tseslint from "typescript-eslint";
 
-const markdown = require("eslint-plugin-markdown");
-const js = require("@eslint/js")
-const tseslint = require("typescript-eslint");
-
-module.exports = tseslint.config(
+export default tseslint.config(
     js.configs.recommended,
     ...markdown.configs.recommended,
     {

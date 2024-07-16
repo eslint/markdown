@@ -20,7 +20,10 @@ jobs:
           node-version: lts/*
           registry-url: https://registry.npmjs.org
         if: ${{ steps.release.outputs.release_created }}
-      - run: npm publish --provenance
+      - run: |
+          npm install
+          npm run build --if-present
+          npm publish --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         if: ${{ steps.release.outputs.release_created }}

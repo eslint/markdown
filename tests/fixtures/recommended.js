@@ -1,7 +1,7 @@
-const markdown = require("../../");
-const js = require("@eslint/js")
+import markdown from "../../src/index.js";
+import js from "@eslint/js";
 
-module.exports = [
+export default [
     js.configs.recommended,
     ...markdown.configs.recommended,
     {
