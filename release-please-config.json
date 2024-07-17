@@ -3,6 +3,7 @@
     ".": {
       "release-type": "node",
       "pull-request-title-pattern": "chore: release ${version} 🚀",
+      "include-component-in-tag": false,
       "extra-files": [
         "lib/index.js",
         "lib/processor.js"
