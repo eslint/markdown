@@ -11,7 +11,7 @@
   "main": "src/index.js",
   "exports": {
     "import": {
-      "default": "./srcindex.js"
+      "default": "./src/index.js"
     }
   },
   "files": [
