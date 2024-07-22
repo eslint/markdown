@@ -37,7 +37,7 @@
     "release:generate:beta": "eslint-generate-prerelease beta",
     "release:generate:rc": "eslint-generate-prerelease rc",
     "release:publish": "eslint-publish-release",
-    "test": "c8 mocha tests/**/*.test.js --timeout 30000"
+    "test": "c8 mocha \"tests/**/*.test.js\" --timeout 30000"
   },
   "devDependencies": {
     "@eslint/core": "^0.2.0",
