@@ -25,9 +25,7 @@
  * @typedef {ASTNode & BlockBase} Block
  */
 
-"use strict";
-
-const parse = require("mdast-util-from-markdown");
+import { fromMarkdown } from "mdast-util-from-markdown";
 
 const UNSATISFIABLE_RULES = new Set([
     "eol-last", // The Markdown parser strips trailing newlines in code fences
@@ -248,7 +246,7 @@ const languageToFileExtension = {
  * @returns {Array<{ filename: string, text: string }>} Source code blocks to lint.
  */
 function preprocess(text, filename) {
-    const ast = parse(text);
+    const ast = fromMarkdown(text);
     const blocks = [];
 
     blocksCache.set(filename, blocks);
@@ -409,7 +407,7 @@ function postprocess(messages, filename) {
     });
 }
 
-module.exports = {
+export const processor = {
     meta: {
         name: "eslint-plugin-markdown/markdown",
         version: "5.1.0" // x-release-please-version

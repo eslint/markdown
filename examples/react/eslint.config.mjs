@@ -1,13 +1,13 @@
-"use strict";
 
-const markdown = require("eslint-plugin-markdown");
-const js = require("@eslint/js");
-const globals = require("globals");
+import js from "@eslint/js";
+import markdown from "../../src/index.js";
+import globals from "globals";
+import reactRecommended from "eslint-plugin-react/configs/recommended.js";
 
-module.exports = [
+export default [
     js.configs.recommended,
     ...markdown.configs.recommended,
-    require("eslint-plugin-react/configs/recommended"),
+    reactRecommended,
     {
         settings: {
             react: {

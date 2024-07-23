@@ -1,10 +1,13 @@
-"use strict";
+import { assert } from "chai";
+import fs from "node:fs";
+import path from "node:path";
+import semver from "semver";
+import { createRequire } from "node:module";
+import { fileURLToPath } from "node:url";
 
-const assert = require("chai").assert;
-const fs = require("fs");
-const path = require("path");
-const semver = require("semver");
-
+const require = createRequire(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const examplesDir = path.resolve(__dirname, "../../examples/");
 const examples = fs.readdirSync(examplesDir)
     .filter(exampleDir => fs.statSync(path.join(examplesDir, exampleDir)).isDirectory())
@@ -14,7 +17,7 @@ for (const example of examples) {
     const cwd = path.join(examplesDir, example);
 
     // The plugin officially supports ESLint as early as v6, but the examples
-    // use ESLint v7, which has a higher minimum Node.js version than does v6.
+    // use ESLint v8, which has a higher minimum Node.js version than does v6.
     // Only exercise the example if the running Node.js version satisfies the
     // minimum version constraint. In CI, this will skip these tests in Node.js
     // v8 and run them on all other Node.js versions.

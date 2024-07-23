@@ -3,9 +3,7 @@
  * @author Brandon Mills
  */
 
-"use strict";
-
-const processor = require("./processor");
+import { processor } from "./processor.js";
 
 const rulesConfig = {
 
@@ -100,4 +98,4 @@ plugin.configs.recommended = [
     }
 ];
 
-module.exports = plugin;
+export default plugin;

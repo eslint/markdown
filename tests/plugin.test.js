@@ -3,17 +3,28 @@
  * @author Brandon Mills
  */
 
-"use strict";
-
 //-----------------------------------------------------------------------------
-// Requirements
+// Imports
 //-----------------------------------------------------------------------------
 
-const assert = require("chai").assert;
-const { LegacyESLint, FlatESLint } = require("eslint/use-at-your-own-risk");
-const path = require("node:path");
-const plugin = require("../..");
-const pkg = require("../../package.json");
+import { assert } from "chai";
+import api from "eslint";
+import unsupportedAPI from "eslint/use-at-your-own-risk";
+import path from "node:path";
+import plugin from "../src/index.js";
+import fs from "node:fs";
+import { fileURLToPath } from "node:url";
+
+const ESLint = api.ESLint;
+const LegacyESLint = unsupportedAPI.LegacyESLint;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+//-----------------------------------------------------------------------------
+// Data
+//-----------------------------------------------------------------------------
+
+const pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../package.json"), "utf8"));
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -27,10 +38,10 @@ const pkg = require("../../package.json");
  */
 function initLegacyESLint(fixtureConfigName, options = {}) {
     return new LegacyESLint({
-        cwd: path.resolve(__dirname, "../fixtures/"),
+        cwd: path.resolve(__dirname, "./fixtures/"),
         ignore: false,
         useEslintrc: false,
-        overrideConfigFile: path.resolve(__dirname, "../fixtures/", fixtureConfigName),
+        overrideConfigFile: path.resolve(__dirname, "./fixtures/", fixtureConfigName),
         plugins: { markdown: plugin },
         ...options
     });
@@ -40,13 +51,13 @@ function initLegacyESLint(fixtureConfigName, options = {}) {
  * Helper function which creates ESLint instance with enabled/disabled autofix feature.
  * @param {string} fixtureConfigName ESLint config  filename.
  * @param {Object} [options={}] Whether to enable autofix feature.
- * @returns {FlatESLint} ESLint instance to execute in tests.
+ * @returns {ESLint} ESLint instance to execute in tests.
  */
 function initFlatESLint(fixtureConfigName, options = {}) {
-    return new FlatESLint({
-        cwd: path.resolve(__dirname, "../fixtures/"),
+    return new ESLint({
+        cwd: path.resolve(__dirname, "./fixtures/"),
         ignore: false,
-        overrideConfigFile: path.resolve(__dirname, "../fixtures/", fixtureConfigName),
+        overrideConfigFile: path.resolve(__dirname, "./fixtures/", fixtureConfigName),
         ...options
     });
 }
@@ -245,7 +256,7 @@ describe("LegacyESLint", () => {
         });
 
         it("should extract blocks and remap messages", async () => {
-            const results = await eslint.lintFiles([path.resolve(__dirname, "../fixtures/long.md")]);
+            const results = await eslint.lintFiles([path.resolve(__dirname, "./fixtures/long.md")]);
 
             assert.strictEqual(results.length, 1);
             assert.strictEqual(results[0].messages.length, 5);
@@ -1207,7 +1218,7 @@ describe("FlatESLint", () => {
         });
 
         it("should extract blocks and remap messages", async () => {
-            const results = await eslint.lintFiles([path.resolve(__dirname, "../fixtures/long.md")]);
+            const results = await eslint.lintFiles([path.resolve(__dirname, "./fixtures/long.md")]);
 
             assert.strictEqual(results.length, 1);
             assert.strictEqual(results[0].messages.length, 5);

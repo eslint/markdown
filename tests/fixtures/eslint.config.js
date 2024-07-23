@@ -1,7 +1,7 @@
-const markdown = require("../../");
-const globals = require("globals");
+import markdown from "../../src/index.js";
+import globals from "globals";
 
-module.exports = [
+export default [
     {
         plugins: {
             markdown

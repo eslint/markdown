@@ -1,17 +1,14 @@
-"use strict";
+import globals from "globals";
+import eslintConfigESLint from "eslint-config-eslint";
+import eslintConfigESLintFormatting from "eslint-config-eslint/formatting";
+import markdown from "./src/index.js";
 
-module.exports = [
-    ...require("eslint-config-eslint/cjs").map(config => ({
-        ...config,
-        files: ["**/*.js"]
-    })),
-    {
-        ...require("eslint-config-eslint/formatting"),
-        files: ["**/*.js"]
-    },
+export default [
+    ...eslintConfigESLint,
+    eslintConfigESLintFormatting,
     {
         plugins: {
-            markdown: require(".")
+            markdown
         }
     },
     {
@@ -25,8 +22,11 @@ module.exports = [
         files: ["tests/**/*.js"],
         languageOptions: {
             globals: {
-                ...require("globals").mocha
+                ...globals.mocha
             }
+        },
+        rules: {
+            "no-underscore-dangle": "off"
         }
     },
     {
