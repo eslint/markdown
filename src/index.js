@@ -10,9 +10,17 @@
 import { processor } from "./processor.js";
 
 //-----------------------------------------------------------------------------
+// Type Definitions
+//-----------------------------------------------------------------------------
+
+/** @typedef {import("eslint").Linter.RulesRecord} RulesRecord*/
+/** @typedef {import("eslint").ESLint.Plugin} Plugin */
+
+//-----------------------------------------------------------------------------
 // Exports
 //-----------------------------------------------------------------------------
 
+/** @type {RulesRecord} */
 const rulesConfig = {
 
     // The Markdown parser automatically trims trailing
@@ -36,6 +44,7 @@ const rulesConfig = {
     "unicode-bom": "off"
 };
 
+/** @type {Plugin} */
 const plugin = {
     meta: {
         name: "@eslint/markdown",
