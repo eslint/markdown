@@ -1,5 +1,16 @@
 # Changelog
 
+## [6.0.0](https://github.com/eslint/eslint-plugin-markdown/compare/v5.1.0...v6.0.0) (2024-07-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* Convert to ESM ([#259](https://github.com/eslint/eslint-plugin-markdown/issues/259))
+
+### Features
+
+* Convert to ESM ([#259](https://github.com/eslint/eslint-plugin-markdown/issues/259)) ([e0da221](https://github.com/eslint/eslint-plugin-markdown/commit/e0da2214cc06fd441def1844135f3c9fef74e940))
+
 ## [5.1.0](https://github.com/eslint/eslint-plugin-markdown/compare/v5.0.0...v5.1.0) (2024-07-05)
 
 
