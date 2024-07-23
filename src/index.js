@@ -3,7 +3,13 @@
  * @author Brandon Mills
  */
 
+//-----------------------------------------------------------------------------
+// Imports
+//-----------------------------------------------------------------------------
+
 import { processor } from "./processor.js";
+
+
 
 const rulesConfig = {
 
@@ -30,7 +36,7 @@ const rulesConfig = {
 
 const plugin = {
     meta: {
-        name: "eslint-plugin-markdown",
+        name: "@eslint/markdown",
         version: "5.1.0" // x-release-please-version
     },
     processors: {
