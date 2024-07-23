@@ -16,11 +16,11 @@ const examples = fs.readdirSync(examplesDir)
 for (const example of examples) {
     const cwd = path.join(examplesDir, example);
 
-    // The plugin officially supports ESLint as early as v6, but the examples
-    // use ESLint v8, which has a higher minimum Node.js version than does v6.
+    // In case when this plugin supports multiple major versions of ESLint,
+    // CI matrix may include Node.js versions that are not supported by
+    // the version of ESLint that is used in examples.
     // Only exercise the example if the running Node.js version satisfies the
-    // minimum version constraint. In CI, this will skip these tests in Node.js
-    // v8 and run them on all other Node.js versions.
+    // minimum version constraint.
     const eslintPackageJsonPath = require.resolve("eslint/package.json", {
         paths: [cwd]
     });

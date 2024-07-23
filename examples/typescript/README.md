@@ -12,13 +12,14 @@ hello(42 as any);
 
 ```sh
 $ git clone https://github.com/eslint/eslint-plugin-markdown.git
-$ cd eslint-plugin-markdown/examples/typescript
+$ cd eslint-plugin-markdown
 $ npm install
+$ cd examples/typescript
 $ npm test
 
 eslint-plugin-markdown/examples/typescript/README.md
-   6:22  error  Don't use `String` as a type. Use string instead  @typescript-eslint/ban-types
-  10:13  error  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   6:22  error  Prefer using the primitive `string` as a type name, rather than the upper-cased `String`  @typescript-eslint/no-wrapper-object-types
+  10:13  error  Unexpected any. Specify a different type                                                  @typescript-eslint/no-explicit-any
 
 ✖ 2 problems (2 errors, 0 warnings)
   1 error and 0 warnings potentially fixable with the `--fix` option.

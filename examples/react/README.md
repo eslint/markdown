@@ -12,8 +12,9 @@ function App({ name }) {
 
 ```sh
 $ git clone https://github.com/eslint/eslint-plugin-markdown.git
-$ cd eslint-plugin-markdown/examples/react
+$ cd eslint-plugin-markdown
 $ npm install
+$ cd examples/react
 $ npm test
 
 eslint-plugin-markdown/examples/react/README.md
