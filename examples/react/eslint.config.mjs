@@ -2,12 +2,12 @@
 import js from "@eslint/js";
 import markdown from "../../src/index.js";
 import globals from "globals";
-import reactRecommended from "eslint-plugin-react/configs/recommended.js";
+import reactPlugin from "eslint-plugin-react";
 
 export default [
     js.configs.recommended,
     ...markdown.configs.recommended,
-    reactRecommended,
+    reactPlugin.configs.flat.recommended,
     {
         settings: {
             react: {
@@ -23,12 +23,6 @@ export default [
             ecmaVersion: 2015,
             sourceType: "module",
             globals: globals.browser
-        }
-    },
-    {
-        files: ["eslint.config.js"],
-        languageOptions: {
-            sourceType: "commonjs"
         }
     },
     {
