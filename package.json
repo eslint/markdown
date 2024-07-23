@@ -1,7 +1,7 @@
 {
-  "name": "eslint-plugin-markdown",
+  "name": "@eslint/markdown",
   "version": "5.1.0",
-  "description": "An ESLint plugin to lint JavaScript in Markdown code fences.",
+  "description": "The official ESLint language plugin for Markdown",
   "license": "MIT",
   "author": {
     "name": "Brandon Mills",
@@ -17,11 +17,14 @@
   "files": [
     "src"
   ],
-  "repository": "eslint/eslint-plugin-markdown",
-  "bugs": {
-    "url": "https://github.com/eslint/eslint-plugin-markdown/issues"
+  "publishConfig": {
+    "access": "public"
   },
-  "homepage": "https://github.com/eslint/eslint-plugin-markdown#readme",
+  "repository": "eslint/markdown",
+  "bugs": {
+    "url": "https://github.com/eslint/markdown/issues"
+  },
+  "homepage": "https://github.com/eslint/markdown#readme",
   "keywords": [
     "eslint",
     "eslintplugin",
@@ -32,11 +35,6 @@
   "scripts": {
     "lint": "eslint .",
     "prepare": "node ./npm-prepare.cjs",
-    "release:generate:latest": "eslint-generate-release",
-    "release:generate:alpha": "eslint-generate-prerelease alpha",
-    "release:generate:beta": "eslint-generate-prerelease beta",
-    "release:generate:rc": "eslint-generate-prerelease rc",
-    "release:publish": "eslint-publish-release",
     "test": "c8 mocha \"tests/**/*.test.js\" --timeout 30000"
   },
   "devDependencies": {
@@ -46,7 +44,6 @@
     "chai": "^5.1.1",
     "eslint": "^9.4.0",
     "eslint-config-eslint": "^11.0.0",
-    "eslint-release": "^3.1.2",
     "globals": "^15.1.0",
     "mocha": "^10.6.0"
   },

@@ -27,14 +27,14 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         if: ${{ steps.release.outputs.release_created }}
-      - run: 'npx @humanwhocodes/tweet "eslint-plugin-markdown v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} has been released: ${{ steps.release.outputs.html_url }}"'
+      - run: 'npx @humanwhocodes/tweet "eslint/markdown v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} has been released: ${{ steps.release.outputs.html_url }}"'
         if: ${{ steps.release.outputs.release_created }}
         env:
           TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
           TWITTER_CONSUMER_SECRET: ${{ secrets.TWITTER_CONSUMER_SECRET }}
           TWITTER_ACCESS_TOKEN_KEY: ${{ secrets.TWITTER_ACCESS_TOKEN_KEY }}
           TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
-      - run: 'npx @humanwhocodes/toot "eslint-plugin-markdown v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} has been released: ${{ steps.release.outputs.html_url }}"'
+      - run: 'npx @humanwhocodes/toot "eslint/markdown v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} has been released: ${{ steps.release.outputs.html_url }}"'
         if: ${{ steps.release.outputs.release_created }}
         env:
           MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}
