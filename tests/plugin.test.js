@@ -69,7 +69,7 @@ function initFlatESLint(fixtureConfigName, options = {}) {
 
 describe("meta", () => {
     it("should export meta property", () => {
-        assert.deepStrictEqual(plugin.meta, { name: "eslint-plugin-markdown", version: pkg.version });
+        assert.deepStrictEqual(plugin.meta, { name: "@eslint/markdown", version: pkg.version });
     });
 });
 
@@ -165,7 +165,7 @@ describe("LegacyESLint", () => {
             assert.strictEqual(results[0].messages[1].endLine, 8);
         });
 
-        // https://github.com/eslint/eslint-plugin-markdown/issues/77
+        // https://github.com/eslint/markdown/issues/77
         it("should emit correct line numbers with leading blank line", async () => {
             const code = [
                 "### Heading",
@@ -277,7 +277,7 @@ describe("LegacyESLint", () => {
             assert.strictEqual(results[0].messages[4].column, 2);
         });
 
-        // https://github.com/eslint/eslint-plugin-markdown/issues/181
+        // https://github.com/eslint/markdown/issues/181
         it("should work when called on nested code blocks in the same file", async () => {
 
             /*
@@ -350,7 +350,7 @@ describe("LegacyESLint", () => {
                 assert.strictEqual(results[0].messages[3].line, 15);
             });
 
-            // https://github.com/eslint/eslint-plugin-markdown/issues/78
+            // https://github.com/eslint/markdown/issues/78
             it("preserves leading empty lines", async () => {
                 const code = [
                     "<!-- eslint lines-around-directive: ['error', 'never'] -->",
@@ -1127,7 +1127,7 @@ describe("FlatESLint", () => {
             assert.strictEqual(results[0].messages[1].endLine, 8);
         });
 
-        // https://github.com/eslint/eslint-plugin-markdown/issues/77
+        // https://github.com/eslint/markdown/issues/77
         it("should emit correct line numbers with leading blank line", async () => {
             const code = [
                 "### Heading",
@@ -1239,7 +1239,7 @@ describe("FlatESLint", () => {
             assert.strictEqual(results[0].messages[4].column, 2);
         });
 
-        // https://github.com/eslint/eslint-plugin-markdown/issues/181
+        // https://github.com/eslint/markdown/issues/181
         it("should work when called on nested code blocks in the same file", async () => {
 
             /*
@@ -1312,7 +1312,7 @@ describe("FlatESLint", () => {
                 assert.strictEqual(results[0].messages[3].line, 15);
             });
 
-            // https://github.com/eslint/eslint-plugin-markdown/issues/78
+            // https://github.com/eslint/markdown/issues/78
             it("preserves leading empty lines", async () => {
                 const code = [
                     "<!-- eslint lines-around-directive: ['error', 'never'] -->",

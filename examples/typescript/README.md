@@ -11,13 +11,13 @@ hello(42 as any);
 ```
 
 ```sh
-$ git clone https://github.com/eslint/eslint-plugin-markdown.git
-$ cd eslint-plugin-markdown
+$ git clone https://github.com/eslint/markdown.git
+$ cd markdown
 $ npm install
 $ cd examples/typescript
 $ npm test
 
-eslint-plugin-markdown/examples/typescript/README.md
+markdown/examples/typescript/README.md
    6:22  error  Prefer using the primitive `string` as a type name, rather than the upper-cased `String`  @typescript-eslint/no-wrapper-object-types
   10:13  error  Unexpected any. Specify a different type                                                  @typescript-eslint/no-explicit-any
 
