@@ -1,4 +1,4 @@
-# ESLint Markdown Language Plugins
+# ESLint Markdown Language Plugin
 
 [![npm Version](https://img.shields.io/npm/v/@eslint/markdown.svg)](https://www.npmjs.com/package/@eslint/markdown)
 [![Downloads](https://img.shields.io/npm/dm/@eslint/markdown.svg)](https://www.npmjs.com/package/@eslint/markdown)
