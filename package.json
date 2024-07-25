@@ -35,6 +35,7 @@
   ],
   "scripts": {
     "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "build:dedupe-types": "node tools/dedupe-types.js dist/esm/index.js",
     "build": "rollup -c && npm run build:dedupe-types && tsc -p tsconfig.esm.json",
     "prepare": "node ./npm-prepare.cjs",
