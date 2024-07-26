@@ -15,7 +15,8 @@ export default [
         ignores: [
             "**/examples",
             "**/coverage",
-            "**/tests/fixtures"
+            "**/tests/fixtures",
+            "dist"
         ]
     },
     {

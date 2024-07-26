@@ -30,7 +30,7 @@ describe("processor", () => {
 
     describe("meta", () => {
         it("should have meta property", () => {
-            assert.deepStrictEqual(processor.meta, { name: "eslint-plugin-markdown/markdown", version: pkg.version });
+            assert.deepStrictEqual(processor.meta, { name: "@eslint/markdown/markdown", version: pkg.version });
         });
     });
 
@@ -504,7 +504,7 @@ describe("processor", () => {
             ].join("\n"));
         });
 
-        // https://github.com/eslint/eslint-plugin-markdown/issues/76
+        // https://github.com/eslint/markdown/issues/76
         it("should insert comments inside list items", () => {
             const code = [
                 "* List item followed by a blank line",

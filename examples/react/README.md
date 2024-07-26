@@ -11,13 +11,13 @@ function App({ name }) {
 ```
 
 ```sh
-$ git clone https://github.com/eslint/eslint-plugin-markdown.git
-$ cd eslint-plugin-markdown
+$ git clone https://github.com/eslint/markdown.git
+$ cd markdown
 $ npm install
 $ cd examples/react
 $ npm test
 
-eslint-plugin-markdown/examples/react/README.md
+markdown/examples/react/README.md
   4:16  error  'name' is missing in props validation  react/prop-types
 
 ✖ 1 problem (1 error, 0 warnings)
