@@ -1,0 +1,14 @@
+{
+  "files": ["src/index.js"],
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "allowImportingTsExtensions": true,
+    "allowJs": true,
+    "checkJs": true,
+    "outDir": "dist/esm",
+    "target": "ES2022",
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext"
+  }
+}
