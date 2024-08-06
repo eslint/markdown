@@ -31,3 +31,8 @@ Goodbye World!
 ## When Not to Use It
 
 If you aren't concerned with autolinking heading or autogenerating a table of contents, you can safely disable this rule.
+
+## Prior Art
+
+* [MD024 - Multiple headers with the same content](https://github.com/markdownlint/markdownlint/blob/main/docs/RULES.md#md024---multiple-headers-with-the-same-content)
+* [MD024 - no-duplicate-heading](https://github.com/DavidAnson/markdownlint/blob/main/doc/md024.md)

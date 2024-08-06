@@ -31,3 +31,7 @@ Examples of incorrect code:
 ## When Not to Use It
 
 If you aren't concerned with missing label references, you can safely disable this rule.
+
+## Prior Art
+
+* [MD052 - reference-links-images](https://github.com/DavidAnson/markdownlint/blob/main/doc/md052.md)

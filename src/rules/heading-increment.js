@@ -4,9 +4,16 @@
  */
 
 //-----------------------------------------------------------------------------
+// Type Definitions
+//-----------------------------------------------------------------------------
+
+/** @typedef {import("eslint").Rule.RuleModule} RuleModule */
+
+//-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
 
+/** @type {RuleModule} */
 export default {
     meta: {
         type: "problem",
@@ -32,7 +39,7 @@ export default {
                         loc: node.position,
                         messageId: "skippedHeading",
                         data: {
-                            fromLevel: lastHeadingDepth,
+                            fromLevel: lastHeadingDepth.toString(),
                             toLevel: node.depth
                         }
                     });

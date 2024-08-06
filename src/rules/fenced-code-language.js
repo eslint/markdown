@@ -4,9 +4,16 @@
  */
 
 //-----------------------------------------------------------------------------
+// Type Definitions
+//-----------------------------------------------------------------------------
+
+/** @typedef {import("eslint").Rule.RuleModule} RuleModule */
+
+//-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
 
+/** @type {RuleModule} */
 export default {
     meta: {
         type: "problem",
@@ -41,9 +48,10 @@ export default {
     create(context) {
 
         const required = new Set(context.options[0]?.required ?? []);
-        const { sourceCode } = context
+        const { sourceCode } = context;
 
         return {
+
             code(node) {
 
                 if (!node.lang) {

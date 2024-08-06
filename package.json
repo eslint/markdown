@@ -38,7 +38,7 @@
     "lint:fix": "eslint --fix . && eslint --fix -c eslint.config-content.js .",
     "build:dedupe-types": "node tools/dedupe-types.js dist/esm/index.js",
     "build:rules": "node tools/build-rules.js",
-    "build": "build:rules && rollup -c && npm run build:dedupe-types && tsc -p tsconfig.esm.json",
+    "build": "npm run build:rules && rollup -c && npm run build:dedupe-types && tsc -p tsconfig.esm.json",
     "prepare": "node ./npm-prepare.cjs",
     "test": "c8 mocha \"tests/**/*.test.js\" --timeout 30000"
   },
@@ -49,7 +49,7 @@
     "c8": "^10.1.2",
     "chai": "^5.1.1",
     "dedent": "^1.5.3",
-    "eslint": "github:eslint/eslint",
+    "eslint": "^9.8.0",
     "eslint-config-eslint": "^11.0.0",
     "globals": "^15.1.0",
     "mocha": "^10.6.0",

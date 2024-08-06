@@ -21,3 +21,7 @@ Examples of incorrect code:
 ## When Not to Use It
 
 If you aren't concerned with empty links, you can safely disable this rule.
+
+## Prior Art
+
+* [MD042 - no-empty-links](https://github.com/DavidAnson/markdownlint/blob/main/doc/md042.md)

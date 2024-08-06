@@ -9,6 +9,7 @@
 
 /** @typedef {import("unist").Position} Position */
 /** @typedef {import("mdast").Text} TextNode */
+/** @typedef {import("eslint").Rule.RuleModule} RuleModule */
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -30,7 +31,7 @@ const labelPatterns = [
  * Finds the line and column offsets for a given start offset in a string.
  * @param {string} text The text to search.
  * @param {number} startOffset The offset to find.
- * @returns {{lineoffset:number,columnOffset:number}} The location of the offset.
+ * @returns {{lineOffset:number,columnOffset:number}} The location of the offset.
  */
 function findOffsets(text, startOffset) {
 
@@ -75,7 +76,8 @@ function findMissingReferences(node, text) {
             return value.match(pattern);
         }, null);
 
-        if (!match) {
+        // check for array instead of null to appease TypeScript
+        if (!Array.isArray(match)) {
             break;
         }
 
@@ -134,6 +136,7 @@ function findMissingReferences(node, text) {
 // Rule Definition
 //-----------------------------------------------------------------------------
 
+/** @type {RuleModule} */
 export default {
     meta: {
         type: "problem",

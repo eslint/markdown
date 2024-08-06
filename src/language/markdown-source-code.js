@@ -19,7 +19,7 @@
 /** @typedef {import("@eslint/core").TraversalStep} TraversalStep */
 /** @typedef {import("@eslint/core").VisitTraversalStep} VisitTraversalStep */
 /** @typedef {import("@eslint/core").TextSourceCode} TextSourceCode */
-/** @typedef {import("@eslint/core").ParseResult} ParseResult */
+/** @typedef {import("@eslint/core").ParseResult<RootNode>} ParseResult */
 /** @typedef {import("@eslint/core").SourceLocation} SourceLocation */
 /** @typedef {import("@eslint/core").SourceRange} SourceRange */
 

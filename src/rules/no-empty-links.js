@@ -2,11 +2,17 @@
  * @fileoverview Rule to prevent empty links in Markdown.
  * @author Nicholas C. Zakas
  */
+//-----------------------------------------------------------------------------
+// Type Definitions
+//-----------------------------------------------------------------------------
+
+/** @typedef {import("eslint").Rule.RuleModule} RuleModule */
 
 //-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
 
+/** @type {RuleModule} */
 export default {
     meta: {
         type: "problem",

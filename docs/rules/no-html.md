@@ -43,3 +43,8 @@ Hello <b>world!</b>
 ## When Not to Use It
 
 If you aren't concerned with empty links, you can safely disable this rule.
+
+## Prior Art
+
+* [MD033 - Inline HTML](https://github.com/markdownlint/markdownlint/blob/main/docs/RULES.md#md033---inline-html)
+* [MD033 - no-inline-html](https://github.com/DavidAnson/markdownlint/blob/main/doc/md033.md)
