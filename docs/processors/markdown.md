@@ -152,7 +152,7 @@ Here are some other things to keep in mind when linting code blocks.
 ### Strict Mode
 
 `"use strict"` directives in every code block would be annoying.
-The `markdown.configs.processor` config enables the [`impliedStrict` parser option](https://eslint.org/docs/user-guide/configuring#specifying-parser-options) and disables the [`strict` rule](https://eslint.org/docs/rules/strict) in Markdown files.
+The `markdown.configs.processor` config enables the [`impliedStrict` parser option](https://eslint.org/docs/latest/use/configure/parser#configure-parser-options) and disables the [`strict` rule](https://eslint.org/docs/rules/strict) in Markdown files.
 This opts into strict mode parsing without repeated `"use strict"` directives.
 
 ### Unsatisfiable Rules
