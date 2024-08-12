@@ -21,11 +21,13 @@ const labelPatterns = [
     /\]\[([^\]]+)\]/u,
 
     // [foo][]
-    /(\]\[\])/u,
+    /(\]\[\s*\])/u,
 
     // [foo]
     /\[([^\]]+)\]/u
 ];
+
+const shorthandTailPattern = /\]\[\s*\]$/u;
 
 /**
  * Finds the line and column offsets for a given start offset in a string.
@@ -85,7 +87,7 @@ function findMissingReferences(node, text) {
         let columnStart = startIndex + match.index + 1;
 
         // need to look backward to get the label
-        if (match[0] === "][]") {
+        if (shorthandTailPattern.test(match[0])) {
 
             // adding 1 to the index just in case we're in a ![] and need to skip the !.
             const startFrom = node.position.start.offset + startIndex + 1;
@@ -112,7 +114,7 @@ function findMissingReferences(node, text) {
         const line = node.position.start.line + lineOffset;
 
         missing.push({
-            label,
+            label: label.trim(),
             position: {
                 start: {
                     line,
@@ -154,13 +156,13 @@ export default {
     create(context) {
 
         const { sourceCode } = context;
+        let allMissingReferences = [];
 
         return {
-            text(node) {
 
-                const missingReferences = findMissingReferences(node, sourceCode.text);
+            "root:exit"() {
 
-                for (const missingReference of missingReferences) {
+                for (const missingReference of allMissingReferences) {
                     context.report({
                         loc: missingReference.position,
                         messageId: "notFound",
@@ -169,6 +171,23 @@ export default {
                         }
                     });
                 }
+
+            },
+
+            text(node) {
+                allMissingReferences.push(...findMissingReferences(node, sourceCode.text));
+            },
+
+            definition(node) {
+
+                /*
+                 * Sometimes a poorly-formatted link will end up a text node instead of a link node
+                 * even though the label definition exists. Here, we remove any missing references
+                 * that have a matching label definition.
+                 */
+                allMissingReferences = allMissingReferences.filter(
+                    missingReference => missingReference.label !== node.identifier
+                );
             }
         };
     }

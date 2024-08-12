@@ -34,6 +34,10 @@ ruleTester.run("no-html", rule, {
         {
             code: "<b>Hello world!</b>",
             options: [{ allowed: ["b"] }]
+        },
+        {
+            code: "<custom-element>Hello world!</custom-element>",
+            options: [{ allowed: ["custom-element"] }]
         }
     ],
     invalid: [
@@ -64,6 +68,22 @@ ruleTester.run("no-html", rule, {
                     endColumn: 4,
                     data: {
                         name: "b"
+                    }
+                }
+            ]
+        },
+        {
+            code: "<custom-element>Hello world!</custom-element>",
+            options: [{ allowed: ["em"] }],
+            errors: [
+                {
+                    messageId: "disallowedElement",
+                    line: 1,
+                    column: 1,
+                    endLine: 1,
+                    endColumn: 17,
+                    data: {
+                        name: "custom-element"
                     }
                 }
             ]
