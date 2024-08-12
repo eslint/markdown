@@ -165,7 +165,7 @@ The `markdown.configs.processor` config disables these rules in Markdown files:
 
 ### Autofixing
 
-With this plugin, [ESLint's `--fix` option](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) can automatically fix some issues in your Markdown fenced code blocks.
+With this plugin, [ESLint's `--fix` option](https://eslint.org/docs/latest/use/command-line-interface#fix-problems) can automatically fix some issues in your Markdown fenced code blocks.
 To enable this, pass the `--fix` flag when you run ESLint:
 
 ```bash
