@@ -1,6 +1,6 @@
 # Using the Markdown processor
 
-With this processor, ESLint will lint [fenced code blocks](https://help.github.com/articles/github-flavored-markdown/#fenced-code-blocks) in your Markdown documents. This processor uses [CommonMark](https://commonmark.org) format to evaluate the Markdown code, but this shouldn't matter because all Markdown dialects use the same format for code blocks. Here are some examples:
+With this processor, ESLint will lint [fenced code blocks](https://www.markdownguide.org/extended-syntax/#fenced-code-blocks) in your Markdown documents. This processor uses [CommonMark](https://commonmark.org) format to evaluate the Markdown code, but this shouldn't matter because all Markdown dialects use the same format for code blocks. Here are some examples:
 
 ````markdown
 ```js
