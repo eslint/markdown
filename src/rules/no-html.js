@@ -45,7 +45,7 @@ export default {
 
     create(context) {
 
-        const allowed = new Set(context.options[0]?.allowed ?? []);
+        const allowed = new Set(context.options[0]?.allowed);
 
         return {
             html(node) {
