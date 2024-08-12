@@ -47,7 +47,7 @@ export default {
 
     create(context) {
 
-        const required = new Set(context.options[0]?.required ?? []);
+        const required = new Set(context.options[0]?.required);
         const { sourceCode } = context;
 
         return {
