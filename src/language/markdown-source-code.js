@@ -275,6 +275,6 @@ export class MarkdownSourceCode {
 
         visit(this.ast);
 
-        return steps;
+        return steps.values();
     }
 }
