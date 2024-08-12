@@ -60,7 +60,7 @@ export default {
                     return;
                 }
 
-                const tagName = node.value.match(/<([a-zA-Z0-9]+)/u)?.[1];
+                const tagName = node.value.match(/<([a-z0-9]+(?:-[a-z0-9]+)*)/ui)?.[1];
 
                 if (allowed.size === 0 || !allowed.has(tagName)) {
                     context.report({
