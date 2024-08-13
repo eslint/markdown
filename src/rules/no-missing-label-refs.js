@@ -4,6 +4,12 @@
  */
 
 //-----------------------------------------------------------------------------
+// Imports
+//-----------------------------------------------------------------------------
+
+import { findOffsets, illegalShorthandTailPattern } from "../util.js";
+
+//-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
@@ -21,39 +27,13 @@ const labelPatterns = [
     /\]\[([^\]]+)\]/u,
 
     // [foo][]
-    /(\]\[\s*\])/u,
+    /(\]\[\])/u,
 
     // [foo]
     /\[([^\]]+)\]/u
 ];
 
-const shorthandTailPattern = /\]\[\s*\]$/u;
-
-/**
- * Finds the line and column offsets for a given start offset in a string.
- * @param {string} text The text to search.
- * @param {number} startOffset The offset to find.
- * @returns {{lineOffset:number,columnOffset:number}} The location of the offset.
- */
-function findOffsets(text, startOffset) {
-
-    let lineOffset = 0;
-    let columnOffset = 0;
-
-    for (let i = 0; i < startOffset; i++) {
-        if (text[i] === "\n") {
-            lineOffset++;
-            columnOffset = 0;
-        } else {
-            columnOffset++;
-        }
-    }
-
-    return {
-        lineOffset,
-        columnOffset
-    };
-}
+const shorthandTailPattern = /\]\[\]$/u;
 
 /**
  * Finds missing references in a node.
@@ -85,6 +65,12 @@ function findMissingReferences(node, text) {
 
         let label = match[1];
         let columnStart = startIndex + match.index + 1;
+
+        // check for illegal shorthand tail
+        if (illegalShorthandTailPattern.test(match[0])) {
+            startIndex += match.index + match[0].length;
+            continue;
+        }
 
         // need to look backward to get the label
         if (shorthandTailPattern.test(match[0])) {

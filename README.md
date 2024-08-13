@@ -52,6 +52,7 @@ export default [
 | [`no-duplicate-headings`](./docs/rules/no-duplicate-headings.md) | Disallow duplicate headings in the same document. |
 | [`no-empty-links`](./docs/rules/no-empty-links.md) | Disallow empty links. |
 | [`no-html`](./docs/rules/no-html.md) | Enforce fenced code blocks to specify a language. |
+| [`no-invalid-label-refs`](./docs/rules/no-invalid-label-refs.md) | Disallow invalid label references. |
 | [`no-missing-label-refs`](./docs/rules/no-missing-label-refs.md) | Disallow missing label references. |
 
 **Note:** This plugin does not provide formatting rules. We recommend using a source code formatter such as [Prettier](https://prettier.io) for that purpose.

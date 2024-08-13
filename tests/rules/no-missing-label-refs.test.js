@@ -27,6 +27,8 @@ ruleTester.run("no-missing-label-refs", rule, {
         "[*foo*]",
         "[foo]\n\n[foo]: http://bar.com",
         "[foo][foo]\n\n[foo]: http://bar.com",
+        "[foo][foo]\n\n[ foo ]: http://bar.com",
+        "[foo][ foo ]\n\n[ foo ]: http://bar.com",
         "![foo][foo]\n\n[foo]: http://bar.com/image.jpg",
         "[foo][]\n\n[foo]: http://bar.com/image.jpg",
         "![foo][]\n\n[foo]: http://bar.com/image.jpg",
