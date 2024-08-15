@@ -30,7 +30,7 @@ ruleTester.run("no-invalid-label-refs", rule, {
         "![foo][foo]\n\n[foo]: http://bar.com/image.jpg",
         "[foo][]\n\n[foo]: http://bar.com/image.jpg",
         "![foo][]\n\n[foo]: http://bar.com/image.jpg",
-        "[  foo ][]\n\n[foo]: http://bar.com/image.jpg",
+        "[  foo ][]\n\n[foo]: http://bar.com/image.jpg"
     ],
     invalid: [
         {
