@@ -31,7 +31,7 @@ const labelPattern = /\]\[([^\]]+)\]/u;
  * @param {string} text The text of the node.
  * @returns {Array<{label:string,position:Position}>} The missing references.
  */
-function findIllegalLabelReferences(node, text) {
+function findInvalidLabelReferences(node, text) {
 
     const invalid = [];
     let startIndex = 0;
@@ -60,7 +60,7 @@ function findIllegalLabelReferences(node, text) {
             continue;
         }
 
-        const label = text.slice(lastOpenBracket, match.index + match[0].length).match(/!?\[([^\]]+)\]/u)?.[1];
+        const label = text.slice(lastOpenBracket, columnStart + match[0].length).match(/!?\[([^\]]+)\]/u)?.[1];
 
         columnStart -= label.length;
 
@@ -111,7 +111,7 @@ export default {
         },
 
         messages: {
-            illegalLabelRef: "Label reference '{{label}}' is invalid due to white space between [ and ]."
+            invalidLabelRef: "Label reference '{{label}}' is invalid due to white space between [ and ]."
         }
     },
 
@@ -122,12 +122,12 @@ export default {
         return {
 
             text(node) {
-                const invalidReferences = findIllegalLabelReferences(node, sourceCode.text);
+                const invalidReferences = findInvalidLabelReferences(node, sourceCode.text);
 
                 for (const invalidReference of invalidReferences) {
                     context.report({
                         loc: invalidReference.position,
-                        messageId: "illegalLabelRef",
+                        messageId: "invalidLabelRef",
                         data: {
                             label: invalidReference.label
                         }
