@@ -12,17 +12,17 @@
 export const illegalShorthandTailPattern = /\]\[\s+\]$/u;
 
 /**
- * Finds the line and column offsets for a given start offset in a string.
+ * Finds the line and column offsets for a given offset in a string.
  * @param {string} text The text to search.
- * @param {number} startOffset The offset to find.
+ * @param {number} offset The offset to find.
  * @returns {{lineOffset:number,columnOffset:number}} The location of the offset.
  */
-export function findOffsets(text, startOffset) {
+export function findOffsets(text, offset) {
 
     let lineOffset = 0;
     let columnOffset = 0;
 
-    for (let i = 0; i < startOffset; i++) {
+    for (let i = 0; i < offset; i++) {
         if (text[i] === "\n") {
             lineOffset++;
             columnOffset = 0;
