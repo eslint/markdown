@@ -135,6 +135,19 @@ ruleTester.run("no-missing-label-refs", rule, {
                     endColumn: 5
                 }
             ]
+        },
+        {
+            code: "- - - [foo]",
+            errors: [
+                {
+                    messageId: "notFound",
+                    data: { label: "foo" },
+                    line: 1,
+                    column: 8,
+                    endLine: 1,
+                    endColumn: 11
+                }
+            ]
         }
     ]
 });
