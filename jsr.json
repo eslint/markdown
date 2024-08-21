@@ -6,6 +6,7 @@
     "include": [
       "dist/esm/index.js",
       "dist/esm/index.d.ts",
+      "dist/esm/types.ts",
       "README.md",
       "jsr.json",
       "LICENSE"
