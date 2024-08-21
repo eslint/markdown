@@ -34,4 +34,4 @@ If you aren't concerned with missing label references, you can safely disable th
 
 ## Prior Art
 
--   [MD052 - reference-links-images](https://github.com/DavidAnson/markdownlint/blob/main/doc/md052.md)
+* [MD052 - reference-links-images](https://github.com/DavidAnson/markdownlint/blob/main/doc/md052.md)

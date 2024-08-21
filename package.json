@@ -41,7 +41,7 @@
       "eslint --fix",
       "prettier --write"
     ],
-    "!(*.js)": "prettier --write --ignore-unknown"
+    "!(*.{js,md})": "prettier --write --ignore-unknown"
   },
   "scripts": {
     "lint": "eslint . && eslint -c eslint.config-content.js .",

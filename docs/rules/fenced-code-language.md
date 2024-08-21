@@ -32,7 +32,7 @@ console.log(message);
 
 The following options are available on this rule:
 
--   `required: Array<string>` - when specified, fenced code blocks must use one of the languages specified in this array.
+* `required: Array<string>` - when specified, fenced code blocks must use one of the languages specified in this array. 
 
 Examples of incorrect code when configured as `"fenced-code-language: ["error", { required: ["js"]}]`:
 
@@ -49,5 +49,5 @@ If you don't mind omitting the language for fenced code blocks, you can safely d
 
 ## Prior Art
 
--   [MD040 - Fenced code blocks should have a language specified](https://github.com/markdownlint/markdownlint/blob/main/docs/RULES.md#md040---fenced-code-blocks-should-have-a-language-specified)
--   [MD040 fenced-code-language](https://github.com/DavidAnson/markdownlint/blob/main/doc/md040.md)
+* [MD040 - Fenced code blocks should have a language specified](https://github.com/markdownlint/markdownlint/blob/main/docs/RULES.md#md040---fenced-code-blocks-should-have-a-language-specified)
+* [MD040 fenced-code-language](https://github.com/DavidAnson/markdownlint/blob/main/doc/md040.md)

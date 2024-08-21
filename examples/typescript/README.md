@@ -4,7 +4,7 @@ The `@typescript-eslint` parser and the `recommended` config's rules will work i
 
 ```ts
 function hello(name: String) {
-	console.log(`Hello, ${name}!`);
+    console.log(`Hello, ${name}!`);
 }
 
 hello(42 as any);
