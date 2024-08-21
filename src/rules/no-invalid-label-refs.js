@@ -69,7 +69,6 @@ function findInvalidLabelReferences(node, docText) {
 
         /*
          * Search the entire document text to find the preceding open bracket.
-         * We add one to the start index to account for a preceding ! in an image.
          */
         const lastOpenBracketIndex = docText.lastIndexOf("[", docMatchIndex);
 
