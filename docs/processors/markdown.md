@@ -17,7 +17,7 @@ Here is some regular Markdown text that will be ignored.
 /* eslint quotes: [2, "double"] */
 
 function hello() {
-	console.log("Hello, world!");
+    console.log("Hello, world!");
 }
 hello();
 ```
@@ -49,9 +49,9 @@ To enable the Markdown processor, use the `processor` configuration, which conta
 import markdown from "@eslint/markdown";
 
 export default [
-	...markdown.configs.processor,
+    ...markdown.configs.processor
 
-	// your other configs here
+    // your other configs here
 ];
 ```
 
@@ -61,48 +61,48 @@ You can manually include the Markdown processor by setting the `processor` optio
 
 Each fenced code block inside a Markdown document has a virtual filename appended to the Markdown file's path.
 
-The virtual filename's extension will match the fenced code block's syntax tag, except for the following:
+The virtual filename's extension will match the fenced code block's syntax tag, except for the following: 
 
--   `javascript` and `ecmascript` are mapped to `js`
--   `typescript` is mapped to `ts`
--   `markdown` is mapped to `md`
+* `javascript` and `ecmascript` are mapped to `js`
+* `typescript` is mapped to `ts`
+* `markdown` is mapped to `md`
 
-For example, ` ```js ` code blocks in `README.md` would match `README.md/*.js` and ` ```typescript ` in `CONTRIBUTING.md` would match `CONTRIBUTING.md/*.ts`.
+For example, ```` ```js ```` code blocks in `README.md` would match `README.md/*.js` and ```` ```typescript ```` in `CONTRIBUTING.md` would match `CONTRIBUTING.md/*.ts`.
 
 You can use glob patterns for these virtual filenames to customize configuration for code blocks without affecting regular code.
 For more information on configuring processors, refer to the [ESLint documentation](https://eslint.org/docs/latest/use/configure/plugins#specify-a-processor).
 
 Here's an example:
 
-````js
+```js
 // eslint.config.js
 import markdown from "@eslint/markdown";
 
 export default [
-	{
-		// 1. Add the plugin
-		plugins: {
-			markdown,
-		},
-	},
-	{
-		// 2. Enable the Markdown processor for all .md files.
-		files: ["**/*.md"],
-		processor: "markdown/markdown",
-	},
-	{
-		// 3. Optionally, customize the configuration ESLint uses for ```js
-		// fenced code blocks inside .md files.
-		files: ["**/*.md/*.js"],
-		// ...
-		rules: {
-			// ...
-		},
-	},
+    {
+        // 1. Add the plugin
+        plugins: {
+            markdown
+        }
+    },
+    {
+        // 2. Enable the Markdown processor for all .md files.
+        files: ["**/*.md"],
+        processor: "markdown/markdown"
+    },
+    {
+        // 3. Optionally, customize the configuration ESLint uses for ```js
+        // fenced code blocks inside .md files.
+        files: ["**/*.md/*.js"],
+        // ...
+        rules: {
+            // ...
+        }
+    }
 
-	// your other configs here
+    // your other configs here
 ];
-````
+```
 
 ## Frequently-Disabled Rules
 
@@ -110,40 +110,40 @@ Some rules that catch mistakes in regular code are less helpful in documentation
 For example, `no-undef` would flag variables that are declared outside of a code snippet because they aren't relevant to the example.
 The `markdown.configs.processor` config disables these rules in Markdown files:
 
--   [`no-undef`](https://eslint.org/docs/rules/no-undef)
--   [`no-unused-expressions`](https://eslint.org/docs/rules/no-unused-expressions)
--   [`no-unused-vars`](https://eslint.org/docs/rules/no-unused-vars)
--   [`padded-blocks`](https://eslint.org/docs/rules/padded-blocks)
+- [`no-undef`](https://eslint.org/docs/rules/no-undef)
+- [`no-unused-expressions`](https://eslint.org/docs/rules/no-unused-expressions)
+- [`no-unused-vars`](https://eslint.org/docs/rules/no-unused-vars)
+- [`padded-blocks`](https://eslint.org/docs/rules/padded-blocks)
 
 Use glob patterns to disable more rules just for Markdown code blocks:
 
-````js
+```js
 // / eslint.config.js
 import markdown from "@eslint/markdown";
 
 export default [
-	{
-		plugins: {
-			markdown,
-		},
-	},
-	{
-		files: ["**/*.md"],
-		processor: "markdown/markdown",
-	},
-	{
-		// 1. Target ```js code blocks in .md files.
-		files: ["**/*.md/*.js"],
-		rules: {
-			// 2. Disable other rules.
-			"no-console": "off",
-			"import/no-unresolved": "off",
-		},
-	},
+    {
+        plugins: {
+            markdown
+        }
+    },
+    {
+        files: ["**/*.md"],
+        processor: "markdown/markdown"
+    },
+    {
+        // 1. Target ```js code blocks in .md files.
+        files: ["**/*.md/*.js"],
+        rules: {
+            // 2. Disable other rules.
+            "no-console": "off",
+            "import/no-unresolved": "off"
+        }
+    }
 
-	// your other configs here
+    // your other configs here
 ];
-````
+```
 
 ## Additional Notes
 
@@ -160,8 +160,8 @@ This opts into strict mode parsing without repeated `"use strict"` directives.
 Markdown code blocks are not real files, so ESLint's file-format rules do not apply.
 The `markdown.configs.processor` config disables these rules in Markdown files:
 
--   [`eol-last`](https://eslint.org/docs/rules/eol-last): The Markdown parser trims trailing newlines from code blocks.
--   [`unicode-bom`](https://eslint.org/docs/rules/unicode-bom): Markdown code blocks do not have Unicode Byte Order Marks.
+- [`eol-last`](https://eslint.org/docs/rules/eol-last): The Markdown parser trims trailing newlines from code blocks.
+- [`unicode-bom`](https://eslint.org/docs/rules/unicode-bom): Markdown code blocks do not have Unicode Byte Order Marks.
 
 ### Autofixing
 
@@ -186,7 +186,7 @@ This example enables the `alert` global variable, disables the `no-alert` rule, 
 <!-- eslint quotes: ["error", "single"] -->
 
 ```js
-alert("Hello, world!");
+alert('Hello, world!');
 ```
 ````
 

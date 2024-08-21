@@ -14,7 +14,7 @@ CommonMark allows you to specify a label as a placeholder for a URL in both link
 [eslint]: https://eslint.org
 ```
 
-The shorthand form, `[label][]` does not allow any white space between the brackets, and when found, doesn't treat this as a link reference.
+The shorthand form, `[label][]` does not allow any white space between the brackets, and when found, doesn't treat this as a link reference. 
 
 Confusingly, GitHub still treats this as a label reference and will render it as if there is no white space between the brackets. Relying on this behavior could result in errors when using CommonMark-compliant renderers.
 
@@ -27,7 +27,7 @@ Examples of incorrect code:
 ```markdown
 [eslint][ ]
 
-[eslint]
+[eslint][
 
 ]
 ```
