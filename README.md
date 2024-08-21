@@ -25,10 +25,10 @@ npm install --save-dev eslint @eslint/markdown
 
 ### Configurations
 
-| **Configuration Name** | **Description** |
-|---------------|-----------------|
-| `recommended` | Lints all `.md` files with the recommended rules and assumes [CommonMark](https://commonmark.org/) format. |
-| `processor` | Enables extracting code blocks from all `.md` files so code blocks can be individually linted. |
+| **Configuration Name** | **Description**                                                                                            |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `recommended`          | Lints all `.md` files with the recommended rules and assumes [CommonMark](https://commonmark.org/) format. |
+| `processor`            | Enables extracting code blocks from all `.md` files so code blocks can be individually linted.             |
 
 In your `eslint.config.js` file, import `@eslint/markdown` and include the recommended config to enable the Markdown processor on all `.md` files:
 
@@ -37,23 +37,23 @@ In your `eslint.config.js` file, import `@eslint/markdown` and include the recom
 import markdown from "@eslint/markdown";
 
 export default [
-    ...markdown.configs.recommended
+	...markdown.configs.recommended,
 
-    // your other configs here
+	// your other configs here
 ];
 ```
 
 ### Rules
 
-| **Rule Name** | **Description** |
-|---------------|-----------------|
-| [`fenced-code-language`](./docs/rules/fenced-code-language.md) | Enforce fenced code blocks to specify a language. |
-| [`heading-increment`](./docs/rules/heading-increment.md) | Enforce heading levels increment by one. |
+| **Rule Name**                                                    | **Description**                                   |
+| ---------------------------------------------------------------- | ------------------------------------------------- |
+| [`fenced-code-language`](./docs/rules/fenced-code-language.md)   | Enforce fenced code blocks to specify a language. |
+| [`heading-increment`](./docs/rules/heading-increment.md)         | Enforce heading levels increment by one.          |
 | [`no-duplicate-headings`](./docs/rules/no-duplicate-headings.md) | Disallow duplicate headings in the same document. |
-| [`no-empty-links`](./docs/rules/no-empty-links.md) | Disallow empty links. |
-| [`no-html`](./docs/rules/no-html.md) | Enforce fenced code blocks to specify a language. |
-| [`no-invalid-label-refs`](./docs/rules/no-invalid-label-refs.md) | Disallow invalid label references. |
-| [`no-missing-label-refs`](./docs/rules/no-missing-label-refs.md) | Disallow missing label references. |
+| [`no-empty-links`](./docs/rules/no-empty-links.md)               | Disallow empty links.                             |
+| [`no-html`](./docs/rules/no-html.md)                             | Enforce fenced code blocks to specify a language. |
+| [`no-invalid-label-refs`](./docs/rules/no-invalid-label-refs.md) | Disallow invalid label references.                |
+| [`no-missing-label-refs`](./docs/rules/no-missing-label-refs.md) | Disallow missing label references.                |
 
 **Note:** This plugin does not provide formatting rules. We recommend using a source code formatter such as [Prettier](https://prettier.io) for that purpose.
 
@@ -64,25 +64,24 @@ In order to individually configure a rule in your `eslint.config.js` file, impor
 import markdown from "@eslint/markdown";
 
 export default [
-    {
-        files: ["**/*.md"],
-        plugins: {
-            markdown
-        },
-        rules: {
-            "markdown/no-html": "error"
-        }
-    }
+	{
+		files: ["**/*.md"],
+		plugins: {
+			markdown,
+		},
+		rules: {
+			"markdown/no-html": "error",
+		},
+	},
 ];
 ```
 
 ### Languages
 
-| **Language Name** | **Description** |
-|---------------|-----------------|
-| `commonmark` | Parse using [CommonMark](https://commonmark.org) Markdown format | 
-| `gfm` | Parse using [GitHub-Flavored Markdown](https://github.github.com/gfm/) format | 
-
+| **Language Name** | **Description**                                                               |
+| ----------------- | ----------------------------------------------------------------------------- |
+| `commonmark`      | Parse using [CommonMark](https://commonmark.org) Markdown format              |
+| `gfm`             | Parse using [GitHub-Flavored Markdown](https://github.github.com/gfm/) format |
 
 In order to individually configure a language in your `eslint.config.js` file, import `@eslint/markdown` and configure a `language`:
 
@@ -91,24 +90,24 @@ In order to individually configure a language in your `eslint.config.js` file, i
 import markdown from "@eslint/markdown";
 
 export default [
-    {
-        files: ["**/*.md"],
-        plugins: {
-            markdown
-        },
-        language: "markdown/gfm",
-        rules: {
-            "markdown/no-html": "error"
-        }
-    }
+	{
+		files: ["**/*.md"],
+		plugins: {
+			markdown,
+		},
+		language: "markdown/gfm",
+		rules: {
+			"markdown/no-html": "error",
+		},
+	},
 ];
 ```
 
 ### Processors
 
-| **Processor Name** | **Description** |
-|---------------|-----------------|
-| [`markdown`](./docs/processors/markdown.md) | Extract fenced code blocks from the Markdown code so they can be linted separately. | 
+| **Processor Name**                          | **Description**                                                                     |
+| ------------------------------------------- | ----------------------------------------------------------------------------------- |
+| [`markdown`](./docs/processors/markdown.md) | Extract fenced code blocks from the Markdown code so they can be linted separately. |
 
 ## Editor Integrations
 

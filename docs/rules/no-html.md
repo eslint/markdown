@@ -22,7 +22,7 @@ Hello <b>world!</b>
 
 The following options are available on this rule:
 
-* `allowed: Array<string>` - when specified, HTML tags are allowed only if they match one of the tags in this array.. 
+-   `allowed: Array<string>` - when specified, HTML tags are allowed only if they match one of the tags in this array..
 
 Examples of incorrect code when configured as `"no-html: ["error", { allowed: ["b"]}]`:
 
@@ -46,5 +46,5 @@ If you aren't concerned with empty links, you can safely disable this rule.
 
 ## Prior Art
 
-* [MD033 - Inline HTML](https://github.com/markdownlint/markdownlint/blob/main/docs/RULES.md#md033---inline-html)
-* [MD033 - no-inline-html](https://github.com/DavidAnson/markdownlint/blob/main/doc/md033.md)
+-   [MD033 - Inline HTML](https://github.com/markdownlint/markdownlint/blob/main/docs/RULES.md#md033---inline-html)
+-   [MD033 - no-inline-html](https://github.com/DavidAnson/markdownlint/blob/main/doc/md033.md)

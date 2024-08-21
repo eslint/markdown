@@ -13,7 +13,7 @@ console.log(42);
 ```js
 // Comment
 function foo() {
-    console.log("Hello");
+	console.log("Hello");
 }
 ```
 
