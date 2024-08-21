@@ -22,15 +22,14 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
 //-----------------------------------------------------------------------------
 
 const labelPatterns = [
+	// [foo][bar]
+	/\]\[([^\]]+)\]/u,
 
-    // [foo][bar]
-    /\]\[([^\]]+)\]/u,
+	// [foo][]
+	/(\]\[\])/u,
 
-    // [foo][]
-    /(\]\[\])/u,
-
-    // [foo]
-    /\[([^\]]+)\]/u
+	// [foo]
+	/\[([^\]]+)\]/u,
 ];
 
 const shorthandTailPattern = /\]\[\]$/u;
@@ -42,94 +41,89 @@ const shorthandTailPattern = /\]\[\]$/u;
  * @returns {Array<{label:string,position:Position}>} The missing references.
  */
 function findMissingReferences(node, docText) {
+	const missing = [];
+	let startIndex = 0;
+	const offset = node.position.start.offset;
+	const nodeStartLine = node.position.start.line;
+	const nodeStartColumn = node.position.start.column;
 
-    const missing = [];
-    let startIndex = 0;
-    const offset = node.position.start.offset;
-    const nodeStartLine = node.position.start.line;
-    const nodeStartColumn = node.position.start.column;
+	/*
+	 * This loop works by searching the string inside the node for the next
+	 * label reference. If there is, it reports an error.
+	 * It then moves the start index to the end of the label reference and
+	 * continues searching the text until the end of the text is found.
+	 */
+	while (startIndex < node.value.length) {
+		const value = node.value.slice(startIndex);
 
-    /*
-     * This loop works by searching the string inside the node for the next
-     * label reference. If there is, it reports an error.
-     * It then moves the start index to the end of the label reference and
-     * continues searching the text until the end of the text is found.
-     */
-    while (startIndex < node.value.length) {
+		const match = labelPatterns.reduce((previous, pattern) => {
+			if (previous) {
+				return previous;
+			}
 
-        const value = node.value.slice(startIndex);
+			return value.match(pattern);
+		}, null);
 
-        const match = labelPatterns.reduce((previous, pattern) => {
-            if (previous) {
-                return previous;
-            }
+		// check for array instead of null to appease TypeScript
+		if (!Array.isArray(match)) {
+			break;
+		}
 
-            return value.match(pattern);
-        }, null);
+		// skip illegal shorthand tail -- handled by no-invalid-label-refs
+		if (illegalShorthandTailPattern.test(match[0])) {
+			startIndex += match.index + match[0].length;
+			continue;
+		}
 
-        // check for array instead of null to appease TypeScript
-        if (!Array.isArray(match)) {
-            break;
-        }
+		// Calculate the match index relative to just the node.
+		let columnStart = startIndex + match.index;
+		let label = match[1];
 
-        // skip illegal shorthand tail -- handled by no-invalid-label-refs
-        if (illegalShorthandTailPattern.test(match[0])) {
-            startIndex += match.index + match[0].length;
-            continue;
-        }
+		// need to look backward to get the label
+		if (shorthandTailPattern.test(match[0])) {
+			// adding 1 to the index just in case we're in a ![] and need to skip the !.
+			const startFrom = offset + startIndex + 1;
+			const lastOpenBracket = docText.lastIndexOf("[", startFrom);
 
+			if (lastOpenBracket === -1) {
+				startIndex += match.index + match[0].length;
+				continue;
+			}
 
-        // Calculate the match index relative to just the node.
-        let columnStart = startIndex + match.index;
-        let label = match[1];
+			label = docText
+				.slice(lastOpenBracket, match.index + match[0].length)
+				.match(/!?\[([^\]]+)\]/u)?.[1];
+			columnStart -= label.length;
+		} else if (match[0].startsWith("]")) {
+			columnStart += 2;
+		} else {
+			columnStart += 1;
+		}
 
-        // need to look backward to get the label
-        if (shorthandTailPattern.test(match[0])) {
+		const { lineOffset: startLineOffset, columnOffset: startColumnOffset } =
+			findOffsets(node.value, columnStart);
 
-            // adding 1 to the index just in case we're in a ![] and need to skip the !.
-            const startFrom = offset + startIndex + 1;
-            const lastOpenBracket = docText.lastIndexOf("[", startFrom);
+		const startLine = nodeStartLine + startLineOffset;
+		const startColumn = nodeStartColumn + startColumnOffset;
 
-            if (lastOpenBracket === -1) {
-                startIndex += match.index + match[0].length;
-                continue;
-            }
+		missing.push({
+			label: label.trim(),
+			position: {
+				start: {
+					line: startLine,
+					column: startColumn,
+				},
+				end: {
+					line: startLine,
+					column: startColumn + label.length,
+				},
+			},
+		});
 
-            label = docText.slice(lastOpenBracket, match.index + match[0].length).match(/!?\[([^\]]+)\]/u)?.[1];
-            columnStart -= label.length;
-        } else if (match[0].startsWith("]")) {
-            columnStart += 2;
-        } else {
-            columnStart += 1;
-        }
+		startIndex += match.index + match[0].length;
+	}
 
-        const {
-            lineOffset: startLineOffset,
-            columnOffset: startColumnOffset
-        } = findOffsets(node.value, columnStart);
-
-        const startLine = nodeStartLine + startLineOffset;
-        const startColumn = nodeStartColumn + startColumnOffset;
-
-        missing.push({
-            label: label.trim(),
-            position: {
-                start: {
-                    line: startLine,
-                    column: startColumn
-                },
-                end: {
-                    line: startLine,
-                    column: startColumn + label.length
-                }
-            }
-        });
-
-        startIndex += match.index + match[0].length;
-    }
-
-    return missing;
-
+	return missing;
 }
 
 //-----------------------------------------------------------------------------
@@ -138,55 +132,53 @@ function findMissingReferences(node, docText) {
 
 /** @type {RuleModule} */
 export default {
-    meta: {
-        type: "problem",
+	meta: {
+		type: "problem",
 
-        docs: {
-            recommended: true,
-            description: "Disallow missing label references."
-        },
+		docs: {
+			recommended: true,
+			description: "Disallow missing label references.",
+		},
 
-        messages: {
-            notFound: "Label reference '{{label}}' not found."
-        }
-    },
+		messages: {
+			notFound: "Label reference '{{label}}' not found.",
+		},
+	},
 
-    create(context) {
+	create(context) {
+		const { sourceCode } = context;
+		let allMissingReferences = [];
 
-        const { sourceCode } = context;
-        let allMissingReferences = [];
+		return {
+			"root:exit"() {
+				for (const missingReference of allMissingReferences) {
+					context.report({
+						loc: missingReference.position,
+						messageId: "notFound",
+						data: {
+							label: missingReference.label,
+						},
+					});
+				}
+			},
 
-        return {
+			text(node) {
+				allMissingReferences.push(
+					...findMissingReferences(node, sourceCode.text),
+				);
+			},
 
-            "root:exit"() {
-
-                for (const missingReference of allMissingReferences) {
-                    context.report({
-                        loc: missingReference.position,
-                        messageId: "notFound",
-                        data: {
-                            label: missingReference.label
-                        }
-                    });
-                }
-
-            },
-
-            text(node) {
-                allMissingReferences.push(...findMissingReferences(node, sourceCode.text));
-            },
-
-            definition(node) {
-
-                /*
-                 * Sometimes a poorly-formatted link will end up a text node instead of a link node
-                 * even though the label definition exists. Here, we remove any missing references
-                 * that have a matching label definition.
-                 */
-                allMissingReferences = allMissingReferences.filter(
-                    missingReference => missingReference.label !== node.identifier
-                );
-            }
-        };
-    }
+			definition(node) {
+				/*
+				 * Sometimes a poorly-formatted link will end up a text node instead of a link node
+				 * even though the label definition exists. Here, we remove any missing references
+				 * that have a matching label definition.
+				 */
+				allMissingReferences = allMissingReferences.filter(
+					missingReference =>
+						missingReference.label !== node.identifier,
+				);
+			},
+		};
+	},
 };

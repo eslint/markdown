@@ -17,76 +17,76 @@ import dedent from "dedent";
 //------------------------------------------------------------------------------
 
 const ruleTester = new RuleTester({
-    plugins: {
-        markdown
-    },
-    language: "markdown/commonmark"
+	plugins: {
+		markdown,
+	},
+	language: "markdown/commonmark",
 });
 
 ruleTester.run("no-html", rule, {
-    valid: [
-        "Hello world!",
-        " 1 < 5",
-        "<!-- comment -->",
-        dedent`\`\`\`html
+	valid: [
+		"Hello world!",
+		" 1 < 5",
+		"<!-- comment -->",
+		dedent`\`\`\`html
         <b>Hello world!</b>
         \`\`\``,
-        {
-            code: "<b>Hello world!</b>",
-            options: [{ allowed: ["b"] }]
-        },
-        {
-            code: "<custom-element>Hello world!</custom-element>",
-            options: [{ allowed: ["custom-element"] }]
-        }
-    ],
-    invalid: [
-        {
-            code: "<b>Hello world!</b>",
-            errors: [
-                {
-                    messageId: "disallowedElement",
-                    line: 1,
-                    column: 1,
-                    endLine: 1,
-                    endColumn: 4,
-                    data: {
-                        name: "b"
-                    }
-                }
-            ]
-        },
-        {
-            code: "<b>Hello world!</b>",
-            options: [{ allowed: ["em"] }],
-            errors: [
-                {
-                    messageId: "disallowedElement",
-                    line: 1,
-                    column: 1,
-                    endLine: 1,
-                    endColumn: 4,
-                    data: {
-                        name: "b"
-                    }
-                }
-            ]
-        },
-        {
-            code: "<custom-element>Hello world!</custom-element>",
-            options: [{ allowed: ["em"] }],
-            errors: [
-                {
-                    messageId: "disallowedElement",
-                    line: 1,
-                    column: 1,
-                    endLine: 1,
-                    endColumn: 17,
-                    data: {
-                        name: "custom-element"
-                    }
-                }
-            ]
-        }
-    ]
+		{
+			code: "<b>Hello world!</b>",
+			options: [{ allowed: ["b"] }],
+		},
+		{
+			code: "<custom-element>Hello world!</custom-element>",
+			options: [{ allowed: ["custom-element"] }],
+		},
+	],
+	invalid: [
+		{
+			code: "<b>Hello world!</b>",
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 4,
+					data: {
+						name: "b",
+					},
+				},
+			],
+		},
+		{
+			code: "<b>Hello world!</b>",
+			options: [{ allowed: ["em"] }],
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 4,
+					data: {
+						name: "b",
+					},
+				},
+			],
+		},
+		{
+			code: "<custom-element>Hello world!</custom-element>",
+			options: [{ allowed: ["em"] }],
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 17,
+					data: {
+						name: "custom-element",
+					},
+				},
+			],
+		},
+	],
 });

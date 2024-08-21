@@ -14,32 +14,29 @@
 
 /** @type {RuleModule} */
 export default {
-    meta: {
-        type: "problem",
+	meta: {
+		type: "problem",
 
-        docs: {
-            recommended: true,
-            description: "Disallow empty links."
-        },
+		docs: {
+			recommended: true,
+			description: "Disallow empty links.",
+		},
 
-        messages: {
-            emptyLink: "Unexpected empty link found."
-        }
-    },
+		messages: {
+			emptyLink: "Unexpected empty link found.",
+		},
+	},
 
-    create(context) {
-
-        return {
-            link(node) {
-
-                if (!node.url || node.url === "#") {
-                    context.report({
-                        loc: node.position,
-                        messageId: "emptyLink"
-                    });
-                }
-
-            }
-        };
-    }
+	create(context) {
+		return {
+			link(node) {
+				if (!node.url || node.url === "#") {
+					context.report({
+						loc: node.position,
+						messageId: "emptyLink",
+					});
+				}
+			},
+		};
+	},
 };

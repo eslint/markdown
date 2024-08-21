@@ -2,11 +2,11 @@
 
 ```jsx
 function App({ name }) {
-    return (
-        <div>
-            <p>Hello, {name}!</p>
-        </div>
-    );
+	return (
+		<div>
+			<p>Hello, {name}!</p>
+		</div>
+	);
 }
 ```
 
