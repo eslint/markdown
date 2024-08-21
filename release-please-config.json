@@ -4,7 +4,15 @@
       "release-type": "node",
       "pull-request-title-pattern": "chore: release ${version} 🚀",
       "include-component-in-tag": false,
-      "extra-files": ["src/index.js", "src/processor.js"]
+      "extra-files": [
+        "src/index.js",
+        "src/processor.js",
+        {
+            "type": "json",
+            "path": "jsr.json",
+            "jsonpath": "$.version"
+        }
+      ]
     }
   }
 }
