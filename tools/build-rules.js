@@ -25,12 +25,12 @@ const rules = fs.readdirSync(rulesPath);
 const recommended = [];
 
 for (const ruleId of rules) {
-    const rulePath = path.resolve(rulesPath, ruleId);
-    const rule = await import(pathToFileURL(rulePath));
+	const rulePath = path.resolve(rulesPath, ruleId);
+	const rule = await import(pathToFileURL(rulePath));
 
-    if (rule.default.meta.docs.recommended) {
-        recommended.push(ruleId);
-    }
+	if (rule.default.meta.docs.recommended) {
+		recommended.push(ruleId);
+	}
 }
 
 const output = `export default {
@@ -39,7 +39,10 @@ const output = `export default {
 `;
 
 fs.mkdirSync(path.resolve(thisDir, "../src/build"), { recursive: true });
-fs.writeFileSync(path.resolve(thisDir, "../src/build/recommended-config.js"), output);
+fs.writeFileSync(
+	path.resolve(thisDir, "../src/build/recommended-config.js"),
+	output,
+);
 
 console.log("Recommended rules generated successfully.");
 

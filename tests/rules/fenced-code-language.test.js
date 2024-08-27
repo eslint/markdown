@@ -16,64 +16,61 @@ import { RuleTester } from "eslint";
 //------------------------------------------------------------------------------
 
 const ruleTester = new RuleTester({
-    plugins: {
-        markdown
-    },
-    language: "markdown/commonmark"
+	plugins: {
+		markdown,
+	},
+	language: "markdown/commonmark",
 });
 
 ruleTester.run("fenced-code-language", rule, {
-    valid: [
-        `\`\`\`js
+	valid: [
+		`\`\`\`js
         console.log("Hello, world!");
         \`\`\``,
-        `\`\`\`javascript
+		`\`\`\`javascript
         console.log("Hello, world!");
         \`\`\``,
 
-        // indented code block
-        `
+		// indented code block
+		`
     console.log("Hello, world!");
         `,
-        {
-            code:
-                `\`\`\`js
+		{
+			code: `\`\`\`js
                 console.log("Hello, world!");
                 \`\`\``,
-            options: [{ required: ["js"] }]
-        }
-    ],
-    invalid: [
-        {
-            code:
-                `\`\`\`
+			options: [{ required: ["js"] }],
+		},
+	],
+	invalid: [
+		{
+			code: `\`\`\`
                 console.log("Hello, world!");
                 \`\`\``,
-            errors: [
-                {
-                    messageId: "missingLanguage",
-                    line: 1,
-                    column: 1,
-                    endLine: 3,
-                    endColumn: 20
-                }
-            ]
-        },
-        {
-            code:
-                `\`\`\`javascript
+			errors: [
+				{
+					messageId: "missingLanguage",
+					line: 1,
+					column: 1,
+					endLine: 3,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: `\`\`\`javascript
                 console.log("Hello, world!");
                 \`\`\``,
-            options: [{ required: ["js"] }],
-            errors: [
-                {
-                    messageId: "disallowedLanguage",
-                    line: 1,
-                    column: 1,
-                    endLine: 3,
-                    endColumn: 20
-                }
-            ]
-        }
-    ]
+			options: [{ required: ["js"] }],
+			errors: [
+				{
+					messageId: "disallowedLanguage",
+					line: 1,
+					column: 1,
+					endLine: 3,
+					endColumn: 20,
+				},
+			],
+		},
+	],
 });

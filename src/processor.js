@@ -28,8 +28,8 @@ import { fromMarkdown } from "mdast-util-from-markdown";
 //-----------------------------------------------------------------------------
 
 const UNSATISFIABLE_RULES = new Set([
-    "eol-last", // The Markdown parser strips trailing newlines in code fences
-    "unicode-bom" // Code blocks will begin in the middle of Markdown files
+	"eol-last", // The Markdown parser strips trailing newlines in code fences
+	"unicode-bom", // Code blocks will begin in the middle of Markdown files
 ]);
 const SUPPORTS_AUTOFIX = true;
 
@@ -45,19 +45,19 @@ const blocksCache = new Map();
  * @returns {void}
  */
 function traverse(node, callbacks) {
-    if (callbacks[node.type]) {
-        callbacks[node.type](node);
-    } else {
-        callbacks["*"]();
-    }
+	if (callbacks[node.type]) {
+		callbacks[node.type](node);
+	} else {
+		callbacks["*"]();
+	}
 
-    const parent = /** @type {ParentNode} */ (node);
+	const parent = /** @type {ParentNode} */ (node);
 
-    if (typeof parent.children !== "undefined") {
-        for (let i = 0; i < parent.children.length; i++) {
-            traverse(parent.children[i], callbacks);
-        }
-    }
+	if (typeof parent.children !== "undefined") {
+		for (let i = 0; i < parent.children.length; i++) {
+			traverse(parent.children[i], callbacks);
+		}
+	}
 }
 
 /**
@@ -67,24 +67,24 @@ function traverse(node, callbacks) {
  *     an empty string if the text is not an ESLint HTML comment.
  */
 function getComment(html) {
-    const commentStart = "<!--";
-    const commentEnd = "-->";
-    const regex = /^(eslint\b|global\s)/u;
+	const commentStart = "<!--";
+	const commentEnd = "-->";
+	const regex = /^(eslint\b|global\s)/u;
 
-    if (
-        html.slice(0, commentStart.length) !== commentStart ||
-        html.slice(-commentEnd.length) !== commentEnd
-    ) {
-        return "";
-    }
+	if (
+		html.slice(0, commentStart.length) !== commentStart ||
+		html.slice(-commentEnd.length) !== commentEnd
+	) {
+		return "";
+	}
 
-    const comment = html.slice(commentStart.length, -commentEnd.length);
+	const comment = html.slice(commentStart.length, -commentEnd.length);
 
-    if (!regex.test(comment.trim())) {
-        return "";
-    }
+	if (!regex.test(comment.trim())) {
+		return "";
+	}
 
-    return comment;
+	return comment;
 }
 
 // Before a code block, blockquote characters (`>`) are also considered
@@ -98,7 +98,7 @@ const leadingWhitespaceRegex = /^[>\s]*/u;
  * @returns {number} The offset for the first column of the node's first line.
  */
 function getBeginningOfLineOffset(node) {
-    return node.position.start.offset - node.position.start.column + 1;
+	return node.position.start.offset - node.position.start.column + 1;
 }
 
 /**
@@ -110,9 +110,9 @@ function getBeginningOfLineOffset(node) {
  *     fence of the code block.
  */
 function getIndentText(text, node) {
-    return leadingWhitespaceRegex.exec(
-        text.slice(getBeginningOfLineOffset(node))
-    )[0];
+	return leadingWhitespaceRegex.exec(
+		text.slice(getBeginningOfLineOffset(node)),
+	)[0];
 }
 
 /**
@@ -148,97 +148,102 @@ function getIndentText(text, node) {
  *     returns the corresponding location in the original Markdown source.
  */
 function getBlockRangeMap(text, node, comments) {
+	/*
+	 * The parser sets the fenced code block's start offset to wherever content
+	 * should normally begin (typically the first column of the line, but more
+	 * inside a list item, for example). The code block's opening fence may be
+	 * further indented by up to three characters. If the code block has
+	 * additional indenting, the opening fence's first backtick may be up to
+	 * three whitespace characters after the start offset.
+	 */
+	const startOffset = getBeginningOfLineOffset(node);
 
-    /*
-     * The parser sets the fenced code block's start offset to wherever content
-     * should normally begin (typically the first column of the line, but more
-     * inside a list item, for example). The code block's opening fence may be
-     * further indented by up to three characters. If the code block has
-     * additional indenting, the opening fence's first backtick may be up to
-     * three whitespace characters after the start offset.
-     */
-    const startOffset = getBeginningOfLineOffset(node);
+	/*
+	 * Extract the Markdown source to determine the leading whitespace for each
+	 * line.
+	 */
+	const code = text.slice(startOffset, node.position.end.offset);
+	const lines = code.split("\n");
 
-    /*
-     * Extract the Markdown source to determine the leading whitespace for each
-     * line.
-     */
-    const code = text.slice(startOffset, node.position.end.offset);
-    const lines = code.split("\n");
+	/*
+	 * The parser trims leading whitespace from each line of code within the
+	 * fenced code block up to the opening fence's first backtick. The first
+	 * backtick's column is the AST node's starting column plus any additional
+	 * indentation.
+	 */
+	const baseIndent = getIndentText(text, node).length;
 
-    /*
-     * The parser trims leading whitespace from each line of code within the
-     * fenced code block up to the opening fence's first backtick. The first
-     * backtick's column is the AST node's starting column plus any additional
-     * indentation.
-     */
-    const baseIndent = getIndentText(text, node).length;
+	/*
+	 * Track the length of any inserted configuration comments at the beginning
+	 * of the linted JS and start the JS offset lookup keys at this index.
+	 */
+	const commentLength = comments.reduce(
+		(len, comment) => len + comment.length + 1,
+		0,
+	);
 
-    /*
-     * Track the length of any inserted configuration comments at the beginning
-     * of the linted JS and start the JS offset lookup keys at this index.
-     */
-    const commentLength = comments.reduce((len, comment) => len + comment.length + 1, 0);
+	/*
+	 * In case there are configuration comments, initialize the map so that the
+	 * first lookup index is always 0. If there are no configuration comments,
+	 * the lookup index will also be 0, and the lookup should always go to the
+	 * last range that matches, skipping this initialization entry.
+	 */
+	const rangeMap = [
+		{
+			indent: baseIndent,
+			js: 0,
+			md: 0,
+		},
+	];
 
-    /*
-     * In case there are configuration comments, initialize the map so that the
-     * first lookup index is always 0. If there are no configuration comments,
-     * the lookup index will also be 0, and the lookup should always go to the
-     * last range that matches, skipping this initialization entry.
-     */
-    const rangeMap = [{
-        indent: baseIndent,
-        js: 0,
-        md: 0
-    }];
+	// Start the JS offset after any configuration comments.
+	let jsOffset = commentLength;
 
-    // Start the JS offset after any configuration comments.
-    let jsOffset = commentLength;
+	/*
+	 * Start the Markdown offset at the beginning of the block's first line of
+	 * actual code. The first line of the block is always the opening fence, so
+	 * the code begins on the second line.
+	 */
+	let mdOffset = startOffset + lines[0].length + 1;
 
-    /*
-     * Start the Markdown offset at the beginning of the block's first line of
-     * actual code. The first line of the block is always the opening fence, so
-     * the code begins on the second line.
-     */
-    let mdOffset = startOffset + lines[0].length + 1;
+	/*
+	 * For each line, determine how much leading whitespace was trimmed due to
+	 * indentation. Increase the JS lookup offset by the length of the line
+	 * post-trimming and the Markdown offset by the total line length.
+	 */
+	for (let i = 0; i + 1 < lines.length; i++) {
+		const line = lines[i + 1];
+		const leadingWhitespaceLength =
+			leadingWhitespaceRegex.exec(line)[0].length;
 
-    /*
-     * For each line, determine how much leading whitespace was trimmed due to
-     * indentation. Increase the JS lookup offset by the length of the line
-     * post-trimming and the Markdown offset by the total line length.
-     */
-    for (let i = 0; i + 1 < lines.length; i++) {
-        const line = lines[i + 1];
-        const leadingWhitespaceLength = leadingWhitespaceRegex.exec(line)[0].length;
+		// The parser trims leading whitespace up to the level of the opening
+		// fence, so keep any additional indentation beyond that.
+		const trimLength = Math.min(baseIndent, leadingWhitespaceLength);
 
-        // The parser trims leading whitespace up to the level of the opening
-        // fence, so keep any additional indentation beyond that.
-        const trimLength = Math.min(baseIndent, leadingWhitespaceLength);
+		rangeMap.push({
+			indent: trimLength,
+			js: jsOffset,
 
-        rangeMap.push({
-            indent: trimLength,
-            js: jsOffset,
+			// Advance `trimLength` character from the beginning of the Markdown
+			// line to the beginning of the equivalent JS line, then compute the
+			// delta.
+			md: mdOffset + trimLength - jsOffset,
+		});
 
-            // Advance `trimLength` character from the beginning of the Markdown
-            // line to the beginning of the equivalent JS line, then compute the
-            // delta.
-            md: mdOffset + trimLength - jsOffset
-        });
+		// Accumulate the current line in the offsets, and don't forget the
+		// newline.
+		mdOffset += line.length + 1;
+		jsOffset += line.length - trimLength + 1;
+	}
 
-        // Accumulate the current line in the offsets, and don't forget the
-        // newline.
-        mdOffset += line.length + 1;
-        jsOffset += line.length - trimLength + 1;
-    }
-
-    return rangeMap;
+	return rangeMap;
 }
 
 const languageToFileExtension = {
-    javascript: "js",
-    ecmascript: "js",
-    typescript: "ts",
-    markdown: "md"
+	javascript: "js",
+	ecmascript: "js",
+	typescript: "ts",
+	markdown: "md",
 };
 
 /**
@@ -248,84 +253,82 @@ const languageToFileExtension = {
  * @returns {Array<{ filename: string, text: string }>} Source code blocks to lint.
  */
 function preprocess(text, filename) {
-    const ast = fromMarkdown(text);
-    const blocks = [];
+	const ast = fromMarkdown(text);
+	const blocks = [];
 
-    blocksCache.set(filename, blocks);
+	blocksCache.set(filename, blocks);
 
-    /**
-     * During the depth-first traversal, keep track of any sequences of HTML
-     * comment nodes containing `eslint-*` or `global` comments. If a code
-     * block immediately follows such a sequence, insert the comments at the
-     * top of the code block. Any non-ESLint comment or other node type breaks
-     * and empties the sequence.
-     * @type {string[]}
-     */
-    let htmlComments = [];
+	/**
+	 * During the depth-first traversal, keep track of any sequences of HTML
+	 * comment nodes containing `eslint-*` or `global` comments. If a code
+	 * block immediately follows such a sequence, insert the comments at the
+	 * top of the code block. Any non-ESLint comment or other node type breaks
+	 * and empties the sequence.
+	 * @type {string[]}
+	 */
+	let htmlComments = [];
 
-    traverse(ast, {
-        "*"() {
-            htmlComments = [];
-        },
+	traverse(ast, {
+		"*"() {
+			htmlComments = [];
+		},
 
-        /**
-         * Visit a code node.
-         * @param {CodeNode} node The visited node.
-         * @returns {void}
-         */
-        code(node) {
-            if (node.lang) {
-                const comments = [];
+		/**
+		 * Visit a code node.
+		 * @param {CodeNode} node The visited node.
+		 * @returns {void}
+		 */
+		code(node) {
+			if (node.lang) {
+				const comments = [];
 
-                for (const comment of htmlComments) {
-                    if (comment.trim() === "eslint-skip") {
-                        htmlComments = [];
-                        return;
-                    }
+				for (const comment of htmlComments) {
+					if (comment.trim() === "eslint-skip") {
+						htmlComments = [];
+						return;
+					}
 
-                    comments.push(`/*${comment}*/`);
-                }
+					comments.push(`/*${comment}*/`);
+				}
 
-                htmlComments = [];
+				htmlComments = [];
 
-                blocks.push({
-                    ...node,
-                    baseIndentText: getIndentText(text, node),
-                    comments,
-                    rangeMap: getBlockRangeMap(text, node, comments)
-                });
-            }
-        },
+				blocks.push({
+					...node,
+					baseIndentText: getIndentText(text, node),
+					comments,
+					rangeMap: getBlockRangeMap(text, node, comments),
+				});
+			}
+		},
 
-        /**
-         * Visit an HTML node.
-         * @param {HtmlNode} node The visited node.
-         * @returns {void}
-         */
-        html(node) {
-            const comment = getComment(node.value);
+		/**
+		 * Visit an HTML node.
+		 * @param {HtmlNode} node The visited node.
+		 * @returns {void}
+		 */
+		html(node) {
+			const comment = getComment(node.value);
 
-            if (comment) {
-                htmlComments.push(comment);
-            } else {
-                htmlComments = [];
-            }
-        }
-    });
+			if (comment) {
+				htmlComments.push(comment);
+			} else {
+				htmlComments = [];
+			}
+		},
+	});
 
-    return blocks.map((block, index) => {
-        const [language] = block.lang.trim().split(" ");
-        const fileExtension = Object.hasOwn(languageToFileExtension, language) ? languageToFileExtension[language] : language;
+	return blocks.map((block, index) => {
+		const [language] = block.lang.trim().split(" ");
+		const fileExtension = Object.hasOwn(languageToFileExtension, language)
+			? languageToFileExtension[language]
+			: language;
 
-        return {
-            filename: `${index}.${fileExtension}`,
-            text: [
-                ...block.comments,
-                block.value,
-                ""
-            ].join("\n")
-        };
-    });
+		return {
+			filename: `${index}.${fileExtension}`,
+			text: [...block.comments, block.value, ""].join("\n"),
+		};
+	});
 }
 
 /**
@@ -334,63 +337,73 @@ function preprocess(text, filename) {
  * @returns {(message: Message) => Message} A function that adjusts messages in a code block.
  */
 function adjustBlock(block) {
-    const leadingCommentLines = block.comments.reduce((count, comment) => count + comment.split("\n").length, 0);
+	const leadingCommentLines = block.comments.reduce(
+		(count, comment) => count + comment.split("\n").length,
+		0,
+	);
 
-    const blockStart = block.position.start.line;
+	const blockStart = block.position.start.line;
 
-    /**
-     * Adjusts ESLint messages to point to the correct location in the Markdown.
-     * @param {Message} message A message from ESLint.
-     * @returns {Message} The same message, but adjusted to the correct location.
-     */
-    return function adjustMessage(message) {
-        if (!Number.isInteger(message.line)) {
-            return {
-                ...message,
-                line: blockStart,
-                column: block.position.start.column
-            };
-        }
+	/**
+	 * Adjusts ESLint messages to point to the correct location in the Markdown.
+	 * @param {Message} message A message from ESLint.
+	 * @returns {Message} The same message, but adjusted to the correct location.
+	 */
+	return function adjustMessage(message) {
+		if (!Number.isInteger(message.line)) {
+			return {
+				...message,
+				line: blockStart,
+				column: block.position.start.column,
+			};
+		}
 
-        const lineInCode = message.line - leadingCommentLines;
+		const lineInCode = message.line - leadingCommentLines;
 
-        if (lineInCode < 1 || lineInCode >= block.rangeMap.length) {
-            return null;
-        }
+		if (lineInCode < 1 || lineInCode >= block.rangeMap.length) {
+			return null;
+		}
 
-        const out = {
-            line: lineInCode + blockStart,
-            column: message.column + block.rangeMap[lineInCode].indent
-        };
+		const out = {
+			line: lineInCode + blockStart,
+			column: message.column + block.rangeMap[lineInCode].indent,
+		};
 
-        if (Number.isInteger(message.endLine)) {
-            out.endLine = message.endLine - leadingCommentLines + blockStart;
-        }
+		if (Number.isInteger(message.endLine)) {
+			out.endLine = message.endLine - leadingCommentLines + blockStart;
+		}
 
-        const adjustedFix = {};
+		const adjustedFix = {};
 
-        if (message.fix) {
-            adjustedFix.fix = {
-                range: /** @type {Range} */ (message.fix.range.map(range => {
+		if (message.fix) {
+			adjustedFix.fix = {
+				range: /** @type {Range} */ (
+					message.fix.range.map(range => {
+						// Advance through the block's range map to find the last
+						// matching range by finding the first range too far and
+						// then going back one.
+						let i = 1;
 
-                    // Advance through the block's range map to find the last
-                    // matching range by finding the first range too far and
-                    // then going back one.
-                    let i = 1;
+						while (
+							i < block.rangeMap.length &&
+							block.rangeMap[i].js <= range
+						) {
+							i++;
+						}
 
-                    while (i < block.rangeMap.length && block.rangeMap[i].js <= range) {
-                        i++;
-                    }
+						// Apply the mapping delta for this range.
+						return range + block.rangeMap[i - 1].md;
+					})
+				),
+				text: message.fix.text.replace(
+					/\n/gu,
+					`\n${block.baseIndentText}`,
+				),
+			};
+		}
 
-                    // Apply the mapping delta for this range.
-                    return range + block.rangeMap[i - 1].md;
-                })),
-                text: message.fix.text.replace(/\n/gu, `\n${block.baseIndentText}`)
-            };
-        }
-
-        return { ...message, ...out, ...adjustedFix };
-    };
+		return { ...message, ...out, ...adjustedFix };
+	};
 }
 
 /**
@@ -399,7 +412,7 @@ function adjustBlock(block) {
  * @returns {boolean} True if the message should be included in output.
  */
 function excludeUnsatisfiableRules(message) {
-    return message && !UNSATISFIABLE_RULES.has(message.ruleId);
+	return message && !UNSATISFIABLE_RULES.has(message.ruleId);
 }
 
 /**
@@ -410,23 +423,23 @@ function excludeUnsatisfiableRules(message) {
  * @returns {Message[]} A flattened array of messages with mapped locations.
  */
 function postprocess(messages, filename) {
-    const blocks = blocksCache.get(filename);
+	const blocks = blocksCache.get(filename);
 
-    blocksCache.delete(filename);
+	blocksCache.delete(filename);
 
-    return messages.flatMap((group, i) => {
-        const adjust = adjustBlock(blocks[i]);
+	return messages.flatMap((group, i) => {
+		const adjust = adjustBlock(blocks[i]);
 
-        return group.map(adjust).filter(excludeUnsatisfiableRules);
-    });
+		return group.map(adjust).filter(excludeUnsatisfiableRules);
+	});
 }
 
 export const processor = {
-    meta: {
-        name: "@eslint/markdown/markdown",
-        version: "6.0.0" // x-release-please-version
-    },
-    preprocess,
-    postprocess,
-    supportsAutofix: SUPPORTS_AUTOFIX
+	meta: {
+		name: "@eslint/markdown/markdown",
+		version: "6.0.0", // x-release-please-version
+	},
+	preprocess,
+	postprocess,
+	supportsAutofix: SUPPORTS_AUTOFIX,
 };

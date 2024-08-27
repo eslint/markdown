@@ -33,9 +33,21 @@
     "lint",
     "linter"
   ],
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "!(*.{js,md})": "prettier --write --ignore-unknown"
+  },
   "scripts": {
     "lint": "eslint . && eslint -c eslint.config-content.js .",
     "lint:fix": "eslint --fix . && eslint --fix -c eslint.config-content.js .",
+    "fmt": "prettier --write .",
+    "fmt:check": "prettier --check .",
     "build:dedupe-types": "node tools/dedupe-types.js dist/esm/index.js",
     "build:rules": "node tools/build-rules.js",
     "build": "npm run build:rules && rollup -c && npm run build:dedupe-types && tsc -p tsconfig.esm.json",
@@ -52,10 +64,13 @@
     "eslint": "^9.8.0",
     "eslint-config-eslint": "^11.0.0",
     "globals": "^15.1.0",
+    "lint-staged": "^15.2.9",
     "mocha": "^10.6.0",
+    "prettier": "^3.3.3",
     "rollup": "^4.19.0",
     "rollup-plugin-copy": "^3.5.0",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "yorkie": "^2.0.0"
   },
   "dependencies": {
     "mdast-util-from-markdown": "^2.0.1",
