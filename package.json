@@ -50,7 +50,8 @@
     "fmt:check": "prettier --check .",
     "build:dedupe-types": "node tools/dedupe-types.js dist/esm/index.js",
     "build:rules": "node tools/build-rules.js",
-    "build": "npm run build:rules && rollup -c && npm run build:dedupe-types && tsc -p tsconfig.esm.json",
+    "build:update-rules-docs": "node tools/update-rules-docs.js",
+    "build": "npm run build:rules && rollup -c && npm run build:dedupe-types && tsc -p tsconfig.esm.json && npm run build:update-rules-docs",
     "prepare": "node ./npm-prepare.cjs && npm run build",
     "test": "c8 mocha \"tests/**/*.test.js\" --timeout 30000"
   },
