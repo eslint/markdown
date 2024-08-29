@@ -8,9 +8,9 @@
         "src/index.js",
         "src/processor.js",
         {
-            "type": "json",
-            "path": "jsr.json",
-            "jsonpath": "$.version"
+          "type": "json",
+          "path": "jsr.json",
+          "jsonpath": "$.version"
         }
       ]
     }
