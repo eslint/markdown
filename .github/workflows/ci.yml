@@ -71,3 +71,17 @@ jobs:
               run: npm install eslint@${{  matrix.eslint  }}
             - name: Test
               run: npm run test
+    jsr_test:
+        name: Verify JSR Publish
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: "lts/*"
+            - name: Install Packages
+              run: npm install
+            - name: Run --dry-run
+              run: |
+                  npm run build
+                  npm run test:jsr

@@ -20,13 +20,20 @@ jobs:
                   node-version: lts/*
                   registry-url: https://registry.npmjs.org
               if: ${{ steps.release.outputs.release_created }}
-            - run: |
+            - name: Publish to npm
+              run: |
                   npm install
                   npm run build --if-present
                   npm publish --provenance
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
               if: ${{ steps.release.outputs.release_created }}
+            - name: Publish to JSR
+              run: |
+                  npm run build --if-present
+                  npx jsr publish
+              if: ${{ steps.release.outputs.release_created }}
+
             - run: 'npx @humanwhocodes/tweet "eslint/markdown v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} has been released: ${{ steps.release.outputs.html_url }}"'
               if: ${{ steps.release.outputs.release_created }}
               env:
