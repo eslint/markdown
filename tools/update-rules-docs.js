@@ -38,10 +38,9 @@ async function formatTableRowFromFilename(ruleFilename) {
 	const ruleURL = new URL(ruleFilename, rulesDirURL);
 	const { default: rule } = await import(ruleURL);
 	const ruleName = path.parse(ruleFilename).name;
-	const docs = rule?.meta?.docs;
+	const { description, recommended } = rule.meta.docs;
 	const ruleLink = `[\`${ruleName}\`](./docs/rules/${ruleName}.md)`;
-	const description = docs?.description || "_no description_";
-	const recommendedText = docs?.recommended ? "yes" : "no";
+	const recommendedText = recommended ? "yes" : "no";
 
 	return `| ${ruleLink} | ${description} | ${recommendedText} |`;
 }
