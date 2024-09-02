@@ -1,5 +1,17 @@
 # Changelog
 
+## [6.1.0](https://github.com/eslint/markdown/compare/v6.0.0...v6.1.0) (2024-09-02)
+
+
+### Features
+
+* JSR package ([#271](https://github.com/eslint/markdown/issues/271)) ([7040a2e](https://github.com/eslint/markdown/commit/7040a2e3b9b4e1a49cf4b86dbe1ce6c52535d55e))
+
+
+### Bug Fixes
+
+* correct `exports` field in package.json ([#279](https://github.com/eslint/markdown/issues/279)) ([8e40d30](https://github.com/eslint/markdown/commit/8e40d308dba0fdcb445cbebf56a161db16bf5806))
+
 ## [6.0.0](https://github.com/eslint/markdown/compare/v5.1.0...v6.0.0) (2024-08-21)
 
 

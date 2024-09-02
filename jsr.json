@@ -1,6 +1,6 @@
 {
   "name": "@eslint/markdown",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "exports": "./dist/esm/index.js",
   "publish": {
     "include": [
