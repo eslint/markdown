@@ -11,7 +11,7 @@
   "main": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "exports": {
-    "import": {
+    ".": {
       "default": "./dist/esm/index.js"
     }
   },
