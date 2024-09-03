@@ -5,6 +5,13 @@ import markdown from "./src/index.js";
 export default [
 	...eslintConfigESLint,
 	{
+		name: "markdown/js",
+		files: ["**/*.js"],
+		rules: {
+			"no-undefined": "off",
+		},
+	},
+	{
 		name: "markdown/plugins",
 		plugins: {
 			markdown,

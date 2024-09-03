@@ -59,7 +59,7 @@
     "test:jsr": "npx jsr@latest publish --dry-run"
   },
   "devDependencies": {
-    "@eslint/core": "^0.3.0",
+    "@eslint/core": "^0.6.0",
     "@eslint/js": "^9.4.0",
     "@types/eslint": "^9.6.0",
     "c8": "^10.1.2",
@@ -77,6 +77,7 @@
     "yorkie": "^2.0.0"
   },
   "dependencies": {
+    "@eslint/plugin-kit": "^0.2.0",
     "mdast-util-from-markdown": "^2.0.1",
     "mdast-util-gfm": "^3.0.0",
     "micromark-extension-gfm": "^3.0.0"
