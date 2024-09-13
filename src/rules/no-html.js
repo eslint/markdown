@@ -4,10 +4,22 @@
  */
 
 //-----------------------------------------------------------------------------
+// Imports
+//-----------------------------------------------------------------------------
+
+import { findOffsets } from "../util.js";
+
+//-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
 /** @typedef {import("eslint").Rule.RuleModule} RuleModule */
+
+//-----------------------------------------------------------------------------
+// Helpers
+//-----------------------------------------------------------------------------
+
+const htmlTagPattern = /<([a-z0-9]+(?:-[a-z0-9]+)*)/giu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -48,28 +60,32 @@ export default {
 
 		return {
 			html(node) {
-				// don't care about closing tags
-				if (node.value.startsWith("</")) {
-					return;
-				}
+				let match;
 
-				// don't care about comments
-				if (node.value.startsWith("<!--")) {
-					return;
-				}
+				while ((match = htmlTagPattern.exec(node.value)) !== null) {
+					const tagName = match[1];
+					const { lineOffset, columnOffset } = findOffsets(
+						node.value,
+						match.index,
+					);
+					const start = {
+						line: node.position.start.line + lineOffset,
+						column: node.position.start.column + columnOffset,
+					};
+					const end = {
+						line: start.line,
+						column: start.column + match[0].length + 1,
+					};
 
-				const tagName = node.value.match(
-					/<([a-z0-9]+(?:-[a-z0-9]+)*)/iu,
-				)?.[1];
-
-				if (allowed.size === 0 || !allowed.has(tagName)) {
-					context.report({
-						loc: node.position,
-						messageId: "disallowedElement",
-						data: {
-							name: tagName,
-						},
-					});
+					if (allowed.size === 0 || !allowed.has(tagName)) {
+						context.report({
+							loc: { start, end },
+							messageId: "disallowedElement",
+							data: {
+								name: tagName,
+							},
+						});
+					}
 				}
 			},
 		};

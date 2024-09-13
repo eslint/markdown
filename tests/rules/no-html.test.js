@@ -73,6 +73,48 @@ ruleTester.run("no-html", rule, {
 			],
 		},
 		{
+			code: "<b>Hello world!</b><i>Goodbye world!</i>",
+			options: [{ allowed: ["em"] }],
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 4,
+					data: {
+						name: "b",
+					},
+				},
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 20,
+					endLine: 1,
+					endColumn: 23,
+					data: {
+						name: "i",
+					},
+				},
+			],
+		},
+		{
+			code: "<!-- hi --><b>Hello world!</b>",
+			options: [{ allowed: ["em"] }],
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 12,
+					endLine: 1,
+					endColumn: 15,
+					data: {
+						name: "b",
+					},
+				},
+			],
+		},
+		{
 			code: "<custom-element>Hello world!</custom-element>",
 			options: [{ allowed: ["em"] }],
 			errors: [

@@ -2263,4 +2263,88 @@ describe("FlatESLint", () => {
 			});
 		});
 	});
+
+	describe("Configuration Comments", () => {
+		const config = {
+			files: ["*.md"],
+			plugins: {
+				markdown: plugin,
+			},
+			language: "markdown/commonmark",
+			rules: {
+				"markdown/no-html": "error",
+			},
+		};
+
+		let eslint;
+
+		beforeEach(() => {
+			eslint = new ESLint({
+				overrideConfigFile: true,
+				overrideConfig: config,
+			});
+		});
+
+		it("should report html without any configuration comments present", async () => {
+			const code = "<b>Hello world</b>";
+			const results = await eslint.lintText(code, {
+				filePath: "test.md",
+			});
+
+			assert.strictEqual(results.length, 1);
+			assert.strictEqual(results[0].messages.length, 1);
+			assert.strictEqual(
+				results[0].messages[0].message,
+				'HTML element "b" is not allowed.',
+			);
+		});
+
+		it("should report html when a disable configuration comment is present and followed by an enable configuration comment", async () => {
+			const code =
+				"<!-- eslint-disable markdown/no-html --><b>Hello world</b><!-- eslint-enable markdown/no-html --><i>Goodbye</i>";
+			const results = await eslint.lintText(code, {
+				filePath: "test.md",
+			});
+
+			assert.strictEqual(results.length, 1);
+			assert.strictEqual(results[0].messages.length, 1);
+			assert.strictEqual(
+				results[0].messages[0].message,
+				'HTML element "i" is not allowed.',
+			);
+		});
+
+		it("should not report html when a disable configuration comment is present", async () => {
+			const code =
+				"<!-- eslint-disable markdown/no-html -->\n<b>Hello world</b>";
+			const results = await eslint.lintText(code, {
+				filePath: "test.md",
+			});
+
+			assert.strictEqual(results.length, 1);
+			assert.strictEqual(results[0].messages.length, 0);
+		});
+
+		it("should not report html when a disable-line configuration comment is present", async () => {
+			const code =
+				"<b>Hello world</b><!-- eslint-disable-line markdown/no-html -->";
+			const results = await eslint.lintText(code, {
+				filePath: "test.md",
+			});
+
+			assert.strictEqual(results.length, 1);
+			assert.strictEqual(results[0].messages.length, 0);
+		});
+
+		it("should not report html when a disable-next-line configuration comment is present", async () => {
+			const code =
+				"<!-- eslint-disable-next-line markdown/no-html -->\n<b>Hello world</b>";
+			const results = await eslint.lintText(code, {
+				filePath: "test.md",
+			});
+
+			assert.strictEqual(results.length, 1);
+			assert.strictEqual(results[0].messages.length, 0);
+		});
+	});
 });
