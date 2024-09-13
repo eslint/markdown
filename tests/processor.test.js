@@ -723,7 +723,7 @@ describe("processor", () => {
 						"  function boolean(arg) {",
 						"  \treturn",
 						"  \t!!arg;",
-						"};",
+						"  };",
 						"  ```",
 					].join("\n");
 				const messages = [
@@ -767,7 +767,7 @@ describe("processor", () => {
 							column: 2,
 							message: "Unnecessary semicolon.",
 							ruleId: "no-extra-semi",
-							fix: { range: [38, 39], text: "" },
+							fix: { range: [41, 42], text: "" },
 						},
 					],
 				];
@@ -840,14 +840,40 @@ describe("processor", () => {
 
 					assert.strictEqual(result[2].column, 9);
 					assert.strictEqual(result[3].column, 4);
-					assert.strictEqual(result[4].column, 2);
+					assert.strictEqual(result[4].column, 4);
 				});
 
 				it("should adjust fix range properties", () => {
 					const result = processor.postprocess(messages);
 
-					assert(result[2].fix.range, [185, 185]);
-					assert(result[4].fix.range, [264, 265]);
+					assert.deepStrictEqual(result[2].fix.range, [179, 179]);
+					assert.deepStrictEqual(result[4].fix.range, [267, 268]);
+				});
+
+				// https://github.com/eslint/markdown/pull/282
+				it("should adjust fix range properties (2)", () => {
+					const codeWithSpaceInParens =
+						prefix + ["```js", "( a)", "```"].join("\n");
+
+					processor.preprocess(codeWithSpaceInParens);
+
+					const messagesForBlocks = [
+						[
+							{
+								line: 1,
+								endLine: 1,
+								column: 2,
+								message:
+									"There should be no space after this paren.",
+								ruleId: "space-in-parens",
+								fix: { range: [1, 2], text: "" },
+							},
+						],
+					];
+
+					const result = processor.postprocess(messagesForBlocks);
+
+					assert.deepStrictEqual(result[0].fix.range, [7, 8]);
 				});
 
 				describe("should exclude messages from unsatisfiable rules", () => {
