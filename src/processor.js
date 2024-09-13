@@ -33,6 +33,8 @@ const UNSATISFIABLE_RULES = new Set([
 ]);
 const SUPPORTS_AUTOFIX = true;
 
+const BOM = "\uFEFF";
+
 /**
  * @type {Map<string, Block[]>}
  */
@@ -248,11 +250,12 @@ const languageToFileExtension = {
 
 /**
  * Extracts lintable code blocks from Markdown text.
- * @param {string} text The text of the file.
+ * @param {string} sourceText The text of the file.
  * @param {string} filename The filename of the file
  * @returns {Array<{ filename: string, text: string }>} Source code blocks to lint.
  */
-function preprocess(text, filename) {
+function preprocess(sourceText, filename) {
+	const text = sourceText.startsWith(BOM) ? sourceText.slice(1) : sourceText;
 	const ast = fromMarkdown(text);
 	const blocks = [];
 
