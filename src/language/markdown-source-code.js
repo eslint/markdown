@@ -223,7 +223,22 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 				justification: justificationPart,
 			} = commentParser.parseDirective(comment.value);
 
-			// Step 2: Extract the directive value and create the Directive object
+			// Step 2: Validate the directive does not span multiple lines
+			if (
+				label === "eslint-disable-line" &&
+				comment.position.start.line !== comment.position.end.line
+			) {
+				const message = `${label} comment should not span multiple lines.`;
+
+				problems.push({
+					ruleId: null,
+					message,
+					loc: comment.position,
+				});
+				return;
+			}
+
+			// Step 3: Extract the directive value and create the Directive object
 			switch (label) {
 				case "eslint-disable":
 				case "eslint-enable":

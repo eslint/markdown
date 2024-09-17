@@ -33,7 +33,11 @@ This is a paragraph with an inline config comment. <!-- eslint-disable-line no-c
 
 <!--
 eslint-enable no-console -- ok to use console here
--->Something something<!-- eslint-disable semi -->`;
+-->Something something<!-- eslint-disable semi -->
+
+<!--
+ eslint-disable-line no-console
+ -->`;
 
 const ast = fromMarkdown(markdownText);
 
@@ -89,7 +93,7 @@ describe("MarkdownSourceCode", () => {
 	describe("getInlineConfigNodes()", () => {
 		it("should return the inline config nodes", () => {
 			const nodes = sourceCode.getInlineConfigNodes();
-			assert.strictEqual(nodes.length, 4);
+			assert.strictEqual(nodes.length, 5);
 
 			/* eslint-disable no-restricted-properties -- Needed to avoid extra asserts. */
 
@@ -125,6 +129,14 @@ describe("MarkdownSourceCode", () => {
 				},
 			});
 
+			assert.deepEqual(nodes[4], {
+				value: "eslint-disable-line no-console",
+				position: {
+					start: { line: 21, column: 1, offset: 386 },
+					end: { line: 23, column: 4, offset: 427 },
+				},
+			});
+
 			/* eslint-enable no-restricted-properties -- Needed to avoid extra asserts. */
 		});
 	});
@@ -133,7 +145,18 @@ describe("MarkdownSourceCode", () => {
 		it("should return the disable directives", () => {
 			const { problems, directives } = sourceCode.getDisableDirectives();
 
-			assert.strictEqual(problems.length, 0);
+			assert.strictEqual(problems.length, 1);
+
+			assert.strictEqual(problems[0].ruleId, null);
+			assert.strictEqual(
+				problems[0].message,
+				"eslint-disable-line comment should not span multiple lines.",
+			);
+			assert.deepStrictEqual(problems[0].loc, {
+				start: { line: 21, column: 1, offset: 386 },
+				end: { line: 23, column: 4, offset: 427 },
+			});
+
 			assert.strictEqual(directives.length, 4);
 
 			assert.strictEqual(directives[0].type, "disable-next-line");
@@ -218,6 +241,8 @@ describe("MarkdownSourceCode", () => {
 					"html",
 					"<!--\neslint-enable no-console -- ok to use console here\n-->Something something<!-- eslint-disable semi -->",
 				],
+				[1, "html", "<!--\n eslint-disable-line no-console\n -->"],
+				[2, "html", "<!--\n eslint-disable-line no-console\n -->"],
 				[2, "root", void 0],
 			]);
 		});
