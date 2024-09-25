@@ -82,9 +82,6 @@
     "mdast-util-gfm": "^3.0.0",
     "micromark-extension-gfm": "^3.0.0"
   },
-  "peerDependencies": {
-    "eslint": ">=9"
-  },
   "engines": {
     "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
   }
