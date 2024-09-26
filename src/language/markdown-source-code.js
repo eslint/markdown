@@ -40,7 +40,7 @@ import { findOffsets } from "../util.js";
 const commentParser = new ConfigCommentParser();
 const configCommentStart =
 	/<!--\s*(eslint(?:-enable|-disable(?:(?:-next)?-line)?)?)/u;
-const htmlComment = /<!--\s*(.*?)\s*-->/gu;
+const htmlComment = /<!--(.*?)-->/gsu;
 
 /**
  * Represents an inline config comment in the source code.
@@ -116,7 +116,7 @@ function extractInlineConfigCommentsFromHTML(node) {
 
 			comments.push(
 				new InlineConfigComment({
-					value: match[1],
+					value: match[1].trim(),
 					position: {
 						start,
 						end,
