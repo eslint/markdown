@@ -73,6 +73,7 @@ export default [
         plugins: {
             markdown
         },
+        language: "markdown/commonmark",
         rules: {
             "markdown/no-html": "error"
         }
