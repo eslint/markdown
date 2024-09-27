@@ -90,7 +90,7 @@ You can individually disable rules in Markdown using HTML comments, such as:
 <another-element>Goodbye world!</another-element>
 <!-- eslint-enable markdown/no-html -- safe to re-enable now -->
 
-[Object] <!-- eslint-disable-line markdown/no-invalid-label-refs -- not meant to be a link ref -->
+[Object] <!-- eslint-disable-line markdown/no-missing-label-refs -- not meant to be a link ref -->
 ```
 
 ### Languages
