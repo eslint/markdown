@@ -159,7 +159,7 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 	 * Collection of inline configuration comments.
 	 * @type {Array<InlineConfigComment>}
 	 */
-	#inlineConfigComments = [];
+	#inlineConfigComments;
 
 	/**
 	 * The AST of the source code.
@@ -196,7 +196,7 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 	 * @returns {Array<InlineConfigComment>} An array of all inline configuration nodes.
 	 */
 	getInlineConfigNodes() {
-		if (this.#inlineConfigComments.length === 0) {
+		if (!this.#inlineConfigComments) {
 			this.#inlineConfigComments = this.#htmlNodes.flatMap(
 				extractInlineConfigCommentsFromHTML,
 			);
