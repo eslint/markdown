@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.1.1](https://github.com/eslint/markdown/compare/v6.1.0...v6.1.1) (2024-09-26)
+
+
+### Bug Fixes
+
+* Account for BOM in the processor ([#282](https://github.com/eslint/markdown/issues/282)) ([01bceae](https://github.com/eslint/markdown/commit/01bceae60fd229fbbaddf6bddffb9ec3933e8605))
+* Remove peer dependency ([#284](https://github.com/eslint/markdown/issues/284)) ([2cf3c6b](https://github.com/eslint/markdown/commit/2cf3c6bb7a3572e868bbb271c56763cb0bc9172f))
+
 ## [6.1.0](https://github.com/eslint/markdown/compare/v6.0.0...v6.1.0) (2024-09-02)
 
 
