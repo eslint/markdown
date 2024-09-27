@@ -117,7 +117,7 @@ describe("MarkdownSourceCode", () => {
 				value: "eslint-enable no-console -- ok to use console here",
 				position: {
 					start: { line: 17, column: 1, offset: 278 },
-					end: { line: 19, column: 3, offset: 337 },
+					end: { line: 19, column: 4, offset: 337 },
 				},
 			});
 
@@ -133,7 +133,7 @@ describe("MarkdownSourceCode", () => {
 				value: "eslint-disable-line no-console",
 				position: {
 					start: { line: 21, column: 1, offset: 386 },
-					end: { line: 23, column: 4, offset: 427 },
+					end: { line: 23, column: 5, offset: 427 },
 				},
 			});
 
@@ -154,7 +154,7 @@ describe("MarkdownSourceCode", () => {
 			);
 			assert.deepStrictEqual(problems[0].loc, {
 				start: { line: 21, column: 1, offset: 386 },
-				end: { line: 23, column: 4, offset: 427 },
+				end: { line: 23, column: 5, offset: 427 },
 			});
 
 			assert.strictEqual(directives.length, 4);

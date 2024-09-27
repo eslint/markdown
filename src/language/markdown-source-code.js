@@ -111,7 +111,7 @@ function extractInlineConfigCommentsFromHTML(node) {
 			end.column =
 				commentLineCount === 0
 					? start.column + comment.length
-					: comment.length - comment.lastIndexOf("\n") - 1;
+					: comment.length - comment.lastIndexOf("\n");
 			end.offset = start.offset + comment.length;
 
 			comments.push(
