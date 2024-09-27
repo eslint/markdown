@@ -39,7 +39,7 @@ import { findOffsets } from "../util.js";
 
 const commentParser = new ConfigCommentParser();
 const configCommentStart =
-	/<!--\s*(eslint(?:-enable|-disable(?:(?:-next)?-line)?)?)/u;
+	/<!--\s*(eslint(?:-enable|-disable(?:(?:-next)?-line)?))(?:\s|-->)/u;
 const htmlComment = /<!--(.*?)-->/gsu;
 
 /**
