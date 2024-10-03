@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.2.0](https://github.com/eslint/markdown/compare/v6.1.1...v6.2.0) (2024-10-03)
+
+
+### Features
+
+* Add disable comment support ([#281](https://github.com/eslint/markdown/issues/281)) ([acdbd08](https://github.com/eslint/markdown/commit/acdbd08102a60d9521cb9c2c29917cf4b0a27e14))
+
 ## [6.1.1](https://github.com/eslint/markdown/compare/v6.1.0...v6.1.1) (2024-09-26)
 
 

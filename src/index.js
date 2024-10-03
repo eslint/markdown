@@ -53,7 +53,7 @@ const processorRulesConfig = {
 const plugin = {
 	meta: {
 		name: "@eslint/markdown",
-		version: "6.1.1", // x-release-please-version
+		version: "6.2.0", // x-release-please-version
 	},
 	processors: {
 		markdown: processor,
