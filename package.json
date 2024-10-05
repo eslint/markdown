@@ -54,6 +54,7 @@
     "build:rules": "node tools/build-rules.js",
     "build:update-rules-docs": "node tools/update-rules-docs.js",
     "build": "npm run build:rules && rollup -c && npm run build:dedupe-types && tsc -p tsconfig.esm.json && npm run build:update-rules-docs",
+    "build:readme": "node tools/update-readme.js",
     "prepare": "node ./npm-prepare.cjs && npm run build",
     "test": "c8 mocha \"tests/**/*.test.js\" --timeout 30000",
     "test:jsr": "npx jsr@latest publish --dry-run"
@@ -68,6 +69,7 @@
     "eslint": "^9.10.0",
     "eslint-config-eslint": "^11.0.0",
     "globals": "^15.1.0",
+    "got": "^14.4.2",
     "lint-staged": "^15.2.9",
     "mocha": "^10.6.0",
     "prettier": "^3.3.3",
