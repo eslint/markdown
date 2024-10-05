@@ -38,20 +38,18 @@ async function fetchSponsorsMarkdown() {
 // Main
 //-----------------------------------------------------------------------------
 
-(async () => {
-	const allSponsors = await fetchSponsorsMarkdown();
+const allSponsors = await fetchSponsorsMarkdown();
 
-	// read readme file
-	const readme = readFileSync(README_FILE_PATH, "utf8");
+// read readme file
+const readme = readFileSync(README_FILE_PATH, "utf8");
 
-	let newReadme = readme.replace(
-		/<!--sponsorsstart-->[\w\W]*?<!--sponsorsend-->/u,
-		`<!--sponsorsstart-->\n\n${allSponsors}\n<!--sponsorsend-->`,
-	);
+let newReadme = readme.replace(
+	/<!--sponsorsstart-->[\w\W]*?<!--sponsorsend-->/u,
+	`<!--sponsorsstart-->\n\n${allSponsors}\n<!--sponsorsend-->`,
+);
 
-	// replace multiple consecutive blank lines with just one blank line
-	newReadme = newReadme.replace(/(?<=^|\n)\n{2,}/gu, "\n");
+// replace multiple consecutive blank lines with just one blank line
+newReadme = newReadme.replace(/(?<=^|\n)\n{2,}/gu, "\n");
 
-	// output to the files
-	writeFileSync(README_FILE_PATH, newReadme, "utf8");
-})();
+// output to the files
+writeFileSync(README_FILE_PATH, newReadme, "utf8");
