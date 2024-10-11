@@ -24,9 +24,10 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
 /**
  * Finds missing references in a node.
  * @param {TextNode} node The node to check.
+ * @param {string} nodeText The text of the node.
  * @returns {Array<{label:string,position:Position}>} The missing references.
  */
-function findMissingReferences(node) {
+function findMissingReferences(node, nodeText) {
 	const missing = [];
 	const nodeStartLine = node.position.start.line;
 	const nodeStartColumn = node.position.start.column;
@@ -34,7 +35,7 @@ function findMissingReferences(node) {
 	const labelPattern = /\[(?<left>[^\]]*)\](?:\[(?<right>[^\]]*)\])?/dgu;
 	let match;
 
-	while ((match = labelPattern.exec(node.value))) {
+	while ((match = labelPattern.exec(nodeText))) {
 		// skip illegal shorthand tail -- handled by no-invalid-label-refs
 		if (illegalShorthandTailPattern.test(match[0])) {
 			continue;
@@ -58,9 +59,9 @@ function findMissingReferences(node) {
 		}
 
 		const { lineOffset: startLineOffset, columnOffset: startColumnOffset } =
-			findOffsets(node.value, labelIndices[0]);
+			findOffsets(nodeText, labelIndices[0]);
 		const { lineOffset: endLineOffset, columnOffset: endColumnOffset } =
-			findOffsets(node.value, labelIndices[1]);
+			findOffsets(nodeText, labelIndices[1]);
 
 		missing.push({
 			label: label.trim(),
@@ -106,6 +107,7 @@ export default {
 	},
 
 	create(context) {
+		const { sourceCode } = context;
 		let allMissingReferences = [];
 
 		return {
@@ -122,7 +124,9 @@ export default {
 			},
 
 			text(node) {
-				allMissingReferences.push(...findMissingReferences(node));
+				allMissingReferences.push(
+					...findMissingReferences(node, sourceCode.getText(node)),
+				);
 			},
 
 			definition(node) {

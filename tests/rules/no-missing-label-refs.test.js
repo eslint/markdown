@@ -318,5 +318,18 @@ ruleTester.run("no-missing-label-refs", rule, {
 				},
 			],
 		},
+		{
+			code: " foo\n  [bar]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "bar" },
+					line: 2,
+					column: 4,
+					endLine: 2,
+					endColumn: 7,
+				},
+			],
+		},
 	],
 });
