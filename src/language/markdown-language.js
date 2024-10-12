@@ -126,10 +126,10 @@ export class MarkdownLanguage {
 	}
 
 	/**
-	 * Creates a new `JSONSourceCode` object from the given information.
-	 * @param {File} file The virtual file to create a `JSONSourceCode` object from.
+	 * Creates a new `MarkdownSourceCode` object from the given information.
+	 * @param {File} file The virtual file to create a `MarkdownSourceCode` object from.
 	 * @param {OkParseResult} parseResult The result returned from `parse()`.
-	 * @returns {MarkdownSourceCode} The new `JSONSourceCode` object.
+	 * @returns {MarkdownSourceCode} The new `MarkdownSourceCode` object.
 	 */
 	createSourceCode(file, parseResult) {
 		return new MarkdownSourceCode({
