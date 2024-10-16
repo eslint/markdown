@@ -35,6 +35,10 @@ function findMissingReferences(node, nodeText) {
 	const labelPattern = /\[(?<left>[^\]]*)\](?:\[(?<right>[^\]]*)\])?/dgu;
 	let match;
 
+	/*
+	 * This loop searches the text inside the node for sequences that
+	 * look like label references and reports an error for each one found.
+	 */
 	while ((match = labelPattern.exec(nodeText))) {
 		// skip illegal shorthand tail -- handled by no-invalid-label-refs
 		if (illegalShorthandTailPattern.test(match[0])) {
