@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.2.1](https://github.com/eslint/markdown/compare/v6.2.0...v6.2.1) (2024-10-16)
+
+
+### Bug Fixes
+
+* no-missing-label-refs should not crash on undefined labels ([#290](https://github.com/eslint/markdown/issues/290)) ([ac1bc1c](https://github.com/eslint/markdown/commit/ac1bc1c2615184128ecad07e44079213b4ecc7da))
+
 ## [6.2.0](https://github.com/eslint/markdown/compare/v6.1.1...v6.2.0) (2024-10-03)
 
 
