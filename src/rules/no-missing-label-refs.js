@@ -32,7 +32,13 @@ function findMissingReferences(node, nodeText) {
 	const nodeStartLine = node.position.start.line;
 	const nodeStartColumn = node.position.start.column;
 
+	/*
+	 * Matches substrings like "[foo]", "[]", "[foo][bar]", "[foo][]", "[][bar]", or "[][]".
+	 * `left` is the content between the first brackets. It can be empty.
+	 * `right` is the content between the second brackets. It can be empty, and it can be undefined.
+	 */
 	const labelPattern = /\[(?<left>[^\]]*)\](?:\[(?<right>[^\]]*)\])?/dgu;
+
 	let match;
 
 	/*
