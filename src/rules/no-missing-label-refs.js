@@ -21,106 +21,77 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-const labelPatterns = [
-	// [foo][bar]
-	/\]\[([^\]]+)\]/u,
-
-	// [foo][]
-	/(\]\[\])/u,
-
-	// [foo]
-	/\[([^\]]+)\]/u,
-];
-
-const shorthandTailPattern = /\]\[\]$/u;
-
 /**
  * Finds missing references in a node.
  * @param {TextNode} node The node to check.
- * @param {string} docText The text of the node.
+ * @param {string} nodeText The text of the node.
  * @returns {Array<{label:string,position:Position}>} The missing references.
  */
-function findMissingReferences(node, docText) {
+function findMissingReferences(node, nodeText) {
 	const missing = [];
-	let startIndex = 0;
-	const offset = node.position.start.offset;
 	const nodeStartLine = node.position.start.line;
 	const nodeStartColumn = node.position.start.column;
 
 	/*
-	 * This loop works by searching the string inside the node for the next
-	 * label reference. If there is, it reports an error.
-	 * It then moves the start index to the end of the label reference and
-	 * continues searching the text until the end of the text is found.
+	 * Matches substrings like "[foo]", "[]", "[foo][bar]", "[foo][]", "[][bar]", or "[][]".
+	 * `left` is the content between the first brackets. It can be empty.
+	 * `right` is the content between the second brackets. It can be empty, and it can be undefined.
 	 */
-	while (startIndex < node.value.length) {
-		const value = node.value.slice(startIndex);
+	const labelPattern = /\[(?<left>[^\]]*)\](?:\[(?<right>[^\]]*)\])?/dgu;
 
-		const match = labelPatterns.reduce((previous, pattern) => {
-			if (previous) {
-				return previous;
-			}
+	let match;
 
-			return value.match(pattern);
-		}, null);
-
-		// check for array instead of null to appease TypeScript
-		if (!Array.isArray(match)) {
-			break;
-		}
-
+	/*
+	 * This loop searches the text inside the node for sequences that
+	 * look like label references and reports an error for each one found.
+	 */
+	while ((match = labelPattern.exec(nodeText))) {
 		// skip illegal shorthand tail -- handled by no-invalid-label-refs
 		if (illegalShorthandTailPattern.test(match[0])) {
-			startIndex += match.index + match[0].length;
 			continue;
 		}
 
-		// Calculate the match index relative to just the node.
-		let columnStart = startIndex + match.index;
-		let label = match[1];
+		const { left, right } = match.groups;
 
-		// need to look backward to get the label
-		if (shorthandTailPattern.test(match[0])) {
-			// adding 1 to the index just in case we're in a ![] and need to skip the !.
-			const startFrom = offset + startIndex + 1;
-			const lastOpenBracket = docText.lastIndexOf("[", startFrom);
+		// `[][]` or `[]`
+		if (!left && !right) {
+			continue;
+		}
 
-			if (lastOpenBracket === -1) {
-				startIndex += match.index + match[0].length;
-				continue;
-			}
+		let label, labelIndices;
 
-			label = docText
-				.slice(lastOpenBracket, match.index + match[0].length)
-				.match(/!?\[([^\]]+)\]/u)?.[1];
-			columnStart -= label.length;
-		} else if (match[0].startsWith("]")) {
-			columnStart += 2;
+		if (right) {
+			label = right;
+			labelIndices = match.indices.groups.right;
 		} else {
-			columnStart += 1;
+			label = left;
+			labelIndices = match.indices.groups.left;
 		}
 
 		const { lineOffset: startLineOffset, columnOffset: startColumnOffset } =
-			findOffsets(node.value, columnStart);
-
-		const startLine = nodeStartLine + startLineOffset;
-		const startColumn = nodeStartColumn + startColumnOffset;
+			findOffsets(nodeText, labelIndices[0]);
+		const { lineOffset: endLineOffset, columnOffset: endColumnOffset } =
+			findOffsets(nodeText, labelIndices[1]);
 
 		missing.push({
 			label: label.trim(),
 			position: {
 				start: {
-					line: startLine,
-					column: startColumn,
+					line: nodeStartLine + startLineOffset,
+					column:
+						startLineOffset > 0
+							? startColumnOffset + 1
+							: nodeStartColumn + startColumnOffset,
 				},
 				end: {
-					line: startLine,
-					column: startColumn + label.length,
+					line: nodeStartLine + endLineOffset,
+					column:
+						endLineOffset > 0
+							? endColumnOffset + 1
+							: nodeStartColumn + endColumnOffset,
 				},
 			},
 		});
-
-		startIndex += match.index + match[0].length;
 	}
 
 	return missing;
@@ -164,7 +135,7 @@ export default {
 
 			text(node) {
 				allMissingReferences.push(
-					...findMissingReferences(node, sourceCode.text),
+					...findMissingReferences(node, sourceCode.getText(node)),
 				);
 			},
 
