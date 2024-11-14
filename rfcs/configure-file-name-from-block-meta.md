@@ -78,7 +78,6 @@ The syntax has roughly converged on the syntax looking like <code>\`\`\`lang key
     It only specifies syntax like <code>\`\`\`jsx live style={{border: '1px solid red'}}</code>.
 
 This RFC chooses `filename` over alternatives such as `title`.
-`filename` appears to be the closest to a "popular" choice in existing projects today.
 As noted in [docusaurus/discussions#10033 Choice of filename vs. title for codeblocks](https://github.com/facebook/docusaurus/discussions/10033), `filename` implies a source code file names, whereas `title` implies the visual display.
 
 ## Related Discussions
