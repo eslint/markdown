@@ -64,7 +64,7 @@ Alternately, if multiple codeblocks require the same _file_ name, developers can
 ### Parsing Meta
 
 There is no unified standard in the ecosystem for parsing codeblock metadata in Markdown.
-The syntax has roughly converged on the syntax looking like <code>\`\`\`lang key="value"</code>, and to a lesser extent, using `filename` as the prop name.
+The syntax has roughly converged on the syntax looking like <code>\`\`\`lang key="value"</code>, and to a lesser extent, using `filename` or `title` as the prop name.
 
 -   [Docusaurus's `codeBlockTitleRegex`](https://github.com/facebook/docusaurus/blob/7650829e913ec4bb1263d855719779f6b97066b6/packages/docusaurus-theme-common/src/utils/codeBlockUtils.ts#L12): only supports a [code title prop](https://mdxjs.com/guides/syntax-highlighting/#syntax-highlighting-with-the-meta-field) like <code>\`\`\`jsx title="/src/components/HelloCodeTitle.js"</code>.
 -   [Expressive Code's `title`](https://expressive-code.com/key-features/code-component/#title): used by [Astro](https://astro.build), with the syntax <code>\`\`\`js title="my-test-file.js"</code>.
