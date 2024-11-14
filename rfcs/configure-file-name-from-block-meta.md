@@ -2,23 +2,23 @@
 
 ## Summary
 
-Allowing code blocks to change the `filename` used in `eslint-plugin-markdown`'s processor using codeblock `meta` text.
+Allowing codeblocks to change the `filename` used in `eslint-plugin-markdown`'s processor using codeblock `meta` text.
 
 ## Motivation
 
 Some projects use ESLint `overrides` to run different lint rules on files based on their file name.
-There's no way to respect file name based `overrides` in parsed Markdown blocks right now using `eslint-plugin-markdown`'s parsing.
-This RFC would allow code blocks to specify a custom file name so that `overrides` can be used more idiomatically.
+There's no way to respect file name based `overrides` in parsed Markdown codeblocks right now using `eslint-plugin-markdown`'s parsing.
+This RFC would allow codeblocks to specify a custom file name so that `overrides` can be used more idiomatically.
 
 ### Real-World Example
 
 In [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app), `*.json` files _except_ `package.json` files have [`jsonc/sort-keys`](https://ota-meshi.github.io/eslint-plugin-jsonc/rules/sort-keys.html) enabled using [an ESLint config file `overrides`](https://github.com/JoshuaKGoldberg/create-typescript-app/blob/76a75186fd89fc3f66e4c1254c717c28d70afe0d/.eslintrc.cjs#L94).
-However, a code block in a file named `docs/FAQs.md` intended to be a `package.json` is currently given a name like `create-typescript-app/docs/FAQs.md/0_0.jsonc`.
-Short of hardcoding overrides or disabling the lint rule in the file, there is no way to have the `overrides` apply to the markdown code block.
+However, a codeblock in a file named `docs/FAQs.md` intended to be a `package.json` is currently given a name like `create-typescript-app/docs/FAQs.md/0_0.jsonc`.
+Short of hardcoding overrides or disabling the lint rule in the file, there is no way to have the `overrides` apply to the markdown codeblock.
 
 ## Detailed Design
 
-This RFC proposes that code blocks be allowed to specify a file path in `meta` with `filename="..."`.
+This RFC proposes that codeblocks be allowed to specify a file path in `meta` (the \`\`\` opening fence) with `filename="..."`.
 Doing so would replace the `filename` provided by `eslint-plugin-markdown`'s `preprocess` method.
 
 ````md
@@ -28,7 +28,6 @@ Doing so would replace the `filename` provided by `eslint-plugin-markdown`'s `pr
 ````
 
 Parsing would be handled by a regular expression similar to the [Docusaurus parser](https://github.com/facebook/docusaurus/blob/7650829e913ec4bb1263d855719779f6b97066b6/packages/docusaurus-theme-common/src/utils/codeBlockUtils.ts#L12).
-The `title` meta prop name is intentionally the same as Docusaurus, so projects can use the same attribute for Docusaurus and ESLint.
 
 Parsed language is ignored when the codeblock provides a custom title.
 Some languages have many file extensions, such as TypeScript's `.cts`, `.ts`, `.tsx`, etc.
@@ -44,14 +43,13 @@ Roughly:
 ### Name Uniqueness
 
 Codeblocks must have unique file paths for ESLint processing.
-If a codeblock has the same file path as a previously processed codeblock, it will have a sequentially increasing number appended before their extensions.
-For example, given three blocks with the same name, would in order become:
+[ESLint internally prepends a unique number to codeblock filenames](https://github.com/eslint/eslint/blob/5ff6c1dd09f32b56c05ab97f328741fc8ffb1f64/lib/services/processor-service.js#L83), in the format of <code>\`${i}_${block.filename}\`</code>.
+For example, given three codeblocks with the same name, the names in order would become:
 
--   `example`: `example`, `example-1`, `example-2`
--   `example.js`: `example.js`, `example-1.js`, `example-2.js`
--   `example.test.ts`: `example.test.ts`, `example-1.test.ts`, `example-2.test.ts`
+-   `example`: `0_example`, `1_example`, `2_example`
+-   `example.js`: `0_example.js`, `1_example.js`, `2_example.js`
 
-Alternately, if multiple code blocks require the same _file_ name, developers can give different _directory paths_ to ensure uniqueness:
+Alternately, if multiple codeblocks require the same _file_ name, developers can give different _directory paths_:
 
 ````md
 ```json filename="example-1/package.json"
@@ -78,8 +76,11 @@ The syntax has roughly converged on the syntax looking like <code>\`\`\`lang key
 -   [`remark-fenced-props`](https://github.com/shawnbot/remark-fenced-props): A proof-of-concept that augments Remark's codeblock parsing with arbitrary MDX props, written to support [mdx-js/mdx/issues/702](https://github.com/mdx-js/mdx/issues/702).
     It only specifies syntax like <code>\`\`\`jsx live style={{border: '1px solid red'}}</code>
 
+#### `filename` or `title`
+
 This RFC chooses `filename` over alternatives such as `title`.
 `filename` appears to be the closest to a "popular" choice in existing projects today.
+As noted in [docusaurus/discussions#10033 Choice of filename vs. title for codeblocks](https://github.com/facebook/docusaurus/discussions/10033), `filename` implies a source code file names, whereas `title` implies the visual display.
 
 ## Related Discussions
 
