@@ -66,7 +66,8 @@ Alternately, if multiple codeblocks require the same _file_ name, developers can
 There is no unified standard in the ecosystem for parsing codeblock metadata in Markdown.
 The syntax has roughly converged on the syntax looking like <code>\`\`\`lang key="value"</code>, and to a lesser extent, using `filename` as the prop name.
 
--   [Docusaurus's `codeBlockTitleRegex`](https://github.com/facebook/docusaurus/blob/7650829e913ec4bb1263d855719779f6b97066b6/packages/docusaurus-theme-common/src/utils/codeBlockUtils.ts#L12): only supports a [code title prop](https://mdxjs.com/guides/syntax-highlighting/#syntax-highlighting-with-the-meta-field) like <code>\`\`\`jsx title="/src/components/HelloCodeTitle.js"</code>
+-   [Docusaurus's `codeBlockTitleRegex`](https://github.com/facebook/docusaurus/blob/7650829e913ec4bb1263d855719779f6b97066b6/packages/docusaurus-theme-common/src/utils/codeBlockUtils.ts#L12): only supports a [code title prop](https://mdxjs.com/guides/syntax-highlighting/#syntax-highlighting-with-the-meta-field) like <code>\`\`\`jsx title="/src/components/HelloCodeTitle.js"</code>.
+-   [Expressive Code's `title`](https://expressive-code.com/key-features/code-component/#title): used by [Astro](https://astro.build), with the syntax <code>\`\`\`js title="my-test-file.js"</code>.
 -   Gatsby plugins such as [`gatsby-remark-prismjs`](https://www.gatsbyjs.com/plugins/gatsby-remark-prismjs) rely on a syntax like <code>\`\`\`javascript{numberLines: true}`</code>.
     -   Separately, [`gatsby-remark-code-titles`](https://www.gatsbyjs.com/plugins/gatsby-remark-code-titles) allows a syntax like <code>\`\`\`js:title=example-file.js</code>.
 -   [`rehype-mdx-code-props`](https://github.com/remcohaszing/rehype-mdx-code-props): generally handles parsing of the raw `meta` text from the rehype AST.
@@ -74,9 +75,7 @@ The syntax has roughly converged on the syntax looking like <code>\`\`\`lang key
     -   [`remark-mdx-code-meta`](https://github.com/remcohaszing/remark-mdx-code-meta) is [referenced in the mdxjs.com `meta` docs](https://mdxjs.com/guides/syntax-highlighting/#syntax-highlighting-with-the-meta-field), but was deprecated with a notice to use `rehype-mdx-code-props` instead.
         It also specified syntax like <code>\`\`\`js copy filename="awesome.js" onUsage={props.beAwesome} {...props}</code>.
 -   [`remark-fenced-props`](https://github.com/shawnbot/remark-fenced-props): A proof-of-concept that augments Remark's codeblock parsing with arbitrary MDX props, written to support [mdx-js/mdx/issues/702](https://github.com/mdx-js/mdx/issues/702).
-    It only specifies syntax like <code>\`\`\`jsx live style={{border: '1px solid red'}}</code>
-
-#### `filename` or `title`
+    It only specifies syntax like <code>\`\`\`jsx live style={{border: '1px solid red'}}</code>.
 
 This RFC chooses `filename` over alternatives such as `title`.
 `filename` appears to be the closest to a "popular" choice in existing projects today.
