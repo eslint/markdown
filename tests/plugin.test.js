@@ -1205,14 +1205,15 @@ describe("FlatESLint", () => {
 				ecmaFeatures: {
 					impliedStrict: true,
 				},
+				sourceType: "module", // set by js language's `normalizeLanguageOptions()`
 			});
-			assert.deepStrictEqual(config.rules["eol-last"], [0]);
-			assert.deepStrictEqual(config.rules["no-undef"], [0]);
-			assert.deepStrictEqual(config.rules["no-unused-expressions"], [0]);
-			assert.deepStrictEqual(config.rules["no-unused-vars"], [0]);
-			assert.deepStrictEqual(config.rules["padded-blocks"], [0]);
-			assert.deepStrictEqual(config.rules.strict, [0]);
-			assert.deepStrictEqual(config.rules["unicode-bom"], [0]);
+			assert.strictEqual(config.rules["eol-last"][0], 0);
+			assert.strictEqual(config.rules["no-undef"][0], 0);
+			assert.strictEqual(config.rules["no-unused-expressions"][0], 0);
+			assert.strictEqual(config.rules["no-unused-vars"][0], 0);
+			assert.strictEqual(config.rules["padded-blocks"][0], 0);
+			assert.strictEqual(config.rules.strict[0], 0);
+			assert.strictEqual(config.rules["unicode-bom"][0], 0);
 		});
 
 		it("overrides configure processor to parse .md file code blocks", async () => {
