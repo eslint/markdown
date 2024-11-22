@@ -20,7 +20,7 @@ export default {
 
 		docs: {
 			recommended: true,
-			description: "Require languages for fenced code blocks.",
+			description: "Require languages for fenced code blocks",
 		},
 
 		messages: {

@@ -68,6 +68,7 @@
     "dedent": "^1.5.3",
     "eslint": "^9.15.0",
     "eslint-config-eslint": "^11.0.0",
+    "eslint-plugin-eslint-plugin": "^6.3.2",
     "globals": "^15.1.0",
     "got": "^14.4.2",
     "lint-staged": "^15.2.9",

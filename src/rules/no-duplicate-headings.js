@@ -19,7 +19,7 @@ export default {
 		type: "problem",
 
 		docs: {
-			description: "Disallow duplicate headings in the same document.",
+			description: "Disallow duplicate headings in the same document",
 		},
 
 		messages: {
