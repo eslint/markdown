@@ -108,7 +108,7 @@ export default {
 
 		docs: {
 			recommended: true,
-			description: "Disallow missing label references.",
+			description: "Disallow missing label references",
 		},
 
 		messages: {

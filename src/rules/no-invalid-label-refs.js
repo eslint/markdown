@@ -127,7 +127,7 @@ export default {
 
 		docs: {
 			recommended: true,
-			description: "Disallow invalid label references.",
+			description: "Disallow invalid label references",
 		},
 
 		messages: {

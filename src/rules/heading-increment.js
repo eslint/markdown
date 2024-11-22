@@ -20,7 +20,7 @@ export default {
 
 		docs: {
 			recommended: true,
-			description: "Enforce heading levels increment by one.",
+			description: "Enforce heading levels increment by one",
 		},
 
 		messages: {

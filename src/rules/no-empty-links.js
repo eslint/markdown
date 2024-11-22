@@ -19,7 +19,7 @@ export default {
 
 		docs: {
 			recommended: true,
-			description: "Disallow empty links.",
+			description: "Disallow empty links",
 		},
 
 		messages: {

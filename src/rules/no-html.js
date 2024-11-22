@@ -31,7 +31,7 @@ export default {
 		type: "problem",
 
 		docs: {
-			description: "Disallow HTML tags.",
+			description: "Disallow HTML tags",
 		},
 
 		messages: {
