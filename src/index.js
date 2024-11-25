@@ -49,7 +49,8 @@ const processorRulesConfig = {
 	"unicode-bom": "off",
 };
 
-/** @type {Plugin & { languages: Record<string,Language>}} */
+let recommendedPlugins, processorPlugins;
+
 const plugin = {
 	meta: {
 		name: "@eslint/markdown",
@@ -88,52 +89,48 @@ const plugin = {
 				},
 			],
 		},
+		recommended: [
+			{
+				name: "markdown/recommended",
+				files: ["**/*.md"],
+				language: "markdown/commonmark",
+				plugins: (recommendedPlugins = {}),
+				rules: recommendedRules,
+			},
+		],
+		processor: [
+			{
+				name: "markdown/recommended/plugin",
+				plugins: (processorPlugins = {}),
+			},
+			{
+				name: "markdown/recommended/processor",
+				files: ["**/*.md"],
+				processor: "markdown/markdown",
+			},
+			{
+				name: "markdown/recommended/code-blocks",
+				files: ["**/*.md/**"],
+				languageOptions: {
+					parserOptions: {
+						ecmaFeatures: {
+							// Adding a "use strict" directive at the top of
+							// every code block is tedious and distracting, so
+							// opt into strict mode parsing without the
+							// directive.
+							impliedStrict: true,
+						},
+					},
+				},
+				rules: {
+					...processorRulesConfig,
+				},
+			},
+		],
 	},
 };
 
-plugin.configs.recommended = [
-	/** @type {Config & {language:string}} */
-	({
-		name: "markdown/recommended",
-		files: ["**/*.md"],
-		language: "markdown/commonmark",
-		plugins: {
-			markdown: plugin,
-		},
-		rules: /** @type {RulesRecord} */ (recommendedRules),
-	}),
-];
-
-plugin.configs.processor = [
-	{
-		name: "markdown/recommended/plugin",
-		plugins: {
-			markdown: plugin,
-		},
-	},
-	{
-		name: "markdown/recommended/processor",
-		files: ["**/*.md"],
-		processor: "markdown/markdown",
-	},
-	{
-		name: "markdown/recommended/code-blocks",
-		files: ["**/*.md/**"],
-		languageOptions: {
-			parserOptions: {
-				ecmaFeatures: {
-					// Adding a "use strict" directive at the top of
-					// every code block is tedious and distracting, so
-					// opt into strict mode parsing without the
-					// directive.
-					impliedStrict: true,
-				},
-			},
-		},
-		rules: {
-			...processorRulesConfig,
-		},
-	},
-];
+// @ts-expect-error
+recommendedPlugins.markdown = processorPlugins.markdown = plugin;
 
 export default plugin;
