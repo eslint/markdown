@@ -33,9 +33,11 @@ for (const ruleId of rules) {
 	}
 }
 
-const output = `export default {
+const output = `const rules = /** @type {const} */ ({
     ${recommended.map(id => `"markdown/${id.slice(0, -3)}": "error"`).join(",\n    ")}
-};
+});
+
+export default rules;
 `;
 
 fs.mkdirSync(path.resolve(thisDir, "../src/build"), { recursive: true });

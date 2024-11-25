@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "emitDeclarationOnly": false,
+    "noEmit": true,
+    "rootDir": "../..",
+    "strict": true
+  },
+  "files": ["../../dist/esm/index.d.ts", "types.test.ts"]
+}
