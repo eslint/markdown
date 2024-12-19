@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.2.2](https://github.com/eslint/markdown/compare/v6.2.1...v6.2.2) (2024-12-19)
+
+
+### Bug Fixes
+
+* add type tests ([#305](https://github.com/eslint/markdown/issues/305)) ([ea60127](https://github.com/eslint/markdown/commit/ea60127142ea335fe2ea7d70205ce6208df26bbc))
+
 ## [6.2.1](https://github.com/eslint/markdown/compare/v6.2.0...v6.2.1) (2024-10-16)
 
 
