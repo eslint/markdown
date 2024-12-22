@@ -335,6 +335,36 @@ function preprocess(sourceText, filename) {
 }
 
 /**
+ * Adjusts a fix in a code block.
+ * @param {Block} block A code block.
+ * @param {Fix} fix A fix to adjust.
+ * @returns {Fix} The fix with adjusted ranges.
+ */
+function adjustFix(block, fix) {
+	return {
+		range: /** @type {Range} */ (
+			fix.range.map(range => {
+				// Advance through the block's range map to find the last
+				// matching range by finding the first range too far and
+				// then going back one.
+				let i = 1;
+
+				while (
+					i < block.rangeMap.length &&
+					block.rangeMap[i].js <= range
+				) {
+					i++;
+				}
+
+				// Apply the mapping delta for this range.
+				return range + block.rangeMap[i - 1].md;
+			})
+		),
+		text: fix.text.replace(/\n/gu, `\n${block.baseIndentText}`),
+	};
+}
+
+/**
  * Creates a map function that adjusts messages in a code block.
  * @param {Block} block A code block.
  * @returns {(message: Message) => Message} A function that adjusts messages in a code block.
@@ -376,33 +406,17 @@ function adjustBlock(block) {
 			out.endLine = message.endLine - leadingCommentLines + blockStart;
 		}
 
+		if (Array.isArray(message.suggestions)) {
+			out.suggestions = message.suggestions.map(suggestion => ({
+				...suggestion,
+				fix: adjustFix(block, suggestion.fix),
+			}));
+		}
+
 		const adjustedFix = {};
 
 		if (message.fix) {
-			adjustedFix.fix = {
-				range: /** @type {Range} */ (
-					message.fix.range.map(range => {
-						// Advance through the block's range map to find the last
-						// matching range by finding the first range too far and
-						// then going back one.
-						let i = 1;
-
-						while (
-							i < block.rangeMap.length &&
-							block.rangeMap[i].js <= range
-						) {
-							i++;
-						}
-
-						// Apply the mapping delta for this range.
-						return range + block.rangeMap[i - 1].md;
-					})
-				),
-				text: message.fix.text.replace(
-					/\n/gu,
-					`\n${block.baseIndentText}`,
-				),
-			};
+			adjustedFix.fix = adjustFix(block, message.fix);
 		}
 
 		return { ...message, ...out, ...adjustedFix };

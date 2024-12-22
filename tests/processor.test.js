@@ -741,6 +741,16 @@ describe("processor", () => {
 							column: 5,
 							message: "Unexpected console statement.",
 							ruleId: "no-console",
+							suggestions: [
+								{
+									desc: "Replace with 'console.warn'.",
+									messageId: "replace",
+									fix: {
+										range: [45, 56],
+										text: "console.warn",
+									},
+								},
+							],
 						},
 					],
 					[
@@ -874,6 +884,18 @@ describe("processor", () => {
 					const result = processor.postprocess(messagesForBlocks);
 
 					assert.deepStrictEqual(result[0].fix.range, [7, 8]);
+				});
+
+				it("should adjust suggestion fix range properties", () => {
+					const result = processor.postprocess(messages);
+
+					assert.deepStrictEqual(result[1].suggestions, [
+						{
+							desc: "Replace with 'console.warn'.",
+							messageId: "replace",
+							fix: { range: [66, 77], text: "console.warn" },
+						},
+					]);
 				});
 
 				describe("should exclude messages from unsatisfiable rules", () => {
