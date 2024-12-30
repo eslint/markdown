@@ -34,7 +34,7 @@ jobs:
                   npx jsr publish
               if: ${{ steps.release.outputs.release_created }}
 
-            - run: 'npx @humanwhocodes/crosspost -t -b -m "eslint/markdown v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} has been released: ${{ steps.release.outputs.html_url }}"'
+            - run: 'npx @humanwhocodes/crosspost -t -b -m "eslint/markdown v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} has been released:\n\n${{ steps.release.outputs.html_url }}"'
               if: ${{ steps.release.outputs.release_created }}
               env:
                   TWITTER_API_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
