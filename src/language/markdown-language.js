@@ -23,7 +23,6 @@ import { gfm } from "micromark-extension-gfm";
 /** @typedef {import("@eslint/core").File} File */
 /** @typedef {import("@eslint/core").ParseResult<RootNode>} ParseResult */
 /** @typedef {import("@eslint/core").OkParseResult<RootNode>} OkParseResult */
-/** @typedef {import("@eslint/core").SyntaxElement} SyntaxElement */
 /** @typedef {"commonmark"|"gfm"} ParserMode */
 
 //-----------------------------------------------------------------------------
