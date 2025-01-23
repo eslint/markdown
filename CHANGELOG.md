@@ -1,5 +1,14 @@
 # Changelog
 
+## [6.2.2](https://github.com/eslint/markdown/compare/v6.2.1...v6.2.2) (2025-01-17)
+
+
+### Bug Fixes
+
+* add type tests ([#305](https://github.com/eslint/markdown/issues/305)) ([ea60127](https://github.com/eslint/markdown/commit/ea60127142ea335fe2ea7d70205ce6208df26bbc))
+* adjust suggestion fix ranges in processor ([#309](https://github.com/eslint/markdown/issues/309)) ([f164e66](https://github.com/eslint/markdown/commit/f164e66016821f2d35a22851552d43f0c0c33a73))
+* Update markdown-language.js ([#314](https://github.com/eslint/markdown/issues/314)) ([10e8535](https://github.com/eslint/markdown/commit/10e8535f4f58b2d08581505d6a6c1600d941cf96))
+
 ## [6.2.1](https://github.com/eslint/markdown/compare/v6.2.0...v6.2.1) (2024-10-16)
 
 
