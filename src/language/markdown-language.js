@@ -13,6 +13,8 @@ import { MarkdownSourceCode } from "./markdown-source-code.js";
 import { fromMarkdown } from "mdast-util-from-markdown";
 import { gfmFromMarkdown } from "mdast-util-gfm";
 import { gfm } from "micromark-extension-gfm";
+import { mdxFromMarkdown } from "mdast-util-mdx";
+import { mdxjs } from "micromark-extension-mdxjs";
 
 //-----------------------------------------------------------------------------
 // Types
@@ -24,6 +26,11 @@ import { gfm } from "micromark-extension-gfm";
 /** @typedef {import("@eslint/core").ParseResult<RootNode>} ParseResult */
 /** @typedef {import("@eslint/core").OkParseResult<RootNode>} OkParseResult */
 /** @typedef {"commonmark"|"gfm"} ParserMode */
+
+/**
+ * @typedef {Object} MarkdownLanguageOptions
+ * @property {boolean} [mdx] Whether to allow MDX syntax.
+ */
 
 //-----------------------------------------------------------------------------
 // Exports
@@ -65,6 +72,14 @@ export class MarkdownLanguage {
 	#mode = "commonmark";
 
 	/**
+	 * The default language options.
+	 * @type {MarkdownLanguageOptions}
+	 */
+	defaultLanguageOptions = {
+		mdx: false,
+	};
+
+	/**
 	 * Creates a new instance.
 	 * @param {Object} options The options to use for this instance.
 	 * @param {ParserMode} [options.mode] The Markdown parser mode to use.
@@ -75,26 +90,43 @@ export class MarkdownLanguage {
 		}
 	}
 
-	/* eslint-disable no-unused-vars -- Required to complete interface. */
 	/**
 	 * Validates the language options.
-	 * @param {Object} languageOptions The language options to validate.
+	 * @param {MarkdownLanguageOptions} languageOptions The language options to validate.
 	 * @returns {void}
 	 * @throws {Error} When the language options are invalid.
 	 */
 	validateLanguageOptions(languageOptions) {
-		// no-op
+		if ("mdx" in languageOptions) {
+			if (typeof languageOptions.mdx !== "boolean") {
+				throw new Error("The 'mdx' option must be a boolean.");
+			}
+		}
 	}
-	/* eslint-enable no-unused-vars -- Required to complete interface. */
 
 	/**
 	 * Parses the given file into an AST.
 	 * @param {File} file The virtual file to parse.
+	 * @param {Object} context The context object.
+	 * @param {MarkdownLanguageOptions} context.languageOptions The options to use for parsing.
 	 * @returns {ParseResult} The result of parsing.
 	 */
-	parse(file) {
+	parse(file, { languageOptions }) {
 		// Note: BOM already removed
 		const text = /** @type {string} */ (file.body);
+
+		const extensions = [];
+		const mdastExtensions = [];
+
+		if (this.#mode === "gfm") {
+			extensions.push(gfm());
+			mdastExtensions.push(gfmFromMarkdown());
+		}
+
+		if (languageOptions.mdx) {
+			extensions.push(mdxjs());
+			mdastExtensions.push(mdxFromMarkdown());
+		}
 
 		/*
 		 * Check for parsing errors first. If there's a parsing error, nothing
@@ -103,14 +135,10 @@ export class MarkdownLanguage {
 		 * problem that ESLint identified just like any other.
 		 */
 		try {
-			const options =
-				this.#mode === "gfm"
-					? {
-							extensions: [gfm()],
-							mdastExtensions: [gfmFromMarkdown()],
-						}
-					: { extensions: [] };
-			const root = fromMarkdown(text, options);
+			const root = fromMarkdown(text, {
+				extensions,
+				mdastExtensions,
+			});
 
 			return {
 				ok: true,

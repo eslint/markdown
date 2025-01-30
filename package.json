@@ -84,7 +84,9 @@
     "@eslint/plugin-kit": "^0.2.5",
     "mdast-util-from-markdown": "^2.0.2",
     "mdast-util-gfm": "^3.0.0",
-    "micromark-extension-gfm": "^3.0.0"
+    "mdast-util-mdx": "^3.0.0",
+    "micromark-extension-gfm": "^3.0.0",
+    "micromark-extension-mdxjs": "^3.0.0"
   },
   "engines": {
     "node": "^18.18.0 || ^20.9.0 || >=21.1.0"

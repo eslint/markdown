@@ -57,6 +57,7 @@ export default [
 | [`no-html`](./docs/rules/no-html.md) | Disallow HTML tags | no |
 | [`no-invalid-label-refs`](./docs/rules/no-invalid-label-refs.md) | Disallow invalid label references | yes |
 | [`no-missing-label-refs`](./docs/rules/no-missing-label-refs.md) | Disallow missing label references | yes |
+| [`no-restricted-mdx`](./docs/rules/no-restricted-mdx.md) | Disallow MDX syntax | no |
 <!-- Rule Table End -->
 
 **Note:** This plugin does not provide formatting rules. We recommend using a source code formatter such as [Prettier](https://prettier.io) for that purpose.
@@ -120,6 +121,32 @@ export default [
     }
 ];
 ```
+
+#### MDX Parsing
+
+To parse [MDX](https://mdxjs.com), set `languageOptions.mdx` to `true`. This works for both the CommonMark and GFM languages:
+
+```js
+// eslint.config.js
+import markdown from "@eslint/markdown";
+
+export default [
+    {
+        files: ["**/*.md"],
+        plugins: {
+            markdown
+        },
+        language: "markdown/gfm",
+        languageOptions: {
+            mdx: true 
+        },
+        rules: {
+            "markdown/no-html": "error"
+        }
+    }
+];
+```
+
 
 ### Processors
 
