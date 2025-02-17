@@ -141,6 +141,20 @@ In order to see `@eslint/markdown` work its magic within Markdown code blocks in
 
 However, this reports a problem when viewing Markdown which does not have configuration, so you may wish to use the cursor scope "source.embedded.js", but note that `@eslint/markdown` configuration comments and skip directives won't work in this context.
 
+## File Name Details
+
+This processor will parse file names from blocks if a `filename` meta is present.
+
+For example, the following block will result in a parsed file name of `src/index.js`:
+
+````md
+```js filename="src/index.js"
+export const value = "Hello, world!";
+```
+````
+
+This can be useful for user configurations that include linting overrides for specific file paths.
+
 ## Contributing
 
 ```sh

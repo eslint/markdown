@@ -241,6 +241,17 @@ function getBlockRangeMap(text, node, comments) {
 	return rangeMap;
 }
 
+const codeBlockFileNameRegex = /filename=(?<quote>["'])(?<filename>.*?)\1/u;
+
+/**
+ * Parses the file name from a block meta, if available.
+ * @param {Block} block A code block.
+ * @returns {string | null | undefined} The filename, if parsed from block meta.
+ */
+function fileNameFromMeta(block) {
+	return block.meta?.match(codeBlockFileNameRegex)?.groups.filename;
+}
+
 const languageToFileExtension = {
 	javascript: "js",
 	ecmascript: "js",
@@ -328,7 +339,7 @@ function preprocess(sourceText, filename) {
 			: language;
 
 		return {
-			filename: `${index}.${fileExtension}`,
+			filename: fileNameFromMeta(block) ?? `${index}.${fileExtension}`,
 			text: [...block.comments, block.value, ""].join("\n"),
 		};
 	});
