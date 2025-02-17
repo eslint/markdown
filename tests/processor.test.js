@@ -405,14 +405,14 @@ describe("processor", () => {
 					const code =
 						prefix +
 						[
-							"```  js filename='a/b/C D E.js'",
+							"```  js filename='a/_b/C D E\tF \t G.js'",
 							"var answer = 6 * 7;",
 							"```",
 						].join("\n");
 					const blocks = processor.preprocess(code);
 
 					assert.strictEqual(blocks.length, 1);
-					assert.strictEqual(blocks[0].filename, "a/b/C D E.js");
+					assert.strictEqual(blocks[0].filename, "a/_b/C_D_E_F_G.js");
 				});
 
 				it("should parse a filename each from two meta", () => {

@@ -249,7 +249,9 @@ const codeBlockFileNameRegex = /filename=(?<quote>["'])(?<filename>.*?)\1/u;
  * @returns {string | null | undefined} The filename, if parsed from block meta.
  */
 function fileNameFromMeta(block) {
-	return block.meta?.match(codeBlockFileNameRegex)?.groups.filename;
+	return block.meta
+		?.match(codeBlockFileNameRegex)
+		?.groups.filename.replaceAll(/\s+/gu, "_");
 }
 
 const languageToFileExtension = {
