@@ -57,7 +57,6 @@
     "build:readme": "node tools/update-readme.js",
     "prepare": "node ./npm-prepare.cjs && npm run build",
     "test": "c8 mocha \"tests/**/*.test.js\" --timeout 30000",
-    "test:josh": "mocha \"tests/processor.test.js\" --timeout 30000",
     "test:jsr": "npx jsr@latest publish --dry-run",
     "test:types": "tsc -p tests/types/tsconfig.json"
   },
