@@ -401,6 +401,20 @@ describe("processor", () => {
 					assert.strictEqual(blocks[0].filename, "abc/def.js");
 				});
 
+				it("should parse a filename with lowercase, uppercase, slashes, and spaces", () => {
+					const code =
+						prefix +
+						[
+							"```  js filename='a/b/C D E.js'",
+							"var answer = 6 * 7;",
+							"```",
+						].join("\n");
+					const blocks = processor.preprocess(code);
+
+					assert.strictEqual(blocks.length, 1);
+					assert.strictEqual(blocks[0].filename, "a/b/C D E.js");
+				});
+
 				it("should parse a filename each from two meta", () => {
 					const code =
 						prefix +
