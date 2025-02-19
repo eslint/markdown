@@ -143,7 +143,7 @@ However, this reports a problem when viewing Markdown which does not have config
 
 ## File Name Details
 
-This processor will parse file names from blocks if a `filename` meta is present.
+This processor will use file names from blocks if a `filename` meta is present.
 
 For example, the following block will result in a parsed file name of `src/index.js`:
 
@@ -153,7 +153,7 @@ export const value = "Hello, world!";
 ```
 ````
 
-This can be useful for user configurations that include linting overrides for specific file paths.
+This can be useful for user configurations that include linting overrides for specific file paths. In this example, you could then target the specific code block in your configuration using `"file-name.md/*src/index.js"`.
 
 ## Contributing
 
