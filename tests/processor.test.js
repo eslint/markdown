@@ -434,7 +434,7 @@ describe("processor", () => {
 					assert.strictEqual(blocks[1].filename, "abc/def.js");
 				});
 
-				for (const [descriptor, filename] of [
+				for (const [filename, descriptor] of [
 					["filename", "a blank"],
 					["filename=123", "a numeric"],
 					["filename=null", "a null"],
