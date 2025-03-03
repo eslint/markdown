@@ -434,20 +434,19 @@ describe("processor", () => {
 					assert.strictEqual(blocks[1].filename, "abc/def.js");
 				});
 
-				for (const [filename, descriptor] of [
-					["filename", "a blank"],
-					["filename=123", "a numeric"],
-					["filename=null", "a null"],
-					["filename=undefined", "an undefined"],
-					["filename='abc.js\"", "a improperly quoted"],
-					["filename=`abc.js`", "a backtick-quoted"],
-					["FILENAME='abc.js'", "an uppercase FILENAME"],
+				for (const [descriptor, meta] of [
+					["a blank", "filename"],
+					["a numeric", "filename=123"],
+					["a null", "filename=null"],
+					["an undefined", "filename=undefined"],
+					["a improperly quoted", "filename='abc.js\""],
+					["an uppercase FILENAME", "FILENAME='abc.js'"],
 				]) {
-					it(`should not parse a ${descriptor} filename from meta`, () => {
+					it(`should not parse ${descriptor} filename from meta`, () => {
 						const code =
 							prefix +
 							[
-								`\`\`\`  js ${filename}`,
+								`\`\`\`  js ${meta}`,
 								"var answer = 6 * 7;",
 								"```",
 							].join("\n");
