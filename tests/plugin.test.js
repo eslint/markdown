@@ -1436,6 +1436,21 @@ describe("FlatESLint", () => {
 			assert.strictEqual(results[0].messages[4].column, 2);
 		});
 
+		it("parses when file name includes lowercase, uppercase, slashes, and spaces", async () => {
+			const results = await eslint.lintFiles([
+				path.resolve(__dirname, "./fixtures/filename.md"),
+			]);
+
+			assert.strictEqual(results.length, 1);
+			assert.strictEqual(results[0].messages.length, 1);
+			assert.strictEqual(
+				results[0].messages[0].message,
+				"Unexpected console statement.",
+			);
+			assert.strictEqual(results[0].messages[0].line, 4);
+			assert.strictEqual(results[0].messages[0].column, 1);
+		});
+
 		// https://github.com/eslint/markdown/issues/181
 		it("should work when called on nested code blocks in the same file", async () => {
 			/*
