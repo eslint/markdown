@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.3.0](https://github.com/eslint/markdown/compare/v6.2.2...v6.3.0) (2025-03-04)
+
+
+### Features
+
+* allow specifying filename in block meta ([#318](https://github.com/eslint/markdown/issues/318)) ([7075f00](https://github.com/eslint/markdown/commit/7075f009d435e6d940deefe903ba9848964e001c))
+
 ## [6.2.2](https://github.com/eslint/markdown/compare/v6.2.1...v6.2.2) (2025-01-17)
 
 
