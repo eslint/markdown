@@ -133,14 +133,6 @@ export default [
 
 [`vscode-eslint`](https://github.com/microsoft/vscode-eslint) has built-in support for the Markdown processor.
 
-### Atom
-
-The [`linter-eslint`](https://atom.io/packages/linter-eslint) package allows for linting within the [Atom IDE](https://atom.io/).
-
-In order to see `@eslint/markdown` work its magic within Markdown code blocks in your Atom editor, you can go to `linter-eslint`'s settings and within "List of scopes to run ESLint on...", add the cursor scope "source.gfm".
-
-However, this reports a problem when viewing Markdown which does not have configuration, so you may wish to use the cursor scope "source.embedded.js", but note that `@eslint/markdown` configuration comments and skip directives won't work in this context.
-
 ## File Name Details
 
 This processor will use file names from blocks if a `filename` meta is present.
