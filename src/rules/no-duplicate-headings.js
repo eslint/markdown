@@ -7,13 +7,13 @@
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("eslint").Rule.RuleModule} RuleModule */
+/** @typedef {import("../types.ts").MarkdownRuleDefinition<[]>} NoDuplicateHeadingsRuleDefinition */
 
 //-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {RuleModule} */
+/** @type {NoDuplicateHeadingsRuleDefinition} */
 export default {
 	meta: {
 		type: "problem",

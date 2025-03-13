@@ -1,4 +1,8 @@
-import markdown from "@eslint/markdown";
+import markdown, {
+	MarkdownNode,
+	MarkdownRuleVisitor,
+	type RuleModule,
+} from "@eslint/markdown";
 import { ESLint, Linter } from "eslint";
 
 markdown satisfies ESLint.Plugin;
@@ -35,3 +39,14 @@ typeof processorPlugins satisfies {};
 	// Check that all recommended rule names match the names of existing rules in this plugin.
 	null as AssertAllNamesIn<RecommendedRuleName, RuleName>;
 }
+
+const rule: RuleModule = {
+	create({ sourceCode }): MarkdownRuleVisitor {
+		return {
+			text(node) {
+				node satisfies MarkdownNode;
+				sourceCode.getText(node);
+			},
+		};
+	},
+};

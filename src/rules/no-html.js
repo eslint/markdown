@@ -13,7 +13,7 @@ import { findOffsets } from "../util.js";
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("eslint").Rule.RuleModule} RuleModule */
+/** @typedef {import("../types.ts").MarkdownRuleDefinition<[{ allowed?: string[] }]>} NoHtmlRuleDefinition */
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -25,7 +25,7 @@ const htmlTagPattern = /<([a-z0-9]+(?:-[a-z0-9]+)*)/giu;
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {RuleModule} */
+/** @type {NoHtmlRuleDefinition} */
 export default {
 	meta: {
 		type: "problem",

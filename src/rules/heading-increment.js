@@ -7,13 +7,13 @@
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("eslint").Rule.RuleModule} RuleModule */
+/** @typedef {import("../types.ts").MarkdownRuleDefinition<[]>} HeadingIncrementRuleDefinition */
 
 //-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {RuleModule} */
+/** @type {HeadingIncrementRuleDefinition} */
 export default {
 	meta: {
 		type: "problem",

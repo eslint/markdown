@@ -6,13 +6,13 @@
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("eslint").Rule.RuleModule} RuleModule */
+/** @typedef {import("../types.ts").MarkdownRuleDefinition<[]>} NoEmptyLinksRuleDefinition */
 
 //-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {RuleModule} */
+/** @type {NoEmptyLinksRuleDefinition} */
 export default {
 	meta: {
 		type: "problem",

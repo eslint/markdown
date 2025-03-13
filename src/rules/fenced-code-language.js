@@ -7,13 +7,13 @@
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("eslint").Rule.RuleModule} RuleModule */
+/** @typedef {import("../types.ts").MarkdownRuleDefinition<[{ required?: string[] }]>} FencedCodeLanguageRuleDefinition */
 
 //-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {RuleModule} */
+/** @type {FencedCodeLanguageRuleDefinition} */
 export default {
 	meta: {
 		type: "problem",
