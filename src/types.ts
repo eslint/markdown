@@ -17,6 +17,7 @@ import type {
 	RuleDefinition,
 	RuleDefinitionTypeOptions,
 	RuleVisitor,
+	SourceLocation,
 	TextSourceCode,
 } from "@eslint/core";
 
@@ -58,23 +59,27 @@ export type RuleType = "problem" | "suggestion" | "layout";
 /**
  * The `SourceCode` interface for Markdown files.
  */
-export interface IMarkdownSourceCode extends TextSourceCode {
+export interface IMarkdownSourceCode
+	extends TextSourceCode<{
+		LangOptions: {};
+		RootNode: Root;
+		SyntaxElementWithLoc: Node;
+		ConfigNode: { value: string; position: SourceLocation };
+	}> {
 	/**
 	 * Gets the entire source text split into an array of lines.
-	 * @returns {Array<string>} The source text as an array of lines.
-	 * @public
+	 * @returns The source text as an array of lines.
 	 */
 	get lines(): Array<string>;
 
 	/**
 	 * Gets the source code for the given node.
-	 * @param {object} [node] The AST node to get the text for.
-	 * @param {number} [beforeCount] The number of characters before the node to retrieve.
-	 * @param {number} [afterCount] The number of characters after the node to retrieve.
-	 * @returns {string} The text representing the AST node.
-	 * @public
+	 * @param node The AST node to get the text for.
+	 * @param beforeCount The number of characters before the node to retrieve.
+	 * @param afterCount The number of characters after the node to retrieve.
+	 * @returns The text representing the AST node.
 	 */
-	getText(node?: object, beforeCount?: number, afterCount?: number): string;
+	getText(node?: Node, beforeCount?: number, afterCount?: number): string;
 }
 
 export interface MarkdownRuleVisitor

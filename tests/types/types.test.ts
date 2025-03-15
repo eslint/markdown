@@ -1,8 +1,10 @@
 import markdown, {
+	IMarkdownSourceCode,
 	MarkdownNode,
 	MarkdownRuleVisitor,
 	ParentNode,
 	RootNode,
+	SourceLocation,
 	TextNode,
 	type RuleModule,
 } from "@eslint/markdown";
@@ -45,16 +47,22 @@ typeof processorPlugins satisfies {};
 
 const rule: RuleModule = {
 	create({ sourceCode }): MarkdownRuleVisitor {
+		sourceCode satisfies IMarkdownSourceCode;
+
+		sourceCode.ast satisfies RootNode;
+		sourceCode.lines satisfies string[];
+
 		return {
 			// Root selector
 			root(node) {
 				node satisfies RootNode;
 			},
 
-			// Known node selector, sourceCode.getText() used in visitor
+			// Known node selector, sourceCode methods used in visitor
 			text(node) {
 				node satisfies TextNode;
-				sourceCode.getText(node);
+				sourceCode.getText(node) satisfies string;
+				sourceCode.getLoc(node) satisfies SourceLocation;
 			},
 
 			// Known node selector with parent
