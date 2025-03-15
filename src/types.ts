@@ -1,10 +1,39 @@
-import type { Node } from "mdast";
+//------------------------------------------------------------------------------
+// Imports
+//------------------------------------------------------------------------------
+
+import type {
+	Code,
+	Heading,
+	Html,
+	Link,
+	Node,
+	Parent,
+	Root,
+	Text,
+} from "mdast";
 import type { Linter } from "eslint";
 import type {
 	RuleDefinition,
 	RuleDefinitionTypeOptions,
+	RuleVisitor,
 	TextSourceCode,
 } from "@eslint/core";
+
+//------------------------------------------------------------------------------
+// Helpers
+//------------------------------------------------------------------------------
+
+/** Adds matching `:exit` selectors for all properties of a `RuleVisitor`. */
+type WithExit<RuleVisitorType extends RuleVisitor> = {
+	[Key in keyof RuleVisitorType as
+		| Key
+		| `${Key & string}:exit`]: RuleVisitorType[Key];
+};
+
+//------------------------------------------------------------------------------
+// Exports
+//------------------------------------------------------------------------------
 
 export interface RangeMap {
 	indent: number;
@@ -48,10 +77,16 @@ export interface IMarkdownSourceCode extends TextSourceCode {
 	getText(node?: object, beforeCount?: number, afterCount?: number): string;
 }
 
-export type MarkdownRuleVisitor = Record<
-	string,
-	((node: Node) => void) | undefined
->;
+export interface MarkdownRuleVisitor
+	extends RuleVisitor,
+		WithExit<{
+			root?(node: Root): void;
+			code?(node: Code, parent?: Parent): void;
+			heading?(node: Heading, parent?: Parent): void;
+			html?(node: Html, parent?: Parent): void;
+			link?(node: Link, parent?: Parent): void;
+			text?(node: Text, parent?: Parent): void;
+		}> {}
 
 export type MarkdownRuleDefinition<
 	MarkdownRuleOptions extends unknown[] = unknown[],

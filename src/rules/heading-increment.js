@@ -40,7 +40,7 @@ export default {
 						messageId: "skippedHeading",
 						data: {
 							fromLevel: lastHeadingDepth.toString(),
-							toLevel: node.depth,
+							toLevel: node.depth.toString(),
 						},
 					});
 				}

@@ -1,6 +1,9 @@
 import markdown, {
 	MarkdownNode,
 	MarkdownRuleVisitor,
+	ParentNode,
+	RootNode,
+	TextNode,
 	type RuleModule,
 } from "@eslint/markdown";
 import { ESLint, Linter } from "eslint";
@@ -43,10 +46,31 @@ typeof processorPlugins satisfies {};
 const rule: RuleModule = {
 	create({ sourceCode }): MarkdownRuleVisitor {
 		return {
+			// Root selector
+			root(node) {
+				node satisfies RootNode;
+			},
+
+			// Known node selector, sourceCode.getText() used in visitor
 			text(node) {
-				node satisfies MarkdownNode;
+				node satisfies TextNode;
 				sourceCode.getText(node);
 			},
+
+			// Known node selector with parent
+			link(node, parent) {
+				node satisfies MarkdownNode;
+				parent satisfies ParentNode | undefined;
+			},
+
+			// Known node selector with ":exit"
+			"html:exit"(node, parent) {
+				node satisfies MarkdownNode;
+				parent satisfies ParentNode | undefined;
+			},
+
+			// Unknown selectors allowed
+			"heading[depth=1]"(node: MarkdownNode, parent?: ParentNode) {},
 		};
 	},
 };
