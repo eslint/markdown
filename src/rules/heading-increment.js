@@ -7,7 +7,10 @@
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("../types.ts").MarkdownRuleDefinition<[]>} HeadingIncrementRuleDefinition */
+/**
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
+ * HeadingIncrementRuleDefinition
+ */
 
 //-----------------------------------------------------------------------------
 // Rule Definition

@@ -15,7 +15,6 @@ import type {
 import type { Linter } from "eslint";
 import type {
 	RuleDefinition,
-	RuleDefinitionTypeOptions,
 	RuleVisitor,
 	SourceLocation,
 	TextSourceCode,
@@ -93,13 +92,25 @@ export interface MarkdownRuleVisitor
 			text?(node: Text, parent?: Parent): void;
 		}> {}
 
+export type MarkdownRuleDefinitionTypeOptions = {
+	RuleOptions: unknown[];
+	MessageIds: string;
+	ExtRuleDocs: Record<string, unknown>;
+};
+
 export type MarkdownRuleDefinition<
-	MarkdownRuleOptions extends unknown[] = unknown[],
+	Options extends Partial<MarkdownRuleDefinitionTypeOptions> = {},
 > = RuleDefinition<
-	RuleDefinitionTypeOptions & {
+	// Language specific type options (non-configurable)
+	{
+		LangOptions: {};
 		Code: IMarkdownSourceCode;
-		RuleOptions: MarkdownRuleOptions;
 		Visitor: MarkdownRuleVisitor;
 		Node: Node;
-	}
+	} & Required<
+		// Rule specific type options (custom)
+		Options &
+			// Rule specific type options (defaults)
+			Omit<MarkdownRuleDefinitionTypeOptions, keyof Options>
+	>
 >;

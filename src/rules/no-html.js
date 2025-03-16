@@ -13,7 +13,10 @@ import { findOffsets } from "../util.js";
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("../types.ts").MarkdownRuleDefinition<[{ allowed?: string[] }]>} NoHtmlRuleDefinition */
+/**
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ allowed?: string[]; }]; }>}
+ * NoHtmlRuleDefinition
+ */
 
 //-----------------------------------------------------------------------------
 // Helpers

@@ -7,7 +7,10 @@
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("../types.ts").MarkdownRuleDefinition<[{ required?: string[] }]>} FencedCodeLanguageRuleDefinition */
+/**
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ required?: string[]; }]; }>}
+ * FencedCodeLanguageRuleDefinition
+ */
 
 //-----------------------------------------------------------------------------
 // Rule Definition

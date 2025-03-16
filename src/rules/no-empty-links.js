@@ -6,7 +6,10 @@
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("../types.ts").MarkdownRuleDefinition<[]>} NoEmptyLinksRuleDefinition */
+/**
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
+ * NoEmptyLinksRuleDefinition
+ */
 
 //-----------------------------------------------------------------------------
 // Rule Definition

@@ -7,7 +7,10 @@
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("../types.ts").MarkdownRuleDefinition<[]>} NoDuplicateHeadingsRuleDefinition */
+/**
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
+ * NoDuplicateHeadingsRuleDefinition
+ */
 
 //-----------------------------------------------------------------------------
 // Rule Definition

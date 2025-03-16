@@ -15,7 +15,10 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
 
 /** @typedef {import("unist").Position} Position */
 /** @typedef {import("mdast").Text} TextNode */
-/** @typedef {import("../types.ts").MarkdownRuleDefinition<[]>} NoInvalidLabelRuleDefinition */
+/**
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
+ * NoInvalidLabelRuleDefinition
+ */
 
 //-----------------------------------------------------------------------------
 // Helpers
