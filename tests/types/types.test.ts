@@ -1,4 +1,14 @@
-import markdown from "@eslint/markdown";
+import markdown, {
+	IMarkdownSourceCode,
+	MarkdownNode,
+	MarkdownRuleDefinition,
+	MarkdownRuleVisitor,
+	ParentNode,
+	RootNode,
+	SourceLocation,
+	TextNode,
+	type RuleModule,
+} from "@eslint/markdown";
 import { ESLint, Linter } from "eslint";
 
 markdown satisfies ESLint.Plugin;
@@ -35,3 +45,118 @@ typeof processorPlugins satisfies {};
 	// Check that all recommended rule names match the names of existing rules in this plugin.
 	null as AssertAllNamesIn<RecommendedRuleName, RuleName>;
 }
+
+(): RuleModule => ({
+	create({ sourceCode }): MarkdownRuleVisitor {
+		sourceCode satisfies IMarkdownSourceCode;
+
+		sourceCode.ast satisfies RootNode;
+		sourceCode.lines satisfies string[];
+
+		return {
+			// Root selector
+			root(node) {
+				node satisfies RootNode;
+			},
+
+			// Known node selector, sourceCode methods used in visitor
+			text(node) {
+				node satisfies TextNode;
+				sourceCode.getText(node) satisfies string;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+			},
+
+			// Known node selector with parent
+			link(node, parent) {
+				node satisfies MarkdownNode;
+				parent satisfies ParentNode | undefined;
+			},
+
+			// Known node selector with ":exit"
+			"html:exit"(node, parent) {
+				node satisfies MarkdownNode;
+				parent satisfies ParentNode | undefined;
+			},
+
+			// Unknown selectors allowed
+			"heading[depth=1]"(node: MarkdownNode, parent?: ParentNode) {},
+		};
+	},
+});
+
+// All options optional - MarkdownRuleDefinition, MarkdownRuleDefinition<{}> and RuleModule
+// should be the same type.
+(
+	rule1: MarkdownRuleDefinition,
+	rule2: MarkdownRuleDefinition<{}>,
+	rule3: RuleModule,
+) => {
+	rule1 satisfies typeof rule2 satisfies typeof rule3;
+	rule2 satisfies typeof rule1 satisfies typeof rule3;
+	rule3 satisfies typeof rule1 satisfies typeof rule2;
+};
+
+// Type restrictions should be enforced
+(): MarkdownRuleDefinition<{
+	RuleOptions: [string, number];
+	MessageIds: "foo" | "bar";
+	ExtRuleDocs: { foo: string; bar: number };
+}> => ({
+	meta: {
+		messages: {
+			foo: "FOO",
+
+			// @ts-expect-error Wrong type for message ID
+			bar: 42,
+		},
+		docs: {
+			foo: "FOO",
+
+			// @ts-expect-error Wrong type for declared property
+			bar: "BAR",
+
+			// @ts-expect-error Wrong type for predefined property
+			description: 42,
+		},
+	},
+	create({ options }) {
+		// Types for rule options
+		options[0] satisfies string;
+		options[1] satisfies number;
+
+		return {};
+	},
+});
+
+// Undeclared properties should produce an error
+(): MarkdownRuleDefinition<{
+	MessageIds: "foo" | "bar";
+	ExtRuleDocs: { foo: number; bar: string };
+}> => ({
+	meta: {
+		messages: {
+			foo: "FOO",
+
+			// Declared message ID is not required
+			// bar: "BAR",
+
+			// @ts-expect-error Undeclared message ID is not allowed
+			baz: "BAZ",
+		},
+		docs: {
+			foo: 42,
+
+			// Declared property is not required
+			// bar: "BAR",
+
+			// @ts-expect-error Undeclared property key is not allowed
+			baz: "BAZ",
+
+			// Predefined property is allowed
+			description: "Lorem ipsum",
+		},
+	},
+	create() {
+		return {};
+	},
+});

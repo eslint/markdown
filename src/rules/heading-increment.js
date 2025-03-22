@@ -7,13 +7,16 @@
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("eslint").Rule.RuleModule} RuleModule */
+/**
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
+ * HeadingIncrementRuleDefinition
+ */
 
 //-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {RuleModule} */
+/** @type {HeadingIncrementRuleDefinition} */
 export default {
 	meta: {
 		type: "problem",
@@ -40,7 +43,7 @@ export default {
 						messageId: "skippedHeading",
 						data: {
 							fromLevel: lastHeadingDepth.toString(),
-							toLevel: node.depth,
+							toLevel: node.depth.toString(),
 						},
 					});
 				}

@@ -19,7 +19,12 @@ import rules from "./build/rules.js";
 /** @typedef {import("eslint").Linter.RulesRecord} RulesRecord*/
 /** @typedef {import("eslint").Linter.Config} Config*/
 /** @typedef {import("eslint").ESLint.Plugin} Plugin */
-/** @typedef {import("eslint").Rule.RuleModule} RuleModule */
+/**
+ * @typedef {import("./types.ts").MarkdownRuleDefinition<Options>} MarkdownRuleDefinition<Options>
+ * @template {Partial<import("./types.ts").MarkdownRuleDefinitionTypeOptions>} [Options={}]
+ */
+/** @typedef {MarkdownRuleDefinition} RuleModule */
+/** @typedef {import("./types.ts").MarkdownRuleVisitor} MarkdownRuleVisitor */
 /** @typedef {import("@eslint/core").Language} Language */
 
 //-----------------------------------------------------------------------------

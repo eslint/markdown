@@ -15,7 +15,10 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
 
 /** @typedef {import("unist").Position} Position */
 /** @typedef {import("mdast").Text} TextNode */
-/** @typedef {import("eslint").Rule.RuleModule} RuleModule */
+/**
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
+ * NoMissingLabelRuleDefinition
+ */
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -101,7 +104,7 @@ function findMissingReferences(node, nodeText) {
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {RuleModule} */
+/** @type {NoMissingLabelRuleDefinition} */
 export default {
 	meta: {
 		type: "problem",

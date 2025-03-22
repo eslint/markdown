@@ -32,6 +32,7 @@ import { findOffsets } from "../util.js";
 /** @typedef {import("@eslint/core").SourceRange} SourceRange */
 /** @typedef {import("@eslint/core").FileProblem} FileProblem */
 /** @typedef {import("@eslint/core").DirectiveType} DirectiveType */
+/** @typedef {import("../types.ts").IMarkdownSourceCode} IMarkdownSourceCode */
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -135,6 +136,7 @@ function extractInlineConfigCommentsFromHTML(node) {
 
 /**
  * Markdown Source Code Object
+ * @implements {IMarkdownSourceCode}
  */
 export class MarkdownSourceCode extends TextSourceCodeBase {
 	/**
