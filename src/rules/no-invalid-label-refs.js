@@ -15,7 +15,10 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
 
 /** @typedef {import("unist").Position} Position */
 /** @typedef {import("mdast").Text} TextNode */
-/** @typedef {import("eslint").Rule.RuleModule} RuleModule */
+/**
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
+ * NoInvalidLabelRuleDefinition
+ */
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -120,7 +123,7 @@ function findInvalidLabelReferences(node, docText) {
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {RuleModule} */
+/** @type {NoInvalidLabelRuleDefinition} */
 export default {
 	meta: {
 		type: "problem",

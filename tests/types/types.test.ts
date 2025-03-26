@@ -1,4 +1,13 @@
-import markdown from "@eslint/markdown";
+import markdown, {
+	IMarkdownSourceCode,
+	MarkdownNode,
+	MarkdownRuleVisitor,
+	ParentNode,
+	RootNode,
+	SourceLocation,
+	TextNode,
+	type RuleModule,
+} from "@eslint/markdown";
 import { ESLint, Linter } from "eslint";
 
 markdown satisfies ESLint.Plugin;
@@ -35,3 +44,41 @@ typeof processorPlugins satisfies {};
 	// Check that all recommended rule names match the names of existing rules in this plugin.
 	null as AssertAllNamesIn<RecommendedRuleName, RuleName>;
 }
+
+(): RuleModule => ({
+	create({ sourceCode }): MarkdownRuleVisitor {
+		sourceCode satisfies IMarkdownSourceCode;
+
+		sourceCode.ast satisfies RootNode;
+		sourceCode.lines satisfies string[];
+
+		return {
+			// Root selector
+			root(node) {
+				node satisfies RootNode;
+			},
+
+			// Known node selector, sourceCode methods used in visitor
+			text(node) {
+				node satisfies TextNode;
+				sourceCode.getText(node) satisfies string;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+			},
+
+			// Known node selector with parent
+			link(node, parent) {
+				node satisfies MarkdownNode;
+				parent satisfies ParentNode | undefined;
+			},
+
+			// Known node selector with ":exit"
+			"html:exit"(node, parent) {
+				node satisfies MarkdownNode;
+				parent satisfies ParentNode | undefined;
+			},
+
+			// Unknown selectors allowed
+			"heading[depth=1]"(node: MarkdownNode, parent?: ParentNode) {},
+		};
+	},
+});

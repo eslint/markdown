@@ -39,5 +39,10 @@ files.forEach(filePath => {
 		return true;
 	});
 
-	fs.writeFileSync(filePath, remainingLines.join("\n"), "utf8");
+	// replace references to ../types.ts with ./types.ts
+	const text = remainingLines
+		.join("\n")
+		.replace(/\.\.\/types\.ts/gu, "./types.ts");
+
+	fs.writeFileSync(filePath, text, "utf8");
 });

@@ -66,7 +66,7 @@
     "c8": "^10.1.2",
     "chai": "^5.1.1",
     "dedent": "^1.5.3",
-    "eslint": "^9.15.0",
+    "eslint": "^9.23.0",
     "eslint-config-eslint": "^11.0.0",
     "eslint-plugin-eslint-plugin": "^6.3.2",
     "globals": "^15.1.0",
