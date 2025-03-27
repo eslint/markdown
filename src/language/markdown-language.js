@@ -34,31 +34,40 @@ import { gfm } from "micromark-extension-gfm";
 //-----------------------------------------------------------------------------
 
 /**
- * Create frontmatter extensions based on `frontmatter` language options.
- * @param {MarkdownLanguageOptions['frontmatter']} languageOptionsFrontmatter Language options for frontmatter.
- * @returns {{extensions: any[], mdastExtensions: any[]}} Extensions for `micromark` and `mdast-util` parsers.
+ * Create parser options based on `mode` and `languageOptions`.
+ * @param {ParserMode} mode The markdown parser mode.
+ * @param {MarkdownLanguageOptions} languageOptions Language options.
+ * @returns {{extensions: any[], mdastExtensions: any[]}} Parser options for micromark and mdast
  */
-function createFrontmatterExtensions(languageOptionsFrontmatter) {
-	// Skip frontmatter entirely if false.
-	if (languageOptionsFrontmatter === false) {
-		return { extensions: [], mdastExtensions: [] };
+function createParserOptions(mode, languageOptions) {
+	const extensions = [];
+	const mdastExtensions = [];
+
+	// 1. Add GFM extensions if mode is "gfm"
+	if (mode === "gfm") {
+		extensions.push(gfm());
+		mdastExtensions.push(gfmFromMarkdown());
 	}
 
-	// Use default YAML if true.
-	if (languageOptionsFrontmatter === true) {
-		return {
-			extensions: [frontmatter(["yaml"])],
-			mdastExtensions: [frontmatterFromMarkdown(["yaml"])],
-		};
+	// 2. Handle frontmatter options
+	const frontmatterOption = languageOptions?.frontmatter;
+
+	// Skip frontmatter entirely if false
+	if (frontmatterOption !== false) {
+		if (frontmatterOption === true) {
+			// Use default YAML if true
+			extensions.push(frontmatter(["yaml"]));
+			mdastExtensions.push(frontmatterFromMarkdown(["yaml"]));
+		} else if (frontmatterOption !== undefined) {
+			// Use provided options for other cases
+			extensions.push(frontmatter(frontmatterOption));
+			mdastExtensions.push(frontmatterFromMarkdown(frontmatterOption));
+		}
 	}
 
-	// We know that `languageOptions.frontmatter` is not a boolean here.
-	// If it's not a boolean, it must be `FrontmatterOptions` type.
-
-	// Otherwise use the provided options.
 	return {
-		extensions: [frontmatter(languageOptionsFrontmatter)],
-		mdastExtensions: [frontmatterFromMarkdown(languageOptionsFrontmatter)],
+		extensions,
+		mdastExtensions,
 	};
 }
 
@@ -150,10 +159,6 @@ export class MarkdownLanguage {
 	parse(file, context) {
 		// Note: BOM already removed
 		const text = /** @type {string} */ (file.body);
-		const {
-			extensions: frontmatterExtensions,
-			mdastExtensions: frontmatterMdastExtensions,
-		} = createFrontmatterExtensions(context?.languageOptions?.frontmatter); // TODO: Need to be refactored.
 
 		/*
 		 * Check for parsing errors first. If there's a parsing error, nothing
@@ -162,19 +167,10 @@ export class MarkdownLanguage {
 		 * problem that ESLint identified just like any other.
 		 */
 		try {
-			const options =
-				this.#mode === "gfm"
-					? {
-							extensions: [gfm(), ...frontmatterExtensions],
-							mdastExtensions: [
-								gfmFromMarkdown(),
-								...frontmatterMdastExtensions,
-							],
-						}
-					: {
-							extensions: [...frontmatterExtensions],
-							mdastExtensions: [...frontmatterMdastExtensions],
-						};
+			const options = createParserOptions(
+				this.#mode,
+				context?.languageOptions,
+			);
 			const root = fromMarkdown(text, options);
 
 			return {
