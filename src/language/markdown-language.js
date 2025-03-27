@@ -11,7 +11,9 @@
 
 import { MarkdownSourceCode } from "./markdown-source-code.js";
 import { fromMarkdown } from "mdast-util-from-markdown";
+import { frontmatterFromMarkdown } from "mdast-util-frontmatter";
 import { gfmFromMarkdown } from "mdast-util-gfm";
+import { frontmatter, toMatters } from "micromark-extension-frontmatter";
 import { gfm } from "micromark-extension-gfm";
 
 //-----------------------------------------------------------------------------
@@ -23,7 +25,42 @@ import { gfm } from "micromark-extension-gfm";
 /** @typedef {import("@eslint/core").File} File */
 /** @typedef {import("@eslint/core").ParseResult<RootNode>} ParseResult */
 /** @typedef {import("@eslint/core").OkParseResult<RootNode>} OkParseResult */
+/** @typedef {import("../types.ts").MarkdownLanguageOptions} MarkdownLanguageOptions */
+/** @typedef {import("../types.ts").MarkdownLanguageContext} MarkdownLanguageContext */
 /** @typedef {"commonmark"|"gfm"} ParserMode */
+
+//-----------------------------------------------------------------------------
+// Helpers
+//-----------------------------------------------------------------------------
+
+/**
+ * Create frontmatter extensions based on `frontmatter` language options.
+ * @param {MarkdownLanguageOptions['frontmatter']} languageOptionsFrontmatter Language options for frontmatter.
+ * @returns {{extensions: any[], mdastExtensions: any[]}} Extensions for `micromark` and `mdast-util` parsers.
+ */
+function createFrontmatterExtensions(languageOptionsFrontmatter) {
+	// Skip frontmatter entirely if false.
+	if (languageOptionsFrontmatter === false) {
+		return { extensions: [], mdastExtensions: [] };
+	}
+
+	// Use default YAML if true.
+	if (languageOptionsFrontmatter === true) {
+		return {
+			extensions: [frontmatter(["yaml"])],
+			mdastExtensions: [frontmatterFromMarkdown(["yaml"])],
+		};
+	}
+
+	// We know that `languageOptions.frontmatter` is not a boolean here.
+	// If it's not a boolean, it must be `FrontmatterOptions` type.
+
+	// Otherwise use the provided options.
+	return {
+		extensions: [frontmatter(languageOptionsFrontmatter)],
+		mdastExtensions: [frontmatterFromMarkdown(languageOptionsFrontmatter)],
+	};
+}
 
 //-----------------------------------------------------------------------------
 // Exports
@@ -59,6 +96,14 @@ export class MarkdownLanguage {
 	nodeTypeKey = "type";
 
 	/**
+	 * Default language options. User-defined options are merged with this object.
+	 * @type {MarkdownLanguageOptions}
+	 */
+	defaultLanguageOptions = {
+		frontmatter: false,
+	};
+
+	/**
 	 * The Markdown parser mode.
 	 * @type {ParserMode}
 	 */
@@ -75,26 +120,40 @@ export class MarkdownLanguage {
 		}
 	}
 
-	/* eslint-disable no-unused-vars -- Required to complete interface. */
 	/**
 	 * Validates the language options.
-	 * @param {Object} languageOptions The language options to validate.
+	 * @param {MarkdownLanguageOptions} languageOptions The language options to validate.
 	 * @returns {void}
 	 * @throws {Error} When the language options are invalid.
 	 */
 	validateLanguageOptions(languageOptions) {
-		// no-op
+		if (languageOptions.frontmatter !== undefined) {
+			if (typeof languageOptions.frontmatter === "boolean") {
+				return;
+			}
+
+			// We know that `languageOptions.frontmatter` is not a boolean here.
+			// If it's not a boolean, it must be `FrontmatterOptions` type.
+
+			// `toMatters` throws an `Error` if the options are invalid.
+			// So, we don't have to implement the validations by ourselves.
+			toMatters(languageOptions.frontmatter);
+		}
 	}
-	/* eslint-enable no-unused-vars -- Required to complete interface. */
 
 	/**
 	 * Parses the given file into an AST.
 	 * @param {File} file The virtual file to parse.
+	 * @param {MarkdownLanguageContext} context The options to use for parsing.
 	 * @returns {ParseResult} The result of parsing.
 	 */
-	parse(file) {
+	parse(file, context) {
 		// Note: BOM already removed
 		const text = /** @type {string} */ (file.body);
+		const {
+			extensions: frontmatterExtensions,
+			mdastExtensions: frontmatterMdastExtensions,
+		} = createFrontmatterExtensions(context?.languageOptions?.frontmatter); // TODO: Need to be refactored.
 
 		/*
 		 * Check for parsing errors first. If there's a parsing error, nothing
@@ -106,10 +165,16 @@ export class MarkdownLanguage {
 			const options =
 				this.#mode === "gfm"
 					? {
-							extensions: [gfm()],
-							mdastExtensions: [gfmFromMarkdown()],
+							extensions: [gfm(), ...frontmatterExtensions],
+							mdastExtensions: [
+								gfmFromMarkdown(),
+								...frontmatterMdastExtensions,
+							],
 						}
-					: { extensions: [] };
+					: {
+							extensions: [...frontmatterExtensions],
+							mdastExtensions: [...frontmatterMdastExtensions],
+						};
 			const root = fromMarkdown(text, options);
 
 			return {
