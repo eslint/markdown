@@ -50,11 +50,7 @@ describe("MarkdownLanguage", () => {
 
 			assert.strictEqual(result.ok, true);
 			// The table should be parsed correctly.
-			assert.strictEqual(result.ast.children[0].type === "table", true);
-			assert.strictEqual(
-				result.ast.children[0].type === "paragraph",
-				false,
-			);
+			assert.strictEqual(result.ast.children[0].type, "table");
 		});
 	});
 
