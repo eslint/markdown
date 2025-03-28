@@ -121,6 +121,39 @@ export default [
 ];
 ```
 
+### Language Options
+
+#### Enabling Front Matter in both `commonmark` and `gfm`
+
+By default, Markdown parsers do not support [Front Matter](https://jekyllrb.com/docs/front-matter/). To enable Front Matter in both `commonmark` and `gfm`, you can use the `frontmatter` option in `languageOptions`.  
+
+| **Option Value** | **Description** |  
+|-----------------|-----------------|  
+| `false` | Disables Front Matter parsing in Markdown files. |  
+| `true` | Enables Front Matter parsing in Markdown files. By default, only YAML is supported. |  
+| [`Options`](https://github.com/micromark/micromark-extension-frontmatter?tab=readme-ov-file#options) | Passes configuration options to the Front Matter parser. These options are the same as those in [`Options` from `micromark-extension-frontmatter`](https://github.com/micromark/micromark-extension-frontmatter#options). |
+
+```js
+// eslint.config.js
+import markdown from "@eslint/markdown";
+
+export default [
+    {
+        files: ["**/*.md"],
+        plugins: {
+            markdown
+        },
+        language: "markdown/gfm",
+        languageOptions: {
+            frontmatter: true,
+        },
+        rules: {
+            "markdown/no-html": "error"
+        }
+    }
+];
+```
+
 ### Processors
 
 | **Processor Name** | **Description** |
