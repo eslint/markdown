@@ -38,11 +38,7 @@ describe("MarkdownLanguage", () => {
 
 			assert.strictEqual(result.ok, true);
 			// The table should not be parsed and should be recognized as plain text.
-			assert.strictEqual(result.ast.children[0].type === "table", false);
-			assert.strictEqual(
-				result.ast.children[0].type === "paragraph",
-				true,
-			);
+			assert.strictEqual(result.ast.children[0].type, "paragraph");
 		});
 
 		it("should parse gfm features in gfm mode", () => {
