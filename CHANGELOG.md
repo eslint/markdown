@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.4.0](https://github.com/eslint/markdown/compare/v6.3.0...v6.4.0) (2025-03-28)
+
+
+### Features
+
+* Create type definitions for rules ([#324](https://github.com/eslint/markdown/issues/324)) ([5f11a3d](https://github.com/eslint/markdown/commit/5f11a3d071103f4103310fc6916508eb7cb76def))
+
 ## [6.3.0](https://github.com/eslint/markdown/compare/v6.2.2...v6.3.0) (2025-03-04)
 
 
