@@ -52,6 +52,65 @@ describe("MarkdownLanguage", () => {
 			// The table should be parsed correctly.
 			assert.strictEqual(result.ast.children[0].type, "table");
 		});
+
+		it("should not parse frontmatter by default", () => {
+			const language = new MarkdownLanguage();
+			const result = language.parse({
+				body: "---\ntitle: Hello\n---\n\n# Hello, World!\n\nHello, World!",
+				path: "test.md",
+			});
+
+			assert.strictEqual(result.ok, true);
+			assert.strictEqual(result.ast.type, "root");
+			assert.strictEqual(result.ast.children[0].type, "thematicBreak");
+			assert.strictEqual(result.ast.children[1].type, "heading");
+			assert.strictEqual(result.ast.children[2].type, "heading");
+			assert.strictEqual(result.ast.children[3].type, "paragraph");
+		});
+
+		it("should parse frontmatter in commonmark mode when `frontmatter: true` is set", () => {
+			const language = new MarkdownLanguage({ mode: "commonmark" });
+			const result = language.parse(
+				{
+					body: "---\ntitle: Hello\n---\n\n# Hello, World!\n\nHello, World!",
+					path: "test.md",
+				},
+				{
+					languageOptions: {
+						frontmatter: true,
+					},
+				},
+			);
+
+			assert.strictEqual(result.ok, true);
+			assert.strictEqual(result.ast.type, "root");
+			assert.strictEqual(result.ast.children[0].type, "yaml");
+			assert.strictEqual(result.ast.children[0].value, "title: Hello");
+			assert.strictEqual(result.ast.children[1].type, "heading");
+			assert.strictEqual(result.ast.children[2].type, "paragraph");
+		});
+
+		it("should parse frontmatter in gfm mode when `frontmatter: true` is set", () => {
+			const language = new MarkdownLanguage({ mode: "gfm" });
+			const result = language.parse(
+				{
+					body: "---\ntitle: Hello\n---\n\n# Hello, World!\n\nHello, World!",
+					path: "test.md",
+				},
+				{
+					languageOptions: {
+						frontmatter: true,
+					},
+				},
+			);
+
+			assert.strictEqual(result.ok, true);
+			assert.strictEqual(result.ast.type, "root");
+			assert.strictEqual(result.ast.children[0].type, "yaml");
+			assert.strictEqual(result.ast.children[0].value, "title: Hello");
+			assert.strictEqual(result.ast.children[1].type, "heading");
+			assert.strictEqual(result.ast.children[2].type, "paragraph");
+		});
 	});
 
 	describe("createSourceCode()", () => {
