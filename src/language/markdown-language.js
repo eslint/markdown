@@ -49,7 +49,7 @@ function createParserOptions(mode, languageOptions) {
 		mdastExtensions.push(gfmFromMarkdown());
 	}
 
-	// 2. `languageOptions`: Handle frontmatter options
+	// 2. `languageOptions.frontmatter`: Handle frontmatter options
 	const frontmatterOption = languageOptions?.frontmatter;
 
 	// Skip frontmatter entirely if false
