@@ -145,7 +145,7 @@ export default [
         },
         language: "markdown/gfm",
         languageOptions: {
-            frontmatter: true,
+            frontmatter: true, // Or `["yaml", "toml"]` to enable both YAML and TOML.
         },
         rules: {
             "markdown/no-html": "error"
