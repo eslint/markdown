@@ -43,13 +43,13 @@ function createParserOptions(mode, languageOptions) {
 	const extensions = [];
 	const mdastExtensions = [];
 
-	// 1. Add GFM extensions if mode is "gfm"
+	// 1. `mode`: Add GFM extensions if mode is "gfm"
 	if (mode === "gfm") {
 		extensions.push(gfm());
 		mdastExtensions.push(gfmFromMarkdown());
 	}
 
-	// 2. Handle frontmatter options
+	// 2. `languageOptions`: Handle frontmatter options
 	const frontmatterOption = languageOptions?.frontmatter;
 
 	// Skip frontmatter entirely if false
@@ -136,17 +136,19 @@ export class MarkdownLanguage {
 	 * @throws {Error} When the language options are invalid.
 	 */
 	validateLanguageOptions(languageOptions) {
-		if (languageOptions.frontmatter !== undefined) {
-			if (typeof languageOptions.frontmatter === "boolean") {
+		const frontmatterOption = languageOptions?.frontmatter;
+
+		if (frontmatterOption !== undefined) {
+			if (typeof frontmatterOption === "boolean") {
 				return;
 			}
 
-			// We know that `languageOptions.frontmatter` is not a boolean here.
+			// We know that `frontmatterOption` is not a boolean here.
 			// If it's not a boolean, it must be `FrontmatterOptions` type.
 
 			// `toMatters` throws an `Error` if the options are invalid.
 			// So, we don't have to implement the validations by ourselves.
-			toMatters(languageOptions.frontmatter);
+			toMatters(frontmatterOption);
 		}
 	}
 
