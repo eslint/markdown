@@ -132,8 +132,8 @@ By default, Markdown parsers do not support [Front Matter](https://jekyllrb.com/
 | **Option Value** | **Description**                                            |
 |------------------|------------------------------------------------------------|
 | `false`          | Disables Front Matter parsing in Markdown files. (Default) |
-| `'yaml'`         | Enables YAML Front Matter parsing in Markdown files.       |
-| `'toml'`         | Enables TOML Front Matter parsing in Markdown files.       |
+| `"yaml"`         | Enables YAML Front Matter parsing in Markdown files.       |
+| `"toml"`         | Enables TOML Front Matter parsing in Markdown files.       |
 
 ```js
 // eslint.config.js
