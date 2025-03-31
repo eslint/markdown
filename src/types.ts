@@ -12,7 +12,6 @@ import type {
 	Root,
 	Text,
 } from "mdast";
-import type { Options as FrontmatterOptions } from "micromark-extension-frontmatter";
 import type { Linter } from "eslint";
 import type {
 	LanguageOptions,
@@ -65,7 +64,7 @@ export interface MarkdownLanguageOptions extends LanguageOptions {
 	/**
 	 * The options for parsing frontmatter.
 	 */
-	frontmatter?: boolean | FrontmatterOptions;
+	frontmatter?: false | "yaml" | "toml";
 }
 
 /**
