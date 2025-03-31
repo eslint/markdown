@@ -127,11 +127,13 @@ export default [
 
 By default, Markdown parsers do not support [Front Matter](https://jekyllrb.com/docs/front-matter/). To enable Front Matter in both `commonmark` and `gfm`, you can use the `frontmatter` option in `languageOptions`.  
 
-| **Option Value** | **Description** |  
-|-----------------|-----------------|  
-| `false` | Disables Front Matter parsing in Markdown files. |  
-| `true` | Enables Front Matter parsing in Markdown files. By default, only YAML is supported. |  
-| [`Options`](https://github.com/micromark/micromark-extension-frontmatter?tab=readme-ov-file#options) | Passes configuration options to the Front Matter parser. These options are the same as those in [`Options` from `micromark-extension-frontmatter`](https://github.com/micromark/micromark-extension-frontmatter#options). |
+> `@eslint/markdown` internally uses [`micromark-extension-frontmatter`](https://github.com/micromark/micromark-extension-frontmatter) and [`mdast-util-frontmatter`](https://github.com/syntax-tree/mdast-util-frontmatter) to parse Front Matter.
+
+| **Option Value** | **Description**                                            |
+|------------------|------------------------------------------------------------|
+| `false`          | Disables Front Matter parsing in Markdown files. (Default) |
+| `'yaml'`         | Enables YAML Front Matter parsing in Markdown files.       |
+| `'toml'`         | Enables TOML Front Matter parsing in Markdown files.       |
 
 ```js
 // eslint.config.js
@@ -145,7 +147,7 @@ export default [
         },
         language: "markdown/gfm",
         languageOptions: {
-            frontmatter: true, // Or `["yaml", "toml"]` to enable both YAML and TOML.
+            frontmatter: "yaml", // Or pass `"toml"` to enable TOML Front Matter parsing.
         },
         rules: {
             "markdown/no-html": "error"
