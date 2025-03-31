@@ -16,15 +16,15 @@ import assert from "node:assert";
 
 describe("MarkdownLanguage", () => {
 	describe("validateLanguageOptions()", () => {
-		it("should throw an error if `frontmatter` is not a boolean or `FrontmatterOptions` type", () => {
+		it("should throw an error if `frontmatter` is not `false`, `'yaml'`, or `'toml'`", () => {
 			const language = new MarkdownLanguage();
 
 			assert.throws(() => {
 				language.validateLanguageOptions({ frontmatter: "invalid" });
-			}, /Missing matter definition for `invalid`/u);
+			}, /Invalid language option value/u);
 			assert.throws(() => {
 				language.validateLanguageOptions({ frontmatter: 123 });
-			}, /Expected matter to be an object, not `123`/u);
+			}, /Invalid language option value/u);
 		});
 
 		it("should not throw an error when `frontmatter` is not provided", () => {
@@ -45,125 +45,31 @@ describe("MarkdownLanguage", () => {
 			});
 		});
 
-		it("should not throw an error when `frontmatter` is a boolean in commonmark mode", () => {
+		it("should not throw an error when `frontmatter` has a correct value in commonmark mode", () => {
 			const language = new MarkdownLanguage({ mode: "commonmark" });
 
 			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({ frontmatter: true });
-			});
-			assert.doesNotThrow(() => {
 				language.validateLanguageOptions({ frontmatter: false });
 			});
-		});
-
-		it("should not throw an error when `frontmatter` is a boolean in gfm mode", () => {
-			const language = new MarkdownLanguage({ mode: "gfm" });
-
-			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({ frontmatter: true });
-			});
-			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({ frontmatter: false });
-			});
-		});
-
-		it("should not throw an error if `frontmatter` is `FrontmatterOptions` type in commonmark mode", () => {
-			const language = new MarkdownLanguage({ mode: "commonmark" });
-
 			assert.doesNotThrow(() => {
 				language.validateLanguageOptions({ frontmatter: "yaml" });
 			});
 			assert.doesNotThrow(() => {
 				language.validateLanguageOptions({ frontmatter: "toml" });
 			});
-			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({
-					frontmatter: { type: "yaml", marker: "-" },
-				});
-			});
-			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({
-					frontmatter: { type: "toml", marker: "+" },
-				});
-			});
-			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({ frontmatter: ["yaml"] });
-			});
-			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({ frontmatter: ["toml"] });
-			});
-			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({
-					frontmatter: ["yaml", "toml"],
-				});
-			});
-			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({
-					frontmatter: [{ type: "yaml", marker: "-" }],
-				});
-			});
-			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({
-					frontmatter: [{ type: "toml", marker: "+" }],
-				});
-			});
-			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({
-					frontmatter: [
-						{ type: "yaml", marker: "-" },
-						{ type: "toml", marker: "+" },
-					],
-				});
-			});
 		});
 
-		it("should not throw an error if `frontmatter` is `FrontmatterOptions` type in gfm mode", () => {
+		it("should not throw an error when `frontmatter` has a correct value in gfm mode", () => {
 			const language = new MarkdownLanguage({ mode: "gfm" });
 
+			assert.doesNotThrow(() => {
+				language.validateLanguageOptions({ frontmatter: false });
+			});
 			assert.doesNotThrow(() => {
 				language.validateLanguageOptions({ frontmatter: "yaml" });
 			});
 			assert.doesNotThrow(() => {
 				language.validateLanguageOptions({ frontmatter: "toml" });
-			});
-			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({
-					frontmatter: { type: "yaml", marker: "-" },
-				});
-			});
-			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({
-					frontmatter: { type: "toml", marker: "+" },
-				});
-			});
-			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({ frontmatter: ["yaml"] });
-			});
-			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({ frontmatter: ["toml"] });
-			});
-			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({
-					frontmatter: ["yaml", "toml"],
-				});
-			});
-			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({
-					frontmatter: [{ type: "yaml", marker: "-" }],
-				});
-			});
-			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({
-					frontmatter: [{ type: "toml", marker: "+" }],
-				});
-			});
-			assert.doesNotThrow(() => {
-				language.validateLanguageOptions({
-					frontmatter: [
-						{ type: "yaml", marker: "-" },
-						{ type: "toml", marker: "+" },
-					],
-				});
 			});
 		});
 	});
@@ -221,7 +127,7 @@ describe("MarkdownLanguage", () => {
 			assert.strictEqual(result.ast.children[3].type, "paragraph");
 		});
 
-		it("should parse YAML frontmatter in commonmark mode when `frontmatter: true` is set", () => {
+		it("should parse YAML frontmatter in commonmark mode when `frontmatter: 'yaml'` is set", () => {
 			const language = new MarkdownLanguage({ mode: "commonmark" });
 			const result = language.parse(
 				{
@@ -230,7 +136,7 @@ describe("MarkdownLanguage", () => {
 				},
 				{
 					languageOptions: {
-						frontmatter: true,
+						frontmatter: "yaml",
 					},
 				},
 			);
@@ -243,7 +149,7 @@ describe("MarkdownLanguage", () => {
 			assert.strictEqual(result.ast.children[2].type, "paragraph");
 		});
 
-		it("should parse YAML frontmatter in gfm mode when `frontmatter: true` is set", () => {
+		it("should parse YAML frontmatter in gfm mode when `frontmatter: 'yaml'` is set", () => {
 			const language = new MarkdownLanguage({ mode: "gfm" });
 			const result = language.parse(
 				{
@@ -252,7 +158,7 @@ describe("MarkdownLanguage", () => {
 				},
 				{
 					languageOptions: {
-						frontmatter: true,
+						frontmatter: "yaml",
 					},
 				},
 			);
@@ -265,7 +171,7 @@ describe("MarkdownLanguage", () => {
 			assert.strictEqual(result.ast.children[2].type, "paragraph");
 		});
 
-		it("should parse TOML frontmatter in commonmark mode when `frontmatter: ['toml']` is set", () => {
+		it("should parse TOML frontmatter in commonmark mode when `frontmatter: 'toml'` is set", () => {
 			const language = new MarkdownLanguage({ mode: "commonmark" });
 			const result = language.parse(
 				{
@@ -274,7 +180,7 @@ describe("MarkdownLanguage", () => {
 				},
 				{
 					languageOptions: {
-						frontmatter: ["toml"],
+						frontmatter: "toml",
 					},
 				},
 			);
@@ -287,7 +193,7 @@ describe("MarkdownLanguage", () => {
 			assert.strictEqual(result.ast.children[2].type, "paragraph");
 		});
 
-		it("should parse TOML frontmatter in gfm mode when `frontmatter: ['toml']` is set", () => {
+		it("should parse TOML frontmatter in gfm mode when `frontmatter: 'toml'` is set", () => {
 			const language = new MarkdownLanguage({ mode: "gfm" });
 			const result = language.parse(
 				{
@@ -296,7 +202,7 @@ describe("MarkdownLanguage", () => {
 				},
 				{
 					languageOptions: {
-						frontmatter: ["toml"],
+						frontmatter: "toml",
 					},
 				},
 			);
