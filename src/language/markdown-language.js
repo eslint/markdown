@@ -13,7 +13,7 @@ import { MarkdownSourceCode } from "./markdown-source-code.js";
 import { fromMarkdown } from "mdast-util-from-markdown";
 import { frontmatterFromMarkdown } from "mdast-util-frontmatter";
 import { gfmFromMarkdown } from "mdast-util-gfm";
-import { frontmatter, toMatters } from "micromark-extension-frontmatter";
+import { frontmatter } from "micromark-extension-frontmatter";
 import { gfm } from "micromark-extension-gfm";
 
 //-----------------------------------------------------------------------------
@@ -21,6 +21,8 @@ import { gfm } from "micromark-extension-gfm";
 //-----------------------------------------------------------------------------
 
 /** @typedef {import("mdast").Root} RootNode */
+/** @typedef {import("mdast-util-from-markdown").Options['extensions']} Extensions */
+/** @typedef {import("mdast-util-from-markdown").Options['mdastExtensions']} mdastExtensions */
 /** @typedef {import("@eslint/core").Language} Language */
 /** @typedef {import("@eslint/core").File} File */
 /** @typedef {import("@eslint/core").ParseResult<RootNode>} ParseResult */
@@ -37,10 +39,12 @@ import { gfm } from "micromark-extension-gfm";
  * Create parser options based on `mode` and `languageOptions`.
  * @param {ParserMode} mode The markdown parser mode.
  * @param {MarkdownLanguageOptions} languageOptions Language options.
- * @returns {{extensions: any[], mdastExtensions: any[]}} Parser options for micromark and mdast
+ * @returns {{extensions: Extensions, mdastExtensions: mdastExtensions}} Parser options for micromark and mdast
  */
 function createParserOptions(mode, languageOptions) {
+	/** @type {Extensions} */
 	const extensions = [];
+	/** @type {mdastExtensions} */
 	const mdastExtensions = [];
 
 	// 1. `mode`: Add GFM extensions if mode is "gfm"
@@ -54,14 +58,12 @@ function createParserOptions(mode, languageOptions) {
 
 	// Skip frontmatter entirely if false
 	if (frontmatterOption !== false) {
-		if (frontmatterOption === true) {
-			// Use default YAML if true
+		if (frontmatterOption === "yaml") {
 			extensions.push(frontmatter(["yaml"]));
 			mdastExtensions.push(frontmatterFromMarkdown(["yaml"]));
-		} else if (frontmatterOption !== undefined) {
-			// Use provided options for other cases
-			extensions.push(frontmatter(frontmatterOption));
-			mdastExtensions.push(frontmatterFromMarkdown(frontmatterOption));
+		} else if (frontmatterOption === "toml") {
+			extensions.push(frontmatter(["toml"]));
+			mdastExtensions.push(frontmatterFromMarkdown(["toml"]));
 		}
 	}
 
@@ -137,18 +139,15 @@ export class MarkdownLanguage {
 	 */
 	validateLanguageOptions(languageOptions) {
 		const frontmatterOption = languageOptions?.frontmatter;
+		const validFrontmatterOptions = new Set([false, "yaml", "toml"]);
 
-		if (frontmatterOption !== undefined) {
-			if (typeof frontmatterOption === "boolean") {
-				return;
-			}
-
-			// We know that `frontmatterOption` is not a boolean here.
-			// If it's not a boolean, it must be `FrontmatterOptions` type.
-
-			// `toMatters` throws an `Error` if the options are invalid.
-			// So, we don't have to implement the validations by ourselves.
-			toMatters(frontmatterOption);
+		if (
+			frontmatterOption !== undefined &&
+			!validFrontmatterOptions.has(frontmatterOption)
+		) {
+			throw new Error(
+				`Invalid language option value \`${frontmatterOption}\` for frontmatter.`,
+			);
 		}
 	}
 
