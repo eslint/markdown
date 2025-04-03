@@ -22,7 +22,7 @@ import { gfm } from "micromark-extension-gfm";
 
 /** @typedef {import("mdast").Root} RootNode */
 /** @typedef {import("mdast-util-from-markdown").Options['extensions']} Extensions */
-/** @typedef {import("mdast-util-from-markdown").Options['mdastExtensions']} mdastExtensions */
+/** @typedef {import("mdast-util-from-markdown").Options['mdastExtensions']} MdastExtensions */
 /** @typedef {import("@eslint/core").Language} Language */
 /** @typedef {import("@eslint/core").File} File */
 /** @typedef {import("@eslint/core").ParseResult<RootNode>} ParseResult */
@@ -39,12 +39,12 @@ import { gfm } from "micromark-extension-gfm";
  * Create parser options based on `mode` and `languageOptions`.
  * @param {ParserMode} mode The markdown parser mode.
  * @param {MarkdownLanguageOptions} languageOptions Language options.
- * @returns {{extensions: Extensions, mdastExtensions: mdastExtensions}} Parser options for micromark and mdast
+ * @returns {{extensions: Extensions, mdastExtensions: MdastExtensions}} Parser options for micromark and mdast
  */
 function createParserOptions(mode, languageOptions) {
 	/** @type {Extensions} */
 	const extensions = [];
-	/** @type {mdastExtensions} */
+	/** @type {MdastExtensions} */
 	const mdastExtensions = [];
 
 	// 1. `mode`: Add GFM extensions if mode is "gfm"
