@@ -45,6 +45,8 @@ eslint-enable no-console -- ok to use console here
 
 <!-- eslint-disable markdown/no-html -- ok here -->
 
+<!-- eslint markdown/no-html: warn, markdown/no-empty-links: error -->
+
 <!-- invalid rule config comments -->
 
 <!-- eslint markdown/no-html: [error -->
@@ -105,7 +107,7 @@ describe("MarkdownSourceCode", () => {
 	describe("getInlineConfigNodes()", () => {
 		it("should return the inline config nodes", () => {
 			const nodes = sourceCode.getInlineConfigNodes();
-			assert.strictEqual(nodes.length, 9);
+			assert.strictEqual(nodes.length, 10);
 
 			/* eslint-disable no-restricted-properties -- Needed to avoid extra asserts. */
 
@@ -166,18 +168,26 @@ describe("MarkdownSourceCode", () => {
 			});
 
 			assert.deepEqual(nodes[7], {
-				value: "eslint markdown/no-html: [error",
+				value: "eslint markdown/no-html: warn, markdown/no-empty-links: error",
 				position: {
-					start: { line: 33, column: 1, offset: 592 },
-					end: { line: 33, column: 41, offset: 632 },
+					start: { line: 31, column: 1, offset: 553 },
+					end: { line: 31, column: 71, offset: 623 },
 				},
 			});
 
 			assert.deepEqual(nodes[8], {
+				value: "eslint markdown/no-html: [error",
+				position: {
+					start: { line: 35, column: 1, offset: 664 },
+					end: { line: 35, column: 41, offset: 704 },
+				},
+			});
+
+			assert.deepEqual(nodes[9], {
 				value: 'eslint markdown/no-html: ["error", { allowed: ["b"] ]',
 				position: {
-					start: { line: 35, column: 1, offset: 634 },
-					end: { line: 35, column: 63, offset: 696 },
+					start: { line: 37, column: 1, offset: 706 },
+					end: { line: 37, column: 63, offset: 768 },
 				},
 			});
 
@@ -242,15 +252,24 @@ describe("MarkdownSourceCode", () => {
 					},
 					loc: allComments[5].position,
 				},
+				{
+					config: {
+						rules: {
+							"markdown/no-html": "warn",
+							"markdown/no-empty-links": "error",
+						},
+					},
+					loc: allComments[7].position,
+				},
 			]);
 
 			assert.strictEqual(problems.length, 2);
 			assert.strictEqual(problems[0].ruleId, null);
 			assert.match(problems[0].message, /Failed to parse/u);
-			assert.strictEqual(problems[0].loc, allComments[7].position);
+			assert.strictEqual(problems[0].loc, allComments[8].position);
 			assert.strictEqual(problems[1].ruleId, null);
 			assert.match(problems[1].message, /Failed to parse/u);
-			assert.strictEqual(problems[1].loc, allComments[8].position);
+			assert.strictEqual(problems[1].loc, allComments[9].position);
 		});
 	});
 
@@ -330,6 +349,16 @@ describe("MarkdownSourceCode", () => {
 					2,
 					"html",
 					"<!-- eslint-disable markdown/no-html -- ok here -->",
+				],
+				[
+					1,
+					"html",
+					"<!-- eslint markdown/no-html: warn, markdown/no-empty-links: error -->",
+				],
+				[
+					2,
+					"html",
+					"<!-- eslint markdown/no-html: warn, markdown/no-empty-links: error -->",
 				],
 				[1, "html", "<!-- invalid rule config comments -->"],
 				[2, "html", "<!-- invalid rule config comments -->"],
