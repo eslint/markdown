@@ -5,6 +5,8 @@
 import type {
 	// Nodes (abstract)
 	Node,
+	Data,
+	Literal,
 	Parent,
 	// Nodes
 	Blockquote,
@@ -80,6 +82,25 @@ export type Message = Linter.LintMessage;
 export type RuleType = "problem" | "suggestion" | "layout";
 
 /**
+ * Markdown TOML.
+ */
+export interface Toml extends Literal {
+	/**
+	 * Node type of mdast TOML.
+	 */
+	type: "toml";
+	/**
+	 * Data associated with the mdast YAML.
+	 */
+	data?: TomlData | undefined;
+}
+
+/**
+ * Info associated with mdast TOML nodes by the ecosystem.
+ */
+export interface TomlData extends Data {}
+
+/**
  * The `SourceCode` interface for Markdown files.
  */
 export interface IMarkdownSourceCode
@@ -140,6 +161,7 @@ export interface MarkdownRuleVisitor
 			tableRow?(node: TableRow, parent?: Parent): void;
 			// Extensions (front matter)
 			yaml?(node: Yaml, parent?: Parent): void;
+			toml?(node: Toml, parent?: Parent): void;
 		}> {}
 
 export type MarkdownRuleDefinitionTypeOptions = {
