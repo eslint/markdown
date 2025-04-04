@@ -19,7 +19,7 @@ import type {
 	SourceLocation,
 	TextSourceCode,
 } from "@eslint/core";
-import type { MarkdownSourceCode } from "./language/markdown-source-code.js";
+import type { MarkdownSourceCode } from "./index.js";
 
 //------------------------------------------------------------------------------
 // Helpers
