@@ -121,6 +121,41 @@ export default [
 ];
 ```
 
+### Language Options
+
+#### Enabling Front Matter in both `commonmark` and `gfm`
+
+By default, Markdown parsers do not support [front matter](https://jekyllrb.com/docs/front-matter/). To enable front matter in both `commonmark` and `gfm`, you can use the `frontmatter` option in `languageOptions`.  
+
+> `@eslint/markdown` internally uses [`micromark-extension-frontmatter`](https://github.com/micromark/micromark-extension-frontmatter) and [`mdast-util-frontmatter`](https://github.com/syntax-tree/mdast-util-frontmatter) to parse front matter.
+
+| **Option Value** | **Description**                                            |
+|------------------|------------------------------------------------------------|
+| `false`          | Disables front matter parsing in Markdown files. (Default) |
+| `"yaml"`         | Enables YAML front matter parsing in Markdown files.       |
+| `"toml"`         | Enables TOML front matter parsing in Markdown files.       |
+
+```js
+// eslint.config.js
+import markdown from "@eslint/markdown";
+
+export default [
+    {
+        files: ["**/*.md"],
+        plugins: {
+            markdown
+        },
+        language: "markdown/gfm",
+        languageOptions: {
+            frontmatter: "yaml", // Or pass `"toml"` to enable TOML front matter parsing.
+        },
+        rules: {
+            "markdown/no-html": "error"
+        }
+    }
+];
+```
+
 ### Processors
 
 | **Processor Name** | **Description** |
