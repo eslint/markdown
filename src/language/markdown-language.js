@@ -11,7 +11,9 @@
 
 import { MarkdownSourceCode } from "./markdown-source-code.js";
 import { fromMarkdown } from "mdast-util-from-markdown";
+import { frontmatterFromMarkdown } from "mdast-util-frontmatter";
 import { gfmFromMarkdown } from "mdast-util-gfm";
+import { frontmatter } from "micromark-extension-frontmatter";
 import { gfm } from "micromark-extension-gfm";
 
 //-----------------------------------------------------------------------------
@@ -19,11 +21,57 @@ import { gfm } from "micromark-extension-gfm";
 //-----------------------------------------------------------------------------
 
 /** @typedef {import("mdast").Root} RootNode */
+/** @typedef {import("mdast-util-from-markdown").Options['extensions']} Extensions */
+/** @typedef {import("mdast-util-from-markdown").Options['mdastExtensions']} MdastExtensions */
 /** @typedef {import("@eslint/core").Language} Language */
 /** @typedef {import("@eslint/core").File} File */
 /** @typedef {import("@eslint/core").ParseResult<RootNode>} ParseResult */
 /** @typedef {import("@eslint/core").OkParseResult<RootNode>} OkParseResult */
+/** @typedef {import("../types.ts").MarkdownLanguageOptions} MarkdownLanguageOptions */
+/** @typedef {import("../types.ts").MarkdownLanguageContext} MarkdownLanguageContext */
 /** @typedef {"commonmark"|"gfm"} ParserMode */
+
+//-----------------------------------------------------------------------------
+// Helpers
+//-----------------------------------------------------------------------------
+
+/**
+ * Create parser options based on `mode` and `languageOptions`.
+ * @param {ParserMode} mode The markdown parser mode.
+ * @param {MarkdownLanguageOptions} languageOptions Language options.
+ * @returns {{extensions: Extensions, mdastExtensions: MdastExtensions}} Parser options for micromark and mdast
+ */
+function createParserOptions(mode, languageOptions) {
+	/** @type {Extensions} */
+	const extensions = [];
+	/** @type {MdastExtensions} */
+	const mdastExtensions = [];
+
+	// 1. `mode`: Add GFM extensions if mode is "gfm"
+	if (mode === "gfm") {
+		extensions.push(gfm());
+		mdastExtensions.push(gfmFromMarkdown());
+	}
+
+	// 2. `languageOptions.frontmatter`: Handle frontmatter options
+	const frontmatterOption = languageOptions?.frontmatter;
+
+	// Skip frontmatter entirely if false
+	if (frontmatterOption !== false) {
+		if (frontmatterOption === "yaml") {
+			extensions.push(frontmatter(["yaml"]));
+			mdastExtensions.push(frontmatterFromMarkdown(["yaml"]));
+		} else if (frontmatterOption === "toml") {
+			extensions.push(frontmatter(["toml"]));
+			mdastExtensions.push(frontmatterFromMarkdown(["toml"]));
+		}
+	}
+
+	return {
+		extensions,
+		mdastExtensions,
+	};
+}
 
 //-----------------------------------------------------------------------------
 // Exports
@@ -59,6 +107,14 @@ export class MarkdownLanguage {
 	nodeTypeKey = "type";
 
 	/**
+	 * Default language options. User-defined options are merged with this object.
+	 * @type {MarkdownLanguageOptions}
+	 */
+	defaultLanguageOptions = {
+		frontmatter: false,
+	};
+
+	/**
 	 * The Markdown parser mode.
 	 * @type {ParserMode}
 	 */
@@ -75,24 +131,33 @@ export class MarkdownLanguage {
 		}
 	}
 
-	/* eslint-disable no-unused-vars -- Required to complete interface. */
 	/**
 	 * Validates the language options.
-	 * @param {Object} languageOptions The language options to validate.
+	 * @param {MarkdownLanguageOptions} languageOptions The language options to validate.
 	 * @returns {void}
 	 * @throws {Error} When the language options are invalid.
 	 */
 	validateLanguageOptions(languageOptions) {
-		// no-op
+		const frontmatterOption = languageOptions?.frontmatter;
+		const validFrontmatterOptions = new Set([false, "yaml", "toml"]);
+
+		if (
+			frontmatterOption !== undefined &&
+			!validFrontmatterOptions.has(frontmatterOption)
+		) {
+			throw new Error(
+				`Invalid language option value \`${frontmatterOption}\` for frontmatter.`,
+			);
+		}
 	}
-	/* eslint-enable no-unused-vars -- Required to complete interface. */
 
 	/**
 	 * Parses the given file into an AST.
 	 * @param {File} file The virtual file to parse.
+	 * @param {MarkdownLanguageContext} context The options to use for parsing.
 	 * @returns {ParseResult} The result of parsing.
 	 */
-	parse(file) {
+	parse(file, context) {
 		// Note: BOM already removed
 		const text = /** @type {string} */ (file.body);
 
@@ -103,13 +168,10 @@ export class MarkdownLanguage {
 		 * problem that ESLint identified just like any other.
 		 */
 		try {
-			const options =
-				this.#mode === "gfm"
-					? {
-							extensions: [gfm()],
-							mdastExtensions: [gfmFromMarkdown()],
-						}
-					: { extensions: [] };
+			const options = createParserOptions(
+				this.#mode,
+				context?.languageOptions,
+			);
 			const root = fromMarkdown(text, options);
 
 			return {
