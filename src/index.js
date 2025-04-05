@@ -9,6 +9,7 @@
 
 import { processor } from "./processor.js";
 import { MarkdownLanguage } from "./language/markdown-language.js";
+import { MarkdownSourceCode } from "./language/markdown-source-code.js";
 import recommendedRules from "./build/recommended-config.js";
 import rules from "./build/rules.js";
 
@@ -139,3 +140,4 @@ const plugin = {
 recommendedPlugins.markdown = processorPlugins.markdown = plugin;
 
 export default plugin;
+export { MarkdownSourceCode };

@@ -1,4 +1,5 @@
 import copy from "rollup-plugin-copy";
+import del from "rollup-plugin-delete";
 
 export default {
 	input: "src/index.js",
@@ -10,6 +11,7 @@ export default {
 		},
 	],
 	plugins: [
+		del({ targets: "dist/*" }),
 		copy({
 			targets: [{ src: "src/types.ts", dest: "dist/esm" }],
 		}),

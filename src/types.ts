@@ -21,6 +21,7 @@ import type {
 	SourceLocation,
 	TextSourceCode,
 } from "@eslint/core";
+import type { MarkdownSourceCode } from "./index.js";
 
 //------------------------------------------------------------------------------
 // Helpers
@@ -121,7 +122,7 @@ export type MarkdownRuleDefinition<
 	// Language specific type options (non-configurable)
 	{
 		LangOptions: MarkdownLanguageOptions;
-		Code: IMarkdownSourceCode;
+		Code: MarkdownSourceCode;
 		Visitor: MarkdownRuleVisitor;
 		Node: Node;
 	} & Required<
