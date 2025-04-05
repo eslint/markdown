@@ -37,7 +37,21 @@ eslint-enable no-console -- ok to use console here
 
 <!--
  eslint-disable-line no-console
- -->`;
+ -->
+
+<!-- eslint markdown/no-html: "error" -->
+
+<div> This is a div </div>
+
+<!-- eslint-disable markdown/no-html -- ok here -->
+
+<!-- eslint markdown/no-html: warn, markdown/no-empty-links: error -->
+
+<!-- invalid rule config comments -->
+
+<!-- eslint markdown/no-html: [error -->
+
+<!-- eslint markdown/no-html: ["error", { allowed: ["b"] ] -->`;
 
 const ast = fromMarkdown(markdownText);
 
@@ -93,7 +107,7 @@ describe("MarkdownSourceCode", () => {
 	describe("getInlineConfigNodes()", () => {
 		it("should return the inline config nodes", () => {
 			const nodes = sourceCode.getInlineConfigNodes();
-			assert.strictEqual(nodes.length, 5);
+			assert.strictEqual(nodes.length, 10);
 
 			/* eslint-disable no-restricted-properties -- Needed to avoid extra asserts. */
 
@@ -137,6 +151,46 @@ describe("MarkdownSourceCode", () => {
 				},
 			});
 
+			assert.deepEqual(nodes[5], {
+				value: 'eslint markdown/no-html: "error"',
+				position: {
+					start: { line: 25, column: 1, offset: 429 },
+					end: { line: 25, column: 42, offset: 470 },
+				},
+			});
+
+			assert.deepEqual(nodes[6], {
+				value: "eslint-disable markdown/no-html -- ok here",
+				position: {
+					start: { line: 29, column: 1, offset: 500 },
+					end: { line: 29, column: 52, offset: 551 },
+				},
+			});
+
+			assert.deepEqual(nodes[7], {
+				value: "eslint markdown/no-html: warn, markdown/no-empty-links: error",
+				position: {
+					start: { line: 31, column: 1, offset: 553 },
+					end: { line: 31, column: 71, offset: 623 },
+				},
+			});
+
+			assert.deepEqual(nodes[8], {
+				value: "eslint markdown/no-html: [error",
+				position: {
+					start: { line: 35, column: 1, offset: 664 },
+					end: { line: 35, column: 41, offset: 704 },
+				},
+			});
+
+			assert.deepEqual(nodes[9], {
+				value: 'eslint markdown/no-html: ["error", { allowed: ["b"] ]',
+				position: {
+					start: { line: 37, column: 1, offset: 706 },
+					end: { line: 37, column: 63, offset: 768 },
+				},
+			});
+
 			/* eslint-enable no-restricted-properties -- Needed to avoid extra asserts. */
 		});
 	});
@@ -157,7 +211,7 @@ describe("MarkdownSourceCode", () => {
 				end: { line: 23, column: 5, offset: 427 },
 			});
 
-			assert.strictEqual(directives.length, 4);
+			assert.strictEqual(directives.length, 5);
 
 			assert.strictEqual(directives[0].type, "disable-next-line");
 			assert.strictEqual(directives[0].value, "no-console");
@@ -177,6 +231,45 @@ describe("MarkdownSourceCode", () => {
 			assert.strictEqual(directives[3].type, "disable");
 			assert.strictEqual(directives[3].value, "semi");
 			assert.strictEqual(directives[3].justification, "");
+
+			assert.strictEqual(directives[4].type, "disable");
+			assert.strictEqual(directives[4].value, "markdown/no-html");
+			assert.strictEqual(directives[4].justification, "ok here");
+		});
+	});
+
+	describe("applyInlineConfig()", () => {
+		it("should return rule configs and problems", () => {
+			const allComments = sourceCode.getInlineConfigNodes();
+			const { configs, problems } = sourceCode.applyInlineConfig();
+
+			assert.deepStrictEqual(configs, [
+				{
+					config: {
+						rules: {
+							"markdown/no-html": "error",
+						},
+					},
+					loc: allComments[5].position,
+				},
+				{
+					config: {
+						rules: {
+							"markdown/no-html": "warn",
+							"markdown/no-empty-links": "error",
+						},
+					},
+					loc: allComments[7].position,
+				},
+			]);
+
+			assert.strictEqual(problems.length, 2);
+			assert.strictEqual(problems[0].ruleId, null);
+			assert.match(problems[0].message, /Failed to parse/u);
+			assert.strictEqual(problems[0].loc, allComments[8].position);
+			assert.strictEqual(problems[1].ruleId, null);
+			assert.match(problems[1].message, /Failed to parse/u);
+			assert.strictEqual(problems[1].loc, allComments[9].position);
 		});
 	});
 
@@ -243,6 +336,44 @@ describe("MarkdownSourceCode", () => {
 				],
 				[1, "html", "<!--\n eslint-disable-line no-console\n -->"],
 				[2, "html", "<!--\n eslint-disable-line no-console\n -->"],
+				[1, "html", '<!-- eslint markdown/no-html: "error" -->'],
+				[2, "html", '<!-- eslint markdown/no-html: "error" -->'],
+				[1, "html", "<div> This is a div </div>"],
+				[2, "html", "<div> This is a div </div>"],
+				[
+					1,
+					"html",
+					"<!-- eslint-disable markdown/no-html -- ok here -->",
+				],
+				[
+					2,
+					"html",
+					"<!-- eslint-disable markdown/no-html -- ok here -->",
+				],
+				[
+					1,
+					"html",
+					"<!-- eslint markdown/no-html: warn, markdown/no-empty-links: error -->",
+				],
+				[
+					2,
+					"html",
+					"<!-- eslint markdown/no-html: warn, markdown/no-empty-links: error -->",
+				],
+				[1, "html", "<!-- invalid rule config comments -->"],
+				[2, "html", "<!-- invalid rule config comments -->"],
+				[1, "html", "<!-- eslint markdown/no-html: [error -->"],
+				[2, "html", "<!-- eslint markdown/no-html: [error -->"],
+				[
+					1,
+					"html",
+					'<!-- eslint markdown/no-html: ["error", { allowed: ["b"] ] -->',
+				],
+				[
+					2,
+					"html",
+					'<!-- eslint markdown/no-html: ["error", { allowed: ["b"] ] -->',
+				],
 				[2, "root", void 0],
 			]);
 		});
