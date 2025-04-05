@@ -1,5 +1,14 @@
 # Changelog
 
+## [6.4.0](https://github.com/eslint/markdown/compare/v6.3.0...v6.4.0) (2025-04-05)
+
+
+### Features
+
+* Create type definitions for rules ([#324](https://github.com/eslint/markdown/issues/324)) ([5f11a3d](https://github.com/eslint/markdown/commit/5f11a3d071103f4103310fc6916508eb7cb76def))
+* export `MarkdownRuleDefinition` type ([#333](https://github.com/eslint/markdown/issues/333)) ([13dfd5e](https://github.com/eslint/markdown/commit/13dfd5ec279d1db3cbd1ef2b6bf5d00799371090))
+* support front matter ([#328](https://github.com/eslint/markdown/issues/328)) ([35a979c](https://github.com/eslint/markdown/commit/35a979c16a0762024ba7150439a7628f56b76a51))
+
 ## [6.3.0](https://github.com/eslint/markdown/compare/v6.2.2...v6.3.0) (2025-03-04)
 
 
