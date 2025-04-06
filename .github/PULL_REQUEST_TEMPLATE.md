@@ -6,7 +6,7 @@
 
 #### Prerequisites checklist
 
-<!-- eslint-disable markdown/no-missing-label-refs -->
+<!-- eslint-disable-next-line markdown/no-missing-label-refs -->
 - [ ] I have read the [contributing guidelines](https://github.com/eslint/eslint/blob/HEAD/CONTRIBUTING.md).
 
 <!--
