@@ -73,32 +73,6 @@ export interface MarkdownLanguageOptions extends LanguageOptions {
  */
 export type MarkdownLanguageContext = LanguageContext<MarkdownLanguageOptions>;
 
-/**
- * The `SourceCode` interface for Markdown files.
- */
-export interface IMarkdownSourceCode
-	extends TextSourceCode<{
-		LangOptions: MarkdownLanguageOptions;
-		RootNode: Root;
-		SyntaxElementWithLoc: Node;
-		ConfigNode: { value: string; position: SourceLocation };
-	}> {
-	/**
-	 * Gets the entire source text split into an array of lines.
-	 * @returns The source text as an array of lines.
-	 */
-	get lines(): Array<string>;
-
-	/**
-	 * Gets the source code for the given node.
-	 * @param node The AST node to get the text for.
-	 * @param beforeCount The number of characters before the node to retrieve.
-	 * @param afterCount The number of characters after the node to retrieve.
-	 * @returns The text representing the AST node.
-	 */
-	getText(node?: Node, beforeCount?: number, afterCount?: number): string;
-}
-
 export interface MarkdownRuleVisitor
 	extends RuleVisitor,
 		WithExit<{
