@@ -112,6 +112,7 @@ export default {
 		docs: {
 			recommended: true,
 			description: "Disallow missing label references",
+			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-missing-label-refs.md",
 		},
 
 		messages: {

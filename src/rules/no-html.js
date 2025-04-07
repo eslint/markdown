@@ -35,6 +35,7 @@ export default {
 
 		docs: {
 			description: "Disallow HTML tags",
+			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-html.md",
 		},
 
 		messages: {

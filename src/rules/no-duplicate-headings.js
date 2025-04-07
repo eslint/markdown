@@ -23,6 +23,7 @@ export default {
 
 		docs: {
 			description: "Disallow duplicate headings in the same document",
+			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-duplicate-headings.md",
 		},
 
 		messages: {
