@@ -24,6 +24,7 @@ export default {
 		docs: {
 			recommended: true,
 			description: "Require languages for fenced code blocks",
+			url: "https://github.com/eslint/markdown/blob/main/docs/rules/fenced-code-language.md",
 		},
 
 		messages: {

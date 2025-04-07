@@ -32,6 +32,7 @@ import { findOffsets } from "../util.js";
 /** @typedef {import("@eslint/core").SourceRange} SourceRange */
 /** @typedef {import("@eslint/core").FileProblem} FileProblem */
 /** @typedef {import("@eslint/core").DirectiveType} DirectiveType */
+/** @typedef {import("@eslint/core").RulesConfig} RulesConfig */
 /** @typedef {import("../types.ts").MarkdownLanguageOptions} MarkdownLanguageOptions */
 
 //-----------------------------------------------------------------------------
@@ -40,7 +41,7 @@ import { findOffsets } from "../util.js";
 
 const commentParser = new ConfigCommentParser();
 const configCommentStart =
-	/<!--\s*(eslint(?:-enable|-disable(?:(?:-next)?-line)?))(?:\s|-->)/u;
+	/<!--\s*(?:eslint(?:-enable|-disable(?:(?:-next)?-line)?)?)(?:\s|-->)/u;
 const htmlComment = /<!--(.*?)-->/gsu;
 
 /**
@@ -263,6 +264,50 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 		});
 
 		return { problems, directives };
+	}
+
+	/**
+	 * Returns inline rule configurations along with any problems
+	 * encountered while parsing the configurations.
+	 * @returns {{problems:Array<FileProblem>,configs:Array<{config:{rules:RulesConfig},loc:SourceLocation}>}} Information
+	 *      that ESLint needs to further process the rule configurations.
+	 */
+	applyInlineConfig() {
+		const problems = [];
+		const configs = [];
+
+		this.getInlineConfigNodes().forEach(comment => {
+			const { label, value } = commentParser.parseDirective(
+				comment.value,
+			);
+
+			if (label === "eslint") {
+				const parseResult = commentParser.parseJSONLikeConfig(value);
+
+				if (parseResult.ok) {
+					configs.push({
+						config: {
+							rules: parseResult.config,
+						},
+						loc: comment.position,
+					});
+				} else {
+					problems.push({
+						ruleId: null,
+						message:
+							/** @type {{ok: false, error: { message: string }}} */ (
+								parseResult
+							).error.message,
+						loc: comment.position,
+					});
+				}
+			}
+		});
+
+		return {
+			configs,
+			problems,
+		};
 	}
 
 	/**
