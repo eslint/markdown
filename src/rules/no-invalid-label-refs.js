@@ -131,6 +131,7 @@ export default {
 		docs: {
 			recommended: true,
 			description: "Disallow invalid label references",
+			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-invalid-label-refs.md",
 		},
 
 		messages: {

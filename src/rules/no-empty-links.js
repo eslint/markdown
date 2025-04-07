@@ -23,6 +23,7 @@ export default {
 		docs: {
 			recommended: true,
 			description: "Disallow empty links",
+			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-empty-links.md",
 		},
 
 		messages: {
