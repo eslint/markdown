@@ -26,14 +26,18 @@ import { findOffsets } from "../util.js";
 /** @typedef {import("@eslint/core").File} File */
 /** @typedef {import("@eslint/core").TraversalStep} TraversalStep */
 /** @typedef {import("@eslint/core").VisitTraversalStep} VisitTraversalStep */
-/** @typedef {import("@eslint/core").TextSourceCode<{LangOptions: MarkdownLanguageOptions, RootNode: RootNode, SyntaxElementWithLoc: MarkdownNode, ConfigNode: { value: string; position: SourceLocation }}>} TextSourceCode */
 /** @typedef {import("@eslint/core").ParseResult<RootNode>} ParseResult */
 /** @typedef {import("@eslint/core").SourceLocation} SourceLocation */
 /** @typedef {import("@eslint/core").SourceRange} SourceRange */
 /** @typedef {import("@eslint/core").FileProblem} FileProblem */
 /** @typedef {import("@eslint/core").DirectiveType} DirectiveType */
 /** @typedef {import("@eslint/core").RulesConfig} RulesConfig */
+/**
+ * @typedef {import("@eslint/core").TextSourceCode<Options>} TextSourceCode<Options>
+ * @template {MarkdownTextSourceCodeOptions} [Options=MarkdownTextSourceCodeOptions]
+ */
 /** @typedef {import("../types.ts").MarkdownLanguageOptions} MarkdownLanguageOptions */
+/** @typedef {import("../types.ts").MarkdownTextSourceCodeOptions} MarkdownTextSourceCodeOptions */
 
 //-----------------------------------------------------------------------------
 // Helpers
