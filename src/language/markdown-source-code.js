@@ -141,7 +141,7 @@ function extractInlineConfigCommentsFromHTML(node) {
 
 /**
  * Markdown Source Code Object
- * @implements {TextSourceCode}
+ * @implements {TextSourceCode<{LangOptions: MarkdownLanguageOptions, RootNode: RootNode, SyntaxElementWithLoc: MarkdownNode, ConfigNode: { value: string; position: SourceLocation }}>}
  */
 export class MarkdownSourceCode extends TextSourceCodeBase {
 	/**
