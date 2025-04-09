@@ -34,10 +34,10 @@ import { findOffsets } from "../util.js";
 /** @typedef {import("@eslint/core").RulesConfig} RulesConfig */
 /**
  * @typedef {import("@eslint/core").TextSourceCode<Options>} TextSourceCode<Options>
- * @template {MarkdownTextSourceCodeOptions} [Options=MarkdownTextSourceCodeOptions]
+ * @template {SourceCodeBaseTypeOptions} [Options=SourceCodeBaseTypeOptions]
  */
 /** @typedef {import("../types.ts").MarkdownLanguageOptions} MarkdownLanguageOptions */
-/** @typedef {import("../types.ts").MarkdownTextSourceCodeOptions} MarkdownTextSourceCodeOptions */
+/** @typedef {import("../types.ts").SourceCodeBaseTypeOptions} SourceCodeBaseTypeOptions */
 
 //-----------------------------------------------------------------------------
 // Helpers

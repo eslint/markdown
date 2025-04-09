@@ -73,11 +73,14 @@ export interface MarkdownLanguageOptions extends LanguageOptions {
  */
 export type MarkdownLanguageContext = LanguageContext<MarkdownLanguageOptions>;
 
-export interface MarkdownTextSourceCodeOptions {
-	LangOptions: MarkdownLanguageOptions;
-	RootNode: Root;
-	SyntaxElementWithLoc: Node;
-	ConfigNode: { value: string; position: SourceLocation };
+/**
+ * Generic options for the `SourceCodeBase` type.
+ */
+export interface SourceCodeBaseTypeOptions {
+	LangOptions: LanguageOptions;
+	RootNode: unknown;
+	SyntaxElementWithLoc: unknown;
+	ConfigNode: unknown;
 }
 
 export interface MarkdownRuleVisitor
