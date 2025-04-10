@@ -3,13 +3,46 @@ import markdown, {
 	MarkdownNode,
 	MarkdownRuleDefinition,
 	MarkdownRuleVisitor,
-	ParentNode,
-	RootNode,
 	SourceLocation,
-	TextNode,
+	SourceRange,
 	type RuleModule,
 } from "@eslint/markdown";
+import { Toml } from "@eslint/markdown/types";
 import { ESLint, Linter } from "eslint";
+import type {
+	// Nodes (abstract)
+	Node,
+	Parent,
+	// Nodes
+	Blockquote,
+	Break,
+	Code,
+	Definition,
+	Emphasis,
+	Heading,
+	Html,
+	Image,
+	ImageReference,
+	InlineCode,
+	Link,
+	LinkReference,
+	List,
+	ListItem,
+	Paragraph,
+	Root,
+	Strong,
+	Text,
+	ThematicBreak,
+	// Extensions (GFM)
+	Delete,
+	FootnoteDefinition,
+	FootnoteReference,
+	Table,
+	TableCell,
+	TableRow,
+	// Extensions (front matter)
+	Yaml,
+} from "mdast";
 
 markdown satisfies ESLint.Plugin;
 markdown.meta.name satisfies string;
@@ -50,36 +83,582 @@ typeof processorPlugins satisfies {};
 	create({ sourceCode }): MarkdownRuleVisitor {
 		sourceCode satisfies MarkdownSourceCode;
 
-		sourceCode.ast satisfies RootNode;
+		sourceCode.ast satisfies Root;
 		sourceCode.lines satisfies string[];
+		sourceCode.text satisfies string;
 
 		return {
-			// Root selector
-			root(node) {
-				node satisfies RootNode;
-			},
-
-			// Known node selector, sourceCode methods used in visitor
-			text(node) {
-				node satisfies TextNode;
-				sourceCode.getText(node) satisfies string;
+			// Nodes
+			blockquote(node, parent) {
+				node satisfies Blockquote;
+				parent satisfies Parent | undefined;
 				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"blockquote:exit"(node, parent) {
+				node satisfies Blockquote;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
 			},
 
-			// Known node selector with parent
-			link(node, parent) {
-				node satisfies MarkdownNode;
-				parent satisfies ParentNode | undefined;
+			break(node, parent) {
+				node satisfies Break;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"break:exit"(node, parent) {
+				node satisfies Break;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
 			},
 
-			// Known node selector with ":exit"
+			code(node, parent) {
+				node satisfies Code;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"code:exit"(node, parent) {
+				node satisfies Code;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			definition(node, parent) {
+				node satisfies Definition;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"definition:exit"(node, parent) {
+				node satisfies Definition;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			emphasis(node, parent) {
+				node satisfies Emphasis;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"emphasis:exit"(node, parent) {
+				node satisfies Emphasis;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			heading(node, parent) {
+				node satisfies Heading;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"heading:exit"(node, parent) {
+				node satisfies Heading;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			html(node, parent) {
+				node satisfies Html;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
 			"html:exit"(node, parent) {
-				node satisfies MarkdownNode;
-				parent satisfies ParentNode | undefined;
+				node satisfies Html;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			image(node, parent) {
+				node satisfies Image;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"image:exit"(node, parent) {
+				node satisfies Image;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			imageReference(node, parent) {
+				node satisfies ImageReference;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"imageReference:exit"(node, parent) {
+				node satisfies ImageReference;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			inlineCode(node, parent) {
+				node satisfies InlineCode;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"inlineCode:exit"(node, parent) {
+				node satisfies InlineCode;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			link(node, parent) {
+				node satisfies Link;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"link:exit"(node, parent) {
+				node satisfies Link;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			linkReference(node, parent) {
+				node satisfies LinkReference;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"linkReference:exit"(node, parent) {
+				node satisfies LinkReference;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			list(node, parent) {
+				node satisfies List;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"list:exit"(node, parent) {
+				node satisfies List;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			listItem(node, parent) {
+				node satisfies ListItem;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"listItem:exit"(node, parent) {
+				node satisfies ListItem;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			paragraph(node, parent) {
+				node satisfies Paragraph;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"paragraph:exit"(node, parent) {
+				node satisfies Paragraph;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			root(node) {
+				node satisfies Root;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"root:exit"(node) {
+				node satisfies Root;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			strong(node, parent) {
+				node satisfies Strong;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"strong:exit"(node, parent) {
+				node satisfies Strong;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			text(node, parent) {
+				node satisfies Text;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"text:exit"(node, parent) {
+				node satisfies Text;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			thematicBreak(node, parent) {
+				node satisfies ThematicBreak;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"thematicBreak:exit"(node, parent) {
+				node satisfies ThematicBreak;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			// Extensions (GFM)
+			delete(node, parent) {
+				node satisfies Delete;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"delete:exit"(node, parent) {
+				node satisfies Delete;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			footnoteDefinition(node, parent) {
+				node satisfies FootnoteDefinition;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"footnoteDefinition:exit"(node, parent) {
+				node satisfies FootnoteDefinition;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			footnoteReference(node, parent) {
+				node satisfies FootnoteReference;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"footnoteReference:exit"(node, parent) {
+				node satisfies FootnoteReference;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			table(node, parent) {
+				node satisfies Table;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"table:exit"(node, parent) {
+				node satisfies Table;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			tableCell(node, parent) {
+				node satisfies TableCell;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"tableCell:exit"(node, parent) {
+				node satisfies TableCell;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			tableRow(node, parent) {
+				node satisfies TableRow;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"tableRow:exit"(node, parent) {
+				node satisfies TableRow;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			// Extensions (front matter)
+			yaml(node, parent) {
+				node satisfies Yaml;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"yaml:exit"(node, parent) {
+				node satisfies Yaml;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+
+			toml(node, parent) {
+				node satisfies Toml;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
+			},
+			"toml:exit"(node, parent) {
+				node satisfies Toml;
+				parent satisfies Parent | undefined;
+				sourceCode.getLoc(node) satisfies SourceLocation;
+				sourceCode.getRange(node) satisfies SourceRange;
+				sourceCode.getParent(node) satisfies Node | undefined;
+				// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+				sourceCode.getAncestors(node) satisfies Node[];
+				sourceCode.getText(node) satisfies string;
 			},
 
 			// Unknown selectors allowed
 			"heading[depth=1]"(node: MarkdownNode, parent?: ParentNode) {},
+			"randomSelector:exit"(node: MarkdownNode, parent?: ParentNode) {},
 		};
 	},
 });
