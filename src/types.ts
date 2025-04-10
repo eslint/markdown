@@ -40,6 +40,8 @@ import type {
 } from "mdast";
 import type { Linter } from "eslint";
 import type {
+	LanguageOptions,
+	LanguageContext,
 	RuleDefinition,
 	RuleVisitor,
 	SourceLocation,
@@ -101,11 +103,26 @@ export interface Toml extends Literal {
 export interface TomlData extends Data {}
 
 /**
+ * Language options provided for Markdown files.
+ */
+export interface MarkdownLanguageOptions extends LanguageOptions {
+	/**
+	 * The options for parsing frontmatter.
+	 */
+	frontmatter?: false | "yaml" | "toml";
+}
+
+/**
+ * The context object that is passed to the Markdown language plugin methods.
+ */
+export type MarkdownLanguageContext = LanguageContext<MarkdownLanguageOptions>;
+
+/**
  * The `SourceCode` interface for Markdown files.
  */
 export interface IMarkdownSourceCode
 	extends TextSourceCode<{
-		LangOptions: {};
+		LangOptions: MarkdownLanguageOptions;
 		RootNode: Root;
 		SyntaxElementWithLoc: Node;
 		ConfigNode: { value: string; position: SourceLocation };
@@ -175,7 +192,7 @@ export type MarkdownRuleDefinition<
 > = RuleDefinition<
 	// Language specific type options (non-configurable)
 	{
-		LangOptions: {};
+		LangOptions: MarkdownLanguageOptions;
 		Code: IMarkdownSourceCode;
 		Visitor: MarkdownRuleVisitor;
 		Node: Node;
