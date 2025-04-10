@@ -1,5 +1,5 @@
 import markdown, {
-	IMarkdownSourceCode,
+	MarkdownSourceCode,
 	MarkdownNode,
 	MarkdownRuleDefinition,
 	MarkdownRuleVisitor,
@@ -48,7 +48,7 @@ typeof processorPlugins satisfies {};
 
 (): RuleModule => ({
 	create({ sourceCode }): MarkdownRuleVisitor {
-		sourceCode satisfies IMarkdownSourceCode;
+		sourceCode satisfies MarkdownSourceCode;
 
 		sourceCode.ast satisfies RootNode;
 		sourceCode.lines satisfies string[];

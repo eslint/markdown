@@ -24,6 +24,7 @@ export default {
 		docs: {
 			recommended: true,
 			description: "Enforce heading levels increment by one",
+			url: "https://github.com/eslint/markdown/blob/main/docs/rules/heading-increment.md",
 		},
 
 		messages: {

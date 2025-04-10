@@ -104,6 +104,13 @@ export default [
 				"error",
 				{ pattern: "^(Enforce|Require|Disallow) .+[^. ]$" },
 			],
+			"eslint-plugin/require-meta-docs-url": [
+				"error",
+				{
+					pattern:
+						"https://github.com/eslint/markdown/blob/main/docs/rules/{{name}}.md",
+				},
+			],
 		},
 	},
 	{
