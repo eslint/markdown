@@ -130,41 +130,42 @@ export interface SourceCodeBaseTypeOptions {
 
 export interface MarkdownRuleVisitor
 	extends RuleVisitor,
-		WithExit<{
-			// Nodes
-			blockquote?(node: Blockquote, parent?: Parent): void;
-			break?(node: Break, parent?: Parent): void;
-			code?(node: Code, parent?: Parent): void;
-			definition?(node: Definition, parent?: Parent): void;
-			emphasis?(node: Emphasis, parent?: Parent): void;
-			heading?(node: Heading, parent?: Parent): void;
-			html?(node: Html, parent?: Parent): void;
-			image?(node: Image, parent?: Parent): void;
-			imageReference?(node: ImageReference, parent?: Parent): void;
-			inlineCode?(node: InlineCode, parent?: Parent): void;
-			link?(node: Link, parent?: Parent): void;
-			linkReference?(node: LinkReference, parent?: Parent): void;
-			list?(node: List, parent?: Parent): void;
-			listItem?(node: ListItem, parent?: Parent): void;
-			paragraph?(node: Paragraph, parent?: Parent): void;
-			root?(node: Root): void;
-			strong?(node: Strong, parent?: Parent): void;
-			text?(node: Text, parent?: Parent): void;
-			thematicBreak?(node: ThematicBreak, parent?: Parent): void;
-			// Extensions (GFM)
-			delete?(node: Delete, parent?: Parent): void;
-			footnoteDefinition?(
-				node: FootnoteDefinition,
-				parent?: Parent,
-			): void;
-			footnoteReference?(node: FootnoteReference, parent?: Parent): void;
-			table?(node: Table, parent?: Parent): void;
-			tableCell?(node: TableCell, parent?: Parent): void;
-			tableRow?(node: TableRow, parent?: Parent): void;
-			// Extensions (front matter)
-			yaml?(node: Yaml, parent?: Parent): void;
-			toml?(node: Toml, parent?: Parent): void;
-		}> {}
+		WithExit<
+			{
+				root?(node: Root): void;
+			} & {
+				[NodeType in
+					| Blockquote // Nodes
+					| Break
+					| Code
+					| Definition
+					| Emphasis
+					| Heading
+					| Html
+					| Image
+					| ImageReference
+					| InlineCode
+					| Link
+					| LinkReference
+					| List
+					| ListItem
+					| Paragraph
+					| Strong
+					| Text
+					| ThematicBreak
+					| Delete // Extensions (GFM)
+					| FootnoteDefinition
+					| FootnoteReference
+					| Table
+					| TableCell
+					| TableRow
+					| Yaml // Extensions (front matter)
+					| Toml as NodeType["type"]]?: (
+					node: NodeType,
+					parent?: Parent,
+				) => void;
+			}
+		> {}
 
 export type MarkdownRuleDefinitionTypeOptions = {
 	RuleOptions: unknown[];
