@@ -44,8 +44,6 @@ import type {
 	LanguageContext,
 	RuleDefinition,
 	RuleVisitor,
-	SourceLocation,
-	TextSourceCode,
 } from "@eslint/core";
 import type { MarkdownSourceCode } from "./index.js";
 
@@ -93,7 +91,7 @@ export interface Toml extends Literal {
 	 */
 	type: "toml";
 	/**
-	 * Data associated with the mdast YAML.
+	 * Data associated with the mdast TOML.
 	 */
 	data?: TomlData | undefined;
 }
