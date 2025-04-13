@@ -42,7 +42,7 @@ Hello <b>world!</b>
 
 ## When Not to Use It
 
-If you aren't concerned with empty links, you can safely disable this rule.
+If you aren't concerned with HTML tags, you can safely disable this rule.
 
 ## Prior Art
 
