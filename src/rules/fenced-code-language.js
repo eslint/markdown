@@ -58,7 +58,11 @@ export default {
 			code(node) {
 				if (!node.lang) {
 					// only check fenced code blocks
-					if (sourceCode.text[node.position.start.offset] !== "`") {
+					if (
+						!["`", "~"].includes(
+							sourceCode.text[node.position.start.offset],
+						)
+					) {
 						return;
 					}
 
