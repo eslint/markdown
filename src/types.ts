@@ -3,14 +3,40 @@
 //------------------------------------------------------------------------------
 
 import type {
+	// Nodes (abstract)
+	Node,
+	Data,
+	Literal,
+	Parent,
+	// Nodes
+	Blockquote,
+	Break,
 	Code,
+	Definition,
+	Emphasis,
 	Heading,
 	Html,
+	Image,
+	ImageReference,
+	InlineCode,
 	Link,
-	Node,
-	Parent,
+	LinkReference,
+	List,
+	ListItem,
+	Paragraph,
 	Root,
+	Strong,
 	Text,
+	ThematicBreak,
+	// Extensions (GFM)
+	Delete,
+	FootnoteDefinition,
+	FootnoteReference,
+	Table,
+	TableCell,
+	TableRow,
+	// Extensions (front matter)
+	Yaml,
 } from "mdast";
 import type { Linter } from "eslint";
 import type {
@@ -18,8 +44,6 @@ import type {
 	LanguageContext,
 	RuleDefinition,
 	RuleVisitor,
-	SourceLocation,
-	TextSourceCode,
 } from "@eslint/core";
 import type { MarkdownSourceCode } from "./index.js";
 
@@ -59,6 +83,25 @@ export type Message = Linter.LintMessage;
 export type RuleType = "problem" | "suggestion" | "layout";
 
 /**
+ * Markdown TOML.
+ */
+export interface Toml extends Literal {
+	/**
+	 * Node type of mdast TOML.
+	 */
+	type: "toml";
+	/**
+	 * Data associated with the mdast TOML.
+	 */
+	data?: TomlData | undefined;
+}
+
+/**
+ * Info associated with mdast TOML nodes by the ecosystem.
+ */
+export interface TomlData extends Data {}
+
+/**
  * Language options provided for Markdown files.
  */
 export interface MarkdownLanguageOptions extends LanguageOptions {
@@ -85,14 +128,42 @@ export interface SourceCodeBaseTypeOptions {
 
 export interface MarkdownRuleVisitor
 	extends RuleVisitor,
-		WithExit<{
-			root?(node: Root): void;
-			code?(node: Code, parent?: Parent): void;
-			heading?(node: Heading, parent?: Parent): void;
-			html?(node: Html, parent?: Parent): void;
-			link?(node: Link, parent?: Parent): void;
-			text?(node: Text, parent?: Parent): void;
-		}> {}
+		WithExit<
+			{
+				root?(node: Root): void;
+			} & {
+				[NodeType in
+					| Blockquote // Nodes
+					| Break
+					| Code
+					| Definition
+					| Emphasis
+					| Heading
+					| Html
+					| Image
+					| ImageReference
+					| InlineCode
+					| Link
+					| LinkReference
+					| List
+					| ListItem
+					| Paragraph
+					| Strong
+					| Text
+					| ThematicBreak
+					| Delete // Extensions (GFM)
+					| FootnoteDefinition
+					| FootnoteReference
+					| Table
+					| TableCell
+					| TableRow
+					| Yaml // Extensions (front matter)
+					| Toml as NodeType["type"]]?: (
+					node: NodeType,
+					parent?: Parent,
+				) => void;
+			}
+		> {}
 
 export type MarkdownRuleDefinitionTypeOptions = {
 	RuleOptions: unknown[];

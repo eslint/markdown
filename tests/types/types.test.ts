@@ -3,13 +3,46 @@ import markdown, {
 	MarkdownNode,
 	MarkdownRuleDefinition,
 	MarkdownRuleVisitor,
-	ParentNode,
-	RootNode,
 	SourceLocation,
-	TextNode,
+	SourceRange,
 	type RuleModule,
 } from "@eslint/markdown";
+import { Toml } from "@eslint/markdown/types";
 import { ESLint, Linter } from "eslint";
+import type {
+	// Nodes (abstract)
+	Node,
+	Parent,
+	// Nodes
+	Blockquote,
+	Break,
+	Code,
+	Definition,
+	Emphasis,
+	Heading,
+	Html,
+	Image,
+	ImageReference,
+	InlineCode,
+	Link,
+	LinkReference,
+	List,
+	ListItem,
+	Paragraph,
+	Root,
+	Strong,
+	Text,
+	ThematicBreak,
+	// Extensions (GFM)
+	Delete,
+	FootnoteDefinition,
+	FootnoteReference,
+	Table,
+	TableCell,
+	TableRow,
+	// Extensions (front matter)
+	Yaml,
+} from "mdast";
 
 markdown satisfies ESLint.Plugin;
 markdown.meta.name satisfies string;
@@ -49,37 +82,93 @@ typeof processorPlugins satisfies {};
 (): RuleModule => ({
 	create({ sourceCode }): MarkdownRuleVisitor {
 		sourceCode satisfies MarkdownSourceCode;
-
-		sourceCode.ast satisfies RootNode;
+		sourceCode.ast satisfies Root;
 		sourceCode.lines satisfies string[];
+		sourceCode.text satisfies string;
+
+		function testVisitor<NodeType extends Node>(
+			node: NodeType,
+			parent?: Parent | undefined,
+		) {
+			sourceCode.getLoc(node) satisfies SourceLocation;
+			sourceCode.getRange(node) satisfies SourceRange;
+			sourceCode.getParent(node) satisfies Node | undefined;
+			// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
+			sourceCode.getAncestors(node) satisfies Node[];
+			sourceCode.getText(node) satisfies string;
+		}
 
 		return {
-			// Root selector
-			root(node) {
-				node satisfies RootNode;
-			},
+			// Nodes
+			blockquote: (...args) => testVisitor<Blockquote>(...args),
+			"blockquote:exit": (...args) => testVisitor<Blockquote>(...args),
+			break: (...args) => testVisitor<Break>(...args),
+			"break:exit": (...args) => testVisitor<Break>(...args),
+			code: (...args) => testVisitor<Code>(...args),
+			"code:exit": (...args) => testVisitor<Code>(...args),
+			definition: (...args) => testVisitor<Definition>(...args),
+			"definition:exit": (...args) => testVisitor<Definition>(...args),
+			emphasis: (...args) => testVisitor<Emphasis>(...args),
+			"emphasis:exit": (...args) => testVisitor<Emphasis>(...args),
+			heading: (...args) => testVisitor<Heading>(...args),
+			"heading:exit": (...args) => testVisitor<Heading>(...args),
+			html: (...args) => testVisitor<Html>(...args),
+			"html:exit": (...args) => testVisitor<Html>(...args),
+			image: (...args) => testVisitor<Image>(...args),
+			"image:exit": (...args) => testVisitor<Image>(...args),
+			imageReference: (...args) => testVisitor<ImageReference>(...args),
+			"imageReference:exit": (...args) =>
+				testVisitor<ImageReference>(...args),
+			inlineCode: (...args) => testVisitor<InlineCode>(...args),
+			"inlineCode:exit": (...args) => testVisitor<InlineCode>(...args),
+			link: (...args) => testVisitor<Link>(...args),
+			"link:exit": (...args) => testVisitor<Link>(...args),
+			linkReference: (...args) => testVisitor<LinkReference>(...args),
+			"linkReference:exit": (...args) =>
+				testVisitor<LinkReference>(...args),
+			list: (...args) => testVisitor<List>(...args),
+			"list:exit": (...args) => testVisitor<List>(...args),
+			listItem: (...args) => testVisitor<ListItem>(...args),
+			"listItem:exit": (...args) => testVisitor<ListItem>(...args),
+			paragraph: (...args) => testVisitor<Paragraph>(...args),
+			"paragraph:exit": (...args) => testVisitor<Paragraph>(...args),
+			root: (...args) => testVisitor<Root>(...args),
+			"root:exit": (...arg) => testVisitor<Root>(...arg),
+			strong: (...args) => testVisitor<Strong>(...args),
+			"strong:exit": (...args) => testVisitor<Strong>(...args),
+			text: (...args) => testVisitor<Text>(...args),
+			"text:exit": (...args) => testVisitor<Text>(...args),
+			thematicBreak: (...args) => testVisitor<ThematicBreak>(...args),
+			"thematicBreak:exit": (...args) =>
+				testVisitor<ThematicBreak>(...args),
 
-			// Known node selector, sourceCode methods used in visitor
-			text(node) {
-				node satisfies TextNode;
-				sourceCode.getText(node) satisfies string;
-				sourceCode.getLoc(node) satisfies SourceLocation;
-			},
+			// Extensions (GFM)
+			delete: (...args) => testVisitor<Delete>(...args),
+			"delete:exit": (...args) => testVisitor<Delete>(...args),
+			footnoteDefinition: (...args) =>
+				testVisitor<FootnoteDefinition>(...args),
+			"footnoteDefinition:exit": (...args) =>
+				testVisitor<FootnoteDefinition>(...args),
+			footnoteReference: (...args) =>
+				testVisitor<FootnoteReference>(...args),
+			"footnoteReference:exit": (...args) =>
+				testVisitor<FootnoteReference>(...args),
+			table: (...args) => testVisitor<Table>(...args),
+			"table:exit": (...args) => testVisitor<Table>(...args),
+			tableCell: (...args) => testVisitor<TableCell>(...args),
+			"tableCell:exit": (...args) => testVisitor<TableCell>(...args),
+			tableRow: (...args) => testVisitor<TableRow>(...args),
+			"tableRow:exit": (...args) => testVisitor<TableRow>(...args),
 
-			// Known node selector with parent
-			link(node, parent) {
-				node satisfies MarkdownNode;
-				parent satisfies ParentNode | undefined;
-			},
-
-			// Known node selector with ":exit"
-			"html:exit"(node, parent) {
-				node satisfies MarkdownNode;
-				parent satisfies ParentNode | undefined;
-			},
+			// Extensions (front matter)
+			yaml: (...args) => testVisitor<Yaml>(...args),
+			"yaml:exit": (...args) => testVisitor<Yaml>(...args),
+			toml: (...args) => testVisitor<Toml>(...args),
+			"toml:exit": (...args) => testVisitor<Toml>(...args),
 
 			// Unknown selectors allowed
 			"heading[depth=1]"(node: MarkdownNode, parent?: ParentNode) {},
+			"randomSelector:exit"(node: MarkdownNode, parent?: ParentNode) {},
 		};
 	},
 });
