@@ -42,7 +42,10 @@
       "eslint --fix",
       "prettier --write"
     ],
-    "*.md": "eslint --fix -c eslint.config-content.js",
+    "*.md": [
+      "eslint --fix",
+      "eslint --fix -c eslint.config-content.js"
+    ],
     "!(*.{js,md})": "prettier --write --ignore-unknown",
     "{src/rules/*.js,tools/update-rules-docs.js,README.md}": "npm run build:update-rules-docs"
   },
