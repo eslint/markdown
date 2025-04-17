@@ -1,5 +1,22 @@
 # Changelog
 
+## [6.4.0](https://github.com/eslint/markdown/compare/v6.3.0...v6.4.0) (2025-04-17)
+
+
+### Features
+
+* add missing `mdast` types to `MarkdownRuleVisitor` ([#334](https://github.com/eslint/markdown/issues/334)) ([fc8ba03](https://github.com/eslint/markdown/commit/fc8ba0314696c2f22233a9870360e2e9a5799ccc))
+* Create type definitions for rules ([#324](https://github.com/eslint/markdown/issues/324)) ([5f11a3d](https://github.com/eslint/markdown/commit/5f11a3d071103f4103310fc6916508eb7cb76def))
+* export `MarkdownRuleDefinition` type ([#333](https://github.com/eslint/markdown/issues/333)) ([13dfd5e](https://github.com/eslint/markdown/commit/13dfd5ec279d1db3cbd1ef2b6bf5d00799371090))
+* support `eslint` config comments ([#332](https://github.com/eslint/markdown/issues/332)) ([f697540](https://github.com/eslint/markdown/commit/f6975405df4899002053988b2771066a3f2426bc))
+* support front matter ([#328](https://github.com/eslint/markdown/issues/328)) ([35a979c](https://github.com/eslint/markdown/commit/35a979c16a0762024ba7150439a7628f56b76a51))
+
+
+### Bug Fixes
+
+* enhance fenced code language rule to support tilde as a delimiter ([#344](https://github.com/eslint/markdown/issues/344)) ([852645e](https://github.com/eslint/markdown/commit/852645ee070c5c85a45c740a0925fb70768cc840))
+* replace `IMarkdownSourceCode` with `MarkdownSourceCode` ([#336](https://github.com/eslint/markdown/issues/336)) ([ec2846b](https://github.com/eslint/markdown/commit/ec2846be8d0e0a3c216ea471eda62a1ce1a990a7))
+
 ## [6.3.0](https://github.com/eslint/markdown/compare/v6.2.2...v6.3.0) (2025-03-04)
 
 
