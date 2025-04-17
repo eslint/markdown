@@ -13,6 +13,12 @@
  */
 
 //-----------------------------------------------------------------------------
+// Helpers
+//-----------------------------------------------------------------------------
+
+const fencedCodeCharacters = new Set(["`", "~"]);
+
+//-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
 
@@ -58,7 +64,11 @@ export default {
 			code(node) {
 				if (!node.lang) {
 					// only check fenced code blocks
-					if (sourceCode.text[node.position.start.offset] !== "`") {
+					if (
+						!fencedCodeCharacters.has(
+							sourceCode.text[node.position.start.offset],
+						)
+					) {
 						return;
 					}
 

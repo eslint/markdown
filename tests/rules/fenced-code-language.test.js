@@ -24,12 +24,21 @@ const ruleTester = new RuleTester({
 
 ruleTester.run("fenced-code-language", rule, {
 	valid: [
+		// backtick code block
 		`\`\`\`js
         console.log("Hello, world!");
         \`\`\``,
 		`\`\`\`javascript
         console.log("Hello, world!");
         \`\`\``,
+
+		// tilde code block
+		`~~~js
+        console.log("Hello, world!");
+        ~~~`,
+		`~~~javascript
+        console.log("Hello, world!");
+        ~~~`,
 
 		// indented code block
 		`
@@ -47,6 +56,20 @@ ruleTester.run("fenced-code-language", rule, {
 			code: `\`\`\`
                 console.log("Hello, world!");
                 \`\`\``,
+			errors: [
+				{
+					messageId: "missingLanguage",
+					line: 1,
+					column: 1,
+					endLine: 3,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: `~~~
+                console.log("Hello, world!");
+                ~~~`,
 			errors: [
 				{
 					messageId: "missingLanguage",
