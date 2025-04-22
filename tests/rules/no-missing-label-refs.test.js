@@ -44,6 +44,15 @@ ruleTester.run("no-missing-label-refs", rule, {
 		"foo][bar]\n\n[bar]: http://bar.com",
 		"foo][bar][baz]\n\n[baz]: http://baz.com",
 		"[][foo]\n\n[foo]: http://foo.com",
+		"\\[\\]",
+		"[\\]",
+		"\\[]",
+		"\\[escaped\\]",
+		"\\[escaped]",
+		"[escaped\\]",
+		"\\[escaped\\]\\[escaped\\]",
+		"\\[escaped\\]\\[escaped]",
+		"[escaped\\]\\[escaped\\]",
 	],
 	invalid: [
 		{

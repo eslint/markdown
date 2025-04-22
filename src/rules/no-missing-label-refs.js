@@ -40,7 +40,8 @@ function findMissingReferences(node, nodeText) {
 	 * `left` is the content between the first brackets. It can be empty.
 	 * `right` is the content between the second brackets. It can be empty, and it can be undefined.
 	 */
-	const labelPattern = /\[(?<left>[^\]]*)\](?:\[(?<right>[^\]]*)\])?/dgu;
+	const labelPattern =
+		/(?<!\\)\[(?<left>[^\]]*)(?<!\\)\](?<!\\)(?:\[(?<right>[^\]]*)(?<!\\)\])?/dgu;
 
 	let match;
 
