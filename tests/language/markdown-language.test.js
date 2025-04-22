@@ -79,7 +79,7 @@ describe("MarkdownLanguage", () => {
 			const language = new MarkdownLanguage();
 			const result = language.parse({
 				body: "# Hello, World!\n\nHello, World!",
-				path: "test.css",
+				path: "test.md",
 			});
 
 			assert.strictEqual(result.ok, true);
@@ -221,7 +221,7 @@ describe("MarkdownLanguage", () => {
 			const language = new MarkdownLanguage({ mode: "commonmark" });
 			const file = {
 				body: "| Column 1 | Column 2 |\n| -------- | -------- |\n| Cell 1   | Cell 2   |",
-				path: "test.json",
+				path: "test.md",
 			};
 			const parseResult = language.parse(file);
 			const sourceCode = language.createSourceCode(file, parseResult);
@@ -242,7 +242,7 @@ describe("MarkdownLanguage", () => {
 			const language = new MarkdownLanguage({ mode: "gfm" });
 			const file = {
 				body: "| Column 1 | Column 2 |\n| -------- | -------- |\n| Cell 1   | Cell 2   |",
-				path: "test.json",
+				path: "test.md",
 			};
 			const parseResult = language.parse(file);
 			const sourceCode = language.createSourceCode(file, parseResult);
