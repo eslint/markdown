@@ -44,6 +44,17 @@ ruleTester.run("no-missing-label-refs", rule, {
 		"foo][bar]\n\n[bar]: http://bar.com",
 		"foo][bar][baz]\n\n[baz]: http://baz.com",
 		"[][foo]\n\n[foo]: http://foo.com",
+		"\\[\\]",
+		"[\\]",
+		"\\[]",
+		"\\[escaped\\]",
+		"\\[escaped]",
+		"[escaped\\]",
+		"\\[escaped\\]\\[escaped\\]",
+		"\\[escaped\\]\\[escaped]",
+		"[escaped\\]\\[escaped\\]",
+		"\\[escaped]\\[escaped]",
+		"[escaped\\][escaped\\]",
 	],
 	invalid: [
 		{
@@ -328,6 +339,45 @@ ruleTester.run("no-missing-label-refs", rule, {
 					column: 4,
 					endLine: 2,
 					endColumn: 7,
+				},
+			],
+		},
+		{
+			code: "\\[[foo]\\]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "foo" },
+					line: 1,
+					column: 4,
+					endLine: 1,
+					endColumn: 7,
+				},
+			],
+		},
+		{
+			code: "[\\[foo\\]]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "\\[foo\\]" },
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: "[\\[\\[foo\\]\\]]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "\\[\\[foo\\]\\]" },
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 13,
 				},
 			],
 		},
