@@ -53,6 +53,8 @@ ruleTester.run("no-missing-label-refs", rule, {
 		"\\[escaped\\]\\[escaped\\]",
 		"\\[escaped\\]\\[escaped]",
 		"[escaped\\]\\[escaped\\]",
+		"\\[escaped]\\[escaped]",
+		"[escaped\\][escaped\\]",
 	],
 	invalid: [
 		{
@@ -350,6 +352,32 @@ ruleTester.run("no-missing-label-refs", rule, {
 					column: 4,
 					endLine: 1,
 					endColumn: 7,
+				},
+			],
+		},
+		{
+			code: "[\\[foo\\]]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "\\[foo\\]" },
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: "[\\[\\[foo\\]\\]]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "\\[\\[foo\\]\\]" },
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 13,
 				},
 			],
 		},
