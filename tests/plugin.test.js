@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { assert } from "chai";
+import assert from "node:assert";
 import api from "eslint";
 import unsupportedAPI from "eslint/use-at-your-own-risk";
 import path from "node:path";
@@ -102,7 +102,7 @@ describe("LegacyESLint", () => {
 		it("should include the plugin", async () => {
 			const config = await eslint.calculateConfigForFile("test.md");
 
-			assert.include(config.plugins, "markdown");
+			assert.ok(config.plugins.includes("markdown"));
 		});
 
 		it("applies convenience configuration", async () => {
@@ -214,8 +214,8 @@ describe("LegacyESLint", () => {
 
 			assert.strictEqual(results.length, 1);
 			assert.strictEqual(results[0].messages.length, 1);
-			assert.notProperty(results[0].messages[0], "endLine");
-			assert.notProperty(results[0].messages[0], "endColumn");
+			assert.ok(!Object.hasOwn(results[0].messages[0], "endLine"));
+			assert.ok(!Object.hasOwn(results[0].messages[0], "endColumn"));
 		});
 
 		it("should emit correct line numbers with leading comments", async () => {
@@ -1193,7 +1193,7 @@ describe("FlatESLint", () => {
 		it("should include the plugin", async () => {
 			const config = await eslint.calculateConfigForFile("test.md");
 
-			assert.isDefined(config.plugins.markdown);
+			assert.notStrictEqual(config.plugins.markdown, undefined);
 		});
 
 		it("applies convenience configuration", async () => {
@@ -1304,8 +1304,8 @@ describe("FlatESLint", () => {
 
 			assert.strictEqual(results.length, 1);
 			assert.strictEqual(results[0].messages.length, 1);
-			assert.notProperty(results[0].messages[0], "endLine");
-			assert.notProperty(results[0].messages[0], "endColumn");
+			assert.ok(!Object.hasOwn(results[0].messages[0], "endLine"));
+			assert.ok(!Object.hasOwn(results[0].messages[0], "endColumn"));
 		});
 
 		it("should emit correct line numbers with leading comments", async () => {
