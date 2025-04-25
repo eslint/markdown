@@ -214,8 +214,8 @@ describe("LegacyESLint", () => {
 
 			assert.strictEqual(results.length, 1);
 			assert.strictEqual(results[0].messages.length, 1);
-			assert.ok(!Object.hasOwn(results[0].messages[0], "endLine"));
-			assert.ok(!Object.hasOwn(results[0].messages[0], "endColumn"));
+			assert.ok(!("endLine" in results[0].messages[0]));
+			assert.ok(!("endColumn" in results[0].messages[0]));
 		});
 
 		it("should emit correct line numbers with leading comments", async () => {
@@ -1304,8 +1304,8 @@ describe("FlatESLint", () => {
 
 			assert.strictEqual(results.length, 1);
 			assert.strictEqual(results[0].messages.length, 1);
-			assert.ok(!Object.hasOwn(results[0].messages[0], "endLine"));
-			assert.ok(!Object.hasOwn(results[0].messages[0], "endColumn"));
+			assert.ok(!("endLine" in results[0].messages[0]));
+			assert.ok(!("endColumn" in results[0].messages[0]));
 		});
 
 		it("should emit correct line numbers with leading comments", async () => {
