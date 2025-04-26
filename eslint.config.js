@@ -6,6 +6,7 @@ import globals from "globals";
 import eslintConfigESLint from "eslint-config-eslint";
 import eslintPlugin from "eslint-plugin-eslint-plugin";
 import markdown from "./src/index.js";
+import { defineConfig } from "eslint/config";
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -20,7 +21,7 @@ const eslintPluginTestsRecommendedConfig =
 // Configuration
 //-----------------------------------------------------------------------------
 
-export default [
+export default defineConfig([
 	...eslintConfigESLint,
 	{
 		name: "markdown/js",
@@ -134,4 +135,4 @@ export default [
 			"eslint-plugin/test-case-shorthand-strings": "error",
 		},
 	},
-];
+]);
