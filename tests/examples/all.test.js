@@ -1,4 +1,4 @@
-import { assert } from "chai";
+import assert from "node:assert";
 import fs from "node:fs";
 import path from "node:path";
 import semver from "semver";
@@ -46,8 +46,8 @@ for (const example of examples) {
 						result => path.basename(result.filePath) == "README.md",
 					);
 
-					assert.isNotNull(readme);
-					assert.isAbove(readme.messages.length, 0);
+					assert.notStrictEqual(readme, null);
+					assert.ok(readme.messages.length > 0);
 				});
 			});
 		});

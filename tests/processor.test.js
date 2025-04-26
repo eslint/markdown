@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { assert } from "chai";
+import assert from "node:assert";
 import path from "node:path";
 import { processor } from "../src/processor.js";
 import fs from "node:fs";
@@ -54,8 +54,10 @@ describe("processor", () => {
 				});
 
 				it("should return an array", () => {
-					assert.isArray(
-						processor.preprocess(`${prefix}Hello, world!`),
+					assert.ok(
+						Array.isArray(
+							processor.preprocess(`${prefix}Hello, world!`),
+						),
 					);
 				});
 

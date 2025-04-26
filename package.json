@@ -71,7 +71,6 @@
     "@eslint/js": "^9.4.0",
     "@types/eslint": "^9.6.0",
     "c8": "^10.1.2",
-    "chai": "^5.1.1",
     "dedent": "^1.5.3",
     "eslint": "^9.23.0",
     "eslint-config-eslint": "^11.0.0",
