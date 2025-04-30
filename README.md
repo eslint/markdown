@@ -30,7 +30,7 @@ npm install --save-dev eslint @eslint/markdown
 | `recommended` | Lints all `.md` files with the recommended rules and assumes [CommonMark](https://commonmark.org/) format. |
 | `processor` | Enables extracting code blocks from all `.md` files so code blocks can be individually linted. |
 
-In your `eslint.config.js` file, import `@eslint/markdown` and include the recommended config to enable the Markdown processor on all `.md` files:
+In your `eslint.config.js` file, import `@eslint/markdown` and include the recommended config to enable Markdown parsing and linting:
 
 ```js
 // eslint.config.js
@@ -43,6 +43,29 @@ export default defineConfig([
     // your other configs here
 ]);
 ```
+
+You can also modify the recommended config by using `extends`:
+
+```js
+// eslint.config.js
+import { defineConfig } from "eslint/config";
+import markdown from "@eslint/markdown";
+
+export default defineConfig([
+    {
+        plugins: {
+            markdown
+        },
+        extends: ["markdown/recommended"],
+        rules: {
+            "markdown/no-html": "error"
+        }
+    }
+
+    // your other configs here
+]);
+```
+
 
 ### Rules
 
