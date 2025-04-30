@@ -34,13 +34,14 @@ In your `eslint.config.js` file, import `@eslint/markdown` and include the recom
 
 ```js
 // eslint.config.js
+import { defineConfig } from "eslint/config";
 import markdown from "@eslint/markdown";
 
-export default [
-    ...markdown.configs.recommended
+export default defineConfig([
+    markdown.configs.recommended
 
     // your other configs here
-];
+]);
 ```
 
 ### Rules
@@ -65,9 +66,10 @@ In order to individually configure a rule in your `eslint.config.js` file, impor
 
 ```js
 // eslint.config.js
+import { defineConfig } from "eslint/config";
 import markdown from "@eslint/markdown";
 
-export default [
+export default defineConfig([
     {
         files: ["**/*.md"],
         plugins: {
@@ -78,7 +80,7 @@ export default [
             "markdown/no-html": "error"
         }
     }
-];
+]);
 ```
 
 You can individually disable rules in Markdown using HTML comments, such as:
@@ -105,9 +107,10 @@ In order to individually configure a language in your `eslint.config.js` file, i
 
 ```js
 // eslint.config.js
+import { defineConfig } from "eslint/config";
 import markdown from "@eslint/markdown";
 
-export default [
+export default defineConfig([
     {
         files: ["**/*.md"],
         plugins: {
@@ -118,7 +121,7 @@ export default [
             "markdown/no-html": "error"
         }
     }
-];
+]);
 ```
 
 ### Language Options
@@ -137,9 +140,10 @@ By default, Markdown parsers do not support [front matter](https://jekyllrb.com/
 
 ```js
 // eslint.config.js
+import { defineConfig } from "eslint/config";
 import markdown from "@eslint/markdown";
 
-export default [
+export default defineConfig([
     {
         files: ["**/*.md"],
         plugins: {
@@ -153,7 +157,7 @@ export default [
             "markdown/no-html": "error"
         }
     }
-];
+]);
 ```
 
 ### Processors
