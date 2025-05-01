@@ -30,18 +30,42 @@ npm install --save-dev eslint @eslint/markdown
 | `recommended` | Lints all `.md` files with the recommended rules and assumes [CommonMark](https://commonmark.org/) format. |
 | `processor` | Enables extracting code blocks from all `.md` files so code blocks can be individually linted. |
 
-In your `eslint.config.js` file, import `@eslint/markdown` and include the recommended config to enable the Markdown processor on all `.md` files:
+In your `eslint.config.js` file, import `@eslint/markdown` and include the recommended config to enable Markdown parsing and linting:
 
 ```js
 // eslint.config.js
+import { defineConfig } from "eslint/config";
 import markdown from "@eslint/markdown";
 
-export default [
-    ...markdown.configs.recommended
+export default defineConfig([
+    markdown.configs.recommended
 
     // your other configs here
-];
+]);
 ```
+
+You can also modify the recommended config by using `extends`:
+
+```js
+// eslint.config.js
+import { defineConfig } from "eslint/config";
+import markdown from "@eslint/markdown";
+
+export default defineConfig([
+    {
+        plugins: {
+            markdown
+        },
+        extends: ["markdown/recommended"],
+        rules: {
+            "markdown/no-html": "error"
+        }
+    }
+
+    // your other configs here
+]);
+```
+
 
 ### Rules
 
@@ -65,9 +89,10 @@ In order to individually configure a rule in your `eslint.config.js` file, impor
 
 ```js
 // eslint.config.js
+import { defineConfig } from "eslint/config";
 import markdown from "@eslint/markdown";
 
-export default [
+export default defineConfig([
     {
         files: ["**/*.md"],
         plugins: {
@@ -78,7 +103,7 @@ export default [
             "markdown/no-html": "error"
         }
     }
-];
+]);
 ```
 
 You can individually disable rules in Markdown using HTML comments, such as:
@@ -105,9 +130,10 @@ In order to individually configure a language in your `eslint.config.js` file, i
 
 ```js
 // eslint.config.js
+import { defineConfig } from "eslint/config";
 import markdown from "@eslint/markdown";
 
-export default [
+export default defineConfig([
     {
         files: ["**/*.md"],
         plugins: {
@@ -118,7 +144,7 @@ export default [
             "markdown/no-html": "error"
         }
     }
-];
+]);
 ```
 
 ### Language Options
@@ -137,9 +163,10 @@ By default, Markdown parsers do not support [front matter](https://jekyllrb.com/
 
 ```js
 // eslint.config.js
+import { defineConfig } from "eslint/config";
 import markdown from "@eslint/markdown";
 
-export default [
+export default defineConfig([
     {
         files: ["**/*.md"],
         plugins: {
@@ -153,7 +180,7 @@ export default [
             "markdown/no-html": "error"
         }
     }
-];
+]);
 ```
 
 ### Processors
