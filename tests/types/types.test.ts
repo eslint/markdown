@@ -93,7 +93,6 @@ typeof processorPlugins satisfies {};
 			sourceCode.getLoc(node) satisfies SourceLocation;
 			sourceCode.getRange(node) satisfies SourceRange;
 			sourceCode.getParent(node) satisfies Node | undefined;
-			// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
 			sourceCode.getAncestors(node) satisfies Node[];
 			sourceCode.getText(node) satisfies string;
 		}
