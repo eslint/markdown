@@ -87,8 +87,8 @@
     "yorkie": "^2.0.0"
   },
   "dependencies": {
-    "@eslint/core": "^0.13.0",
-    "@eslint/plugin-kit": "^0.2.8",
+    "@eslint/core": "^0.14.0",
+    "@eslint/plugin-kit": "^0.3.1",
     "mdast-util-from-markdown": "^2.0.2",
     "mdast-util-frontmatter": "^2.0.1",
     "mdast-util-gfm": "^3.0.0",
