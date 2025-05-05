@@ -6,6 +6,7 @@ import globals from "globals";
 import eslintConfigESLint from "eslint-config-eslint";
 import eslintPlugin from "eslint-plugin-eslint-plugin";
 import markdown from "./src/index.js";
+import { defineConfig } from "eslint/config";
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -20,8 +21,8 @@ const eslintPluginTestsRecommendedConfig =
 // Configuration
 //-----------------------------------------------------------------------------
 
-export default [
-	...eslintConfigESLint,
+export default defineConfig([
+	eslintConfigESLint,
 	{
 		name: "markdown/js",
 		files: ["**/*.js"],
@@ -93,9 +94,8 @@ export default [
 	},
 	{
 		files: ["src/rules/*.js"],
-		...eslintPluginRulesRecommendedConfig,
+		extends: [eslintPluginRulesRecommendedConfig],
 		rules: {
-			...eslintPluginRulesRecommendedConfig.rules,
 			"eslint-plugin/require-meta-schema": "off", // `schema` defaults to []
 			"eslint-plugin/prefer-placeholders": "error",
 			"eslint-plugin/prefer-replace-text": "error",
@@ -115,9 +115,8 @@ export default [
 	},
 	{
 		files: ["tests/rules/*.test.js"],
-		...eslintPluginTestsRecommendedConfig,
+		extends: [eslintPluginTestsRecommendedConfig],
 		rules: {
-			...eslintPluginTestsRecommendedConfig.rules,
 			"eslint-plugin/test-case-property-ordering": [
 				"error",
 				[
@@ -134,4 +133,4 @@ export default [
 			"eslint-plugin/test-case-shorthand-strings": "error",
 		},
 	},
-];
+]);
