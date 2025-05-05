@@ -22,6 +22,14 @@ Examples of incorrect code:
 ![Image](#)
 ```
 
+Exmaples of correct code:
+
+```markdown
+![](https://eslint.org/image.png)
+
+![ESLint Logo](https://eslint.org/image.png)
+```
+
 ## When Not to Use It
 
 If you aren't concerned with empty images, you can safely disable this rule.
