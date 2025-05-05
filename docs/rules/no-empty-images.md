@@ -4,7 +4,7 @@ Disallow empty images.
 
 ## Background
 
-In Markdown, it’s not always easy to spot when you’ve forgotten to provide a destination for an image. This is especially common when you’re writing something in Markdown and intend to insert an image, leaving the destination to fill in later—only to forget to go back and complete it. This often results in broken image links.
+In Markdown, it’s not always easy to spot when you’ve forgotten to provide a destination for an image. This is especially common when you’re writing something in Markdown and intend to insert an image, leaving the destination to fill in later, only to forget to go back and complete it. This often results in broken image links.
 
 ## Rule Details
 
