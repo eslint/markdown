@@ -20,7 +20,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - name: Use Bun ${{ matrix.bun }} ${{ matrix.os }}
-              uses: oven-sh/setup-bun@v1
+              uses: oven-sh/setup-bun@v2
               with:
                   bun-version: ${{ matrix.bun }}
             - name: bun install, build, and test
