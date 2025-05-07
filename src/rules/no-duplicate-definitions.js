@@ -49,7 +49,7 @@ export default {
 
 		defaultOptions: [
 			{
-				ignores: ["//", "comment"],
+				ignores: ["//"],
 			},
 		],
 	},
