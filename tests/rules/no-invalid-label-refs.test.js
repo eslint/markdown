@@ -127,5 +127,18 @@ ruleTester.run("no-invalid-label-refs", rule, {
 				},
 			],
 		},
+		{
+			code: "eslint [eslint][ ]",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "eslint" },
+					line: 1,
+					column: 16,
+					endLine: 1,
+					endColumn: 19,
+				},
+			],
+		},
 	],
 });
