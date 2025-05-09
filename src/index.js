@@ -1,5 +1,5 @@
 /**
- * @fileoverview Enables the processor for Markdown file extensions.
+ * @fileoverview Markdown plugin.
  * @author Brandon Mills
  */
 
