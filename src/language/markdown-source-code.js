@@ -19,20 +19,11 @@ import { findOffsets } from "../util.js";
 // Types
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("mdast").Root} RootNode */
-/** @typedef {import("mdast").Node} MarkdownNode */
-/** @typedef {import("mdast").Html} HTMLNode */
-/** @typedef {import("@eslint/core").Language} Language */
-/** @typedef {import("@eslint/core").File} File */
-/** @typedef {import("@eslint/core").TraversalStep} TraversalStep */
-/** @typedef {import("@eslint/core").VisitTraversalStep} VisitTraversalStep */
-/** @typedef {import("@eslint/core").ParseResult<RootNode>} ParseResult */
-/** @typedef {import("@eslint/core").SourceLocation} SourceLocation */
-/** @typedef {import("@eslint/core").SourceRange} SourceRange */
-/** @typedef {import("@eslint/core").FileProblem} FileProblem */
-/** @typedef {import("@eslint/core").DirectiveType} DirectiveType */
-/** @typedef {import("@eslint/core").RulesConfig} RulesConfig */
-/** @typedef {import("../types.ts").MarkdownLanguageOptions} MarkdownLanguageOptions */
+/**
+ * @import { Root, Node, Html } from "mdast";
+ * @import { Language, File, TraversalStep, VisitTraversalStep, ParseResult, SourceLocation, SourceRange, FileProblem, DirectiveType, RulesConfig } from "@eslint/core";
+ * @import { MarkdownLanguageOptions } from "../types.js";
+ */
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -73,7 +64,7 @@ class InlineConfigComment {
 
 /**
  * Extracts inline configuration comments from an HTML node.
- * @param {HTMLNode} node The HTML node to extract comments from.
+ * @param {Html} node The HTML node to extract comments from.
  * @returns {Array<InlineConfigComment>} The inline configuration comments found in the node.
  */
 function extractInlineConfigCommentsFromHTML(node) {
@@ -136,7 +127,7 @@ function extractInlineConfigCommentsFromHTML(node) {
 
 /**
  * Markdown Source Code Object
- * @extends {TextSourceCodeBase<{LangOptions: MarkdownLanguageOptions, RootNode: RootNode, SyntaxElementWithLoc: MarkdownNode, ConfigNode: { value: string; position: SourceLocation }}>}
+ * @extends {TextSourceCodeBase<{LangOptions: MarkdownLanguageOptions, RootNode: Root, SyntaxElementWithLoc: Node, ConfigNode: { value: string; position: SourceLocation }}>}
  */
 export class MarkdownSourceCode extends TextSourceCodeBase {
 	/**
@@ -147,13 +138,13 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 
 	/**
 	 * Cache of parent nodes.
-	 * @type {WeakMap<MarkdownNode, MarkdownNode>}
+	 * @type {WeakMap<Node, Node>}
 	 */
 	#parents = new WeakMap();
 
 	/**
 	 * Collection of HTML nodes. Used to find directive comments.
-	 * @type {Array<HTMLNode>}
+	 * @type {Array<Html>}
 	 */
 	#htmlNodes = [];
 
@@ -165,7 +156,7 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 
 	/**
 	 * The AST of the source code.
-	 * @type {RootNode}
+	 * @type {Root}
 	 */
 	ast = undefined;
 
@@ -173,7 +164,7 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 	 * Creates a new instance.
 	 * @param {Object} options The options for the instance.
 	 * @param {string} options.text The source code text.
-	 * @param {RootNode} options.ast The root AST node.
+	 * @param {Root} options.ast The root AST node.
 	 */
 	constructor({ text, ast }) {
 		super({ ast, text });
@@ -185,8 +176,8 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 
 	/**
 	 * Returns the parent of the given node.
-	 * @param {MarkdownNode} node The node to get the parent of.
-	 * @returns {MarkdownNode|undefined} The parent of the node.
+	 * @param {Node} node The node to get the parent of.
+	 * @returns {Node|undefined} The parent of the node.
 	 */
 	getParent(node) {
 		return this.#parents.get(node);

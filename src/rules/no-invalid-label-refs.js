@@ -13,9 +13,9 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("unist").Position} Position */
-/** @typedef {import("mdast").Text} TextNode */
 /**
+ * @import { Position } from "unist";
+ * @import { Text } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"invalidLabelRef"} NoInvalidLabelRefsMessageIds
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: [], MessageIds: NoInvalidLabelRefsMessageIds }>} NoInvalidLabelRefsRuleDefinition
@@ -30,7 +30,7 @@ const labelPattern = /\]\[([^\]]+)\]/u;
 
 /**
  * Finds missing references in a node.
- * @param {TextNode} node The node to check.
+ * @param {Text} node The node to check.
  * @param {string} docText The text of the node.
  * @returns {Array<{label:string,position:Position}>} The missing references.
  */

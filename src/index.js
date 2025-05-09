@@ -21,7 +21,8 @@ import rules from "./build/rules.js";
 /** @typedef {import("eslint").Linter.Config} Config*/
 /** @typedef {import("eslint").ESLint.Plugin} Plugin */
 /**
- * @typedef {import("./types.ts").MarkdownRuleDefinition<Options>} MarkdownRuleDefinition<Options>
+ * @import { MarkdownRuleDefinition } from "./types.js";
+ * @typedef {MarkdownRuleDefinition<Options>} MarkdownRuleDefinition<Options>
  * @template {Partial<import("./types.ts").MarkdownRuleDefinitionTypeOptions>} [Options={}]
  */
 /** @typedef {MarkdownRuleDefinition} RuleModule */
