@@ -1,10 +1,10 @@
-import markdown, {
-	MarkdownSourceCode,
+import markdown, { MarkdownSourceCode } from "@eslint/markdown";
+import {
+	Toml,
 	MarkdownRuleDefinition,
 	MarkdownRuleVisitor,
-	type RuleModule,
-} from "@eslint/markdown";
-import { Toml } from "@eslint/markdown/types";
+	RuleModule,
+} from "@eslint/markdown/types";
 import { ESLint, Linter } from "eslint";
 import type { SourceLocation, SourceRange } from "@eslint/core";
 import type {
