@@ -10,7 +10,7 @@
 /**
  * @import { MarkdownRuleDefinition } from "../types.ts";
  * @typedef {"duplicateHeading"} NoDuplicateHeadingsMessageIds
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [], MessageIds: NoDuplicateHeadingsMessageIds }>} NoDuplicateHeadingsRuleDefinition
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: [], MessageIds: NoDuplicateHeadingsMessageIds }>} NoDuplicateHeadingsRuleDefinition
  */
 
 //-----------------------------------------------------------------------------

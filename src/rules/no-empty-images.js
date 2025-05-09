@@ -10,7 +10,7 @@
 /**
  * @import { MarkdownRuleDefinition } from "../types.ts";
  * @typedef {"emptyImage"} NoEmptyImagesMessageIds
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [], MessageIds: NoEmptyImagesMessageIds }>} NoEmptyImagesRuleDefinition
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: [], MessageIds: NoEmptyImagesMessageIds }>} NoEmptyImagesRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
