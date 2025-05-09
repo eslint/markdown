@@ -16,13 +16,11 @@ import { fromMarkdown } from "mdast-util-from-markdown";
 /**
  * @import { Node, Parent, Code, Html } from "mdast";
  * @import { Linter, Rule, AST } from "eslint";
+ * @import { Block, RangeMap } from "./types.js";
+ * @typedef {Linter.LintMessage} Message
+ * @typedef {Rule.Fix} Fix
+ * @typedef {AST.Range} Range
  */
-
-/** @typedef {import("./types.ts").Block} Block */
-/** @typedef {import("./types.ts").RangeMap} RangeMap */
-/** @typedef {Linter.LintMessage} Message */
-/** @typedef {Rule.Fix} Fix */
-/** @typedef {AST.Range} Range */
 
 //-----------------------------------------------------------------------------
 // Helpers

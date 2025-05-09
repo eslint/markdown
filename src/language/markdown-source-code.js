@@ -21,7 +21,7 @@ import { findOffsets } from "../util.js";
 
 /**
  * @import { Root, Node, Html } from "mdast";
- * @import { Language, File, TraversalStep, VisitTraversalStep, ParseResult, SourceLocation, SourceRange, FileProblem, DirectiveType, RulesConfig } from "@eslint/core";
+ * @import { TraversalStep, SourceLocation, FileProblem, DirectiveType, RulesConfig } from "@eslint/core";
  * @import { MarkdownLanguageOptions } from "../types.js";
  */
 

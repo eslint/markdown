@@ -61,7 +61,7 @@ files.forEach(filePath => {
 
 	imports.forEach((ids, source) => {
 		// if it's a local file, we don't need it
-		if (source.startsWith("./")) {
+		if (source.startsWith("./") && !source.includes("./types.js")) {
 			return;
 		}
 

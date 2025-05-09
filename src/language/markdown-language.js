@@ -21,17 +21,14 @@ import { gfm } from "micromark-extension-gfm";
 //-----------------------------------------------------------------------------
 
 /**
+ * @import { Language, File, ParseResult, OkParseResult } from "@eslint/core";
  * @import { Root } from "mdast";
  * @import { Options } from "mdast-util-from-markdown";
- * @import { Language, File, ParseResult, OkParseResult } from "@eslint/core";
  * @import { MarkdownLanguageOptions, MarkdownLanguageContext } from "../types.js";
+ * @typedef {Options['extensions']} Extensions
+ * @typedef {Options['mdastExtensions']} MdastExtensions
+ * @typedef {"commonmark"|"gfm"} ParserMode
  */
-
-/** @typedef {Options['extensions']} Extensions */
-/** @typedef {Options['mdastExtensions']} MdastExtensions */
-/** @typedef {ParseResult<Root>} MarkdownParseResult */
-/** @typedef {OkParseResult<Root>} MarkdownOkParseResult */
-/** @typedef {"commonmark"|"gfm"} ParserMode */
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -157,7 +154,7 @@ export class MarkdownLanguage {
 	 * Parses the given file into an AST.
 	 * @param {File} file The virtual file to parse.
 	 * @param {MarkdownLanguageContext} context The options to use for parsing.
-	 * @returns {MarkdownParseResult} The result of parsing.
+	 * @returns {ParseResult<Root>} The result of parsing.
 	 */
 	parse(file, context) {
 		// Note: BOM already removed
@@ -191,7 +188,7 @@ export class MarkdownLanguage {
 	/**
 	 * Creates a new `MarkdownSourceCode` object from the given information.
 	 * @param {File} file The virtual file to create a `MarkdownSourceCode` object from.
-	 * @param {MarkdownOkParseResult} parseResult The result returned from `parse()`.
+	 * @param {OkParseResult<Root>} parseResult The result returned from `parse()`.
 	 * @returns {MarkdownSourceCode} The new `MarkdownSourceCode` object.
 	 */
 	createSourceCode(file, parseResult) {
