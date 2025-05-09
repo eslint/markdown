@@ -16,8 +16,9 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
 /** @typedef {import("unist").Position} Position */
 /** @typedef {import("mdast").Text} TextNode */
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoMissingLabelRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.ts";
+ * @typedef {"notFound"} NoMissingLabelRefsMessageIds
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: [], MessageIds: NoMissingLabelRefsMessageIds }>} NoMissingLabelRefsRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
@@ -105,7 +106,7 @@ function findMissingReferences(node, nodeText) {
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoMissingLabelRuleDefinition} */
+/** @type {NoMissingLabelRefsRuleDefinition} */
 export default {
 	meta: {
 		type: "problem",

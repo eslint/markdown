@@ -16,8 +16,9 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
 /** @typedef {import("unist").Position} Position */
 /** @typedef {import("mdast").Text} TextNode */
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoInvalidLabelRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.ts";
+ * @typedef {"invalidLabelRef"} NoInvalidLabelRefsMessageIds
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: [], MessageIds: NoInvalidLabelRefsMessageIds }>} NoInvalidLabelRefsRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
@@ -123,7 +124,7 @@ function findInvalidLabelReferences(node, docText) {
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoInvalidLabelRuleDefinition} */
+/** @type {NoInvalidLabelRefsRuleDefinition} */
 export default {
 	meta: {
 		type: "problem",

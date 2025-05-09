@@ -8,8 +8,9 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoEmptyImagesRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.ts";
+ * @typedef {"emptyImage"} NoEmptyImagesMessageIds
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [], MessageIds: NoEmptyImagesMessageIds }>} NoEmptyImagesRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
