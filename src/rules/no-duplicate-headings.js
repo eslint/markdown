@@ -8,8 +8,9 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoDuplicateHeadingsRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"duplicateHeading"} NoDuplicateHeadingsMessageIds
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: [], MessageIds: NoDuplicateHeadingsMessageIds }>} NoDuplicateHeadingsRuleDefinition
  */
 
 //-----------------------------------------------------------------------------

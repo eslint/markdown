@@ -1,5 +1,5 @@
 /**
- * @fileoverview Enables the processor for Markdown file extensions.
+ * @fileoverview Markdown plugin.
  * @author Brandon Mills
  */
 
@@ -14,25 +14,10 @@ import recommendedRules from "./build/recommended-config.js";
 import rules from "./build/rules.js";
 
 //-----------------------------------------------------------------------------
-// Type Definitions
-//-----------------------------------------------------------------------------
-
-/** @typedef {import("eslint").Linter.RulesRecord} RulesRecord*/
-/** @typedef {import("eslint").Linter.Config} Config*/
-/** @typedef {import("eslint").ESLint.Plugin} Plugin */
-/**
- * @typedef {import("./types.ts").MarkdownRuleDefinition<Options>} MarkdownRuleDefinition<Options>
- * @template {Partial<import("./types.ts").MarkdownRuleDefinitionTypeOptions>} [Options={}]
- */
-/** @typedef {MarkdownRuleDefinition} RuleModule */
-/** @typedef {import("./types.ts").MarkdownRuleVisitor} MarkdownRuleVisitor */
-/** @typedef {import("@eslint/core").Language} Language */
-
-//-----------------------------------------------------------------------------
 // Exports
 //-----------------------------------------------------------------------------
 
-/** @type {RulesRecord} */
+/** @type {import("eslint").Linter.RulesRecord} */
 const processorRulesConfig = {
 	// The Markdown parser automatically trims trailing
 	// newlines from code blocks.

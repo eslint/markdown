@@ -8,8 +8,9 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * HeadingIncrementRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"skippedHeading"} HeadingIncrementMessageIds
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: [], MessageIds: HeadingIncrementMessageIds }>} HeadingIncrementRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
