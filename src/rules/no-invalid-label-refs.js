@@ -30,10 +30,11 @@ const labelPattern = /\]\[([^\]]+)\]/u;
 /**
  * Finds missing references in a node.
  * @param {TextNode} node The node to check.
- * @param {string} docText The text of the node.
+ * @param {string} nodeText The text of the node.
+ * @param {string} docText The text of the document.
  * @returns {Array<{label:string,position:Position}>} The missing references.
  */
-function findInvalidLabelReferences(node, docText) {
+function findInvalidLabelReferences(node, nodeText, docText) {
 	const invalid = [];
 	let startIndex = 0;
 	const offset = node.position.start.offset;
@@ -47,8 +48,8 @@ function findInvalidLabelReferences(node, docText) {
 	 * It then moves the start index to the end of the label reference and
 	 * continues searching the text until the end of the text is found.
 	 */
-	while (startIndex < node.value.length) {
-		const value = node.value.slice(startIndex);
+	while (startIndex < nodeText.length) {
+		const value = nodeText.slice(startIndex);
 		const match = value.match(labelPattern);
 
 		if (!match) {
@@ -87,11 +88,11 @@ function findInvalidLabelReferences(node, docText) {
 
 		// find location of [ in the document text
 		const { lineOffset: startLineOffset, columnOffset: startColumnOffset } =
-			findOffsets(node.value, nodeMatchIndex + 1);
+			findOffsets(nodeText, nodeMatchIndex + 1);
 
 		// find location of [ in the document text
 		const { lineOffset: endLineOffset, columnOffset: endColumnOffset } =
-			findOffsets(node.value, nodeMatchIndex + match[0].length);
+			findOffsets(nodeText, nodeMatchIndex + match[0].length);
 
 		const startLine = nodeStartLine + startLineOffset;
 		const startColumn = nodeStartColumn + startColumnOffset;
@@ -147,6 +148,7 @@ export default {
 			text(node) {
 				const invalidReferences = findInvalidLabelReferences(
 					node,
+					sourceCode.getText(node),
 					sourceCode.text,
 				);
 
