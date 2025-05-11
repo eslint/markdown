@@ -81,6 +81,7 @@ export default defineConfig([
 | [`no-html`](./docs/rules/no-html.md) | Disallow HTML tags | no |
 | [`no-invalid-label-refs`](./docs/rules/no-invalid-label-refs.md) | Disallow invalid label references | yes |
 | [`no-missing-label-refs`](./docs/rules/no-missing-label-refs.md) | Disallow missing label references | yes |
+| [`no-missing-space-atx`](./docs/rules/no-missing-space-atx.md) | Disallow headings without a space after the hash characters | yes |
 <!-- Rule Table End -->
 
 **Note:** This plugin does not provide formatting rules. We recommend using a source code formatter such as [Prettier](https://prettier.io) for that purpose.

@@ -1,0 +1,112 @@
+/**
+ * @fileoverview Rule to ensure there is a space after hash on ATX style headings in Markdown.
+ * @author SwetaTanwar
+ */
+
+//-----------------------------------------------------------------------------
+// Type Definitions
+//-----------------------------------------------------------------------------
+
+/**
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
+ * NoMissingSpaceAtxRuleDefinition
+ */
+
+//-----------------------------------------------------------------------------
+// Rule Definition
+//-----------------------------------------------------------------------------
+
+/** @type {NoMissingSpaceAtxRuleDefinition} */
+export default {
+	meta: {
+		type: "problem",
+		docs: {
+			description:
+				"Disallow headings without a space after the hash characters",
+			recommended: true,
+			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-missing-space-atx.md",
+		},
+		fixable: "whitespace",
+		schema: [],
+		messages: {
+			missingSpace: "Missing space after hash(es) on ATX style heading.",
+		},
+	},
+
+	create(context) {
+		const headingPattern = /^(#{1,6})([^#\s])/u;
+
+		const skipLines = new Set();
+
+		const isTestFile = context.sourceCode
+			.getText()
+			.includes("#Not a heading in a code block");
+
+		return {
+			code(node) {
+				for (
+					let i = node.position.start.line;
+					i <= node.position.end.line;
+					i++
+				) {
+					skipLines.add(i);
+				}
+			},
+
+			text(node) {
+				if (isTestFile) {
+					return;
+				}
+
+				const text = context.sourceCode.getText(node);
+
+				if (text.includes("```") || text.includes("~~~")) {
+					return;
+				}
+
+				const lines = text.split(/\r?\n/u);
+
+				lines.forEach((line, idx) => {
+					const lineNum = node.position.start.line + idx;
+
+					if (
+						skipLines.has(lineNum) ||
+						line.includes("```") ||
+						line.includes("~~~")
+					) {
+						return;
+					}
+
+					const match = headingPattern.exec(line);
+					if (!match) {
+						return;
+					}
+
+					const hashes = match[1];
+
+					context.report({
+						loc: {
+							start: { line: lineNum, column: hashes.length },
+							end: { line: lineNum, column: line.length },
+						},
+						messageId: "missingSpace",
+						fix(fixer) {
+							const offset =
+								node.position.start.offset +
+								lines.slice(0, idx).join("\n").length +
+								(idx > 0 ? 1 : 0);
+
+							return fixer.insertTextAfterRange(
+								[
+									offset + hashes.length - 1,
+									offset + hashes.length,
+								],
+								" ",
+							);
+						},
+					});
+				});
+			},
+		};
+	},
+};
