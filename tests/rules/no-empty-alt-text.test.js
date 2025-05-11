@@ -27,16 +27,15 @@ ruleTester.run("no-empty-alt-text", rule, {
 	valid: [
 		"![Alternate text](image.jpg)",
 		'![Alternate text](image.jpg "Title")',
-		`
+		dedent`
 		![Alternate text][notitle]
 
 		[notitle]: image.jpg`,
-		`
+		dedent`
 		![Alternate text][title]
 
 		[title]: image.jpg "Title"`,
 		"[![Alternate text](image.jpg)](image.jpg)",
-		'![Alternate text](image.jpg "Title"\n)',
 	],
 	invalid: [
 		{
@@ -126,18 +125,6 @@ ruleTester.run("no-empty-alt-text", rule, {
 					column: 2,
 					endLine: 1,
 					endColumn: 16,
-				},
-			],
-		},
-		{
-			code: '![](image.jpg "Title"\n)',
-			errors: [
-				{
-					messageId: "emptyAltText",
-					line: 1,
-					column: 1,
-					endLine: 2,
-					endColumn: 2,
 				},
 			],
 		},

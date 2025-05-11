@@ -38,4 +38,4 @@ If you aren't concerned with image accessibility or if your images are purely de
 
 ## Prior Art
 
-* [MD045](https://github.com/DavidAnson/markdownlint/blob/main/doc/md045.md)
+* [MD045 - Images should have alternate text (alt text)](https://github.com/DavidAnson/markdownlint/blob/main/doc/md045.md)
