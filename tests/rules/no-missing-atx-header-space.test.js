@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tests for no-missing-space-atx rule.
+ * @fileoverview Tests for no-missing-atx-header-space rule.
  * @author Sweta Tanwar (@SwetaTanwar)
  */
 
@@ -7,7 +7,7 @@
 // Imports
 //------------------------------------------------------------------------------
 
-import rule from "../../src/rules/no-missing-space-atx.js";
+import rule from "../../src/rules/no-missing-atx-header-space.js";
 import markdown from "../../src/index.js";
 import { RuleTester } from "eslint";
 import dedent from "dedent";
@@ -243,7 +243,7 @@ Text after`,
 	},
 ];
 
-ruleTester.run("no-missing-space-atx", rule, {
+ruleTester.run("no-missing-atx-header-space", rule, {
 	valid: validHeadings,
 	invalid: invalidTests,
 });
