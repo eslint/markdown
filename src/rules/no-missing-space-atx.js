@@ -1,6 +1,6 @@
 /**
  * @fileoverview Rule to ensure there is a space after hash on ATX style headings in Markdown.
- * @author SwetaTanwar
+ * @author Sweta Tanwar (@SwetaTanwar)
  */
 
 //-----------------------------------------------------------------------------

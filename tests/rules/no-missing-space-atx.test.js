@@ -1,6 +1,6 @@
 /**
  * @fileoverview Tests for no-missing-space-atx rule.
- * @author Sweta Tanwar
+ * @author Sweta Tanwar (@SwetaTanwar)
  */
 
 //------------------------------------------------------------------------------
@@ -79,6 +79,9 @@ const validHeadings = [
 	// 8. Inline code with hash symbols
 	"This paragraph has `#inline-code` which is not a heading",
 	"Here's a code span with a hash: `const tag = '#heading'`",
+
+	// 9. Markdown links with hash in URLs
+	"[#370](https:/github.com/eslint/markdown/issues/370)",
 ];
 
 //------------------------------------------------------------------------------
