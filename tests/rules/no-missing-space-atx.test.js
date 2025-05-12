@@ -28,7 +28,7 @@ const ruleTester = new RuleTester({
 //------------------------------------------------------------------------------
 
 const validHeadings = [
-	// 1. Valid ATX headings with proper space (all heading levels)
+	// 1. ATX headings with proper spacing
 	"# Heading 1",
 	"## Heading 2",
 	"### Heading 3",
@@ -36,47 +36,47 @@ const validHeadings = [
 	"##### Heading 5",
 	"###### Heading 6",
 
-	// 2. Multiple headings with proper spacing in a single document
+	// 2. Document with multiple headings
 	dedent`# Heading 1
 
 	## Heading 2
 	
 	### Heading 3`,
 
-	// 3. Extra space after hash is valid
+	// 3. Variations on spacing
 	"#  Heading with extra space",
 
-	// 4. Not headings - single hash characters
+	// 4. Standalone hash (not a heading)
 	"#",
 
-	// 5. Setext headings (not covered by this rule)
+	// 5. Alternative heading styles (not covered by this rule)
 	"Heading 1\n=========",
 	"Heading 2\n---------",
 
-	// 6. Text containing hash characters (not headings)
+	// 6. Text with hash symbols
 	"Not a heading",
 	"This is a paragraph with a #hashtag",
 	"Text with # in the middle",
 
-	// 7. Code blocks of various types
-	// 7.1 Fenced code blocks with hash symbols should be ignored
+	// 7. Code blocks containing hash symbols
+	// 7.1 Fenced code blocks
 	'```js\n#Not a heading in a code block\nconsole.log("#Not a heading");\n```',
 
-	// 7.2 Empty code blocks
+	// 7.2 Empty code block
 	"```",
 
-	// 7.3 Code blocks with language markers
+	// 7.3 Code blocks with language identifiers
 	"``` followed by text",
 	"~~~ followed by more text",
 
-	// 7.4 Paragraph followed by code block that starts with hash
+	// 7.4 Code block after paragraph
 	dedent`This is a paragraph followed by code.
 	
 \`\`\`
 #This is in a code block
 \`\`\``,
 
-	// 8. Inline code with hash
+	// 8. Inline code with hash symbols
 	"This paragraph has `#inline-code` which is not a heading",
 	"Here's a code span with a hash: `const tag = '#heading'`",
 ];
@@ -86,7 +86,7 @@ const validHeadings = [
 //------------------------------------------------------------------------------
 
 const invalidTests = [
-	// 1. Basic ATX headings without space (all 6 levels)
+	// 1. Missing space after hash in all heading levels
 	{
 		code: "#Heading 1",
 		output: "# Heading 1",
@@ -118,7 +118,7 @@ const invalidTests = [
 		errors: [{ messageId: "missingSpace", column: 6 }],
 	},
 
-	// 2. Multi-line documents with mixed valid and invalid headings
+	// 2. Mixed valid and invalid headings in one document
 	{
 		code: dedent`# Heading 1
 
@@ -139,7 +139,7 @@ const invalidTests = [
 		],
 	},
 
-	// 3. Short headings and edge cases
+	// 3. Simple heading variations
 	{
 		code: "#Text",
 		output: "# Text",
@@ -151,44 +151,44 @@ const invalidTests = [
 		errors: [{ messageId: "missingSpace", column: 1 }],
 	},
 
-	// 4. Headings with code-related characters
-	// 4.1 Heading with backticks
+	// 4. Headings containing code-like syntax
+	// 4.1 With fenced code markers
 	{
 		code: "#Something with ``` backticks",
 		output: "# Something with ``` backticks",
 		errors: [{ messageId: "missingSpace", column: 1 }],
 	},
-	// 4.2 Heading with backticks in middle
+	// 4.2 With backticks mid-heading
 	{
 		code: "#Heading with ``` in the middle and more text after",
 		output: "# Heading with ``` in the middle and more text after",
 		errors: [{ messageId: "missingSpace", column: 1 }],
 	},
-	// 4.3 Heading with inline code
+	// 4.3 With inline code
 	{
 		code: "#Heading with `inline code`",
 		output: "# Heading with `inline code`",
 		errors: [{ messageId: "missingSpace", column: 1 }],
 	},
-	// 4.4 Heading with tilde markers
+	// 4.4 With tilde markers
 	{
 		code: "#Title with ~~~ tildes in it",
 		output: "# Title with ~~~ tildes in it",
 		errors: [{ messageId: "missingSpace", column: 1 }],
 	},
 
-	// 5. Complex multi-line scenarios
-	// 5.1 Heading with code markers in multi-line context
+	// 5. Multi-line documents
+	// 5.1 With code markers in context
 	{
 		code: dedent`Text before
-#Heading with \`\`\` code markers - should be fixed
+#Heading with \`\`\` code markers
 Text after`,
 		output: dedent`Text before
-# Heading with \`\`\` code markers - should be fixed
+# Heading with \`\`\` code markers
 Text after`,
 		errors: [{ messageId: "missingSpace", line: 2, column: 1 }],
 	},
-	// 5.2 Multiple headings in one file with errors
+	// 5.2 Multiple incorrect headings in one file
 	{
 		code: dedent`#First heading
 		
@@ -211,11 +211,8 @@ Text after`,
 		],
 	},
 
-	// 6. Special case: Indented code block (currently not properly detected as code)
-	// NOTE: Unlike fenced code blocks, the current implementation doesn't properly
-	// detect indented code blocks as code nodes. Markdown parsers should typically
-	// handle this case, but our current AST processing sees this text as regular text
-	// with a hash at the beginning, triggering the rule.
+	// 6. Indented code block issue
+	// NOTE: Indented code blocks aren't detected as code nodes, unlike fenced blocks.
 	{
 		code: dedent`Regular paragraph
 
