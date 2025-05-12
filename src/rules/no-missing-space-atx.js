@@ -36,7 +36,18 @@ export default {
 	create(context) {
 		const headingPattern = /^(#{1,6})([^#\s])/u;
 
+		const skipLines = new Set();
+
 		return {
+			link(node) {
+				for (
+					let i = node.position.start.line;
+					i <= node.position.end.line;
+					i++
+				) {
+					skipLines.add(i);
+				}
+			},
 			text(node) {
 				const text = context.sourceCode.getText(node);
 
@@ -44,6 +55,10 @@ export default {
 
 				lines.forEach((line, idx) => {
 					const lineNum = node.position.start.line + idx;
+
+					if (skipLines.has(lineNum)) {
+						return;
+					}
 
 					const match = headingPattern.exec(line);
 					if (!match) {
