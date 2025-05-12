@@ -82,6 +82,9 @@ const validHeadings = [
 
 	// 9. Markdown links with hash in URLs
 	"[#370](https:/github.com/eslint/markdown/issues/370)",
+
+	// 10. Images with hash in URLs
+	"![#370](https://github.com/eslint/markdown/issues/370)",
 ];
 
 //------------------------------------------------------------------------------
