@@ -81,10 +81,16 @@ const validHeadings = [
 	"Here's a code span with a hash: `const tag = '#heading'`",
 
 	// 9. Markdown links with hash in URLs
-	"[#370](https:/github.com/eslint/markdown/issues/370)",
+	"[#370](https://github.com/eslint/markdown/issues/370)",
 
-	// 10. Images with hash in URLs
-	"![#370](https://github.com/eslint/markdown/issues/370)",
+	// 10. HTML headings (not ATX-style)
+	"<h1>Heading 1</h1>",
+	"<h2>Heading 2</h2>",
+	"<h3>Heading 3</h3>",
+	"<h4>Heading 4</h4>",
+	"<h5>Heading 5</h5>",
+	"<h6>Heading 6</h6>",
+	"<h1>#valid heading</h1>",
 ];
 
 //------------------------------------------------------------------------------

@@ -36,59 +36,53 @@ export default {
 	create(context) {
 		const headingPattern = /^(#{1,6})([^#\s])/u;
 
-		const skipLines = new Set();
-
 		return {
-			link(node) {
-				for (
-					let i = node.position.start.line;
-					i <= node.position.end.line;
-					i++
-				) {
-					skipLines.add(i);
-				}
-			},
-			text(node) {
-				const text = context.sourceCode.getText(node);
-
-				const lines = text.split(/\r?\n/u);
-
-				lines.forEach((line, idx) => {
-					const lineNum = node.position.start.line + idx;
-
-					if (skipLines.has(lineNum)) {
+			paragraph(node) {
+				if (node.children && node.children.length > 0) {
+					const firstTextChild = node.children.find(
+						child => child.type === "text",
+					);
+					if (!firstTextChild) {
 						return;
 					}
 
-					const match = headingPattern.exec(line);
-					if (!match) {
-						return;
-					}
+					const text = context.sourceCode.getText(firstTextChild);
+					const lines = text.split(/\r?\n/u);
 
-					const hashes = match[1];
+					lines.forEach((line, idx) => {
+						const lineNum =
+							firstTextChild.position.start.line + idx;
 
-					context.report({
-						loc: {
-							start: { line: lineNum, column: hashes.length },
-							end: { line: lineNum, column: line.length },
-						},
-						messageId: "missingSpace",
-						fix(fixer) {
-							const offset =
-								node.position.start.offset +
-								lines.slice(0, idx).join("\n").length +
-								(idx > 0 ? 1 : 0);
+						const match = headingPattern.exec(line);
+						if (!match) {
+							return;
+						}
 
-							return fixer.insertTextAfterRange(
-								[
-									offset + hashes.length - 1,
-									offset + hashes.length,
-								],
-								" ",
-							);
-						},
+						const hashes = match[1];
+
+						context.report({
+							loc: {
+								start: { line: lineNum, column: hashes.length },
+								end: { line: lineNum, column: line.length },
+							},
+							messageId: "missingSpace",
+							fix(fixer) {
+								const offset =
+									firstTextChild.position.start.offset +
+									lines.slice(0, idx).join("\n").length +
+									(idx > 0 ? 1 : 0);
+
+								return fixer.insertTextAfterRange(
+									[
+										offset + hashes.length - 1,
+										offset + hashes.length,
+									],
+									" ",
+								);
+							},
+						});
 					});
-				});
+				}
 			},
 		};
 	},
