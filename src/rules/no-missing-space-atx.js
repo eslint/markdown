@@ -38,10 +38,6 @@ export default {
 
 		const skipLines = new Set();
 
-		const isTestFile = context.sourceCode
-			.getText()
-			.includes("#Not a heading in a code block");
-
 		return {
 			code(node) {
 				for (
@@ -54,26 +50,14 @@ export default {
 			},
 
 			text(node) {
-				if (isTestFile) {
-					return;
-				}
-
 				const text = context.sourceCode.getText(node);
-
-				if (text.includes("```") || text.includes("~~~")) {
-					return;
-				}
 
 				const lines = text.split(/\r?\n/u);
 
 				lines.forEach((line, idx) => {
 					const lineNum = node.position.start.line + idx;
 
-					if (
-						skipLines.has(lineNum) ||
-						line.includes("```") ||
-						line.includes("~~~")
-					) {
+					if (skipLines.has(lineNum)) {
 						return;
 					}
 
