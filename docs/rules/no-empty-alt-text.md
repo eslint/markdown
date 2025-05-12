@@ -1,14 +1,14 @@
 # no-empty-alt-text
 
-Disallow images without alternate text.
+Disallow images without an alternative text.
 
 ## Background
 
-Providing alternate text for images is essential for accessibility. Without alternate text, users who rely on screen readers or other assistive technologies won't be able to understand the content of images. This rule helps catch cases where alternate text is missing or contains only whitespace.
+Providing alternative text for images is essential for accessibility. Without alternative text, users who rely on screen readers or other assistive technologies won't be able to understand the content of images. This rule helps catch cases where alternative text is missing or contains only whitespace.
 
 ## Rule Details
 
-This rule warns when it finds images that either don't have alternate text or have only whitespace as alternate text.
+This rule warns when it finds images that either don't have alternative text or have only whitespace as alternative text.
 
 Examples of incorrect code:
 

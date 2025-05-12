@@ -25,17 +25,17 @@ const ruleTester = new RuleTester({
 
 ruleTester.run("no-empty-alt-text", rule, {
 	valid: [
-		"![Alternate text](image.jpg)",
-		'![Alternate text](image.jpg "Title")',
+		"![Alternative text](image.jpg)",
+		'![Alternative text](image.jpg "Title")',
 		dedent`
-		![Alternate text][notitle]
+		![Alternative text][notitle]
 
 		[notitle]: image.jpg`,
 		dedent`
-		![Alternate text][title]
+		![Alternative text][title]
 
 		[title]: image.jpg "Title"`,
-		"[![Alternate text](image.jpg)](image.jpg)",
+		"[![Alternative text](image.jpg)](image.jpg)",
 	],
 	invalid: [
 		{
@@ -75,7 +75,7 @@ ruleTester.run("no-empty-alt-text", rule, {
 			],
 		},
 		{
-			code: "Image without alternate text ![](image.jpg) in a sentence.",
+			code: "Image without an alternative text ![](image.jpg) in a sentence.",
 			errors: [
 				{
 					messageId: "emptyAltText",

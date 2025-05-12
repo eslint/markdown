@@ -76,7 +76,7 @@ export default defineConfig([
 | [`fenced-code-language`](./docs/rules/fenced-code-language.md) | Require languages for fenced code blocks | yes |
 | [`heading-increment`](./docs/rules/heading-increment.md) | Enforce heading levels increment by one | yes |
 | [`no-duplicate-headings`](./docs/rules/no-duplicate-headings.md) | Disallow duplicate headings in the same document | no |
-| [`no-empty-alt-text`](./docs/rules/no-empty-alt-text.md) | Disallow images without alternate text | yes |
+| [`no-empty-alt-text`](./docs/rules/no-empty-alt-text.md) | Disallow images without an alternative text | yes |
 | [`no-empty-images`](./docs/rules/no-empty-images.md) | Disallow empty images | yes |
 | [`no-empty-links`](./docs/rules/no-empty-links.md) | Disallow empty links | yes |
 | [`no-html`](./docs/rules/no-html.md) | Disallow HTML tags | no |

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Rule to prevent images without alternate text in Markdown.
+ * @fileoverview Rule to prevent images without an alternative text in Markdown.
  * @author Pixel998
  */
 
@@ -23,12 +23,12 @@ export default {
 
 		docs: {
 			recommended: true,
-			description: "Disallow images without alternate text",
+			description: "Disallow images without an alternative text",
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-empty-alt-text.md",
 		},
 
 		messages: {
-			emptyAltText: "Unexpected empty alternate text found.",
+			emptyAltText: "Unexpected empty alternative text found.",
 		},
 	},
 
