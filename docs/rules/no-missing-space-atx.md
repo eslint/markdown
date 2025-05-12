@@ -24,12 +24,15 @@ Examples of **correct** code for this rule:
 # Heading 1
 ## Heading 2
 ### Heading 3
-```
 
-Lines that contain hash characters but are not headings (not at the beginning of the line) will not be flagged:
+<h1>#Some Heading</h1>
 
-```md
+[#123](link.com)
+
+![#alttext][link.png]
+
 This is a paragraph with a #hashtag, not a heading.
+
 ```
 
 ## When Not To Use It

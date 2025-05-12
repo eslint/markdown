@@ -91,6 +91,11 @@ const validHeadings = [
 	"<h5>Heading 5</h5>",
 	"<h6>Heading 6</h6>",
 	"<h1>#valid heading</h1>",
+
+	// 11. Content inside single quotes and double quotes
+	`'#something'`,
+	`"#something"`,
+	`"<h1>#valid heading</h1>"`,
 ];
 
 //------------------------------------------------------------------------------
