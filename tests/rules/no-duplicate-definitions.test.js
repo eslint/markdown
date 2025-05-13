@@ -19,7 +19,7 @@ const ruleTester = new RuleTester({
 	plugins: {
 		markdown,
 	},
-	language: "markdown/commonmark",
+	language: "markdown/gfm",
 });
 
 ruleTester.run("no-duplicate-definitions", rule, {
@@ -30,6 +30,11 @@ ruleTester.run("no-duplicate-definitions", rule, {
 		`
 [mercury]: https://example.com/mercury/
 [venus]: https://example.com/venus/
+`,
+		`
+[^alpha]: bravo
+
+[alpha]: bravo
 `,
 	],
 	invalid: [
