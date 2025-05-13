@@ -17,9 +17,10 @@ Please note that this rule does not report definition-style comments. For exampl
 
 This rule warns when `Definition` and `FootnoteDefinition` type identifiers are defined multiple times.
 
-Examples of incorrect code:
+Examples of **incorrect** code:
 
 ```markdown
+<!-- eslint markdown/no-duplicate-definitions: "error" -->
 <!-- definition -->
 
 [mercury]: https://example.com/mercury/
@@ -31,9 +32,10 @@ Examples of incorrect code:
 [^mercury]: Hello, Venus!
 ```
 
-Examples of correct code:
+Examples of **correct** code:
 
 ```markdown
+<!-- eslint markdown/no-duplicate-definitions: "error" -->
 <!-- definition -->
 
 [mercury]: https://example.com/mercury/
@@ -60,7 +62,6 @@ The following options are available on this rule:
 
     ```markdown
     <!-- eslint markdown/no-duplicate-definitions: ["error", { ignoreDefinition: ["mercury"] }] -->
-
     [mercury]: https://example.com/mercury/
     [mercury]: https://example.com/venus/
     ```
@@ -71,7 +72,6 @@ The following options are available on this rule:
 
     ```markdown
     <!-- eslint markdown/no-duplicate-definitions: ["error", { ignoreFootnoteDefinition: ["mercury"] }] -->
-
     [^mercury]: Hello, Mercury!
     [^mercury]: Hello, Venus!
     ```
