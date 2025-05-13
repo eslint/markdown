@@ -27,16 +27,57 @@ ruleTester.run("no-duplicate-definitions", rule, {
 		`
 [mercury]: https://example.com/mercury/
 `,
+
 		`
 [mercury]: https://example.com/mercury/
 [venus]: https://example.com/venus/
 `,
-		`
-[^alpha]: bravo
 
-[alpha]: bravo
+		`
+[^mercury]: Hello, Mercury!
 `,
+
+		`
+[^mercury]: Hello, Mercury!
+[^venus]: Hello, Venus!
+`,
+
+		`
+[alpha]: bravo
+
+[^alpha]: bravo
+`,
+
+		`
+[//]: # (This is a comment 1)
+[//]: <> (This is a comment 2)
+`,
+
+		{
+			code: `
+[mercury]: https://example.com/mercury/
+[mercury]: https://example.com/venus/
+`,
+			options: [
+				{
+					ignoreDefinition: ["mercury"],
+				},
+			],
+		},
+
+		{
+			code: `
+[^mercury]: Hello, Mercury!
+[^mercury]: Hello, Venus!
+`,
+			options: [
+				{
+					ignoreFootnoteDefinition: ["mercury"],
+				},
+			],
+		},
 	],
+
 	invalid: [
 		{
 			code: `
@@ -60,6 +101,90 @@ ruleTester.run("no-duplicate-definitions", rule, {
 				},
 			],
 		},
+
+		{
+			code: `
+[mercury]: https://example.com/mercury/
+[mercury]: https://example.com/venus/
+`,
+			options: [
+				{
+					ignoreDefinition: ["venus"],
+					ignoreFootnoteDefinition: ["mercury"],
+				},
+			],
+
+			errors: [
+				{
+					messageId: "duplicateDefinition",
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 40,
+				},
+				{
+					messageId: "duplicateDefinition",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 38,
+				},
+			],
+		},
+
+		{
+			code: `
+[^mercury]: Hello, Mercury!
+[^mercury]: Hello, Venus!
+`,
+			errors: [
+				{
+					messageId: "duplicateFootnoteDefinition",
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 28,
+				},
+				{
+					messageId: "duplicateFootnoteDefinition",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 26,
+				},
+			],
+		},
+
+		{
+			code: `
+[^mercury]: Hello, Mercury!
+[^mercury]: Hello, Venus!
+`,
+			options: [
+				{
+					ignoreDefinition: ["mercury"],
+					ignoreFootnoteDefinition: ["venus"],
+				},
+			],
+
+			errors: [
+				{
+					messageId: "duplicateFootnoteDefinition",
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 28,
+				},
+				{
+					messageId: "duplicateFootnoteDefinition",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 26,
+				},
+			],
+		},
+
 		{
 			code: `
 [mercury]: https://example.com/mercury/
