@@ -4,7 +4,7 @@
 [![Downloads](https://img.shields.io/npm/dm/@eslint/markdown.svg)](https://www.npmjs.com/package/@eslint/markdown)
 [![Build Status](https://github.com/eslint/markdown/workflows/CI/badge.svg)](https://github.com/eslint/markdown/actions)
 
-Lint JS, JSX, TypeScript, and more inside Markdown.
+Lint Markdown with ESLint, as well JS, JSX, TypeScript, and more inside Markdown.
 
 <img
     src="screenshot.png"
