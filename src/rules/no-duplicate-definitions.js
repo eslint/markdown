@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ ignores: string[]; }]; }>}
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ ignore: string[]; }]; }>}
  * NoDuplicateDefinitionsRuleDefinition
  */
 
@@ -35,7 +35,7 @@ export default {
 			{
 				type: "object",
 				properties: {
-					ignores: {
+					ignore: {
 						type: "array",
 						items: {
 							type: "string",
@@ -49,13 +49,13 @@ export default {
 
 		defaultOptions: [
 			{
-				ignores: ["//"],
+				ignore: ["//"],
 			},
 		],
 	},
 
 	create(context) {
-		const [{ ignores }] = context.options;
+		const [{ ignore }] = context.options;
 		const definitions = new Map();
 
 		return {
@@ -70,7 +70,7 @@ export default {
 
 			"root:exit"() {
 				definitions.forEach((nodes, identifier) => {
-					if (nodes.length <= 1 || ignores.includes(identifier)) {
+					if (nodes.length <= 1 || ignore.includes(identifier)) {
 						return;
 					}
 
