@@ -10,6 +10,7 @@
 import rule from "../../src/rules/no-empty-definitions.js";
 import markdown from "../../src/index.js";
 import { RuleTester } from "eslint";
+import dedent from "dedent";
 
 //------------------------------------------------------------------------------
 // Tests
@@ -50,6 +51,28 @@ ruleTester.run("no-empty-definitions", rule, {
 					line: 1,
 					column: 1,
 					endLine: 1,
+					endColumn: 10,
+				},
+			],
+		},
+		{
+			code: dedent`
+			[foo]: #
+			[bar]: <>
+			`,
+			errors: [
+				{
+					messageId: "emptyDefinition",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 9,
+				},
+				{
+					messageId: "emptyDefinition",
+					line: 2,
+					column: 1,
+					endLine: 2,
 					endColumn: 10,
 				},
 			],
