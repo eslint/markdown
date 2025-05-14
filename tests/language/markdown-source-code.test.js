@@ -104,6 +104,84 @@ describe("MarkdownSourceCode", () => {
 		});
 	});
 
+	describe("getLocFromIndex()", () => {
+		it("should throw a TypeError when `offset` is not a number", () => {
+			assert.throws(() => {
+				sourceCode.getLocFromIndex("0");
+			}, TypeError);
+			assert.throws(() => {
+				sourceCode.getLocFromIndex(null);
+			}, TypeError);
+			assert.throws(() => {
+				sourceCode.getLocFromIndex(undefined);
+			}, TypeError);
+			assert.throws(() => {
+				sourceCode.getLocFromIndex(true);
+			}, TypeError);
+			assert.throws(() => {
+				sourceCode.getLocFromIndex(false);
+			}, TypeError);
+		});
+
+		it("should throw a RangeError when `offset` is less than `0`", () => {
+			assert.throws(() => {
+				sourceCode.getLocFromIndex(-1);
+			}, RangeError);
+		});
+
+		it("should throw a RangeError when `offset` is greater than `this.text.length`", () => {
+			assert.throws(() => {
+				sourceCode.getLocFromIndex(sourceCode.text.length + 1);
+			}, RangeError);
+		});
+
+		it("should return { line: 1, column: 1 } when `offset` is `0` and `text` is empty", () => {
+			const emptySourceCode = new MarkdownSourceCode({
+				text: "",
+				ast: fromMarkdown(""),
+			});
+
+			assert.deepStrictEqual(emptySourceCode.getLocFromIndex(0), {
+				line: 1,
+				column: 1,
+			});
+		});
+
+		it("should return the correct location when `offset` is `0`", () => {
+			assert.deepStrictEqual(sourceCode.getLocFromIndex(0), {
+				line: 1,
+				column: 1,
+			});
+		});
+
+		it("should return the correct location when `offset` is `this.text.length`", () => {
+			const offset = 768;
+
+			assert.deepStrictEqual(sourceCode.text.length, offset);
+			assert.deepStrictEqual(sourceCode.getLocFromIndex(768), {
+				line: 37,
+				column: 63,
+			});
+		});
+
+		it("should return the correct location when `offset` is in the middle of a line", () => {
+			assert.deepStrictEqual(sourceCode.getLocFromIndex(15), {
+				line: 1,
+				column: 16,
+			});
+
+			assert.deepStrictEqual(sourceCode.getLocFromIndex(140), {
+				line: 13,
+				column: 1,
+			});
+
+			assert.deepStrictEqual(sourceCode.getLocFromIndex(427), {
+				line: 23,
+				column: 5,
+			});
+		});
+	});
+
 	describe("getInlineConfigNodes()", () => {
 		it("should return the inline config nodes", () => {
 			const nodes = sourceCode.getInlineConfigNodes();
