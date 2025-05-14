@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tests for no-missing-alt-text rule.
+ * @fileoverview Tests for require-alt-text rule.
  * @author Pixel998
  */
 
@@ -7,7 +7,7 @@
 // Imports
 //------------------------------------------------------------------------------
 
-import rule from "../../src/rules/no-missing-alt-text.js";
+import rule from "../../src/rules/require-alt-text.js";
 import markdown from "../../src/index.js";
 import { RuleTester } from "eslint";
 import dedent from "dedent";
@@ -23,7 +23,7 @@ const ruleTester = new RuleTester({
 	language: "markdown/commonmark",
 });
 
-ruleTester.run("no-missing-alt-text", rule, {
+ruleTester.run("require-alt-text", rule, {
 	valid: [
 		"![Alternative text](image.jpg)",
 		'![Alternative text](image.jpg "Title")',
@@ -50,7 +50,7 @@ ruleTester.run("no-missing-alt-text", rule, {
 			code: "![ ](image.jpg)",
 			errors: [
 				{
-					messageId: "missingAltText",
+					messageId: "altTextRequired",
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -62,7 +62,7 @@ ruleTester.run("no-missing-alt-text", rule, {
 			code: "![](image.jpg)",
 			errors: [
 				{
-					messageId: "missingAltText",
+					messageId: "altTextRequired",
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -74,7 +74,7 @@ ruleTester.run("no-missing-alt-text", rule, {
 			code: '![](image.jpg "Title")',
 			errors: [
 				{
-					messageId: "missingAltText",
+					messageId: "altTextRequired",
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -86,7 +86,7 @@ ruleTester.run("no-missing-alt-text", rule, {
 			code: "Image without an alternative text ![](image.jpg) in a sentence.",
 			errors: [
 				{
-					messageId: "missingAltText",
+					messageId: "altTextRequired",
 					line: 1,
 					column: 35,
 					endLine: 1,
@@ -101,7 +101,7 @@ ruleTester.run("no-missing-alt-text", rule, {
 			[notitle]: image.jpg`,
 			errors: [
 				{
-					messageId: "missingAltText",
+					messageId: "altTextRequired",
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -116,7 +116,7 @@ ruleTester.run("no-missing-alt-text", rule, {
 			[title]: image.jpg "Title"`,
 			errors: [
 				{
-					messageId: "missingAltText",
+					messageId: "altTextRequired",
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -128,7 +128,7 @@ ruleTester.run("no-missing-alt-text", rule, {
 			code: "[![](image.jpg)](image.jpg)",
 			errors: [
 				{
-					messageId: "missingAltText",
+					messageId: "altTextRequired",
 					line: 1,
 					column: 2,
 					endLine: 1,
@@ -140,7 +140,7 @@ ruleTester.run("no-missing-alt-text", rule, {
 			code: '<img src="image.png" />',
 			errors: [
 				{
-					messageId: "missingAltText",
+					messageId: "altTextRequired",
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -152,7 +152,7 @@ ruleTester.run("no-missing-alt-text", rule, {
 			code: '<IMG SRC="image.png" />',
 			errors: [
 				{
-					messageId: "missingAltText",
+					messageId: "altTextRequired",
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -164,7 +164,7 @@ ruleTester.run("no-missing-alt-text", rule, {
 			code: '<img src="image.png" alt=" " />',
 			errors: [
 				{
-					messageId: "missingAltText",
+					messageId: "altTextRequired",
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -180,7 +180,7 @@ ruleTester.run("no-missing-alt-text", rule, {
 			`,
 			errors: [
 				{
-					messageId: "missingAltText",
+					messageId: "altTextRequired",
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -197,14 +197,14 @@ ruleTester.run("no-missing-alt-text", rule, {
 			`,
 			errors: [
 				{
-					messageId: "missingAltText",
+					messageId: "altTextRequired",
 					line: 2,
 					column: 1,
 					endLine: 2,
 					endColumn: 24,
 				},
 				{
-					messageId: "missingAltText",
+					messageId: "altTextRequired",
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -216,7 +216,7 @@ ruleTester.run("no-missing-alt-text", rule, {
 			code: '<img src="image.png" aria-hidden="false"/>',
 			errors: [
 				{
-					messageId: "missingAltText",
+					messageId: "altTextRequired",
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -231,7 +231,7 @@ ruleTester.run("no-missing-alt-text", rule, {
   			`,
 			errors: [
 				{
-					messageId: "missingAltText",
+					messageId: "altTextRequired",
 					line: 1,
 					column: 1,
 					endLine: 2,

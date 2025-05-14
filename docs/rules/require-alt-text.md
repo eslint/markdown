@@ -1,6 +1,6 @@
-# no-missing-alt-text
+# require-alt-text
 
-Disallow images without an alternative text.
+Require alternative text for images.
 
 ## Background
 
@@ -10,7 +10,7 @@ Providing alternative text for images is essential for accessibility. Without al
 
 This rule warns when it finds images that either don't have alternative text or have only whitespace as alternative text.
 
-The rule does not warn when:
+This rule does not warn when:
 - An HTML image has an empty alt attribute (`alt=""`)
 - An HTML image has the `aria-hidden="true"` attribute
 

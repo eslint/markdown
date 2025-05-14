@@ -1,5 +1,5 @@
 /**
- * @fileoverview Rule to prevent images without an alternative text in Markdown.
+ * @fileoverview Rule to require alternative text for images in Markdown.
  * @author Pixel998
  */
 
@@ -15,7 +15,7 @@ import { findOffsets } from "../util.js";
 
 /**
  * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoMissingAltTextRuleDefinition
+ * RequireAltTextRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
@@ -37,19 +37,19 @@ function getHtmlAttributeRe(name) {
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoMissingAltTextRuleDefinition} */
+/** @type {RequireAltTextRuleDefinition} */
 export default {
 	meta: {
 		type: "problem",
 
 		docs: {
 			recommended: true,
-			description: "Disallow images without an alternative text",
-			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-missing-alt-text.md",
+			description: "Require alternative text for images",
+			url: "https://github.com/eslint/markdown/blob/main/docs/rules/require-alt-text.md",
 		},
 
 		messages: {
-			missingAltText: "Missing alternative text for image.",
+			altTextRequired: "Alternative text for image is required.",
 		},
 	},
 
@@ -59,7 +59,7 @@ export default {
 				if (node.alt.trim().length === 0) {
 					context.report({
 						loc: node.position,
-						messageId: "missingAltText",
+						messageId: "altTextRequired",
 					});
 				}
 			},
@@ -68,7 +68,7 @@ export default {
 				if (node.alt.trim().length === 0) {
 					context.report({
 						loc: node.position,
-						messageId: "missingAltText",
+						messageId: "altTextRequired",
 					});
 				}
 			},
@@ -131,7 +131,7 @@ export default {
 									column: endColumn,
 								},
 							},
-							messageId: "missingAltText",
+							messageId: "altTextRequired",
 						});
 					}
 				}
