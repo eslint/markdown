@@ -1,4 +1,4 @@
-# no-empty-alt-text
+# no-missing-alt-text
 
 Disallow images without an alternative text.
 
@@ -10,6 +10,10 @@ Providing alternative text for images is essential for accessibility. Without al
 
 This rule warns when it finds images that either don't have alternative text or have only whitespace as alternative text.
 
+The rule does not warn when:
+- An HTML image has an empty alt attribute (`alt=""`)
+- An HTML image has the `aria-hidden="true"` attribute
+
 Examples of incorrect code:
 
 ```markdown
@@ -20,6 +24,10 @@ Examples of incorrect code:
 ![][ref]
 
 [ref]: sunset.png
+
+<img src="sunset.png">
+
+<img src="sunset.png" alt=" ">
 ```
 
 Examples of correct code:
@@ -30,6 +38,12 @@ Examples of correct code:
 ![Company logo][logo]
 
 [logo]: logo.png
+
+<img src="sunset.png" alt="">
+
+<img src="sunset.png" alt="A beautiful sunset">
+
+<img src="decorative.png" aria-hidden="true">
 ```
 
 ## When Not to Use It
