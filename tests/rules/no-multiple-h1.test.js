@@ -49,6 +49,12 @@ ruleTester.run("no-multiple-h1", rule, {
 			Heading 2
 			----------
 		`,
+		dedent`
+			# Heading 1
+			\`\`\`markdown
+			# Heading 1-2
+			\`\`\`
+		`,
 	],
 	invalid: [
 		{
