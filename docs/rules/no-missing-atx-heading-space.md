@@ -1,4 +1,4 @@
-# no-missing-atx-header-space
+# no-missing-atx-heading-space
 
 This rule warns when spaces are missing after the hash characters in an ATX style heading.
 

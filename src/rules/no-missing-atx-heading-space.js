@@ -24,7 +24,7 @@ export default {
 			description:
 				"Disallow headings without a space after the hash characters",
 			recommended: true,
-			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-missing-atx-header-space.md",
+			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-missing-atx-heading-space.md",
 		},
 		fixable: "whitespace",
 		schema: [],
