@@ -33,6 +33,27 @@ function appendNodeToMap(map, node) {
 	);
 }
 
+/**
+ * Finds duplicate nodes in a map if they exceed one occurrence and are not ignored.
+ * @param {Map<string, Array<Definition | FootnoteDefinition>>} map The map of nodes to check.
+ * @param {string[]} ignoreList The list of identifiers to ignore.
+ * @returns {Array<Definition | FootnoteDefinition>} The array of duplicate nodes.
+ */
+function findDuplicates(map, ignoreList) {
+	/** @type {Array<Definition | FootnoteDefinition>} */
+	const duplicates = [];
+
+	map.forEach((nodes, identifier) => {
+		if (nodes.length <= 1 || ignoreList.includes(identifier)) {
+			return;
+		}
+
+		duplicates.push(...nodes);
+	});
+
+	return duplicates;
+}
+
 //-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
@@ -102,34 +123,20 @@ export default {
 			},
 
 			"root:exit"() {
-				definitions.forEach((nodes, identifier) => {
-					if (
-						nodes.length <= 1 ||
-						ignoreDefinition.includes(identifier)
-					) {
-						return;
-					}
-
-					nodes.forEach(node => {
-						context.report({
-							node,
-							messageId: "duplicateDefinition",
-						});
+				findDuplicates(definitions, ignoreDefinition).forEach(node => {
+					context.report({
+						node,
+						messageId: "duplicateDefinition",
 					});
 				});
 
-				footnoteDefinitions.forEach((nodes, identifier) => {
-					if (
-						nodes.length <= 1 ||
-						ignoreFootnoteDefinition.includes(identifier)
-					) {
-						return;
-					}
-					nodes.forEach(node => {
-						context.report({
-							node,
-							messageId: "duplicateFootnoteDefinition",
-						});
+				findDuplicates(
+					footnoteDefinitions,
+					ignoreFootnoteDefinition,
+				).forEach(node => {
+					context.report({
+						node,
+						messageId: "duplicateFootnoteDefinition",
 					});
 				});
 			},
