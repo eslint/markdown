@@ -1,5 +1,19 @@
 # Changelog
 
+## [6.5.0](https://github.com/eslint/markdown/compare/v6.4.0...v6.5.0) (2025-05-16)
+
+
+### Features
+
+* add no-empty-definitions rule ([#364](https://github.com/eslint/markdown/issues/364)) ([cb5a956](https://github.com/eslint/markdown/commit/cb5a95666524e3c26650371bfdcd59e15cae4053))
+* add require-alt-text rule ([#368](https://github.com/eslint/markdown/issues/368)) ([32d8cbd](https://github.com/eslint/markdown/commit/32d8cbd8b6d2d121225b5291c2f9a0ea6c2ccd00))
+* create `no-empty-images` ([#357](https://github.com/eslint/markdown/issues/357)) ([23e4ff0](https://github.com/eslint/markdown/commit/23e4ff0d7be9e10ce017357cb5f8e15276c6c404))
+
+
+### Bug Fixes
+
+* `no-missing-label-refs` rule does not respect escaping ([#348](https://github.com/eslint/markdown/issues/348)) ([cb6b437](https://github.com/eslint/markdown/commit/cb6b4376e94f2f89a100352d01857ad08deff652))
+
 ## [6.4.0](https://github.com/eslint/markdown/compare/v6.3.0...v6.4.0) (2025-04-17)
 
 
