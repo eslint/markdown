@@ -83,6 +83,7 @@ export default defineConfig([
 | [`no-invalid-label-refs`](./docs/rules/no-invalid-label-refs.md) | Disallow invalid label references | yes |
 | [`no-missing-label-refs`](./docs/rules/no-missing-label-refs.md) | Disallow missing label references | yes |
 | [`no-multiple-h1`](./docs/rules/no-multiple-h1.md) | Disallow multiple h1 headings in the same document | yes |
+| [`require-alt-text`](./docs/rules/require-alt-text.md) | Require alternative text for images | yes |
 <!-- Rule Table End -->
 
 **Note:** This plugin does not provide formatting rules. We recommend using a source code formatter such as [Prettier](https://prettier.io) for that purpose.
