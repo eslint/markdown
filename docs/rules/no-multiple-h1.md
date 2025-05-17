@@ -8,7 +8,12 @@ An h1 heading is meant to define the main heading of a page, providing important
 
 ## Rule Details
 
-This rule warns when it finds more than one h1 heading in a Markdown document, whether written as ATX or Setext style.
+This rule warns when it finds more than one h1 heading in a Markdown document. It checks for:
+
+- ATX-style headings (`# Heading`)
+- Setext-style headings (`Heading\n=========`)
+- Front matter title fields (YAML and TOML)
+- HTML h1 tags (`<h1>Heading</h1>`)
 
 Examples of incorrect code:
 
@@ -23,6 +28,46 @@ Examples of incorrect code:
 
 Another h1 heading
 ==================
+```
+
+```markdown
+---
+title: My Title
+---
+
+# Heading 1
+```
+
+```markdown
+<h1>First Heading</h1>
+
+<h1>Second Heading</h1>
+```
+
+## Options
+
+The following options are available on this rule:
+
+* `frontmatterTitle: string` - A regex pattern to match title fields in front matter. The default pattern matches both YAML (`title:`) and TOML (`title =`) formats. Set to empty string to disable front matter title checking.
+
+Examples of incorrect code when configured as `"no-multiple-h1": ["error", { "frontmatterTitle": "\\s*heading\\s*[:=]" }]`:
+
+```markdown
+---
+heading: My Title
+---
+
+# Heading 1
+```
+
+Examples of correct code when configured as `"no-multiple-h1": ["error", { "frontmatterTitle": "" }]`:
+
+```markdown
+---
+title: My Title
+---
+
+# Heading 1
 ```
 
 ## When Not to Use It
