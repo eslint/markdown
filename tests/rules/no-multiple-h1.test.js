@@ -153,6 +153,12 @@ ruleTester.run("no-multiple-h1", rule, {
 			},
 		},
 		'<h1 class="title">Heading</h1>',
+		dedent`
+			# Heading 1
+
+			<!-- <h1>Commented Heading</h1> -->
+			<!-- <h1>Commented Heading</h1> -->
+		`,
 	],
 	invalid: [
 		{
@@ -167,6 +173,29 @@ ruleTester.run("no-multiple-h1", rule, {
 					column: 1,
 					endLine: 2,
 					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: dedent`
+				# Heading 1
+				# Heading 2
+				# Heading 3
+			`,
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 12,
+				},
+				{
+					messageId: "multipleH1",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 12,
 				},
 			],
 		},
@@ -495,6 +524,24 @@ ruleTester.run("no-multiple-h1", rule, {
 		},
 		{
 			code: dedent`
+				# Heading 1
+
+				<h1 
+				class="title">
+				Another H1</h1>
+			`,
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 3,
+					column: 1,
+					endLine: 5,
+					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: dedent`
 				# Heading
 				<h1>Another H1</h1>
 			`,
@@ -526,6 +573,31 @@ ruleTester.run("no-multiple-h1", rule, {
 		},
 		{
 			code: dedent`
+				<h1>First H1</h1>
+				<p>Text</p>
+				<h1>Second H1</h1>
+				<p>Text</p>
+				<h1>Third H1</h1>
+			`,
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 19,
+				},
+				{
+					messageId: "multipleH1",
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 18,
+				},
+			],
+		},
+		{
+			code: dedent`
 				---
 				title: My Title
 				---
@@ -540,6 +612,35 @@ ruleTester.run("no-multiple-h1", rule, {
 					line: 4,
 					column: 1,
 					endLine: 4,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: dedent`
+				+++
+				title = "My Title"
+				+++
+				# Heading 1
+
+				<h1>Another H1</h1>
+			`,
+			languageOptions: {
+				frontmatter: "toml",
+			},
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 4,
+					column: 1,
+					endLine: 4,
+					endColumn: 12,
+				},
+				{
+					messageId: "multipleH1",
+					line: 6,
+					column: 1,
+					endLine: 6,
 					endColumn: 20,
 				},
 			],

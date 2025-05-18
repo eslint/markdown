@@ -4,6 +4,12 @@
  */
 
 //-----------------------------------------------------------------------------
+// Imports
+//-----------------------------------------------------------------------------
+
+import { findOffsets } from "../util.js";
+
+//-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
@@ -11,6 +17,12 @@
  * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ frontmatterTitle?: string; }]; }>}
  * NoMultipleH1RuleDefinition
  */
+
+//-----------------------------------------------------------------------------
+// Helpers
+//-----------------------------------------------------------------------------
+
+const h1TagPattern = /(?<!<!--[\s\S]*?)<h1[^>]*>[\s\S]*?<\/h1>/giu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -66,11 +78,46 @@ export default {
 			},
 
 			html(node) {
-				if (/<h1[^>]*>.*?<\/h1>/iu.test(node.value)) {
+				let match;
+				while ((match = h1TagPattern.exec(node.value)) !== null) {
 					h1Count++;
 					if (h1Count > 1) {
+						const {
+							lineOffset: startLineOffset,
+							columnOffset: startColumnOffset,
+						} = findOffsets(node.value, match.index);
+
+						const {
+							lineOffset: endLineOffset,
+							columnOffset: endColumnOffset,
+						} = findOffsets(
+							node.value,
+							match.index + match[0].length,
+						);
+
+						const nodeStartLine = node.position.start.line;
+						const nodeStartColumn = node.position.start.column;
+						const startLine = nodeStartLine + startLineOffset;
+						const endLine = nodeStartLine + endLineOffset;
+						const startColumn =
+							(startLine === nodeStartLine
+								? nodeStartColumn
+								: 1) + startColumnOffset;
+						const endColumn =
+							(endLine === nodeStartLine ? nodeStartColumn : 1) +
+							endColumnOffset;
+
 						context.report({
-							loc: node.position,
+							loc: {
+								start: {
+									line: startLine,
+									column: startColumn,
+								},
+								end: {
+									line: endLine,
+									column: endColumn,
+								},
+							},
 							messageId: "multipleH1",
 						});
 					}

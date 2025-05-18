@@ -48,7 +48,7 @@ title: My Title
 
 The following options are available on this rule:
 
-* `frontmatterTitle: string` - A regex pattern to match title fields in front matter. The default pattern matches both YAML (`title:`) and TOML (`title =`) formats. Set to empty string to disable front matter title checking.
+* `frontmatterTitle: string` - A regex pattern to match title fields in front matter. The default pattern matches both YAML (`title:`) and TOML (`title =`) formats. Set to an empty string to disable front matter title checking.
 
 Examples of incorrect code when configured as `"no-multiple-h1": ["error", { "frontmatterTitle": "\\s*heading\\s*[:=]" }]`:
 
@@ -72,7 +72,7 @@ title: My Title
 
 ## When Not to Use It
 
-If you have a specific use case that requires multiple h1 headings in a single Markdown document, you can safely disable this rule. However, this is rarely recommended.
+If you have a specific use case that requires multiple h1 headings in a single Markdown document, you can safely disable this rule. However, this is not recommended.
 
 ## Prior Art
 
