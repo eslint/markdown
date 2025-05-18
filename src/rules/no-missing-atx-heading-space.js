@@ -9,33 +9,35 @@
 
 /**
  * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoMissingAtxHeaderSpaceRuleDefinition
+ * NoMissingAtxHeadingSpaceRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoMissingAtxHeaderSpaceRuleDefinition} */
+const HEADING_PATTERN = /^(#{1,6})(?:[^#\s])/u;
+
+/** @type {NoMissingAtxHeadingSpaceRuleDefinition} */
 export default {
 	meta: {
 		type: "problem",
+
 		docs: {
 			description:
 				"Disallow headings without a space after the hash characters",
 			recommended: true,
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-missing-atx-heading-space.md",
 		},
+
 		fixable: "whitespace",
-		schema: [],
+
 		messages: {
 			missingSpace: "Missing space after hash(es) on ATX style heading.",
 		},
 	},
 
 	create(context) {
-		const headingPattern = /^(#{1,6})([^#\s])/u;
-
 		return {
 			paragraph(node) {
 				if (node.children && node.children.length > 0) {
@@ -53,7 +55,7 @@ export default {
 						const lineNum =
 							firstTextChild.position.start.line + idx;
 
-						const match = headingPattern.exec(line);
+						const match = HEADING_PATTERN.exec(line);
 						if (!match) {
 							return;
 						}

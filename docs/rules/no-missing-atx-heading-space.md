@@ -41,7 +41,7 @@ You might want to turn this rule off if you're working with a Markdown variant t
 
 ## Prior Art
 
-[MD018 - No space after hash on atx style heading](https://github.com/DavidAnson/markdownlint/blob/main/doc/md018.md)
+- [MD018 - No space after hash on atx style heading](https://github.com/DavidAnson/markdownlint/blob/main/doc/md018.md)
 
 ## Further Reading
 

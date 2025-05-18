@@ -46,7 +46,7 @@ const validHeadings = [
 	// 3. Variations on spacing
 	"#  Heading with extra space",
 
-	// 4. Standalone hash (not a heading)
+	// 4. Standalone hash
 	"#",
 
 	// 5. Alternative heading styles (not covered by this rule)
@@ -107,32 +107,80 @@ const invalidTests = [
 	{
 		code: "#Heading 1",
 		output: "# Heading 1",
-		errors: [{ messageId: "missingSpace", column: 1 }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 1,
+				line: 1,
+				endLine: 1,
+				endColumn: 10,
+			},
+		],
 	},
 	{
 		code: "##Heading 2",
 		output: "## Heading 2",
-		errors: [{ messageId: "missingSpace", column: 2 }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 2,
+				line: 1,
+				endLine: 1,
+				endColumn: 11,
+			},
+		],
 	},
 	{
 		code: "###Heading 3",
 		output: "### Heading 3",
-		errors: [{ messageId: "missingSpace", column: 3 }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 3,
+				line: 1,
+				endLine: 1,
+				endColumn: 12,
+			},
+		],
 	},
 	{
 		code: "####Heading 4",
 		output: "#### Heading 4",
-		errors: [{ messageId: "missingSpace", column: 4 }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 4,
+				line: 1,
+				endLine: 1,
+				endColumn: 13,
+			},
+		],
 	},
 	{
 		code: "#####Heading 5",
 		output: "##### Heading 5",
-		errors: [{ messageId: "missingSpace", column: 5 }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 5,
+				line: 1,
+				endLine: 1,
+				endColumn: 14,
+			},
+		],
 	},
 	{
 		code: "######Heading 6",
 		output: "###### Heading 6",
-		errors: [{ messageId: "missingSpace", column: 6 }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 6,
+				line: 1,
+				endLine: 1,
+				endColumn: 15,
+			},
+		],
 	},
 
 	// 2. Mixed valid and invalid headings in one document
@@ -152,6 +200,8 @@ const invalidTests = [
 				messageId: "missingSpace",
 				line: 3,
 				column: 2,
+				endLine: 3,
+				endColumn: 11,
 			},
 		],
 	},
@@ -160,12 +210,28 @@ const invalidTests = [
 	{
 		code: "#Text",
 		output: "# Text",
-		errors: [{ messageId: "missingSpace", column: 1 }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 1,
+				line: 1,
+				endLine: 1,
+				endColumn: 5,
+			},
+		],
 	},
 	{
 		code: "#Heading with trailing space ",
 		output: "# Heading with trailing space ",
-		errors: [{ messageId: "missingSpace", column: 1 }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 1,
+				line: 1,
+				endLine: 1,
+				endColumn: 28,
+			},
+		],
 	},
 
 	// 4. Headings containing code-like syntax
@@ -173,25 +239,57 @@ const invalidTests = [
 	{
 		code: "#Something with ``` backticks",
 		output: "# Something with ``` backticks",
-		errors: [{ messageId: "missingSpace", column: 1 }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 1,
+				line: 1,
+				endLine: 1,
+				endColumn: 29,
+			},
+		],
 	},
 	// 4.2 With backticks mid-heading
 	{
 		code: "#Heading with ``` in the middle and more text after",
 		output: "# Heading with ``` in the middle and more text after",
-		errors: [{ messageId: "missingSpace", column: 1 }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 1,
+				line: 1,
+				endLine: 1,
+				endColumn: 51,
+			},
+		],
 	},
 	// 4.3 With inline code
 	{
 		code: "#Heading with `inline code`",
 		output: "# Heading with `inline code`",
-		errors: [{ messageId: "missingSpace", column: 1 }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 1,
+				line: 1,
+				endLine: 1,
+				endColumn: 14,
+			},
+		],
 	},
 	// 4.4 With tilde markers
 	{
 		code: "#Title with ~~~ tildes in it",
 		output: "# Title with ~~~ tildes in it",
-		errors: [{ messageId: "missingSpace", column: 1 }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 1,
+				line: 1,
+				endLine: 1,
+				endColumn: 28,
+			},
+		],
 	},
 
 	// 5. Multi-line documents
@@ -203,7 +301,15 @@ Text after`,
 		output: dedent`Text before
 # Heading with \`\`\` code markers
 Text after`,
-		errors: [{ messageId: "missingSpace", line: 2, column: 1 }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				line: 2,
+				column: 1,
+				endLine: 2,
+				endColumn: 30,
+			},
+		],
 	},
 	// 5.2 Multiple incorrect headings in one file
 	{
@@ -222,9 +328,27 @@ Text after`,
 		
 		### Third heading`,
 		errors: [
-			{ messageId: "missingSpace", line: 1, column: 1 },
-			{ messageId: "missingSpace", line: 5, column: 2 },
-			{ messageId: "missingSpace", line: 7, column: 3 },
+			{
+				messageId: "missingSpace",
+				line: 1,
+				column: 1,
+				endLine: 1,
+				endColumn: 14,
+			},
+			{
+				messageId: "missingSpace",
+				line: 5,
+				column: 2,
+				endLine: 5,
+				endColumn: 16,
+			},
+			{
+				messageId: "missingSpace",
+				line: 7,
+				column: 3,
+				endLine: 7,
+				endColumn: 16,
+			},
 		],
 	},
 
@@ -239,7 +363,15 @@ Text after`,
 
     # Not a heading in indented code block
     console.log("#still in code block");`,
-		errors: [{ messageId: "missingSpace", line: 3, column: 1 }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				line: 3,
+				column: 1,
+				endLine: 3,
+				endColumn: 37,
+			},
+		],
 	},
 ];
 
