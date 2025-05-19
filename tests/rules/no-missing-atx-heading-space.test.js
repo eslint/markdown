@@ -36,6 +36,10 @@ const validHeadings = [
 	"##### Heading 5",
 	"###### Heading 6",
 
+	// 1.1 ATX heading-like text
+	"####### Heading 7 (not a valid heading)",
+	"#######Heading 7 (not a valid heading)",
+
 	// 2. Document with multiple headings
 	dedent`# Heading 1
 
@@ -45,6 +49,7 @@ const validHeadings = [
 
 	// 3. Variations on spacing
 	"#  Heading with extra space",
+	"#\tHeading with tab",
 
 	// 4. Standalone hash
 	"#",
@@ -66,15 +71,15 @@ const validHeadings = [
 	"```",
 
 	// 7.3 Code blocks with language identifiers
-	"``` followed by text",
-	"~~~ followed by more text",
+	"``` #followed #by text",
+	"~~~ #followed #by more text",
 
 	// 7.4 Code block after paragraph
 	dedent`This is a paragraph followed by code.
 	
-\`\`\`
-#This is in a code block
-\`\`\``,
+	\`\`\`
+	#This is in a code block
+	\`\`\``,
 
 	// 8. Inline code with hash symbols
 	"This paragraph has `#inline-code` which is not a heading",
@@ -82,6 +87,7 @@ const validHeadings = [
 
 	// 9. Markdown links with hash in URLs
 	"[#370](https://github.com/eslint/markdown/issues/370)",
+	"![#370](https://github.com/eslint/markdown/image.png)",
 
 	// 10. HTML headings (not ATX-style)
 	"<h1>Heading 1</h1>",
@@ -91,6 +97,7 @@ const validHeadings = [
 	"<h5>Heading 5</h5>",
 	"<h6>Heading 6</h6>",
 	"<h1>#valid heading</h1>",
+	"<!-- #valid heading -->",
 
 	// 11. Content inside single quotes and double quotes
 	`'#something'`,
@@ -296,11 +303,11 @@ const invalidTests = [
 	// 5.1 With code markers in context
 	{
 		code: dedent`Text before
-#Heading with \`\`\` code markers
-Text after`,
+		#Heading with \`\`\` code markers
+		Text after`,
 		output: dedent`Text before
-# Heading with \`\`\` code markers
-Text after`,
+		# Heading with \`\`\` code markers
+		Text after`,
 		errors: [
 			{
 				messageId: "missingSpace",

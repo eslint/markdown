@@ -17,6 +17,7 @@
 //-----------------------------------------------------------------------------
 
 const HEADING_PATTERN = /^(#{1,6})(?:[^#\s])/u;
+const NEW_LINE_PATTERN = /\r?\n/u;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -53,7 +54,7 @@ export default {
 					}
 
 					const text = context.sourceCode.getText(firstTextChild);
-					const lines = text.split(/\r?\n/u);
+					const lines = text.split(NEW_LINE_PATTERN);
 
 					lines.forEach((line, idx) => {
 						const lineNum =
