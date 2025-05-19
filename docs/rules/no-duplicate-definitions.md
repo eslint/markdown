@@ -15,7 +15,7 @@ Please note that this rule does not report definition-style comments. For exampl
 
 ## Rule Details
 
-This rule warns when `Definition` and `FootnoteDefinition` type identifiers are defined multiple times.
+This rule warns when `Definition` and `FootnoteDefinition` type identifiers are defined multiple times. Please note that this rule is **case-insensitive**, meaning `earth` and `Earth` are treated as the same identifier.
 
 Examples of **incorrect** code:
 
@@ -26,10 +26,16 @@ Examples of **incorrect** code:
 [mercury]: https://example.com/mercury/
 [mercury]: https://example.com/venus/
 
+[earth]: https://example.com/earth/
+[Earth]: https://example.com/mars/ 
+
 <!-- footnote definition -->
 
 [^mercury]: Hello, Mercury!
 [^mercury]: Hello, Venus!
+
+[^earth]: Hello, Earth!
+[^Earth]: Hello, Mars!
 ```
 
 Examples of **correct** code:

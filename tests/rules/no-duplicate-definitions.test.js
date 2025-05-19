@@ -130,6 +130,38 @@ ruleTester.run("no-duplicate-definitions", rule, {
 		{
 			code: `
 [mercury]: https://example.com/mercury/
+[Mercury]: https://example.com/venus/
+`, // case insensitive
+			errors: [
+				{
+					messageId: "duplicateDefinition",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 38,
+				},
+			],
+		},
+
+		{
+			code: `
+[mercury]: https://example.com/mercury/
+[mercury    ]: https://example.com/venus/
+`,
+			errors: [
+				{
+					messageId: "duplicateDefinition",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 42,
+				},
+			],
+		},
+
+		{
+			code: `
+[mercury]: https://example.com/mercury/
 [mercury]: https://example.com/venus/
 `,
 			options: [
@@ -155,6 +187,54 @@ ruleTester.run("no-duplicate-definitions", rule, {
 [^mercury]: Hello, Mercury!
 [^mercury]: Hello, Venus!
 `,
+			errors: [
+				{
+					messageId: "duplicateFootnoteDefinition",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 26,
+				},
+			],
+		},
+
+		{
+			code: `
+[^mercury]: Hello, Mercury!
+[^mercury]: Hello, Venus!
+[^mercury]: Hello, Earth!
+[^mercury]: Hello, Mars!
+`,
+			errors: [
+				{
+					messageId: "duplicateFootnoteDefinition",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 26,
+				},
+				{
+					messageId: "duplicateFootnoteDefinition",
+					line: 4,
+					column: 1,
+					endLine: 4,
+					endColumn: 26,
+				},
+				{
+					messageId: "duplicateFootnoteDefinition",
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 25,
+				},
+			],
+		},
+
+		{
+			code: `
+[^mercury]: Hello, Mercury!
+[^Mercury]: Hello, Venus!
+`, // case insensitive
 			errors: [
 				{
 					messageId: "duplicateFootnoteDefinition",
