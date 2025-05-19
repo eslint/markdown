@@ -13,10 +13,14 @@
  */
 
 //-----------------------------------------------------------------------------
-// Rule Definition
+// Helpers
 //-----------------------------------------------------------------------------
 
 const HEADING_PATTERN = /^(#{1,6})(?:[^#\s])/u;
+
+//-----------------------------------------------------------------------------
+// Rule Definition
+//-----------------------------------------------------------------------------
 
 /** @type {NoMissingAtxHeadingSpaceRuleDefinition} */
 export default {
@@ -24,9 +28,9 @@ export default {
 		type: "problem",
 
 		docs: {
+			recommended: true,
 			description:
 				"Disallow headings without a space after the hash characters",
-			recommended: true,
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-missing-atx-heading-space.md",
 		},
 
