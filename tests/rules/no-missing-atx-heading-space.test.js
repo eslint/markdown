@@ -359,24 +359,59 @@ const invalidTests = [
 		],
 	},
 
-	// 6. Indented code block issue
-	// NOTE: Indented code blocks aren't detected as code nodes, unlike fenced blocks.
+	// 6. Emphasis handling
 	{
-		code: dedent`Regular paragraph
-
-    #Not a heading in indented code block
-    console.log("#still in code block");`,
-		output: dedent`Regular paragraph
-
-    # Not a heading in indented code block
-    console.log("#still in code block");`,
+		code: "#*hi*",
+		output: "# *hi*",
 		errors: [
 			{
 				messageId: "missingSpace",
-				line: 3,
 				column: 1,
-				endLine: 3,
-				endColumn: 37,
+				line: 1,
+				endLine: 1,
+				endColumn: 1,
+			},
+		],
+	},
+
+	{
+		code: "#~hi~",
+		output: "# ~hi~",
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 1,
+				line: 1,
+				endLine: 1,
+				endColumn: 5,
+			},
+		],
+	},
+
+	{
+		code: "#_hi_",
+		output: "# _hi_",
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 1,
+				line: 1,
+				endLine: 1,
+				endColumn: 1,
+			},
+		],
+	},
+
+	{
+		code: "#__hi__",
+		output: "# __hi__",
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 1,
+				line: 1,
+				endLine: 1,
+				endColumn: 1,
 			},
 		],
 	},
