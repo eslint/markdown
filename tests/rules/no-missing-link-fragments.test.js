@@ -78,6 +78,38 @@ ruleTester.run("no-missing-link-fragments", rule, {
 			[Ignored pattern link](#section-123)`,
 			options: [{ ignoreCase: true, allowPattern: "^section-" }],
 		},
+
+		// Testing exact match with explicit ignoreCase: false
+		{
+			code: `# Introduction
+			
+			[Case sensitive match](#introduction)`,
+			options: [{ ignoreCase: false }],
+		},
+
+		// Testing with empty allowPattern (explicit test for null allowedRegex path)
+		{
+			code: `# Introduction
+			
+			[Valid link](#introduction)`,
+			options: [{ allowPattern: "" }],
+		},
+
+		// Test a valid fragment match but without ignoreCase specified (default behavior)
+		{
+			code: `# Introduction
+			
+			[Default match](#introduction)`,
+			options: [{}], // Empty options object
+		},
+
+		// Test with plain text fragment that matches heading and allowPattern that doesn't match the fragment
+		{
+			code: `# Introduction
+			
+			[Valid link with non-matching pattern](#introduction)`,
+			options: [{ allowPattern: "^special-" }],
+		},
 	],
 	invalid: [
 		{
@@ -169,6 +201,40 @@ ruleTester.run("no-missing-link-fragments", rule, {
 					column: 1,
 					endLine: 3,
 					endColumn: 45,
+				},
+			],
+		},
+		{
+			// Non-matching fragment with empty allowPattern (explicit test for null allowedRegex path)
+			code: `# Title\n\n[Non-matching fragment](#nonexistent)`,
+			options: [{ allowPattern: "" }],
+			errors: [
+				{
+					messageId: "missingFragment",
+					data: {
+						fragment: "nonexistent",
+					},
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 38,
+				},
+			],
+		},
+		{
+			// Missing fragment with no options specified (default behavior)
+			code: `# Title\n\n[Missing with defaults](#nonexistent)`,
+			options: [{}], // Empty options object
+			errors: [
+				{
+					messageId: "missingFragment",
+					data: {
+						fragment: "nonexistent",
+					},
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 38,
 				},
 			],
 		},
