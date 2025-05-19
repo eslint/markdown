@@ -10,7 +10,7 @@
 /** @typedef {import("mdast").Definition} Definition */
 /** @typedef {import("mdast").FootnoteDefinition} FootnoteDefinition */
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ ignoreDefinition: string[], ignoreFootnoteDefinition: string[]; }]; }>}
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ allowDefinitions: string[], allowFootnoteDefinitions: string[]; }]; }>}
  * NoDuplicateDefinitionsRuleDefinition
  */
 
@@ -27,24 +27,24 @@
  * @returns {void}
  */
 function appendNodeToMap(map, node) {
-	map.set(
-		node.identifier,
-		map.has(node.identifier) ? [...map.get(node.identifier), node] : [node],
-	);
+	if (!map.has(node.identifier)) {
+		map.set(node.identifier, [node]);
+	} else {
+		map.get(node.identifier).push(node);
+	}
 }
 
 /**
  * Finds duplicate nodes in a map if they exceed one occurrence and are not ignored.
  * @param {Map<string, Array<Definition | FootnoteDefinition>>} map The map of nodes to check.
- * @param {string[]} ignoreList The list of identifiers to ignore.
  * @returns {Array<Definition | FootnoteDefinition>} The array of duplicate nodes.
  */
-function findDuplicates(map, ignoreList) {
+function findDuplicates(map) {
 	/** @type {Array<Definition | FootnoteDefinition>} */
 	const duplicates = [];
 
-	map.forEach((nodes, identifier) => {
-		if (nodes.length <= 1 || ignoreList.includes(identifier)) {
+	map.forEach(nodes => {
+		if (nodes.length <= 1) {
 			return;
 		}
 
@@ -79,14 +79,14 @@ export default {
 			{
 				type: "object",
 				properties: {
-					ignoreDefinition: {
+					allowDefinitions: {
 						type: "array",
 						items: {
 							type: "string",
 						},
 						uniqueItems: true,
 					},
-					ignoreFootnoteDefinition: {
+					allowFootnoteDefinitions: {
 						type: "array",
 						items: {
 							type: "string",
@@ -100,14 +100,14 @@ export default {
 
 		defaultOptions: [
 			{
-				ignoreDefinition: ["//"],
-				ignoreFootnoteDefinition: [],
+				allowDefinitions: ["//"],
+				allowFootnoteDefinitions: [],
 			},
 		],
 	},
 
 	create(context) {
-		const [{ ignoreDefinition, ignoreFootnoteDefinition }] =
+		const [{ allowDefinitions, allowFootnoteDefinitions }] =
 			context.options;
 
 		const definitions = new Map();
@@ -115,30 +115,39 @@ export default {
 
 		return {
 			definition(node) {
+				if (allowDefinitions.includes(node.identifier)) {
+					return;
+				}
+
 				appendNodeToMap(definitions, node);
 			},
 
 			footnoteDefinition(node) {
+				if (allowFootnoteDefinitions.includes(node.identifier)) {
+					return;
+				}
+
 				appendNodeToMap(footnoteDefinitions, node);
 			},
 
 			"root:exit"() {
-				findDuplicates(definitions, ignoreDefinition).forEach(node => {
-					context.report({
-						node,
-						messageId: "duplicateDefinition",
+				findDuplicates(definitions, allowDefinitions)
+					.slice(1)
+					.forEach(node => {
+						context.report({
+							node,
+							messageId: "duplicateDefinition",
+						});
 					});
-				});
 
-				findDuplicates(
-					footnoteDefinitions,
-					ignoreFootnoteDefinition,
-				).forEach(node => {
-					context.report({
-						node,
-						messageId: "duplicateFootnoteDefinition",
+				findDuplicates(footnoteDefinitions, allowFootnoteDefinitions)
+					.slice(1)
+					.forEach(node => {
+						context.report({
+							node,
+							messageId: "duplicateFootnoteDefinition",
+						});
 					});
-				});
 			},
 		};
 	},

@@ -56,22 +56,22 @@ Examples of **correct** code:
 
 The following options are available on this rule:
 
-- `ignoreDefinition: Array<string>` - when specified, definitions are ignored if they match one of the identifiers in this array. This is useful for ignoring definitions that are intentionally duplicated. (default: `["//"]`)
+- `allowDefinitions: Array<string>` - when specified, duplicate definitions are allowed if they match one of the identifiers in this array. This is useful for ignoring definitions that are intentionally duplicated. (default: `["//"]`)
 
-    Examples of **correct** code when configured as `"no-duplicate-definitions: ["error", { ignoreDefinition: ["mercury"] }]`:
+    Examples of **correct** code when configured as `"no-duplicate-definitions: ["error", { allowDefinitions: ["mercury"] }]`:
 
     ```markdown
-    <!-- eslint markdown/no-duplicate-definitions: ["error", { ignoreDefinition: ["mercury"] }] -->
+    <!-- eslint markdown/no-duplicate-definitions: ["error", { allowDefinitions: ["mercury"] }] -->
     [mercury]: https://example.com/mercury/
     [mercury]: https://example.com/venus/
     ```
 
-- `ignoreFootnoteDefinition: Array<string>` - when specified, footnote definitions are ignored if they match one of the identifiers in this array. This is useful for ignoring footnote definitions that are intentionally duplicated. (default: `[]`)
+- `allowFootnoteDefinitions: Array<string>` - when specified, duplicate footnote definitions are allowed if they match one of the identifiers in this array. This is useful for ignoring footnote definitions that are intentionally duplicated. (default: `[]`)
 
-    Examples of **correct** code when configured as `"no-duplicate-definitions: ["error", { ignoreFootnoteDefinition: ["mercury"] }]`:
+    Examples of **correct** code when configured as `"no-duplicate-definitions: ["error", { allowFootnoteDefinitions: ["mercury"] }]`:
 
     ```markdown
-    <!-- eslint markdown/no-duplicate-definitions: ["error", { ignoreFootnoteDefinition: ["mercury"] }] -->
+    <!-- eslint markdown/no-duplicate-definitions: ["error", { allowFootnoteDefinitions: ["mercury"] }] -->
     [^mercury]: Hello, Mercury!
     [^mercury]: Hello, Venus!
     ```

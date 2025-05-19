@@ -60,7 +60,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 `,
 			options: [
 				{
-					ignoreDefinition: ["mercury"],
+					allowDefinitions: ["mercury"],
 				},
 			],
 		},
@@ -72,7 +72,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 `,
 			options: [
 				{
-					ignoreFootnoteDefinition: ["mercury"],
+					allowFootnoteDefinitions: ["mercury"],
 				},
 			],
 		},
@@ -87,13 +87,6 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateDefinition",
-					line: 2,
-					column: 1,
-					endLine: 2,
-					endColumn: 40,
-				},
-				{
-					messageId: "duplicateDefinition",
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -106,22 +99,47 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			code: `
 [mercury]: https://example.com/mercury/
 [mercury]: https://example.com/venus/
+[mercury]: https://example.com/earth/
+[mercury]: https://example.com/mars/
+`,
+			errors: [
+				{
+					messageId: "duplicateDefinition",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 38,
+				},
+				{
+					messageId: "duplicateDefinition",
+					line: 4,
+					column: 1,
+					endLine: 4,
+					endColumn: 38,
+				},
+				{
+					messageId: "duplicateDefinition",
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 37,
+				},
+			],
+		},
+
+		{
+			code: `
+[mercury]: https://example.com/mercury/
+[mercury]: https://example.com/venus/
 `,
 			options: [
 				{
-					ignoreDefinition: ["venus"],
-					ignoreFootnoteDefinition: ["mercury"],
+					allowDefinitions: ["venus"],
+					allowFootnoteDefinitions: ["mercury"],
 				},
 			],
 
 			errors: [
-				{
-					messageId: "duplicateDefinition",
-					line: 2,
-					column: 1,
-					endLine: 2,
-					endColumn: 40,
-				},
 				{
 					messageId: "duplicateDefinition",
 					line: 3,
@@ -138,13 +156,6 @@ ruleTester.run("no-duplicate-definitions", rule, {
 [^mercury]: Hello, Venus!
 `,
 			errors: [
-				{
-					messageId: "duplicateFootnoteDefinition",
-					line: 2,
-					column: 1,
-					endLine: 2,
-					endColumn: 28,
-				},
 				{
 					messageId: "duplicateFootnoteDefinition",
 					line: 3,
@@ -162,19 +173,12 @@ ruleTester.run("no-duplicate-definitions", rule, {
 `,
 			options: [
 				{
-					ignoreDefinition: ["mercury"],
-					ignoreFootnoteDefinition: ["venus"],
+					allowDefinitions: ["mercury"],
+					allowFootnoteDefinitions: ["venus"],
 				},
 			],
 
 			errors: [
-				{
-					messageId: "duplicateFootnoteDefinition",
-					line: 2,
-					column: 1,
-					endLine: 2,
-					endColumn: 28,
-				},
 				{
 					messageId: "duplicateFootnoteDefinition",
 					line: 3,
@@ -200,13 +204,6 @@ ruleTester.run("no-duplicate-definitions", rule, {
 [mercury]: https://example.com/venus/
 `,
 			errors: [
-				{
-					messageId: "duplicateDefinition",
-					line: 2,
-					column: 1,
-					endLine: 2,
-					endColumn: 40,
-				},
 				{
 					messageId: "duplicateDefinition",
 					line: 12,
