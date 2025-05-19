@@ -35,7 +35,7 @@ function appendNodeToMap(map, node) {
 }
 
 /**
- * Finds duplicate nodes in a map if they exceed one occurrence and are not ignored.
+ * Finds duplicate nodes in a map if they exceed one occurrence.
  * @param {Map<string, Array<Definition | FootnoteDefinition>>} map The map of nodes to check.
  * @returns {Array<Definition | FootnoteDefinition>} The array of duplicate nodes.
  */
