@@ -1,5 +1,5 @@
 /**
- * @fileoverview Rule to enforce at most one h1 heading in Markdown.
+ * @fileoverview Rule to enforce at most one H1 heading in Markdown.
  * @author Pixel998
  */
 
@@ -35,12 +35,12 @@ export default {
 
 		docs: {
 			recommended: true,
-			description: "Disallow multiple h1 headings in the same document",
+			description: "Disallow multiple H1 headings in the same document",
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-multiple-h1.md",
 		},
 
 		messages: {
-			multipleH1: "More than one h1 heading found.",
+			multipleH1: "Unexpected additional H1 heading found.",
 		},
 
 		schema: [
@@ -66,14 +66,34 @@ export default {
 
 		return {
 			yaml(node) {
-				if (titlePattern?.test(node.value)) {
-					h1Count++;
+				if (!titlePattern) {
+					return;
+				}
+				const lines = node.value.split("\n");
+				for (const line of lines) {
+					if (line.trim().startsWith("#")) {
+						continue;
+					}
+					if (titlePattern.test(line)) {
+						h1Count++;
+						break;
+					}
 				}
 			},
 
 			toml(node) {
-				if (titlePattern?.test(node.value)) {
-					h1Count++;
+				if (!titlePattern) {
+					return;
+				}
+				const lines = node.value.split("\n");
+				for (const line of lines) {
+					if (line.trim().startsWith("#")) {
+						continue;
+					}
+					if (titlePattern.test(line)) {
+						h1Count++;
+						break;
+					}
 				}
 			},
 
