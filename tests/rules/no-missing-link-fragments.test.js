@@ -10,6 +10,7 @@
 import rule from "../../src/rules/no-missing-link-fragments.js";
 import markdown from "../../src/index.js";
 import { RuleTester } from "eslint";
+import dedent from "dedent";
 
 //------------------------------------------------------------------------------
 // Tests
@@ -25,12 +26,12 @@ const ruleTester = new RuleTester({
 ruleTester.run("no-missing-link-fragments", rule, {
 	valid: [
 		// Simple case with matching fragment
-		`# Heading One
+		dedent`# Heading One
 		
 		[Link to heading](#heading-one)`,
 
 		// Multiple headings and links
-		`# Introduction
+		dedent`# Introduction
 		
 		## First Section
 		
@@ -39,24 +40,24 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		[Link to section](#first-section)`,
 
 		// Mixed case handling
-		`# TITLE
+		dedent`# TITLE
 		
 		[Link to title](#title)`,
 
 		// Link to empty fragment (anchor) should pass
-		`# Title
+		dedent`# Title
 		
 		[Empty link](#)`,
 
 		// Links without fragments should pass
-		`# Title
+		dedent`# Title
 		
 		[External link](https://example.com)
 		[Relative link](./file.md)`,
 
 		// Testing ignoreCase parameter
 		{
-			code: `# Introduction
+			code: dedent`# Introduction
 			
 			[Case insensitive link](#INTRODUCTION)`,
 			options: [{ ignoreCase: true }],
@@ -64,7 +65,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 
 		// Testing allowPattern parameter
 		{
-			code: `# Title
+			code: dedent`# Title
 			
 			[Ignored pattern link](#section-123)`,
 			options: [{ allowPattern: "^section-" }],
@@ -72,7 +73,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 
 		// Testing both parameters together
 		{
-			code: `# Introduction
+			code: dedent`# Introduction
 			
 			[Case insensitive link](#INTRODUCTION)
 			[Ignored pattern link](#section-123)`,
@@ -81,7 +82,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 
 		// Testing exact match with explicit ignoreCase: false
 		{
-			code: `# Introduction
+			code: dedent`# Introduction
 			
 			[Case sensitive match](#introduction)`,
 			options: [{ ignoreCase: false }],
@@ -89,7 +90,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 
 		// Testing with empty allowPattern (explicit test for null allowedRegex path)
 		{
-			code: `# Introduction
+			code: dedent`# Introduction
 			
 			[Valid link](#introduction)`,
 			options: [{ allowPattern: "" }],
@@ -97,7 +98,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 
 		// Test a valid fragment match but without ignoreCase specified (default behavior)
 		{
-			code: `# Introduction
+			code: dedent`# Introduction
 			
 			[Default match](#introduction)`,
 			options: [{}], // Empty options object
@@ -105,7 +106,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 
 		// Test with plain text fragment that matches heading and allowPattern that doesn't match the fragment
 		{
-			code: `# Introduction
+			code: dedent`# Introduction
 			
 			[Valid link with non-matching pattern](#introduction)`,
 			options: [{ allowPattern: "^special-" }],
@@ -114,7 +115,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 	invalid: [
 		{
 			// Missing fragment
-			code: `# Title\n\n[Link to non-existent heading](#non-existent)`,
+			code: dedent`# Title\n\n[Link to non-existent heading](#non-existent)`,
 			errors: [
 				{
 					messageId: "missingFragment",
@@ -130,7 +131,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		},
 		{
 			// Case mismatch is invalid by default
-			code: `# Introduction\n\n[Wrong case](#INTRODUCTION)`,
+			code: dedent`# Introduction\n\n[Wrong case](#INTRODUCTION)`,
 			errors: [
 				{
 					messageId: "missingFragment",
@@ -146,7 +147,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		},
 		{
 			// Multiple errors
-			code: `# Title\n\n[Link one](#missing-one)\n[Link two](#missing-two)`,
+			code: dedent`# Title\n\n[Link one](#missing-one)\n[Link two](#missing-two)`,
 			errors: [
 				{
 					messageId: "missingFragment",
@@ -172,7 +173,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		},
 		{
 			// Case mismatch with ignoreCase set to false explicitly
-			code: `# Introduction\n\n[Wrong case](#INTRODUCTION)`,
+			code: dedent`# Introduction\n\n[Wrong case](#INTRODUCTION)`,
 			options: [{ ignoreCase: false }],
 			errors: [
 				{
@@ -189,7 +190,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		},
 		{
 			// Non-matching fragment with allowPattern that doesn't match
-			code: `# Title\n\n[Non-matching ignored pattern](#nonmatching)`,
+			code: dedent`# Title\n\n[Non-matching ignored pattern](#nonmatching)`,
 			options: [{ allowPattern: "^section-" }],
 			errors: [
 				{
@@ -206,7 +207,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		},
 		{
 			// Non-matching fragment with empty allowPattern (explicit test for null allowedRegex path)
-			code: `# Title\n\n[Non-matching fragment](#nonexistent)`,
+			code: dedent`# Title\n\n[Non-matching fragment](#nonexistent)`,
 			options: [{ allowPattern: "" }],
 			errors: [
 				{
@@ -223,7 +224,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		},
 		{
 			// Missing fragment with no options specified (default behavior)
-			code: `# Title\n\n[Missing with defaults](#nonexistent)`,
+			code: dedent`# Title\n\n[Missing with defaults](#nonexistent)`,
 			options: [{}], // Empty options object
 			errors: [
 				{

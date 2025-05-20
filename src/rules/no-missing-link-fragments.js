@@ -63,9 +63,7 @@ export default {
 	},
 
 	create(context) {
-		const options = context.options[0] || {};
-		const ignoreCase = options.ignoreCase;
-		const allowPattern = options.allowPattern;
+		const [{ ignoreCase, allowPattern }] = context.options;
 
 		const allowedRegex = allowPattern
 			? new RegExp(allowPattern, "u")
