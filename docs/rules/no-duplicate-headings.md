@@ -15,9 +15,11 @@ When generating in-document links, unique headings are necessary to ensure you c
 
 This rule warns when it finds more than one heading with the same text, even if the headings are of different levels.
 
-Examples of incorrect code:
+Examples of **incorrect** code for this rule:
 
 ```markdown
+<!-- eslint markdown/no-duplicate-headings: "error" -->
+
 # Hello world!
 
 ## Hello world!
