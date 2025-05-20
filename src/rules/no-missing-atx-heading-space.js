@@ -67,10 +67,16 @@ export default {
 
 						const hashes = match[1];
 
+						const startColumn =
+							firstTextChild.position.start.column;
+
 						context.report({
 							loc: {
-								start: { line: lineNum, column: hashes.length },
-								end: { line: lineNum, column: line.length },
+								start: { line: lineNum, column: startColumn },
+								end: {
+									line: lineNum,
+									column: startColumn + hashes.length + 1,
+								},
 							},
 							messageId: "missingSpace",
 							fix(fixer) {
