@@ -103,6 +103,9 @@ const validHeadings = [
 	`'#something'`,
 	`"#something"`,
 	`"<h1>#valid heading</h1>"`,
+
+	// 12. Content starting with more than 4 spaces(turn to codeblock)
+	"    #Heading 1",
 ];
 
 //------------------------------------------------------------------------------
@@ -426,6 +429,49 @@ const invalidTests = [
 				line: 1,
 				endLine: 1,
 				endColumn: 3,
+			},
+		],
+	},
+
+	// 7. Quoted Headings
+	{
+		code: "> #Quoted heading",
+		output: "> # Quoted heading",
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 3,
+				line: 1,
+				endLine: 1,
+				endColumn: 5,
+			},
+		],
+	},
+	{
+		code: "> ##Quoted heading",
+		output: "> ## Quoted heading",
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 3,
+				line: 1,
+				endLine: 1,
+				endColumn: 6,
+			},
+		],
+	},
+	{
+		code: dedent`- Item
+		  > #Quoted heading in list`,
+		output: dedent`- Item
+		  > # Quoted heading in list`,
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 3,
+				line: 2,
+				endLine: 2,
+				endColumn: 5,
 			},
 		],
 	},
