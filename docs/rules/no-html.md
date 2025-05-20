@@ -22,9 +22,9 @@ Hello <b>world!</b>
 
 The following options are available on this rule:
 
-* `allowed: Array<string>` - when specified, HTML tags are allowed only if they match one of the tags in this array.. 
+* `allowed: Array<string>` - when specified, HTML tags are allowed only if they match one of the tags in this array.
 
-Examples of incorrect code when configured as `"no-html: ["error", { allowed: ["b"]}]`:
+Examples of incorrect code when configured as `"no-html": ["error", { allowed: ["b"] }]`:
 
 ```markdown
 # Heading 1
@@ -32,7 +32,7 @@ Examples of incorrect code when configured as `"no-html: ["error", { allowed: ["
 Hello <em>world!</em>
 ```
 
-Examples of correct code when configured as `"no-html: ["error", { allowed: ["b"]}]`:
+Examples of correct code when configured as `"no-html": ["error", { allowed: ["b"] }]`:
 
 ```markdown
 # Heading 1

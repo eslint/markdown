@@ -8,7 +8,7 @@ It can be difficult to keep track of the correct heading levels in a long docume
 
 ## Rule Details
 
-This rule warns when it finds a heading that is more than on level higher than the preceding heading.
+This rule warns when it finds a heading that is more than one level higher than the preceding heading.
 
 Examples of incorrect code:
 
