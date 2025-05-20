@@ -16,8 +16,8 @@
 // Helpers
 //-----------------------------------------------------------------------------
 
-const HEADING_PATTERN = /^(#{1,6})(?:[^#\s]|$)/u;
-const NEW_LINE_PATTERN = /\r?\n/u;
+const headingPattern = /^(#{1,6})(?:[^#\s]|$)/u;
+const newLinePattern = /\r?\n/u;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -54,13 +54,13 @@ export default {
 					}
 
 					const text = context.sourceCode.getText(firstTextChild);
-					const lines = text.split(NEW_LINE_PATTERN);
+					const lines = text.split(newLinePattern);
 
 					lines.forEach((line, idx) => {
 						const lineNum =
 							firstTextChild.position.start.line + idx;
 
-						const match = HEADING_PATTERN.exec(line);
+						const match = headingPattern.exec(line);
 						if (!match) {
 							return;
 						}
