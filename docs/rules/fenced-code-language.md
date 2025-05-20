@@ -34,7 +34,7 @@ The following options are available on this rule:
 
 * `required: Array<string>` - when specified, fenced code blocks must use one of the languages specified in this array. 
 
-Examples of incorrect code when configured as `"fenced-code-language: ["error", { required: ["js"]}]`:
+Examples of incorrect code when configured as `"fenced-code-language": ["error", { required: ["js"] }]`:
 
 ````markdown
 ```javascript
