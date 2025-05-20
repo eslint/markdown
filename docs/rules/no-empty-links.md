@@ -10,9 +10,11 @@ Markdown syntax can make it difficult to easily see that you've forgotten to giv
 
 This rule warns when it finds links that either don't have a URL specified or have only an empty fragment (`"#"`).
 
-Examples of incorrect code:
+Examples of **incorrect** code for this rule:
 
 ```markdown
+<!-- eslint markdown/no-empty-links: "error" -->
+
 [ESLint]()
 
 [Skip to Content](#)

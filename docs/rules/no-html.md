@@ -10,9 +10,11 @@ By default, Markdown allows you to use HTML tags mixed in with Markdown syntax. 
 
 This rule warns when it finds HTML tags inside Markdown content.
 
-Examples of incorrect code:
+Examples of **incorrect** code for this rule:
 
 ```markdown
+<!-- eslint markdown/no-html: "error" -->
+
 # Heading 1
 
 Hello <b>world!</b>
@@ -24,17 +26,21 @@ The following options are available on this rule:
 
 * `allowed: Array<string>` - when specified, HTML tags are allowed only if they match one of the tags in this array.
 
-Examples of incorrect code when configured as `"no-html": ["error", { allowed: ["b"] }]`:
+Examples of **incorrect** code when configured as `"no-html": ["error", { allowed: ["b"] }]`:
 
 ```markdown
+<!-- eslint markdown/no-html: ["error", { allowed: ["b"] }] -->
+
 # Heading 1
 
 Hello <em>world!</em>
 ```
 
-Examples of correct code when configured as `"no-html": ["error", { allowed: ["b"] }]`:
+Examples of **correct** code when configured as `"no-html": ["error", { allowed: ["b"] }]`:
 
 ```markdown
+<!-- eslint markdown/no-html: ["error", { allowed: ["b"] }] -->
+
 # Heading 1
 
 Hello <b>world!</b>

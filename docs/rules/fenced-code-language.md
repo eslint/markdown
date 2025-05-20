@@ -19,9 +19,11 @@ The language name is expected, but not required, after the initial three backtic
 
 This rule warns when it finds code blocks without a language specified.
 
-Examples of incorrect code:
+Examples of **incorrect** code for this rule:
 
 ````markdown
+<!-- eslint markdown/fenced-code-language: "error" -->
+
 ```
 const message = "Hello, world!";
 console.log(message);
@@ -34,9 +36,11 @@ The following options are available on this rule:
 
 * `required: Array<string>` - when specified, fenced code blocks must use one of the languages specified in this array. 
 
-Examples of incorrect code when configured as `"fenced-code-language": ["error", { required: ["js"] }]`:
+Examples of **incorrect** code when configured as `"fenced-code-language": ["error", { required: ["js"] }]`:
 
 ````markdown
+<!-- eslint markdown/fenced-code-language: ["error", { required: ["js"] }] -->
+
 ```javascript
 const message = "Hello, world!";
 console.log(message);
