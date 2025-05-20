@@ -7,52 +7,10 @@
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("mdast").Definition} Definition */
-/** @typedef {import("mdast").FootnoteDefinition} FootnoteDefinition */
 /**
  * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ allowDefinitions: string[], allowFootnoteDefinitions: string[]; }]; }>}
  * NoDuplicateDefinitionsRuleDefinition
  */
-
-//-----------------------------------------------------------------------------
-// Helpers
-//-----------------------------------------------------------------------------
-
-/**
- * Appends a node to a map, grouping by identifier.
- * Creates a new array if the identifier doesn't exist,
- * or appends to the existing array if it does.
- * @param {Map<string, Array<Definition | FootnoteDefinition>>} map The map to store nodes in.
- * @param {Definition | FootnoteDefinition} node The node to add to the map.
- * @returns {void}
- */
-function appendNodeToMap(map, node) {
-	if (!map.has(node.identifier)) {
-		map.set(node.identifier, [node]);
-	} else {
-		map.get(node.identifier).push(node);
-	}
-}
-
-/**
- * Finds duplicate nodes in a map if they exceed one occurrence.
- * @param {Map<string, Array<Definition | FootnoteDefinition>>} map The map of nodes to check.
- * @returns {Array<Definition | FootnoteDefinition>} The array of duplicate nodes.
- */
-function findDuplicates(map) {
-	/** @type {Array<Definition | FootnoteDefinition>} */
-	const duplicates = [];
-
-	map.forEach(nodes => {
-		if (nodes.length <= 1) {
-			return;
-		}
-
-		duplicates.push(...nodes);
-	});
-
-	return duplicates;
-}
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -110,8 +68,8 @@ export default {
 		const [{ allowDefinitions, allowFootnoteDefinitions }] =
 			context.options;
 
-		const definitions = new Map();
-		const footnoteDefinitions = new Map();
+		const definitions = new Set();
+		const footnoteDefinitions = new Set();
 
 		return {
 			definition(node) {
@@ -119,7 +77,14 @@ export default {
 					return;
 				}
 
-				appendNodeToMap(definitions, node);
+				if (definitions.has(node.identifier)) {
+					context.report({
+						node,
+						messageId: "duplicateDefinition",
+					});
+				} else {
+					definitions.add(node.identifier);
+				}
 			},
 
 			footnoteDefinition(node) {
@@ -127,27 +92,14 @@ export default {
 					return;
 				}
 
-				appendNodeToMap(footnoteDefinitions, node);
-			},
-
-			"root:exit"() {
-				findDuplicates(definitions, allowDefinitions)
-					.slice(1)
-					.forEach(node => {
-						context.report({
-							node,
-							messageId: "duplicateDefinition",
-						});
+				if (footnoteDefinitions.has(node.identifier)) {
+					context.report({
+						node,
+						messageId: "duplicateFootnoteDefinition",
 					});
-
-				findDuplicates(footnoteDefinitions, allowFootnoteDefinitions)
-					.slice(1)
-					.forEach(node => {
-						context.report({
-							node,
-							messageId: "duplicateFootnoteDefinition",
-						});
-					});
+				} else {
+					footnoteDefinitions.add(node.identifier);
+				}
 			},
 		};
 	},
