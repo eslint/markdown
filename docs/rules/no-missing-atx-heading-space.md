@@ -13,6 +13,8 @@ This rule is automatically fixable by the `--fix` command line option.
 Examples of **incorrect** code for this rule:
 
 ```md
+<!-- eslint markdown/no-missing-atx-heading-space: "error" -->
+
 #Heading 1
 ##Heading 2
 ###Heading 3
@@ -21,6 +23,8 @@ Examples of **incorrect** code for this rule:
 Examples of **correct** code for this rule:
 
 ```md
+<!-- eslint markdown/no-missing-atx-heading-space: "error" -->
+
 # Heading 1
 ## Heading 2
 ### Heading 3
