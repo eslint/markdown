@@ -55,7 +55,7 @@ export default {
 			},
 		],
 
-		defaultOptions: [{ frontmatterTitle: "\\s*title\\s*[:=]" }],
+		defaultOptions: [{ frontmatterTitle: "^\\s*title\\s*[:=]" }],
 	},
 
 	create(context) {
@@ -71,9 +71,6 @@ export default {
 				}
 				const lines = node.value.split("\n");
 				for (const line of lines) {
-					if (line.trim().startsWith("#")) {
-						continue;
-					}
 					if (titlePattern.test(line)) {
 						h1Count++;
 						break;
@@ -87,9 +84,6 @@ export default {
 				}
 				const lines = node.value.split("\n");
 				for (const line of lines) {
-					if (line.trim().startsWith("#")) {
-						continue;
-					}
 					if (titlePattern.test(line)) {
 						h1Count++;
 						break;

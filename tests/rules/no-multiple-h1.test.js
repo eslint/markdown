@@ -107,6 +107,28 @@ ruleTester.run("no-multiple-h1", rule, {
 		{
 			code: dedent`
 				---
+				author: Pixel998 # title: My Title
+				---
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "yaml",
+			},
+		},
+		{
+			code: dedent`
+				+++
+				author = "Pixel998" # title = "My Title"
+				+++
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "toml",
+			},
+		},
+		{
+			code: dedent`
+				---
 				heading: My Title
 				---
 				## Heading 2
