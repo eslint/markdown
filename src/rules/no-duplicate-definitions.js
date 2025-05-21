@@ -65,15 +65,17 @@ export default {
 	},
 
 	create(context) {
-		const [{ allowDefinitions, allowFootnoteDefinitions }] =
-			context.options;
+		const allowDefinitions = new Set(context.options[0]?.allowDefinitions);
+		const allowFootnoteDefinitions = new Set(
+			context.options[0]?.allowFootnoteDefinitions,
+		);
 
 		const definitions = new Set();
 		const footnoteDefinitions = new Set();
 
 		return {
 			definition(node) {
-				if (allowDefinitions.includes(node.identifier)) {
+				if (allowDefinitions.has(node.identifier)) {
 					return;
 				}
 
@@ -88,7 +90,7 @@ export default {
 			},
 
 			footnoteDefinition(node) {
-				if (allowFootnoteDefinitions.includes(node.identifier)) {
+				if (allowFootnoteDefinitions.has(node.identifier)) {
 					return;
 				}
 
