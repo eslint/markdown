@@ -1,12 +1,10 @@
 import markdown, {
 	MarkdownSourceCode,
-	MarkdownNode,
 	MarkdownRuleDefinition,
 	MarkdownRuleVisitor,
-	SourceLocation,
-	SourceRange,
 	type RuleModule,
 } from "@eslint/markdown";
+import type { SourceLocation, SourceRange } from "@eslint/core";
 import { Toml } from "@eslint/markdown/types";
 import { ESLint, Linter } from "eslint";
 import type {
@@ -167,8 +165,8 @@ typeof processorPlugins satisfies {};
 			"toml:exit": (...args) => testVisitor<Toml>(...args),
 
 			// Unknown selectors allowed
-			"heading[depth=1]"(node: MarkdownNode, parent?: ParentNode) {},
-			"randomSelector:exit"(node: MarkdownNode, parent?: ParentNode) {},
+			"heading[depth=1]"(node: Node, parent?: ParentNode) {},
+			"randomSelector:exit"(node: Node, parent?: ParentNode) {},
 		};
 	},
 });
