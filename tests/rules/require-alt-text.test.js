@@ -44,6 +44,7 @@ ruleTester.run("require-alt-text", rule, {
 		'<img src="image.png" aria-hidden="true"/>',
 		'<img src="image.png" ARIA-HIDDEN="TRUE" />',
 		'<p><img src="image.png" alt="Descriptive text" /></p>',
+		'<!-- <img src="image.png" /> -->',
 	],
 	invalid: [
 		{
