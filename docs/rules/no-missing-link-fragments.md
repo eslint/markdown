@@ -1,5 +1,9 @@
 # no-missing-link-fragments
 
+Disallow link fragments that don't exist in the document.
+
+## Background
+
 Ensures that link fragments (URLs that start with `#`) reference valid headings or anchors in the document. This rule helps prevent broken internal links.
 
 ## Rule Details
@@ -17,7 +21,7 @@ Examples of **incorrect** code for this rule:
 [Case Mismatch](#SOME-HEADING) <!-- Default: case-sensitive -->
 ```
 
-### Correct Code Examples
+Examples of **correct** code for this rule:
 
 ```markdown
 <!-- eslint markdown/no-missing-link-fragments: "error" -->
@@ -80,4 +84,7 @@ You might consider disabling this rule if:
 ## Further Reading
 
 * [GitHub's heading anchor links](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#section-links)
-* [CommonMark Specification](https://spec.commonmark.org/)
+
+## Prior Art
+
+* [MD051 - Link fragments should be valid](https://github.com/DavidAnson/markdownlint/blob/main/doc/md051.md)

@@ -35,6 +35,8 @@ const markdownInlineFormattingPattern = /[*_~`]/gu;
 const htmlIdNamePattern = /<(?:[^>]+)\s+(?:id|name)="([^"]+)"/gu;
 const headingPrefixPattern = /^#+\s*/u;
 
+const slugger = new GithubSlugger();
+
 /**
  * Checks if the fragment is a valid GitHub line reference
  * @param {string} fragment The fragment to check
@@ -79,7 +81,7 @@ export default {
 
 		messages: {
 			invalidFragment:
-				"Link fragment '{{fragment}}' does not reference a valid heading or anchor.",
+				"Link fragment '#{{fragment}}' does not reference a heading or anchor in this document.",
 		},
 	},
 
@@ -90,7 +92,6 @@ export default {
 			? new RegExp(options.allowPattern, "u")
 			: null;
 
-		const slugger = new GithubSlugger();
 		const fragmentIds = new Set();
 
 		fragmentIds.add("top");
@@ -155,7 +156,7 @@ export default {
 					return;
 				}
 
-				if (allowPattern && allowPattern.test(fragment)) {
+				if (allowPattern?.test(fragment)) {
 					return;
 				}
 
