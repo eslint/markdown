@@ -14,9 +14,11 @@ This rule does not warn when:
 - An HTML image has an empty alt attribute (`alt=""`)
 - An HTML image has the `aria-hidden="true"` attribute
 
-Examples of incorrect code:
+Examples of **incorrect** code:
 
 ```markdown
+<!-- eslint markdown/require-alt-text: "error" -->
+
 ![](sunset.png)
 
 ![ ](sunset.png)
@@ -30,9 +32,11 @@ Examples of incorrect code:
 <img src="sunset.png" alt=" ">
 ```
 
-Examples of correct code:
+Examples of **correct** code:
 
 ```markdown
+<!-- eslint markdown/require-alt-text: "error" -->
+
 ![A beautiful sunset](sunset.png)
 
 ![Company logo][logo]
