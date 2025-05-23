@@ -24,6 +24,25 @@ import { findOffsets } from "../util.js";
 
 const h1TagPattern = /(?<!<!--[\s\S]*?)<h1[^>]*>[\s\S]*?<\/h1>/giu;
 
+/**
+ * Checks if a frontmatter block contains a title matching the given pattern
+ * @param {string} value The frontmatter content
+ * @param {RegExp|null} pattern The pattern to match against
+ * @returns {boolean} Whether a title was found
+ */
+function frontmatterHasTitle(value, pattern) {
+	if (!pattern) {
+		return false;
+	}
+	const lines = value.split("\n");
+	for (const line of lines) {
+		if (pattern.test(line)) {
+			return true;
+		}
+	}
+	return false;
+}
+
 //-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
@@ -55,7 +74,9 @@ export default {
 			},
 		],
 
-		defaultOptions: [{ frontmatterTitle: "^\\s*title\\s*[:=]" }],
+		defaultOptions: [
+			{ frontmatterTitle: "^\\s*['\"]?title['\"]?\\s*[:=]" },
+		],
 	},
 
 	create(context) {
@@ -66,28 +87,14 @@ export default {
 
 		return {
 			yaml(node) {
-				if (!titlePattern) {
-					return;
-				}
-				const lines = node.value.split("\n");
-				for (const line of lines) {
-					if (titlePattern.test(line)) {
-						h1Count++;
-						break;
-					}
+				if (frontmatterHasTitle(node.value, titlePattern)) {
+					h1Count++;
 				}
 			},
 
 			toml(node) {
-				if (!titlePattern) {
-					return;
-				}
-				const lines = node.value.split("\n");
-				for (const line of lines) {
-					if (titlePattern.test(line)) {
-						h1Count++;
-						break;
-					}
+				if (frontmatterHasTitle(node.value, titlePattern)) {
+					h1Count++;
 				}
 			},
 

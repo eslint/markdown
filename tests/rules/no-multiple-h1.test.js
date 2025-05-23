@@ -385,6 +385,86 @@ ruleTester.run("no-multiple-h1", rule, {
 		{
 			code: dedent`
 				---
+				"title": My Title
+				---
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "yaml",
+			},
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 4,
+					column: 1,
+					endLine: 4,
+					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: dedent`
+				+++
+				"title" = "My Title"
+				+++
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "toml",
+			},
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 4,
+					column: 1,
+					endLine: 4,
+					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: dedent`
+				---
+				'title': My Title
+				---
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "yaml",
+			},
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 4,
+					column: 1,
+					endLine: 4,
+					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: dedent`
+				+++
+				'title' = "My Title"
+				+++
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "toml",
+			},
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 4,
+					column: 1,
+					endLine: 4,
+					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: dedent`
+				---
 				author: Pixel998
 				title: My Title
 				---
