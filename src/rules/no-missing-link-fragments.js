@@ -93,7 +93,7 @@ export default {
 		const slugger = new GithubSlugger();
 		const fragmentIds = new Set();
 
-		fragmentIds.add(ignoreCase ? "top".toLowerCase() : "top");
+		fragmentIds.add("top");
 
 		/**
 		 * Generates a heading ID using the shared slugger instance.
