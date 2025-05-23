@@ -13,7 +13,7 @@ import GithubSlugger from "github-slugger";
  * @typedef {import("../types.ts").MarkdownRuleDefinition<{
  *   RuleOptions: [{
  *     ignoreCase?: boolean;
- *     ignoredPattern?: string;
+ *     allowPattern?: string;
  *   }];
  * }>} NoMissingLinkFragmentsRuleDefinition
  */
@@ -68,7 +68,7 @@ export default {
 						type: "boolean",
 						default: false,
 					},
-					ignoredPattern: {
+					allowPattern: {
 						type: "string",
 						default: "",
 					},
@@ -86,8 +86,8 @@ export default {
 	create(context) {
 		const options = context.options[0] || {};
 		const ignoreCase = options.ignoreCase || false;
-		const ignoredPattern = options.ignoredPattern
-			? new RegExp(options.ignoredPattern, "u")
+		const allowPattern = options.allowPattern
+			? new RegExp(options.allowPattern, "u")
 			: null;
 
 		const slugger = new GithubSlugger();
@@ -155,7 +155,7 @@ export default {
 					return;
 				}
 
-				if (ignoredPattern && ignoredPattern.test(fragment)) {
+				if (allowPattern && allowPattern.test(fragment)) {
 					return;
 				}
 

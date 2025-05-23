@@ -91,7 +91,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
                 [Link](#figure-1)
                 [Link](#figure-2)
             `,
-			options: [{ ignoredPattern: "^figure-" }],
+			options: [{ allowPattern: "^figure-" }],
 		},
 
 		// Multiple identical headings

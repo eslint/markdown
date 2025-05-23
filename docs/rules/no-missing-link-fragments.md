@@ -41,8 +41,8 @@ Examples of **incorrect** code for this rule:
 # Case Test
 [Valid Link with different case](#CASE-TEST)
 
-<!-- With ignoredPattern: "^figure-" -->
-<!-- eslint markdown/no-missing-link-fragments: ["error", { "ignoredPattern": "^figure-" }] -->
+<!-- With allowPattern: "^figure-" -->
+<!-- eslint markdown/no-missing-link-fragments: ["error", { "allowPattern": "^figure-" }] -->
 [Ignored Link](#figure-123)
 ```
 
@@ -59,23 +59,23 @@ This rule supports the following options:
     }
     ```
 
-* `ignoredPattern` (string, default: `""`):
+* `allowPattern` (string, default: `""`):
     A regular expression string. If a link fragment matches this pattern, it will be ignored by the rule. This is useful for fragments that are dynamically generated or handled by other tools.
 
     ```json
     {
-      "ignoredPattern": "^figure-"
+      "allowPattern": "^figure-"
     }
     ```
 
-    Example: If `ignoredPattern` is `"^temp-"`, links like `[Link](#temp-section)` will not be checked.
+    Example: If `allowPattern` is `"^temp-"`, links like `[Link](#temp-section)` will not be checked.
 
 ## When Not To Use It
 
 You might consider disabling this rule if:
 
 * You are using a Markdown processor or static site generator that has a significantly different algorithm for generating heading IDs, and this rule produces too many false positives.
-* You have many dynamically generated links or fragments that cannot be easily covered by the `ignoredPattern` option.
+* You have many dynamically generated links or fragments that cannot be easily covered by the `allowPattern` option.
 
 ## Further Reading
 
