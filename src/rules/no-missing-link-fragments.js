@@ -29,14 +29,19 @@ import GithubSlugger from "github-slugger";
 // Helpers
 //-----------------------------------------------------------------------------
 
+const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
+const customHeadingIdPattern = /\{#([a-z0-9_-]+)\}\s*$/u;
+const markdownInlineFormattingPattern = /[*_~`]/gu;
+const htmlIdNamePattern = /<(?:[^>]+)\s+(?:id|name)="([^"]+)"/gu;
+const headingPrefixPattern = /^#+\s*/u;
+
 /**
  * Checks if the fragment is a valid GitHub line reference
  * @param {string} fragment The fragment to check
  * @returns {boolean} Whether the fragment is a valid GitHub line reference
  */
 function isGitHubLineReference(fragment) {
-	// Match patterns like L20 or L19C5-L21C11
-	return /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u.test(fragment);
+	return githubLineReferencePattern.test(fragment);
 }
 
 //-----------------------------------------------------------------------------
@@ -97,11 +102,13 @@ export default {
 		 * @returns {string} The normalized heading ID.
 		 */
 		function getHeadingId(headingText) {
-			const customIdMatch = headingText.match(/\{#([a-z0-9_-]+)\}\s*$/u);
+			const customIdMatch = headingText.match(customHeadingIdPattern);
 			if (customIdMatch) {
 				return customIdMatch[1];
 			}
-			const plainText = headingText.replace(/[*_~`]/gu, "").trim();
+			const plainText = headingText
+				.replace(markdownInlineFormattingPattern, "")
+				.trim();
 			return slugger.slug(plainText);
 		}
 
@@ -109,14 +116,15 @@ export default {
 			heading(node) {
 				const headingText = context.sourceCode
 					.getText(node)
-					.replace(/^#+\s*/u, "")
+					.replace(headingPrefixPattern, "")
 					.trim();
 				const id = getHeadingId(headingText);
 				fragmentIds.add(ignoreCase ? id.toLowerCase() : id);
 			},
+
 			html(node) {
 				if (node.value) {
-					const htmlText = node.value.trim(); // Trim to handle potential whitespace around comment block
+					const htmlText = node.value.trim();
 					if (
 						htmlText.startsWith("<!--") &&
 						htmlText.endsWith("-->")
@@ -124,9 +132,7 @@ export default {
 						return;
 					}
 
-					const idMatches = htmlText.matchAll(
-						/<(?:[^>]+)\s+(?:id|name)="([^"]+)"/gu,
-					);
+					const idMatches = htmlText.matchAll(htmlIdNamePattern);
 					for (const match of idMatches) {
 						const extractedId = match[1];
 						fragmentIds.add(
@@ -137,6 +143,7 @@ export default {
 					}
 				}
 			},
+
 			link(node) {
 				const url = node.url;
 				if (!url || !url.startsWith("#")) {
@@ -145,15 +152,13 @@ export default {
 
 				const fragment = url.slice(1);
 				if (!fragment) {
-					return; // Empty fragments are handled by no-empty-links rule or similar
+					return;
 				}
 
-				// Skip if fragment matches ignored pattern
 				if (ignoredPattern && ignoredPattern.test(fragment)) {
 					return;
 				}
 
-				// Handle GitHub line references
 				if (isGitHubLineReference(fragment)) {
 					return;
 				}
