@@ -35,8 +35,6 @@ const markdownInlineFormattingPattern = /[*_~`]/gu;
 const htmlIdNamePattern = /<(?:[^>]+)\s+(?:id|name)="([^"]+)"/gu;
 const headingPrefixPattern = /^#+\s*/u;
 
-const slugger = new GithubSlugger();
-
 /**
  * Checks if the fragment is a valid GitHub line reference
  * @param {string} fragment The fragment to check
@@ -93,6 +91,7 @@ export default {
 			: null;
 
 		const fragmentIds = new Set();
+		const slugger = new GithubSlugger();
 
 		fragmentIds.add("top");
 
