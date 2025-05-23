@@ -1,7 +1,9 @@
 /**
- * @fileoverview Rule to prevent links with fragment identifiers that don't exist.
+ * @fileoverview Rule to ensure link fragments (URLs that start with #) reference valid headings
  * @author Sweta Tanwar (@SwetaTanwar)
  */
+
+import GithubSlugger from "github-slugger";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -11,10 +13,31 @@
  * @typedef {import("../types.ts").MarkdownRuleDefinition<{
  *   RuleOptions: [{
  *     ignoreCase?: boolean;
- *     allowPattern?: string;
+ *     ignoredPattern?: string;
  *   }];
  * }>} NoMissingLinkFragmentsRuleDefinition
  */
+
+/**
+ * @typedef {import("mdast").Node & {
+ *   children?: Array<import("mdast").Node>;
+ *   value?: string;
+ * }} NodeWithChildren
+ */
+
+//-----------------------------------------------------------------------------
+// Helpers
+//-----------------------------------------------------------------------------
+
+/**
+ * Checks if the fragment is a valid GitHub line reference
+ * @param {string} fragment The fragment to check
+ * @returns {boolean} Whether the fragment is a valid GitHub line reference
+ */
+function isGitHubLineReference(fragment) {
+	// Match patterns like L20 or L19C5-L21C11
+	return /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u.test(fragment);
+}
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -28,16 +51,9 @@ export default {
 		docs: {
 			recommended: true,
 			description:
-				"Disallow link fragments that don't exist in the document",
+				"Disallow link fragments that do not reference valid headings",
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-missing-link-fragments.md",
 		},
-
-		defaultOptions: [
-			{
-				ignoreCase: false,
-				allowPattern: "",
-			},
-		],
 
 		schema: [
 			{
@@ -47,7 +63,7 @@ export default {
 						type: "boolean",
 						default: false,
 					},
-					allowPattern: {
+					ignoredPattern: {
 						type: "string",
 						default: "",
 					},
@@ -57,79 +73,101 @@ export default {
 		],
 
 		messages: {
-			missingFragment:
-				"Link fragment '#{{fragment}}' does not exist in the document.",
+			invalidFragment:
+				"Link fragment '{{fragment}}' does not reference a valid heading or anchor.",
 		},
 	},
 
 	create(context) {
-		const [{ ignoreCase, allowPattern }] = context.options;
-
-		const allowedRegex = allowPattern
-			? new RegExp(allowPattern, "u")
+		const options = context.options[0] || {};
+		const ignoreCase = options.ignoreCase || false;
+		const ignoredPattern = options.ignoredPattern
+			? new RegExp(options.ignoredPattern, "u")
 			: null;
 
-		const headingIds = new Set();
-		const lowercaseHeadingIds = new Set();
+		const slugger = new GithubSlugger();
+		const fragmentIds = new Set();
+
+		fragmentIds.add(ignoreCase ? "top".toLowerCase() : "top");
 
 		/**
-		 * Normalizes heading text to ID format
-		 * @param {string} text The heading text to normalize
-		 * @returns {string} The normalized heading ID
+		 * Generates a heading ID using the shared slugger instance.
+		 * Handles custom IDs and plain text slugging.
+		 * @param {string} headingText The heading text.
+		 * @returns {string} The normalized heading ID.
 		 */
-		function normalizeHeadingId(text) {
-			return text
-				.toLowerCase()
-				.replace(/[^\w\s-]/gu, "") // Remove non-word chars except spaces and hyphens
-				.replace(/\s+/gu, "-") // Replace spaces with hyphens
-				.replace(/-+/gu, "-") // Replace multiple hyphens with a single hyphen
-				.trim();
+		function getHeadingId(headingText) {
+			const customIdMatch = headingText.match(/\{#([a-z0-9_-]+)\}\s*$/u);
+			if (customIdMatch) {
+				return customIdMatch[1];
+			}
+			const plainText = headingText.replace(/[*_~`]/gu, "").trim();
+			return slugger.slug(plainText);
 		}
 
 		return {
 			heading(node) {
-				if (node.children && node.children.length > 0) {
-					const headingText = node.children
-						.filter(child => child.type === "text")
-						.map(child => child.value)
-						.join("");
-
-					const headingId = normalizeHeadingId(headingText);
-					headingIds.add(headingId);
-					lowercaseHeadingIds.add(headingId.toLowerCase());
-				}
+				const headingText = context.sourceCode
+					.getText(node)
+					.replace(/^#+\s*/u, "")
+					.trim();
+				const id = getHeadingId(headingText);
+				fragmentIds.add(ignoreCase ? id.toLowerCase() : id);
 			},
-
-			link(node) {
-				if (
-					node.url &&
-					node.url.startsWith("#") &&
-					node.url.length > 1
-				) {
-					const fragment = node.url.slice(1);
-
-					if (allowedRegex && allowedRegex.test(fragment)) {
+			html(node) {
+				if (node.value) {
+					const htmlText = node.value.trim(); // Trim to handle potential whitespace around comment block
+					if (
+						htmlText.startsWith("<!--") &&
+						htmlText.endsWith("-->")
+					) {
 						return;
 					}
 
-					let fragmentExists;
-					if (ignoreCase) {
-						const normalizedFragment = fragment.toLowerCase();
-						fragmentExists =
-							lowercaseHeadingIds.has(normalizedFragment);
-					} else {
-						fragmentExists = headingIds.has(fragment);
+					const idMatches = htmlText.matchAll(
+						/<(?:[^>]+)\s+(?:id|name)="([^"]+)"/gu,
+					);
+					for (const match of idMatches) {
+						const extractedId = match[1];
+						fragmentIds.add(
+							ignoreCase
+								? extractedId.toLowerCase()
+								: extractedId,
+						);
 					}
+				}
+			},
+			link(node) {
+				const url = node.url;
+				if (!url || !url.startsWith("#")) {
+					return;
+				}
 
-					if (!fragmentExists) {
-						context.report({
-							loc: node.position,
-							messageId: "missingFragment",
-							data: {
-								fragment,
-							},
-						});
-					}
+				const fragment = url.slice(1);
+				if (!fragment) {
+					return; // Empty fragments are handled by no-empty-links rule or similar
+				}
+
+				// Skip if fragment matches ignored pattern
+				if (ignoredPattern && ignoredPattern.test(fragment)) {
+					return;
+				}
+
+				// Handle GitHub line references
+				if (isGitHubLineReference(fragment)) {
+					return;
+				}
+
+				const normalizedFragment = ignoreCase
+					? fragment.toLowerCase()
+					: fragment;
+
+				if (!fragmentIds.has(normalizedFragment)) {
+					context.report({
+						loc: node.position,
+						messageId: "invalidFragment",
+						data: { fragment },
+					});
 				}
 			},
 		};

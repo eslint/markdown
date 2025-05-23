@@ -25,217 +25,331 @@ const ruleTester = new RuleTester({
 
 ruleTester.run("no-missing-link-fragments", rule, {
 	valid: [
-		// Simple case with matching fragment
-		dedent`# Heading One
-		
-		[Link to heading](#heading-one)`,
+		// Basic heading match
+		dedent`
+            # Heading Name
+            [Link](#heading-name)
+        `,
 
-		// Multiple headings and links
-		dedent`# Introduction
-		
-		## First Section
-		
-		[Link to introduction](#introduction)
-		
-		[Link to section](#first-section)`,
+		// Custom heading ID
+		dedent`
+            # Heading Name {#custom-name}
+            [Link](#custom-name)
+        `,
 
-		// Mixed case handling
-		dedent`# TITLE
-		
-		[Link to title](#title)`,
+		// HTML anchor tags
+		dedent`
+            <a id="bookmark"></a>
+            [Link](#bookmark)
+        `,
 
-		// Link to empty fragment (anchor) should pass
-		dedent`# Title
-		
-		[Empty link](#)`,
+		// HTML name attribute
+		dedent`
+            <a name="old-style"></a>
+            [Link](#old-style)
+        `,
 
-		// Links without fragments should pass
-		dedent`# Title
-		
-		[External link](https://example.com)
-		[Relative link](./file.md)`,
+		// Special #top link
+		"[Link](#top)",
 
-		// Testing ignoreCase parameter
+		// GitHub line references with actual content
+		dedent`
+            # Sample Code Section
+            
+            \`\`\`js
+            // Line 1: Function declaration
+            function add(a, b) {
+                // Line 2: Add numbers
+                return a + b;
+            }
+            
+            // Line 3: Function call
+            const result = add(1, 2);
+            
+            // Line 4: Log result
+            console.log(result);
+            \`\`\`
+            
+            [Reference Line 2](#L6)
+            [Reference Lines 2-4](#L6-L12)
+            [Reference Line with Column](#L6C13)
+            [Reference Line Range with Columns](#L6C13-L8C1)
+        `,
+
+		// Case-insensitive matching (with option)
 		{
-			code: dedent`# Introduction
-			
-			[Case insensitive link](#INTRODUCTION)`,
+			code: dedent`
+                # Heading Name
+                [Link](#HEADING-NAME)
+            `,
 			options: [{ ignoreCase: true }],
 		},
 
-		// Testing allowPattern parameter
+		// Ignored pattern (with option)
 		{
-			code: dedent`# Title
-			
-			[Ignored pattern link](#section-123)`,
-			options: [{ allowPattern: "^section-" }],
+			code: dedent`
+                [Link](#figure-1)
+                [Link](#figure-2)
+            `,
+			options: [{ ignoredPattern: "^figure-" }],
 		},
 
-		// Testing both parameters together
-		{
-			code: dedent`# Introduction
-			
-			[Case insensitive link](#INTRODUCTION)
-			[Ignored pattern link](#section-123)`,
-			options: [{ ignoreCase: true, allowPattern: "^section-" }],
-		},
+		// Multiple identical headings
+		dedent`
+            # Duplicate
+            [Link](#duplicate)
+            # Duplicate
+            [Link to second Duplicate](#duplicate-1)
+            # Duplicate {#custom-dup}
+            [Link to custom Duplicate](#custom-dup)
+            # Duplicate
+            [Link to third Duplicate](#duplicate-2)
+        `,
 
-		// Testing exact match with explicit ignoreCase: false
-		{
-			code: dedent`# Introduction
-			
-			[Case sensitive match](#introduction)`,
-			options: [{ ignoreCase: false }],
-		},
+		// Special characters in heading
+		dedent`
+            # Special & < > Characters!
+            [Link](#special----characters)
+        `,
 
-		// Testing with empty allowPattern (explicit test for null allowedRegex path)
-		{
-			code: dedent`# Introduction
-			
-			[Valid link](#introduction)`,
-			options: [{ allowPattern: "" }],
-		},
+		// Non-fragment links
+		"[External](https://example.com)",
+		"[Root](/)",
+		"[Empty]()",
 
-		// Test a valid fragment match but without ignoreCase specified (default behavior)
-		{
-			code: dedent`# Introduction
-			
-			[Default match](#introduction)`,
-			options: [{}], // Empty options object
-		},
+		// Empty fragment (handled by no-empty-links rule)
+		"[Link](#)",
 
-		// Test with plain text fragment that matches heading and allowPattern that doesn't match the fragment
+		// Multiple headings and links
+		dedent`
+            # First Heading
+            ## Second Heading
+            ### Third Heading
+            
+            [Link 1](#first-heading)
+            [Link 2](#second-heading)
+            [Link 3](#third-heading)
+        `,
+
+		// HTML elements with IDs
+		dedent`
+            <div id="section1">Content</div>
+            [Link](#section1)
+        `,
+
+		// Headings with inline Markdown formatting
+		dedent`
+            # Heading with \`inline code\`
+            [Link](#heading-with-inline-code)
+
+            # Heading with *italic text*
+            [Link](#heading-with-italic-text)
+
+            # Heading with _italic too_
+            [Link](#heading-with-italic-too)
+
+            # Heading with **bold text**
+            [Link](#heading-with-bold-text)
+
+            # Heading with __bold too__
+            [Link](#heading-with-bold-too)
+
+            # Heading with ~strikethrough~
+            [Link](#heading-with-strikethrough)
+        `,
+
+		// Headings with emojis and accented characters
+		dedent`
+            # Heading with 🚀 emoji
+            [Link](#heading-with--emoji)
+
+            # Héading with àccènt chàrâctérs
+            [Link](#héading-with-àccènt-chàrâctérs)
+
+            # Mix: _Héading_ with 🚀 & \`code\`
+            [Link](#mix-héading-with---code)
+        `,
+
 		{
-			code: dedent`# Introduction
-			
-			[Valid link with non-matching pattern](#introduction)`,
-			options: [{ allowPattern: "^special-" }],
+			code: '<div id="HtmlCaseCheck"></div>\n[Link](#htmlcasecheck)',
+			options: [{ ignoreCase: true }],
 		},
+		// Valid: HTML ID inside comment is ignored, link to valid ID still works
+		dedent`
+            <!-- <div id="commented-out"></div> -->
+            <div id="real-id"></div>
+            [Link](#real-id)
+        `,
 	],
+
 	invalid: [
+		// Basic invalid case
 		{
-			// Missing fragment
-			code: dedent`# Title\n\n[Link to non-existent heading](#non-existent)`,
+			code: dedent`
+                [Invalid](#non-existent)
+            `,
 			errors: [
 				{
-					messageId: "missingFragment",
-					data: {
-						fragment: "non-existent",
-					},
-					line: 3,
+					messageId: "invalidFragment",
+					data: { fragment: "non-existent" },
+					line: 1,
 					column: 1,
-					endLine: 3,
-					endColumn: 46,
-				},
-			],
-		},
-		{
-			// Case mismatch is invalid by default
-			code: dedent`# Introduction\n\n[Wrong case](#INTRODUCTION)`,
-			errors: [
-				{
-					messageId: "missingFragment",
-					data: {
-						fragment: "INTRODUCTION",
-					},
-					line: 3,
-					column: 1,
-					endLine: 3,
-					endColumn: 28,
-				},
-			],
-		},
-		{
-			// Multiple errors
-			code: dedent`# Title\n\n[Link one](#missing-one)\n[Link two](#missing-two)`,
-			errors: [
-				{
-					messageId: "missingFragment",
-					data: {
-						fragment: "missing-one",
-					},
-					line: 3,
-					column: 1,
-					endLine: 3,
+					endLine: 1,
 					endColumn: 25,
 				},
+			],
+		},
+
+		// Case-sensitive mismatch (without ignoreCase option)
+		{
+			code: dedent`
+                # Heading Name
+                [Invalid](#HEADING-NAME)
+            `,
+			errors: [
 				{
-					messageId: "missingFragment",
-					data: {
-						fragment: "missing-two",
-					},
+					messageId: "invalidFragment",
+					data: { fragment: "HEADING-NAME" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 25,
+				},
+			],
+		},
+
+		// Invalid with existing headings
+		{
+			code: dedent`
+                # Heading
+                [Invalid](#wrong-heading)
+            `,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "wrong-heading" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 26,
+				},
+			],
+		},
+
+		// Multiple invalid links
+		{
+			code: dedent`
+                # Heading
+                [Invalid 1](#wrong1)
+                [Invalid 2](#wrong2)
+            `,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "wrong1" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 21,
+				},
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "wrong2" },
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 21,
+				},
+			],
+		},
+
+		// Invalid custom ID format
+		{
+			code: dedent`
+                # Heading {#Invalid-ID-With-Caps}
+                [Link](#Invalid-ID-With-Caps)
+            `,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "Invalid-ID-With-Caps" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 30,
+				},
+			],
+		},
+
+		// Special characters in fragment
+		{
+			code: dedent`
+                # Heading
+                [Invalid](#heading@#$%)
+            `,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading@#$%" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 24,
+				},
+			],
+		},
+
+		// Invalid GitHub line reference format
+		{
+			code: dedent`
+                \`\`\`js
+                // Some code
+                \`\`\`
+                [Invalid Format](#L2O)  // Using O instead of 0
+            `,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "L2O" },
 					line: 4,
 					column: 1,
 					endLine: 4,
+					endColumn: 23,
+				},
+			],
+		},
+
+		// Invalid link to suffixed heading that shouldn't exist
+		{
+			code: dedent`
+                # Only One Like This
+                [Invalid Link](#only-one-like-this-1)
+            `,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "only-one-like-this-1" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 38,
+				},
+			],
+		},
+		// Invalid: Link to an ID that only exists inside an HTML comment
+		{
+			code: dedent`
+                <!-- <div id="only-in-comment"></div> -->
+                [Link](#only-in-comment)
+            `,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "only-in-comment" },
+					line: 2,
+					column: 1,
+					endLine: 2,
 					endColumn: 25,
-				},
-			],
-		},
-		{
-			// Case mismatch with ignoreCase set to false explicitly
-			code: dedent`# Introduction\n\n[Wrong case](#INTRODUCTION)`,
-			options: [{ ignoreCase: false }],
-			errors: [
-				{
-					messageId: "missingFragment",
-					data: {
-						fragment: "INTRODUCTION",
-					},
-					line: 3,
-					column: 1,
-					endLine: 3,
-					endColumn: 28,
-				},
-			],
-		},
-		{
-			// Non-matching fragment with allowPattern that doesn't match
-			code: dedent`# Title\n\n[Non-matching ignored pattern](#nonmatching)`,
-			options: [{ allowPattern: "^section-" }],
-			errors: [
-				{
-					messageId: "missingFragment",
-					data: {
-						fragment: "nonmatching",
-					},
-					line: 3,
-					column: 1,
-					endLine: 3,
-					endColumn: 45,
-				},
-			],
-		},
-		{
-			// Non-matching fragment with empty allowPattern (explicit test for null allowedRegex path)
-			code: dedent`# Title\n\n[Non-matching fragment](#nonexistent)`,
-			options: [{ allowPattern: "" }],
-			errors: [
-				{
-					messageId: "missingFragment",
-					data: {
-						fragment: "nonexistent",
-					},
-					line: 3,
-					column: 1,
-					endLine: 3,
-					endColumn: 38,
-				},
-			],
-		},
-		{
-			// Missing fragment with no options specified (default behavior)
-			code: dedent`# Title\n\n[Missing with defaults](#nonexistent)`,
-			options: [{}], // Empty options object
-			errors: [
-				{
-					messageId: "missingFragment",
-					data: {
-						fragment: "nonexistent",
-					},
-					line: 3,
-					column: 1,
-					endLine: 3,
-					endColumn: 38,
 				},
 			],
 		},
