@@ -6,6 +6,12 @@ Disallow link fragments that don't exist in the document.
 
 Ensures that link fragments (URLs that start with `#`) reference valid headings or anchors in the document. This rule helps prevent broken internal links.
 
+```markdown
+# Introduction
+
+[Link](#introduction) 
+```
+
 ## Rule Details
 
 This rule is triggered when a link fragment does not match any of the fragments that are automatically generated for headings in a document or explicitly defined via HTML anchors or custom heading IDs.
@@ -18,7 +24,8 @@ Examples of **incorrect** code for this rule:
 [Invalid Link](#non-existent-heading)
 
 # Some Heading
-[Case Mismatch](#SOME-HEADING) <!-- Default: case-sensitive -->
+
+[Case Mismatch](#other-heading)
 ```
 
 Examples of **correct** code for this rule:
@@ -27,52 +34,54 @@ Examples of **correct** code for this rule:
 <!-- eslint markdown/no-missing-link-fragments: "error" -->
 
 # Introduction
+
 [Valid Link](#introduction)
 
 # Another Section {#custom-id}
+
 [Link to custom ID](#custom-id)
 
-<p id="html-anchor">HTML Anchor</p>
+<h1 id="html-anchor">HTML Anchor</h1>
+
 [Link to HTML anchor](#html-anchor)
 
 <a name="named-anchor">Named Anchor</a>
+
 [Link to named anchor](#named-anchor)
 
 [Link to top of page](#top)
 
-<!-- With ignoreCase: true -->
-<!-- eslint markdown/no-missing-link-fragments: ["error", { "ignoreCase": true }] -->
-# Case Test
-[Valid Link with different case](#CASE-TEST)
-
-<!-- With allowPattern: "^figure-" -->
-<!-- eslint markdown/no-missing-link-fragments: ["error", { "allowPattern": "^figure-" }] -->
-[Ignored Link](#figure-123)
+[Link](#L2)
 ```
 
 ## Options
 
 This rule supports the following options:
 
-* `ignoreCase` (boolean, default: `false`):
-    When `true`, link fragments are compared with heading and anchor IDs in a case-insensitive manner.
+* `ignoreCase: boolean` -
+    When `true`, link fragments are compared with heading and anchor IDs in a case-insensitive manner. (default: `false`)
 
-    ```json
-    {
-      "ignoreCase": true
-    }
+    Examples of **correct** code when configured as `"no-missing-link-fragments": ["error", { ignoreCase: true }]`:
+
+    ```markdown
+    <!-- eslint markdown/no-missing-link-fragments: ["error", { "ignoreCase": true }] -->
+    
+    # Case Test
+
+    [Valid Link with different case](#CASE-TEST)
+    
     ```
 
-* `allowPattern` (string, default: `""`):
-    A regular expression string. If a link fragment matches this pattern, it will be ignored by the rule. This is useful for fragments that are dynamically generated or handled by other tools.
+* `allowPattern: string` -
+    A regular expression string. If a link fragment matches this pattern, it will be ignored by the rule. This is useful for fragments that are dynamically generated or handled by other tools. (default: `""`)
 
-    ```json
-    {
-      "allowPattern": "^figure-"
-    }
+    Examples of **correct** code when configured as `"no-missing-link-fragments": ["error", { allowPattern: "" }]`:
+
+    ```markdown
+    <!-- eslint markdown/no-missing-link-fragments: ["error", { "allowPattern": "^figure-" }] -->
+
+    [Ignored Link](#figure-19)
     ```
-
-    Example: If `allowPattern` is `"^temp-"`, links like `[Link](#temp-section)` will not be checked.
 
 ## When Not To Use It
 
