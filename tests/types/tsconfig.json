@@ -4,7 +4,8 @@
     "emitDeclarationOnly": false,
     "noEmit": true,
     "rootDir": "../..",
-    "strict": true
+    "strict": true,
+    "exactOptionalPropertyTypes": true
   },
   "files": [],
   "include": [".", "../../dist"]
