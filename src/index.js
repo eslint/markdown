@@ -19,7 +19,28 @@ import rules from "./build/rules.js";
 
 /** @typedef {import("eslint").Linter.RulesRecord} RulesRecord*/
 /** @typedef {import("eslint").Linter.Config} Config*/
-/** @typedef {import("eslint").ESLint.Plugin} Plugin */
+/** @typedef {import("eslint").Linter.LegacyConfig} LegacyConfig*/
+/** @typedef {import("eslint").Linter.Processor} Processor*/
+/**
+ * @typedef {import("eslint").ESLint.Plugin &
+ *     { meta: {
+ *         name: string;
+ *         version: string;
+ *     }} &
+ *     { processors: {
+ *         markdown: Processor;
+ *     }} &
+ *     { languages: {
+ *         commonmark: Language;
+ *         gfm: Language;
+ *     }} &
+ *     { configs: {
+ *         "recommended-legacy": LegacyConfig;
+ *         recommended: Config[];
+ *         processor: Config[];
+ *     }}
+ * } Plugin
+ */
 /**
  * @typedef {import("./types.ts").MarkdownRuleDefinition<Options>} MarkdownRuleDefinition<Options>
  * @template {Partial<import("./types.ts").MarkdownRuleDefinitionTypeOptions>} [Options={}]
@@ -57,6 +78,7 @@ const processorRulesConfig = {
 
 let recommendedPlugins, processorPlugins;
 
+/** @type {Plugin} */
 const plugin = {
 	meta: {
 		name: "@eslint/markdown",
