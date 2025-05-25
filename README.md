@@ -82,7 +82,7 @@ export default defineConfig([
 | [`no-html`](./docs/rules/no-html.md) | Disallow HTML tags | no |
 | [`no-invalid-label-refs`](./docs/rules/no-invalid-label-refs.md) | Disallow invalid label references | yes |
 | [`no-missing-label-refs`](./docs/rules/no-missing-label-refs.md) | Disallow missing label references | yes |
-| [`no-missing-link-fragments`](./docs/rules/no-missing-link-fragments.md) | Disallow link fragments that don't exist in the document | yes |
+| [`no-missing-link-fragments`](./docs/rules/no-missing-link-fragments.md) | Disallow link fragments that do not reference valid headings | yes |
 | [`require-alt-text`](./docs/rules/require-alt-text.md) | Require alternative text for images | yes |
 <!-- Rule Table End -->
 
