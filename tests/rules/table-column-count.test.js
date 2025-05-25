@@ -79,13 +79,9 @@ ruleTester.run("table-column-count", rule, {
 			errors: [
 				{
 					messageId: "inconsistentColumnCount",
-					data: {
-						dataRowIndex: "1",
-						actualCells: "3",
-						expectedCells: "2",
-					},
+					data: { actualCells: "3", expectedCells: "2" },
 					line: 3,
-					column: 1,
+					column: 17,
 					endLine: 3,
 					endColumn: 26,
 				},
@@ -100,13 +96,9 @@ ruleTester.run("table-column-count", rule, {
 			errors: [
 				{
 					messageId: "inconsistentColumnCount",
-					data: {
-						dataRowIndex: "1",
-						actualCells: "2",
-						expectedCells: "1",
-					},
+					data: { actualCells: "2", expectedCells: "1" },
 					line: 3,
-					column: 1,
+					column: 5,
 					endLine: 3,
 					endColumn: 10,
 				},
@@ -126,13 +118,9 @@ ruleTester.run("table-column-count", rule, {
 			errors: [
 				{
 					messageId: "inconsistentColumnCount",
-					data: {
-						dataRowIndex: "1",
-						actualCells: "3",
-						expectedCells: "2",
-					},
+					data: { actualCells: "3", expectedCells: "2" },
 					line: 5,
-					column: 1,
+					column: 21,
 					endLine: 5,
 					endColumn: 30,
 				},

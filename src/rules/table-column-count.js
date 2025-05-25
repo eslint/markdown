@@ -29,7 +29,7 @@ export default {
 
 		messages: {
 			inconsistentColumnCount:
-				"Table column count mismatch (Expected: {{expectedCells}}, Actual: {{actualCells}}), extra data will be ignored.",
+				"Table column count mismatch (Expected: {{expectedCells}}, Actual: {{actualCells}}), extra data starting here will be ignored.",
 		},
 	},
 
@@ -48,8 +48,23 @@ export default {
 					const actualCells = currentRow.children.length;
 
 					if (actualCells > expectedCells) {
+						const firstExtraCellNode =
+							currentRow.children[expectedCells];
+
 						context.report({
 							node: currentRow,
+							loc: {
+								start: {
+									line: firstExtraCellNode.position.start
+										.line,
+									column: firstExtraCellNode.position.start
+										.column,
+								},
+								end: {
+									line: currentRow.position.end.line,
+									column: currentRow.position.end.column,
+								},
+							},
 							messageId: "inconsistentColumnCount",
 							data: {
 								actualCells: String(actualCells),
