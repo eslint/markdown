@@ -67,6 +67,27 @@ ruleTester.run("table-column-count", rule, {
             | ----- | ----- |
             | Row   | Here  |
         `,
+		dedent`
+			| abc | defghi |
+			:-: | -----------:
+			bar | baz
+		`,
+		dedent`
+            | f|oo  |
+            | ------ |
+            | b \`|\` az |
+            | b **|** im |
+        `,
+		dedent`
+			| abc | def |
+			| --- | --- |
+			| bar | baz |
+			> bar
+		`,
+		dedent`
+			| abc | def |
+			| --- | --- |
+		`,
 	],
 
 	invalid: [
@@ -84,6 +105,23 @@ ruleTester.run("table-column-count", rule, {
 					column: 17,
 					endLine: 3,
 					endColumn: 26,
+				},
+			],
+		},
+		{
+			code: dedent`
+                | Head1 | Head2 |
+                | ----- | ----- |
+                | R1C1  | R1C2  | R2C3  | R3C4 |
+            `,
+			errors: [
+				{
+					messageId: "inconsistentColumnCount",
+					data: { actualCells: "4", expectedCells: "2" },
+					line: 3,
+					column: 17,
+					endLine: 3,
+					endColumn: 33,
 				},
 			],
 		},
@@ -123,6 +161,42 @@ ruleTester.run("table-column-count", rule, {
 					column: 21,
 					endLine: 5,
 					endColumn: 30,
+				},
+			],
+		},
+		{
+			code: dedent`
+                | abc | defghi |
+				:-: | -----------:
+				bar | baz
+				bar | baz | bad
+            `,
+			errors: [
+				{
+					messageId: "inconsistentColumnCount",
+					data: { actualCells: "3", expectedCells: "2" },
+					line: 4,
+					column: 11,
+					endLine: 4,
+					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: dedent`
+					| abc | def |
+					| --- | --- |
+					| bar | baz | Extra |
+					> This is a blockquote after
+				`,
+			errors: [
+				{
+					messageId: "inconsistentColumnCount",
+					data: { actualCells: "3", expectedCells: "2" },
+					line: 3,
+					column: 13,
+					endLine: 3,
+					endColumn: 22,
 				},
 			],
 		},
