@@ -29,7 +29,7 @@ export default {
 
 		messages: {
 			inconsistentColumnCount:
-				"Data row {{dataRowIndex}} (1-indexed) has {{actualCells}} cells, but header has {{expectedCells}} cells (should not exceed header count).",
+				"Table column count mismatch (Expected: {{expectedCells}}, Actual: {{actualCells}}), extra data will be ignored.",
 		},
 	},
 
@@ -52,7 +52,6 @@ export default {
 							node: currentRow,
 							messageId: "inconsistentColumnCount",
 							data: {
-								dataRowIndex: String(i),
 								actualCells: String(actualCells),
 								expectedCells: String(expectedCells),
 							},
