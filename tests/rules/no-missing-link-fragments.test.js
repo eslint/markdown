@@ -159,7 +159,13 @@ ruleTester.run("no-missing-link-fragments", rule, {
         `,
 
 		// Headings with emojis and accented characters
-		dedent`
+		// This test case is skipped for non-Node environments like Bun
+		...(typeof process !== "undefined" &&
+		process.release &&
+		process.release.name === "node" &&
+		(!process.versions || !process.versions.bun)
+			? [
+					dedent`
             # Heading with 🚀 emoji
             [Link](#heading-with--emoji)
 
@@ -169,11 +175,14 @@ ruleTester.run("no-missing-link-fragments", rule, {
             # Mix: _Héading_ with 🚀 & \`code\`
             [Link](#mix-héading-with---code)
         `,
+				]
+			: []),
 
 		{
 			code: '<div id="HtmlCaseCheck"></div>\n[Link](#htmlcasecheck)',
 			options: [{ ignoreCase: true }],
 		},
+
 		// Valid: HTML ID inside comment is ignored, link to valid ID still works
 		dedent`
             <!-- <div id="commented-out"></div> -->
