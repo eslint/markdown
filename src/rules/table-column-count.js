@@ -1,5 +1,5 @@
 /**
- * @fileoverview Rule to ensure GitHub Flavored Markdown tables have a consistent number of cells in each row.
+ * @fileoverview Rule to disallow data rows in a GitHub Flavored Markdown table from having more cells than the header row
  * @author Sweta Tanwar (@SwetaTanwar)
  */
 
@@ -26,9 +26,6 @@ export default {
 				"Disallow data rows in a GitHub Flavored Markdown table from having more cells than the header row",
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/table-column-count.md",
 		},
-
-		fixable: null,
-		schema: [],
 
 		messages: {
 			inconsistentColumnCount:

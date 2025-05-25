@@ -4,7 +4,7 @@ Disallow data rows in a GitHub Flavored Markdown table from having more cells th
 
 ## Background
 
-In GitHub Flavored Markdown [tables](https://github.github.com/gfm/#tables-extension-), rows should maintain a consistent number of cells. While variations are sometimes tolerated, data rows having *more* cells than the header can lead to lost data or rendering issues. This rule focuses on preventing data rows from exceeding the header's column count.
+In GitHub Flavored Markdown [tables](https://github.github.com/gfm/#tables-extension-), rows should maintain a consistent number of cells. While variations are sometimes tolerated, data rows having *more* cells than the header can lead to lost data or rendering issues. This rule prevents data rows from exceeding the header's column count.
 
 ## Rule Details
 
@@ -14,7 +14,7 @@ In GitHub Flavored Markdown [tables](https://github.github.com/gfm/#tables-exten
 
 This rule is triggered if a data row in a GFM table contains more cells than the header row. It does not flag rows with fewer cells than the header.
 
-Examples of **incorrect** code for this rule (i.e., will be flagged):
+Examples of **incorrect** code for this rule:
 
 ```markdown
 <!-- eslint markdown/table-column-count: "error" -->
@@ -28,7 +28,7 @@ Examples of **incorrect** code for this rule (i.e., will be flagged):
 | 1 | 2 | <!-- This data row has 2 cells, header has 1 -->
 ```
 
-Examples of **correct** code for this rule (i.e., will NOT be flagged):
+Examples of **correct** code for this rule:
 
 ```markdown
 <!-- eslint markdown/table-column-count: "error" -->
@@ -48,7 +48,7 @@ Examples of **correct** code for this rule (i.e., will NOT be flagged):
 | Col A | Col B | Col C |
 | ----- | ----- | ----- |
 | 1     |       | 3     |
-| 4     | 5     |       |
+| 4     | 5     |
 
 <!-- Single column table -->
 | Single Header |
@@ -58,8 +58,8 @@ Examples of **correct** code for this rule (i.e., will NOT be flagged):
 
 ## When Not To Use It
 
-If you are intentionally creating Markdown tables where data rows are expected to contain more cells than the header, and you have a specific (perhaps non-standard) processing or rendering pipeline that handles this scenario correctly, you might choose to disable this rule. However, for typical GFM rendering and data consistency, adhering to this rule is recommended.
+If you intentionally create Markdown tables where data rows are expected to contain more cells than the header, and you have a specific (perhaps non-standard) processing or rendering pipeline that handles this scenario correctly, you might choose to disable this rule. However, adhering to this rule is recommended for typical GFM rendering and data consistency.
 
 ## Prior Art
 
-* [table-column-count](https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md056---table-column-count)
+* [MD056 - table-column-count](https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md056---table-column-count)
