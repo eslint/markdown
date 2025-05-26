@@ -6,6 +6,8 @@ Disallow link fragments that don't exist in the document.
 
 Ensures that link fragments (URLs that start with `#`) reference valid headings or anchors in the document. This rule helps prevent broken internal links.
 
+This rule uses GitHub's heading algorithm for generating heading IDs, implemented via the [`github-slugger`](https://github.com/Flet/github-slugger) package. This ensures compatibility with how GitHub renders Markdown heading anchors.
+
 ```markdown
 # Introduction
 
