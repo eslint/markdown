@@ -36,20 +36,20 @@ export default {
 	create(context) {
 		return {
 			table(node) {
-				if (!node.children || node.children.length < 1) {
+				if (node.children.length < 1) {
 					return;
 				}
 
 				const headerRow = node.children[0];
-				const expectedCells = headerRow.children.length;
+				const expectedCellsLength = headerRow.children.length;
 
 				for (let i = 1; i < node.children.length; i++) {
 					const currentRow = node.children[i];
-					const actualCells = currentRow.children.length;
+					const actualCellsLength = currentRow.children.length;
 
-					if (actualCells > expectedCells) {
+					if (actualCellsLength > expectedCellsLength) {
 						const firstExtraCellNode =
-							currentRow.children[expectedCells];
+							currentRow.children[expectedCellsLength];
 
 						context.report({
 							node: currentRow,
@@ -67,8 +67,8 @@ export default {
 							},
 							messageId: "inconsistentColumnCount",
 							data: {
-								actualCells: String(actualCells),
-								expectedCells: String(expectedCells),
+								actualCells: String(actualCellsLength),
+								expectedCells: String(expectedCellsLength),
 							},
 						});
 					}
