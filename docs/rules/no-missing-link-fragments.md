@@ -64,7 +64,7 @@ This rule supports the following options:
     Examples of **correct** code when configured as `"no-missing-link-fragments": ["error", { ignoreCase: true }]`:
 
     ```markdown
-    <!-- eslint markdown/no-missing-link-fragments: ["error", { "ignoreCase": true }] -->
+    <!-- eslint markdown/no-missing-link-fragments: ["error", { ignoreCase: true }] -->
     
     # Case Test
 
@@ -78,7 +78,7 @@ This rule supports the following options:
     Examples of **correct** code when configured as `"no-missing-link-fragments": ["error", { allowPattern: "" }]`:
 
     ```markdown
-    <!-- eslint markdown/no-missing-link-fragments: ["error", { "allowPattern": "^figure-" }] -->
+    <!-- eslint markdown/no-missing-link-fragments: ["error", { allowPattern: "^figure-" }] -->
 
     [Ignored Link](#figure-19)
     ```

@@ -3,6 +3,9 @@
  * @author Sweta Tanwar (@SwetaTanwar)
  */
 
+//-----------------------------------------------------------------------------
+// Imports
+//-----------------------------------------------------------------------------
 import GithubSlugger from "github-slugger";
 
 //-----------------------------------------------------------------------------
@@ -18,13 +21,6 @@ import GithubSlugger from "github-slugger";
  * }>} NoMissingLinkFragmentsRuleDefinition
  */
 
-/**
- * @typedef {import("mdast").Node & {
- *   children?: Array<import("mdast").Node>;
- *   value?: string;
- * }} NodeWithChildren
- */
-
 //-----------------------------------------------------------------------------
 // Helpers
 //-----------------------------------------------------------------------------
@@ -33,7 +29,7 @@ const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
 const customHeadingIdPattern = /\{#([a-z0-9_-]+)\}\s*$/u;
 const markdownInlineFormattingPattern = /[*_~`]/gu;
 const htmlIdNamePattern = /<(?:[^>]+)\s+(?:id|name)="([^"]+)"/gu;
-const headingPrefixPattern = /^#+\s*/u;
+const headingPrefixPattern = /^#{1,6}\s+/u;
 
 /**
  * Checks if the fragment is a valid GitHub line reference
@@ -90,10 +86,8 @@ export default {
 			? new RegExp(options.allowPattern, "u")
 			: null;
 
-		const fragmentIds = new Set();
+		const fragmentIds = new Set(["top"]);
 		const slugger = new GithubSlugger();
-
-		fragmentIds.add("top");
 
 		/**
 		 * Generates a heading ID using the shared slugger instance.
