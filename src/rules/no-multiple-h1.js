@@ -1,5 +1,5 @@
 /**
- * @fileoverview Rule to require alternative text for images in Markdown.
+ * @fileoverview Rule to enforce at most one H1 heading in Markdown.
  * @author Pixel998
  */
 
@@ -14,87 +14,95 @@ import { findOffsets } from "../util.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * RequireAltTextRuleDefinition
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ frontmatterTitle?: string; }]; }>}
+ * NoMultipleH1RuleDefinition
  */
 
 //-----------------------------------------------------------------------------
 // Helpers
 //-----------------------------------------------------------------------------
 
-const imgTagPattern = /(?<!<!--[\s\S]*?)<img[^>]*>/giu;
+const h1TagPattern = /(?<!<!--[\s\S]*?)<h1[^>]*>[\s\S]*?<\/h1>/giu;
 
 /**
- * Creates a regex to match HTML attributes
- * @param {string} name The attribute name to match
- * @returns {RegExp} Regular expression for matching the attribute
+ * Checks if a frontmatter block contains a title matching the given pattern
+ * @param {string} value The frontmatter content
+ * @param {RegExp|null} pattern The pattern to match against
+ * @returns {boolean} Whether a title was found
  */
-function getHtmlAttributeRe(name) {
-	return new RegExp(`\\s${name}(?:\\s*=\\s*['"]([^'"]*)['"])?`, "iu");
+function frontmatterHasTitle(value, pattern) {
+	if (!pattern) {
+		return false;
+	}
+	const lines = value.split("\n");
+	for (const line of lines) {
+		if (pattern.test(line)) {
+			return true;
+		}
+	}
+	return false;
 }
 
 //-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {RequireAltTextRuleDefinition} */
+/** @type {NoMultipleH1RuleDefinition} */
 export default {
 	meta: {
 		type: "problem",
 
 		docs: {
 			recommended: true,
-			description: "Require alternative text for images",
-			url: "https://github.com/eslint/markdown/blob/main/docs/rules/require-alt-text.md",
+			description: "Disallow multiple H1 headings in the same document",
+			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-multiple-h1.md",
 		},
 
 		messages: {
-			altTextRequired: "Alternative text for image is required.",
+			multipleH1: "Unexpected additional H1 heading found.",
 		},
+
+		schema: [
+			{
+				type: "object",
+				properties: {
+					frontmatterTitle: {
+						type: "string",
+					},
+				},
+				additionalProperties: false,
+			},
+		],
+
+		defaultOptions: [
+			{ frontmatterTitle: "^\\s*['\"]?title['\"]?\\s*[:=]" },
+		],
 	},
 
 	create(context) {
+		const [{ frontmatterTitle }] = context.options;
+		const titlePattern =
+			frontmatterTitle === "" ? null : new RegExp(frontmatterTitle, "iu");
+		let h1Count = 0;
+
 		return {
-			image(node) {
-				if (node.alt.trim().length === 0) {
-					context.report({
-						loc: node.position,
-						messageId: "altTextRequired",
-					});
+			yaml(node) {
+				if (frontmatterHasTitle(node.value, titlePattern)) {
+					h1Count++;
 				}
 			},
 
-			imageReference(node) {
-				if (node.alt.trim().length === 0) {
-					context.report({
-						loc: node.position,
-						messageId: "altTextRequired",
-					});
+			toml(node) {
+				if (frontmatterHasTitle(node.value, titlePattern)) {
+					h1Count++;
 				}
 			},
 
 			html(node) {
 				let match;
-
-				while ((match = imgTagPattern.exec(node.value)) !== null) {
-					const imgTag = match[0];
-					const ariaHiddenMatch = imgTag.match(
-						getHtmlAttributeRe("aria-hidden"),
-					);
-					if (
-						ariaHiddenMatch &&
-						ariaHiddenMatch[1].toLowerCase() === "true"
-					) {
-						continue;
-					}
-
-					const altMatch = imgTag.match(getHtmlAttributeRe("alt"));
-					if (
-						!altMatch ||
-						(altMatch[1] &&
-							altMatch[1].trim().length === 0 &&
-							altMatch[1].length > 0)
-					) {
+				while ((match = h1TagPattern.exec(node.value)) !== null) {
+					h1Count++;
+					if (h1Count > 1) {
 						const {
 							lineOffset: startLineOffset,
 							columnOffset: startColumnOffset,
@@ -105,7 +113,7 @@ export default {
 							columnOffset: endColumnOffset,
 						} = findOffsets(
 							node.value,
-							match.index + imgTag.length,
+							match.index + match[0].length,
 						);
 
 						const nodeStartLine = node.position.start.line;
@@ -131,7 +139,19 @@ export default {
 									column: endColumn,
 								},
 							},
-							messageId: "altTextRequired",
+							messageId: "multipleH1",
+						});
+					}
+				}
+			},
+
+			heading(node) {
+				if (node.depth === 1) {
+					h1Count++;
+					if (h1Count > 1) {
+						context.report({
+							loc: node.position,
+							messageId: "multipleH1",
 						});
 					}
 				}
