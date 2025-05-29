@@ -40,11 +40,13 @@ Examples of **correct** code for this rule:
 | Cell   | Cell   |
 
 <!-- Data row with fewer cells than header (VALID for this rule) -->
+<!-- Rows with fewer cells are valid because they render correctly and no data is lost -->
 | Header | Header | Header |
 | ------ | ------ | ------ |
 | Cell   | Cell   |        |
 
 <!-- Table with some empty cells (VALID for this rule) -->
+<!-- Missing cells are treated as empty and don't cause rendering issues -->
 | Col A | Col B | Col C |
 | ----- | ----- | ----- |
 | 1     |       | 3     |
