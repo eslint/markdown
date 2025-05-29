@@ -28,7 +28,6 @@ import GithubSlugger from "github-slugger";
 
 const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
 const customHeadingIdPattern = /\{#([a-z0-9_-]+)\}\s*$/u;
-const markdownInlineFormattingPattern = /[*_~`]/gu;
 const htmlIdNamePattern = /<(?:[^>]+)\s+(?:id|name)="([^"]+)"/gu;
 const headingPrefixPattern = /^#{1,6}\s+/u;
 
@@ -88,40 +87,38 @@ export default {
 	},
 
 	create(context) {
-		const options = context.options[0] || {};
-		const ignoreCase = options.ignoreCase;
-		const allowPattern = options.allowPattern
-			? new RegExp(options.allowPattern, "u")
+		const { allowPattern: allowPatternString, ignoreCase } =
+			context.options[0];
+		const allowPattern = allowPatternString
+			? new RegExp(allowPatternString, "u")
 			: null;
 
 		const fragmentIds = new Set(["top"]);
 		const slugger = new GithubSlugger();
-
-		/**
-		 * Generates a heading ID using the shared slugger instance.
-		 * Handles custom IDs and plain text slugging.
-		 * @param {string} headingText The heading text.
-		 * @returns {string} The normalized heading ID.
-		 */
-		function getHeadingId(headingText) {
-			const customIdMatch = headingText.match(customHeadingIdPattern);
-			if (customIdMatch) {
-				return customIdMatch[1];
-			}
-			const plainText = headingText
-				.replace(markdownInlineFormattingPattern, "")
-				.trim();
-			return slugger.slug(plainText);
-		}
+		const linkNodes = [];
 
 		return {
 			heading(node) {
-				const headingText = context.sourceCode
-					.getText(node)
+				const rawHeadingTextWithPrefix =
+					context.sourceCode.getText(node);
+				const rawHeadingText = rawHeadingTextWithPrefix
 					.replace(headingPrefixPattern, "")
 					.trim();
-				const id = getHeadingId(headingText);
-				fragmentIds.add(ignoreCase ? id.toLowerCase() : id);
+
+				let baseId;
+				const customIdMatch = rawHeadingText.match(
+					customHeadingIdPattern,
+				);
+
+				if (customIdMatch) {
+					baseId = customIdMatch[1];
+				} else {
+					const tempSlugger = new GithubSlugger();
+					baseId = tempSlugger.slug(rawHeadingText);
+				}
+
+				const finalId = slugger.slug(baseId);
+				fragmentIds.add(ignoreCase ? finalId.toLowerCase() : finalId);
 			},
 
 			html(node) {
@@ -134,13 +131,11 @@ export default {
 						return;
 					}
 
-					const idMatches = htmlText.matchAll(htmlIdNamePattern);
-					for (const match of idMatches) {
+					for (const match of htmlText.matchAll(htmlIdNamePattern)) {
 						const extractedId = match[1];
+						const finalId = slugger.slug(extractedId);
 						fragmentIds.add(
-							ignoreCase
-								? extractedId.toLowerCase()
-								: extractedId,
+							ignoreCase ? finalId.toLowerCase() : finalId,
 						);
 					}
 				}
@@ -157,24 +152,30 @@ export default {
 					return;
 				}
 
-				if (allowPattern?.test(fragment)) {
-					return;
-				}
+				linkNodes.push({ node, fragment });
+			},
 
-				if (isGitHubLineReference(fragment)) {
-					return;
-				}
+			"root:exit"() {
+				for (const { node, fragment } of linkNodes) {
+					if (allowPattern?.test(fragment)) {
+						continue;
+					}
 
-				const normalizedFragment = ignoreCase
-					? fragment.toLowerCase()
-					: fragment;
+					if (isGitHubLineReference(fragment)) {
+						continue;
+					}
 
-				if (!fragmentIds.has(normalizedFragment)) {
-					context.report({
-						loc: node.position,
-						messageId: "invalidFragment",
-						data: { fragment },
-					});
+					const normalizedFragment = ignoreCase
+						? fragment.toLowerCase()
+						: fragment;
+
+					if (!fragmentIds.has(normalizedFragment)) {
+						context.report({
+							loc: node.position,
+							messageId: "invalidFragment",
+							data: { fragment },
+						});
+					}
 				}
 			},
 		};
