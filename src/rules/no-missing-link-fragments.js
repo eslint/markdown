@@ -6,6 +6,7 @@
 //-----------------------------------------------------------------------------
 // Imports
 //-----------------------------------------------------------------------------
+
 import GithubSlugger from "github-slugger";
 
 //-----------------------------------------------------------------------------
@@ -77,6 +78,13 @@ export default {
 			invalidFragment:
 				"Link fragment '#{{fragment}}' does not reference a heading or anchor in this document.",
 		},
+
+		defaultOptions: [
+			{
+				ignoreCase: false,
+				allowPattern: "",
+			},
+		],
 	},
 
 	create(context) {
