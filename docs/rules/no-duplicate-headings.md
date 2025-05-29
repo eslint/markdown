@@ -30,6 +30,32 @@ Goodbye World!
 # Goodbye World!
 ```
 
+## Options
+
+The following options are available on this rule:
+
+* `siblingsOnly: boolean` - When set to `true`, the rule will only check for duplicate headings among headings that share the same immediate parent heading. Default is `false`.
+
+Examples of **correct** code for this rule with `siblingsOnly: true`:
+
+```markdown
+<!-- eslint markdown/no-duplicate-headings: ["error", { "siblingsOnly": true }] -->
+
+# Change log
+
+## 1.0.0
+
+### Features
+### Bug Fixes
+
+## 2.0.0
+
+### Features
+### Bug Fixes
+```
+
+In this example, the duplicate "Features" and "Bug Fixes" headings are allowed because they have different parent headings ("1.0.0" vs "2.0.0").
+
 ## When Not to Use It
 
 If you aren't concerned with autolinking heading or autogenerating a table of contents, you can safely disable this rule.
