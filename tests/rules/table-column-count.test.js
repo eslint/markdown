@@ -200,5 +200,58 @@ ruleTester.run("table-column-count", rule, {
 				},
 			],
 		},
+		{
+			code: dedent`
+				| abc | def |
+				| --- | --- |
+				| bar | baz | Extra1 |
+				| bar | baz | Extra2 |
+			`,
+			errors: [
+				{
+					messageId: "inconsistentColumnCount",
+					data: { actualCells: "3", expectedCells: "2" },
+					line: 3,
+					column: 13,
+					endLine: 3,
+					endColumn: 23,
+				},
+				{
+					messageId: "inconsistentColumnCount",
+					data: { actualCells: "3", expectedCells: "2" },
+					line: 4,
+					column: 13,
+					endLine: 4,
+					endColumn: 23,
+				},
+			],
+		},
+		{
+			code: dedent`
+			| abc | def |
+			| --- | --- |
+			| bar | baz | Extra1 |
+		    | bar | baz |
+			| bar | baz | Extra2 |
+		`,
+			errors: [
+				{
+					messageId: "inconsistentColumnCount",
+					data: { actualCells: "3", expectedCells: "2" },
+					line: 3,
+					column: 13,
+					endLine: 3,
+					endColumn: 23,
+				},
+				{
+					messageId: "inconsistentColumnCount",
+					data: { actualCells: "3", expectedCells: "2" },
+					line: 5,
+					column: 13,
+					endLine: 5,
+					endColumn: 23,
+				},
+			],
+		},
 	],
 });

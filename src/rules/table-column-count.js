@@ -51,19 +51,13 @@ export default {
 						const firstExtraCellNode =
 							currentRow.children[expectedCellsLength];
 
+						const lastActualCellNode =
+							currentRow.children[actualCellsLength - 1];
+
 						context.report({
-							node: currentRow,
 							loc: {
-								start: {
-									line: firstExtraCellNode.position.start
-										.line,
-									column: firstExtraCellNode.position.start
-										.column,
-								},
-								end: {
-									line: currentRow.position.end.line,
-									column: currentRow.position.end.column,
-								},
+								start: firstExtraCellNode.position.start,
+								end: lastActualCellNode.position.end,
 							},
 							messageId: "inconsistentColumnCount",
 							data: {
