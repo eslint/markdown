@@ -122,22 +122,17 @@ export default {
 			},
 
 			html(node) {
-				if (node.value) {
-					const htmlText = node.value.trim();
-					if (
-						htmlText.startsWith("<!--") &&
-						htmlText.endsWith("-->")
-					) {
-						return;
-					}
+				const htmlText = node.value.trim();
+				if (htmlText.startsWith("<!--") && htmlText.endsWith("-->")) {
+					return;
+				}
 
-					for (const match of htmlText.matchAll(htmlIdNamePattern)) {
-						const extractedId = match[1];
-						const finalId = slugger.slug(extractedId);
-						fragmentIds.add(
-							ignoreCase ? finalId.toLowerCase() : finalId,
-						);
-					}
+				for (const match of htmlText.matchAll(htmlIdNamePattern)) {
+					const extractedId = match[1];
+					const finalId = slugger.slug(extractedId);
+					fragmentIds.add(
+						ignoreCase ? finalId.toLowerCase() : finalId,
+					);
 				}
 			},
 
