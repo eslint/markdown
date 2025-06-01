@@ -9,7 +9,7 @@
 
 /** @typedef {import("mdast").Heading} HeadingNode */
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ siblingsOnly?: boolean; }]; }>}
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ checkSiblingsOnly?: boolean; }]; }>}
  * NoDuplicateHeadingsRuleDefinition
  */
 
@@ -35,7 +35,7 @@ export default {
 			{
 				type: "object",
 				properties: {
-					siblingsOnly: {
+					checkSiblingsOnly: {
 						type: "boolean",
 					},
 				},
@@ -43,14 +43,16 @@ export default {
 			},
 		],
 
-		defaultOptions: [{ siblingsOnly: false }],
+		defaultOptions: [{ checkSiblingsOnly: false }],
 	},
 
 	create(context) {
-		const [{ siblingsOnly }] = context.options;
+		const [{ checkSiblingsOnly }] = context.options;
 		const { sourceCode } = context;
 
-		const headingsByLevel = [null, []];
+		const headingsByLevel = checkSiblingsOnly
+			? new Array(7).fill(null).map(() => new Set())
+			: [null, new Set()];
 		let lastLevel = 1;
 		let currentLevelHeadings = headingsByLevel[lastLevel];
 
@@ -86,22 +88,23 @@ export default {
 			heading(node) {
 				const headingText = getHeadingText(node);
 
-				if (siblingsOnly) {
+				if (checkSiblingsOnly) {
 					const currentLevel = node.depth;
-					while (lastLevel < currentLevel) {
-						lastLevel++;
-						headingsByLevel[lastLevel] = [];
-					}
 
-					while (lastLevel > currentLevel) {
-						headingsByLevel[lastLevel] = [];
-						lastLevel--;
+					const direction = currentLevel > lastLevel ? 1 : -1;
+					while (lastLevel !== currentLevel) {
+						if (direction > 0) {
+							lastLevel++;
+						} else {
+							headingsByLevel[lastLevel].clear();
+							lastLevel--;
+						}
 					}
 
 					currentLevelHeadings = headingsByLevel[currentLevel];
 				}
 
-				if (currentLevelHeadings.includes(headingText)) {
+				if (currentLevelHeadings.has(headingText)) {
 					context.report({
 						loc: node.position,
 						messageId: "duplicateHeading",
@@ -110,7 +113,7 @@ export default {
 						},
 					});
 				} else {
-					currentLevelHeadings.push(headingText);
+					currentLevelHeadings.add(headingText);
 				}
 			},
 		};

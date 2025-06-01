@@ -40,7 +40,7 @@ ruleTester.run("no-duplicate-headings", rule, {
 
 				### Features
 			`,
-			options: [{ siblingsOnly: true }],
+			options: [{ checkSiblingsOnly: true }],
 		},
 		{
 			code: dedent`
@@ -56,7 +56,7 @@ ruleTester.run("no-duplicate-headings", rule, {
 				Features
 				--------
 			`,
-			options: [{ siblingsOnly: true }],
+			options: [{ checkSiblingsOnly: true }],
 		},
 		{
 			code: dedent`
@@ -71,7 +71,7 @@ ruleTester.run("no-duplicate-headings", rule, {
 
 				## Features
 			`,
-			options: [{ siblingsOnly: true }],
+			options: [{ checkSiblingsOnly: true }],
 		},
 	],
 	invalid: [
@@ -147,7 +147,7 @@ Heading 1
 
 				# Heading 1
             `,
-			options: [{ siblingsOnly: true }],
+			options: [{ checkSiblingsOnly: true }],
 			errors: [
 				{
 					messageId: "duplicateHeading",
@@ -169,7 +169,7 @@ Heading 1
 
 				## Subsection B
 			`,
-			options: [{ siblingsOnly: true }],
+			options: [{ checkSiblingsOnly: true }],
 			errors: [
 				{
 					messageId: "duplicateHeading",
@@ -192,7 +192,7 @@ Heading 1
 				## Subsection A
 				## Subsection A
 			`,
-			options: [{ siblingsOnly: true }],
+			options: [{ checkSiblingsOnly: true }],
 			errors: [
 				{
 					messageId: "duplicateHeading",
@@ -219,7 +219,7 @@ Heading 1
 				Subsection B
 				------------
 			`,
-			options: [{ siblingsOnly: true }],
+			options: [{ checkSiblingsOnly: true }],
 			errors: [
 				{
 					messageId: "duplicateHeading",
@@ -248,7 +248,7 @@ Heading 1
 				Subsection A
 				------------
 			`,
-			options: [{ siblingsOnly: true }],
+			options: [{ checkSiblingsOnly: true }],
 			errors: [
 				{
 					messageId: "duplicateHeading",
@@ -273,7 +273,7 @@ Heading 1
 				Subsection A
 				------------
 			`,
-			options: [{ siblingsOnly: true }],
+			options: [{ checkSiblingsOnly: true }],
 			errors: [
 				{
 					messageId: "duplicateHeading",

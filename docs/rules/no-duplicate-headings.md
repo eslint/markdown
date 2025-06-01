@@ -34,12 +34,12 @@ Goodbye World!
 
 The following options are available on this rule:
 
-* `siblingsOnly: boolean` - When set to `true`, the rule will only check for duplicate headings among headings that share the same immediate parent heading. Default is `false`.
+* `checkSiblingsOnly: boolean` - When set to `true`, the rule will only check for duplicate headings among headings that share the same immediate parent heading. Default is `false`.
 
-Examples of **correct** code for this rule with `siblingsOnly: true`:
+Examples of **correct** code for this rule with `checkSiblingsOnly: true`:
 
 ```markdown
-<!-- eslint markdown/no-duplicate-headings: ["error", { "siblingsOnly": true }] -->
+<!-- eslint markdown/no-duplicate-headings: ["error", { "checkSiblingsOnly": true }] -->
 
 # Change log
 
