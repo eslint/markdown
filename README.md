@@ -85,6 +85,7 @@ export default defineConfig([
 | [`no-missing-atx-heading-space`](./docs/rules/no-missing-atx-heading-space.md) | Disallow headings without a space after the hash characters | yes |
 | [`no-missing-label-refs`](./docs/rules/no-missing-label-refs.md) | Disallow missing label references | yes |
 | [`no-multiple-h1`](./docs/rules/no-multiple-h1.md) | Disallow multiple H1 headings in the same document | yes |
+| [`no-reversed-media-syntax`](./docs/rules/no-reversed-media-syntax.md) | Disallow reversed link and image syntax | yes |
 | [`require-alt-text`](./docs/rules/require-alt-text.md) | Require alternative text for images | yes |
 <!-- Rule Table End -->
 
