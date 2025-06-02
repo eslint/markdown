@@ -45,57 +45,44 @@ export default {
 	create(context) {
 		return {
 			paragraph(node) {
-				if (node.children && node.children.length > 0) {
-					const firstTextChild = node.children.find(
-						child => child.type === "text",
-					);
-					if (!firstTextChild) {
+				const text = context.sourceCode.getText(node);
+				const lines = text.split(newLinePattern);
+
+				lines.forEach((line, idx) => {
+					const match = headingPattern.exec(line);
+					if (!match) {
 						return;
 					}
 
-					const text = context.sourceCode.getText(firstTextChild);
-					const lines = text.split(newLinePattern);
+					const hashes = match[1];
+					const lineNum = node.position.start.line + idx;
+					const startColumn = node.position.start.column;
 
-					lines.forEach((line, idx) => {
-						const lineNum =
-							firstTextChild.position.start.line + idx;
-
-						const match = headingPattern.exec(line);
-						if (!match) {
-							return;
-						}
-
-						const hashes = match[1];
-
-						const startColumn =
-							firstTextChild.position.start.column;
-
-						context.report({
-							loc: {
-								start: { line: lineNum, column: startColumn },
-								end: {
-									line: lineNum,
-									column: startColumn + hashes.length + 1,
-								},
+					context.report({
+						loc: {
+							start: { line: lineNum, column: startColumn },
+							end: {
+								line: lineNum,
+								column: startColumn + line.length,
 							},
-							messageId: "missingSpace",
-							fix(fixer) {
-								const offset =
-									firstTextChild.position.start.offset +
-									lines.slice(0, idx).join("\n").length +
-									(idx > 0 ? 1 : 0);
+						},
+						messageId: "missingSpace",
+						fix(fixer) {
+							const offset =
+								node.position.start.offset +
+								lines.slice(0, idx).join("\n").length +
+								(idx > 0 ? 1 : 0);
 
-								return fixer.insertTextAfterRange(
-									[
-										offset + hashes.length - 1,
-										offset + hashes.length,
-									],
-									" ",
-								);
-							},
-						});
+							return fixer.insertTextAfterRange(
+								[
+									offset + hashes.length - 1,
+									offset + hashes.length,
+								],
+								" ",
+							);
+						},
 					});
-				}
+				});
 			},
 		};
 	},
