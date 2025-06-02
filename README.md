@@ -82,6 +82,7 @@ export default defineConfig([
 | [`no-html`](./docs/rules/no-html.md) | Disallow HTML tags | no |
 | [`no-invalid-label-refs`](./docs/rules/no-invalid-label-refs.md) | Disallow invalid label references | yes |
 | [`no-missing-label-refs`](./docs/rules/no-missing-label-refs.md) | Disallow missing label references | yes |
+| [`no-space-in-emphasis`](./docs/rules/no-space-in-emphasis.md) | Disallow spaces around emphasis markers | yes |
 | [`require-alt-text`](./docs/rules/require-alt-text.md) | Require alternative text for images | yes |
 <!-- Rule Table End -->
 
