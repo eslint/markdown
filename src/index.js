@@ -57,6 +57,7 @@ const processorRulesConfig = {
 
 let recommendedPlugins, processorPlugins;
 
+/** @type {Plugin} */
 const plugin = {
 	meta: {
 		name: "@eslint/markdown",
