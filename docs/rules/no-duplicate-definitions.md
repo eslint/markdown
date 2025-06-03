@@ -68,7 +68,7 @@ The following options are available on this rule:
 
 - `allowDefinitions: Array<string>` - when specified, duplicate definitions are allowed if they match one of the identifiers in this array. This is useful for ignoring definitions that are intentionally duplicated. (default: `["//"]`)
 
-    Examples of **correct** code when configured as `"no-duplicate-definitions: ["error", { allowDefinitions: ["mercury"] }]`:
+    Examples of **correct** code when configured as `"no-duplicate-definitions": ["error", { allowDefinitions: ["mercury"] }]`:
 
     ```markdown
     <!-- eslint markdown/no-duplicate-definitions: ["error", { allowDefinitions: ["mercury"] }] -->
@@ -78,7 +78,7 @@ The following options are available on this rule:
 
 - `allowFootnoteDefinitions: Array<string>` - when specified, duplicate footnote definitions are allowed if they match one of the identifiers in this array. This is useful for ignoring footnote definitions that are intentionally duplicated. (default: `[]`)
 
-    Examples of **correct** code when configured as `"no-duplicate-definitions: ["error", { allowFootnoteDefinitions: ["mercury"] }]`:
+    Examples of **correct** code when configured as `"no-duplicate-definitions": ["error", { allowFootnoteDefinitions: ["mercury"] }]`:
 
     ```markdown
     <!-- eslint markdown/no-duplicate-definitions: ["error", { allowFootnoteDefinitions: ["mercury"] }] -->

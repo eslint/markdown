@@ -75,7 +75,7 @@ heading: My Title
 Examples of **correct** code when configured as `"no-multiple-h1": ["error", { "frontmatterTitle": "" }]`:
 
 ```markdown
-<!-- eslint markdown/no-multiple-h1: ["error", { frontmatterTitle: "" }] -->
+<!-- eslint markdown/no-multiple-h1: ["error", { "frontmatterTitle": "" }] -->
 
 ---
 title: My Title
