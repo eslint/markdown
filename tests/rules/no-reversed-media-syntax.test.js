@@ -58,6 +58,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 			errors: [
 				{
 					messageId: "reversedSyntax",
+					data: { label: "", url: "" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -71,6 +72,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 			errors: [
 				{
 					messageId: "reversedSyntax",
+					data: { label: "foo", url: "" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -84,6 +86,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 			errors: [
 				{
 					messageId: "reversedSyntax",
+					data: { label: "", url: "foo" },
 					line: 1,
 					column: 2,
 					endLine: 1,
@@ -97,6 +100,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 			errors: [
 				{
 					messageId: "reversedSyntax",
+					data: { label: "foo", url: "bar" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -110,6 +114,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 			errors: [
 				{
 					messageId: "reversedSyntax",
+					data: { label: "foo", url: "#bar" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -123,6 +128,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 			errors: [
 				{
 					messageId: "reversedSyntax",
+					data: { label: "foo", url: "http://bar.com" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -136,6 +142,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 			errors: [
 				{
 					messageId: "reversedSyntax",
+					data: { label: "foo", url: "bar" },
 					line: 1,
 					column: 2,
 					endLine: 1,
@@ -149,6 +156,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 			errors: [
 				{
 					messageId: "reversedSyntax",
+					data: { label: "foo", url: "#bar" },
 					line: 1,
 					column: 2,
 					endLine: 1,
@@ -162,6 +170,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 			errors: [
 				{
 					messageId: "reversedSyntax",
+					data: { label: "foo", url: "http://bar.com" },
 					line: 1,
 					column: 2,
 					endLine: 1,
@@ -181,6 +190,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 			errors: [
 				{
 					messageId: "reversedSyntax",
+					data: { label: "foo", url: "bar" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -188,6 +198,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 				},
 				{
 					messageId: "reversedSyntax",
+					data: { label: "foo", url: "bar" },
 					line: 2,
 					column: 2,
 					endLine: 2,
@@ -209,6 +220,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 			errors: [
 				{
 					messageId: "reversedSyntax",
+					data: { label: "foo", url: "bar" },
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -234,6 +246,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 			errors: [
 				{
 					messageId: "reversedSyntax",
+					data: { label: "foo", url: "bar" },
 					line: 5,
 					column: 6,
 					endLine: 5,
@@ -247,6 +260,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 			errors: [
 				{
 					messageId: "reversedSyntax",
+					data: { label: "foo", url: "bar" },
 					line: 1,
 					column: 11,
 					endLine: 1,
@@ -260,6 +274,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 			errors: [
 				{
 					messageId: "reversedSyntax",
+					data: { label: "foo", url: "bar" },
 					line: 1,
 					column: 6,
 					endLine: 1,
@@ -267,10 +282,25 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 				},
 				{
 					messageId: "reversedSyntax",
+					data: { label: "baz", url: "qux" },
 					line: 1,
 					column: 23,
 					endLine: 1,
 					endColumn: 33,
+				},
+			],
+		},
+		{
+			code: "abcd\n  \\a()[]",
+			output: "abcd\n  \\a[]()",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					data: { label: "", url: "" },
+					line: 2,
+					column: 5,
+					endLine: 2,
+					endColumn: 9,
 				},
 			],
 		},
