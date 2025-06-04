@@ -60,10 +60,10 @@ title: My Title
 # Heading 1
 ```
 
-Examples of **incorrect** code when configured as `"no-multiple-h1": ["error", { "frontmatterTitle": "\\s*heading\\s*[:=]" }]`:
+Examples of **incorrect** code when configured as `"no-multiple-h1": ["error", { frontmatterTitle: "\\s*heading\\s*[:=]" }]`:
 
 ```markdown
-<!-- eslint markdown/no-multiple-h1: ["error", { "frontmatterTitle": "\\s*heading\\s*[:=]" }] -->
+<!-- eslint markdown/no-multiple-h1: ["error", { frontmatterTitle: "\\s*heading\\s*[:=]" }] -->
 
 ---
 heading: My Title
@@ -72,7 +72,7 @@ heading: My Title
 # Heading 1
 ```
 
-Examples of **correct** code when configured as `"no-multiple-h1": ["error", { "frontmatterTitle": "" }]`:
+Examples of **correct** code when configured as `"no-multiple-h1": ["error", { frontmatterTitle: "" }]`:
 
 ```markdown
 <!-- eslint markdown/no-multiple-h1: ["error", { frontmatterTitle: "" }] -->
