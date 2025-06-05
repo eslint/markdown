@@ -51,10 +51,17 @@ export default {
 		const { sourceCode } = context;
 
 		const headingsByLevel = checkSiblingsOnly
-			? new Array(7).fill(null).map(() => new Set())
-			: [null, new Set()];
+			? new Map([
+					[1, new Set()],
+					[2, new Set()],
+					[3, new Set()],
+					[4, new Set()],
+					[5, new Set()],
+					[6, new Set()],
+				])
+			: new Map([[1, new Set()]]);
 		let lastLevel = 1;
-		let currentLevelHeadings = headingsByLevel[lastLevel];
+		let currentLevelHeadings = headingsByLevel.get(lastLevel);
 
 		/**
 		 * Gets the text of a heading node
@@ -64,7 +71,8 @@ export default {
 		function getHeadingText(node) {
 			/*
 			 * There are two types of headings in markdown:
-			 * - ATX headings, which start with one or more # characters
+			 * - ATX headings, which consist of 1-6 # characters followed by content
+			 *   and optionally ending with any number of # characters
 			 * - Setext headings, which are underlined with = or -
 			 * Setext headings are identified by being on two lines instead of one,
 			 * with the second line containing only = or - characters. In order to
@@ -74,14 +82,17 @@ export default {
 			const isSetext =
 				node.position.start.line !== node.position.end.line;
 
-			return isSetext
-				? // get only the text from the first line
-					sourceCode.lines[node.position.start.line - 1].trim()
-				: // get the text without the leading # characters
-					sourceCode
-						.getText(node)
-						.slice(node.depth + 1)
-						.trim();
+			if (isSetext) {
+				// get only the text from the first line
+				return sourceCode.lines[node.position.start.line - 1].trim();
+			}
+
+			// For ATX headings, get the text between the # characters
+			const text = sourceCode.getText(node);
+			return text
+				.slice(node.depth)
+				.replace(/\s+#+\s*$/u, "")
+				.trim();
 		}
 
 		return {
@@ -91,17 +102,18 @@ export default {
 				if (checkSiblingsOnly) {
 					const currentLevel = node.depth;
 
-					const direction = currentLevel > lastLevel ? 1 : -1;
-					while (lastLevel !== currentLevel) {
-						if (direction > 0) {
-							lastLevel++;
-						} else {
-							headingsByLevel[lastLevel].clear();
-							lastLevel--;
+					if (currentLevel < lastLevel) {
+						for (
+							let level = lastLevel;
+							level > currentLevel;
+							level--
+						) {
+							headingsByLevel.get(level).clear();
 						}
 					}
 
-					currentLevelHeadings = headingsByLevel[currentLevel];
+					lastLevel = currentLevel;
+					currentLevelHeadings = headingsByLevel.get(currentLevel);
 				}
 
 				if (currentLevelHeadings.has(headingText)) {

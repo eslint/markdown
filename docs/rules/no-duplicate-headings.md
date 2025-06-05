@@ -39,7 +39,7 @@ The following options are available on this rule:
 Examples of **correct** code for this rule with `checkSiblingsOnly: true`:
 
 ```markdown
-<!-- eslint markdown/no-duplicate-headings: ["error", { "checkSiblingsOnly": true }] -->
+<!-- eslint markdown/no-duplicate-headings: ["error", { checkSiblingsOnly: true }] -->
 
 # Change log
 

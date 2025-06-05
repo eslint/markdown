@@ -28,6 +28,11 @@ ruleTester.run("no-duplicate-headings", rule, {
 		`# Heading 1
 
         ## Heading 2`,
+		dedent`
+			# Heading 1
+
+			# Heading 1#
+		`,
 		{
 			code: dedent`
 				# Change log
@@ -39,6 +44,20 @@ ruleTester.run("no-duplicate-headings", rule, {
 				## 2.0.0
 
 				### Features
+			`,
+			options: [{ checkSiblingsOnly: true }],
+		},
+		{
+			code: dedent`
+				# Change log
+
+				## 1.0.0
+
+				### Features
+
+				## 2.0.0
+
+				### Features ###
 			`,
 			options: [{ checkSiblingsOnly: true }],
 		},
@@ -88,6 +107,38 @@ ruleTester.run("no-duplicate-headings", rule, {
 					column: 1,
 					endLine: 4,
 					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: dedent`
+				# Heading 1
+			
+				# Heading 1 ##
+            `,
+			errors: [
+				{
+					messageId: "duplicateHeading",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: dedent`
+				# Heading 1
+				
+				# Heading 1 ##########
+            `,
+			errors: [
+				{
+					messageId: "duplicateHeading",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 23,
 				},
 			],
 		},
@@ -177,6 +228,28 @@ Heading 1
 					column: 1,
 					endLine: 4,
 					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: dedent`
+				# Section 1
+
+				## Subsection A
+				## Subsection A ###
+
+				# Section 2
+
+				## Subsection B
+			`,
+			options: [{ checkSiblingsOnly: true }],
+			errors: [
+				{
+					messageId: "duplicateHeading",
+					line: 4,
+					column: 1,
+					endLine: 4,
+					endColumn: 20,
 				},
 			],
 		},
