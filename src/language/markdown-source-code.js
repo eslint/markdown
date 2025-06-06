@@ -193,6 +193,43 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 	}
 
 	/**
+	 * Converts a source text index into a (line, column) pair.
+	 * @param {number} index The index of a character in a file.
+	 * @throws {TypeError} If non-numeric index or index out of range.
+	 * @returns {{line: number, column: number}} A {line, column} location object with 1-indexed line and 1-indexed column.
+	 */
+	getLocFromIndex(index) {
+		if (typeof index !== "number") {
+			throw new TypeError("Expected `index` to be a number.");
+		}
+
+		if (index < 0 || index > this.text.length) {
+			throw new RangeError(
+				`Index out of range (requested index ${index}, but source text has length ${this.text.length}).`,
+			);
+		}
+
+		let currentLineIndex = 0;
+		let currentIndex = 0;
+
+		for (let i = 0; i < this.lines.length; i++) {
+			const lineLength = this.lines[i].length + 1; // +1 for newline
+
+			if (currentIndex + lineLength > index) {
+				currentLineIndex = i;
+				break;
+			}
+
+			currentIndex += lineLength;
+		}
+
+		return {
+			line: currentLineIndex + 1, // 1-indexed
+			column: index - currentIndex + 1, // 1-indexed
+		};
+	}
+
+	/**
 	 * Returns an array of all inline configuration nodes found in the
 	 * source code.
 	 * @returns {Array<InlineConfigComment>} An array of all inline configuration nodes.
