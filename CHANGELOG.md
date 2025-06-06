@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.6.0](https://github.com/eslint/markdown/compare/v6.5.0...v6.6.0) (2025-06-06)
+
+
+### Features
+
+* add checkSiblingsOnly option to no-duplicate-headings rule ([#393](https://github.com/eslint/markdown/issues/393)) ([2512729](https://github.com/eslint/markdown/commit/25127297f0ee8f63b860a42538cec9612e154b0b))
+
 ## [6.5.0](https://github.com/eslint/markdown/compare/v6.4.0...v6.5.0) (2025-06-04)
 
 
