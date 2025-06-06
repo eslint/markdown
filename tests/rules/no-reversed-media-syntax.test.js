@@ -179,6 +179,80 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 			],
 		},
 		{
+			code: "(*foo*)[]",
+			output: "[*foo*]()",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					data: { label: "*foo*", url: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 10,
+				},
+			],
+		},
+		{
+			code: "(**foo**)[]",
+			output: "[**foo**]()",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					data: { label: "**foo**", url: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: "(~~foo~~)[]",
+			output: "[~~foo~~]()",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					data: { label: "~~foo~~", url: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: "(`foo`)[]",
+			output: "[`foo`]()",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					data: { label: "`foo`", url: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 10,
+				},
+			],
+		},
+		{
+			code: dedent`
+			(fo
+			o)[bar]`,
+			output: dedent`
+			[fo
+			o](bar)`,
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					data: { label: "fo\no", url: "bar" },
+					line: 1,
+					column: 1,
+					endLine: 2,
+					endColumn: 8,
+				},
+			],
+		},
+		{
 			code: dedent`
 			(foo)[bar]
 			!(foo)[bar]
