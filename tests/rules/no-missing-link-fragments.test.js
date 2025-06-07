@@ -409,5 +409,65 @@ ruleTester.run("no-missing-link-fragments", rule, {
 				},
 			],
 		},
+		{
+			code: dedent`
+			# foo
+
+			## foo
+
+			[Link](#foo)
+
+			[Link](#foo-1)
+
+			[Link](#foo-2)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "foo-2" },
+					line: 9,
+					column: 1,
+					endLine: 9,
+					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: dedent`
+			# foo
+
+			## foo-1
+
+			### foo-1
+
+			[Link](#foo)
+
+			[Link](#foo-1)
+
+			[Link](#foo-1-1)
+
+			[Link](#foo-2)
+
+			[Link](#foo-1-2)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "foo-2" },
+					line: 13,
+					column: 1,
+					endLine: 13,
+					endColumn: 15,
+				},
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "foo-1-2" },
+					line: 15,
+					column: 1,
+					endLine: 15,
+					endColumn: 17,
+				},
+			],
+		},
 	],
 });
