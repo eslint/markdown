@@ -27,7 +27,7 @@ import GithubSlugger from "github-slugger";
 //-----------------------------------------------------------------------------
 
 const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
-const customHeadingIdPattern = /\{#([a-z0-9_-]+)\}\s*$/u;
+const customHeadingIdPattern = /\{#([^}\s]+)\}\s*$/u;
 const htmlIdNamePattern = /<(?:[^>]+)\s+(?:id|name)="([^"]+)"/gu;
 const headingPrefixPattern = /^#{1,6}\s+/u;
 

@@ -49,6 +49,34 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		[Link](#old-style)
 		`,
 
+		dedent`
+		<h1 id="bookmark">Bookmark</h1>
+		<h1 name="old-style">Old Style</h1>
+		<h2 id="bookmark-2">Bookmark 2</h2>
+		<h2 name="old-style-2">Old Style 2</h2>
+		<h3 id="bookmark-3">Bookmark 3</h3>
+		<h3 name="old-style-3">Old Style 3</h3>
+		<h4 id="bookmark-4">Bookmark 4</h4>
+		<h4 name="old-style-4">Old Style 4</h4>
+		<h5 id="bookmark-5">Bookmark 5</h5>
+		<h5 name="old-style-5">Old Style 5</h5>
+		<h6 id="bookmark-6">Bookmark 6</h6>
+		<h6 name="old-style-6">Old Style 6</h6>
+		
+		[Link](#bookmark)
+		[Link](#old-style)
+		[Link](#bookmark-2)
+		[Link](#old-style-2)
+		[Link](#bookmark-3)
+		[Link](#old-style-3)
+		[Link](#bookmark-4)
+		[Link](#old-style-4)
+		[Link](#bookmark-5)
+		[Link](#old-style-5)
+		[Link](#bookmark-6)
+		[Link](#old-style-6)
+		`,
+
 		// Special #top link
 		"[Link](#top)",
 
