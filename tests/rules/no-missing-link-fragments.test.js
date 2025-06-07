@@ -174,13 +174,13 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		[Link](#heading-with-italic-text)
 
 		# Heading with _italic too_
-		[Link](#heading-with-_italic-too_)
+		[Link](#heading-with-italic-too)
 
 		# Heading with **bold text**
 		[Link](#heading-with-bold-text)
 
 		# Heading with __bold too__
-		[Link](#heading-with-__bold-too__)
+		[Link](#heading-with-bold-too)
 
 		# Heading with ~strikethrough~
 		[Link](#heading-with-strikethrough)
@@ -201,7 +201,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 					[Link](#héading-with-àccènt-chàrâctérs)
 
 					# Mix: _Héading_ with 🚀 & \`code\`
-					[Link](#mix-_héading_-with---code)
+					[Link](#mix-héading-with---code)
 					`,
 				]
 			: []),
@@ -216,6 +216,17 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		<!-- <div id="commented-out"></div> -->
 		<div id="real-id"></div>
 		[Link](#real-id)
+		`,
+
+		dedent`
+		# Heading with _italic_
+		[Link](#heading-with-italic)
+
+		# Heading with **bold**
+		[Link](#heading-with-bold)
+
+		# foo_
+		[Link](#foo_)
 		`,
 	],
 

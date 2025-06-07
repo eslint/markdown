@@ -20,6 +20,7 @@ import GithubSlugger from "github-slugger";
  *     allowPattern?: string;
  *   }];
  * }>} NoMissingLinkFragmentsRuleDefinition
+ * @typedef {import("mdast").Node} MarkdownNode
  */
 
 //-----------------------------------------------------------------------------
@@ -30,7 +31,6 @@ const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
 const customHeadingIdPattern = /\{#([^}\s]+)\}\s*$/u;
 const htmlCommentPattern = /<!--[\s\S]*?-->/gu;
 const htmlIdNamePattern = /<(?:[^>]+)\s+(?:id|name)="([^"]+)"/gu;
-const headingPrefixPattern = /^#{1,6}\s+/u;
 
 /**
  * Checks if the fragment is a valid GitHub line reference
@@ -39,6 +39,21 @@ const headingPrefixPattern = /^#{1,6}\s+/u;
  */
 function isGitHubLineReference(fragment) {
 	return githubLineReferencePattern.test(fragment);
+}
+
+/**
+ * Extracts the text from a heading node
+ * @param {MarkdownNode} node The heading node to extract text from
+ * @returns {string} The extracted text
+ */
+function extractText(node) {
+	if ("value" in node && typeof node.value === "string") {
+		return node.value;
+	}
+	if ("children" in node && Array.isArray(node.children)) {
+		return node.children.map(extractText).join("");
+	}
+	return "";
 }
 
 //-----------------------------------------------------------------------------
@@ -100,12 +115,7 @@ export default {
 
 		return {
 			heading(node) {
-				const rawHeadingTextWithPrefix =
-					context.sourceCode.getText(node);
-				const rawHeadingText = rawHeadingTextWithPrefix
-					.replace(headingPrefixPattern, "")
-					.trim();
-
+				const rawHeadingText = extractText(node);
 				let baseId;
 				const customIdMatch = rawHeadingText.match(
 					customHeadingIdPattern,
