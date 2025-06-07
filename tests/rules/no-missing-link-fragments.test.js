@@ -390,5 +390,24 @@ ruleTester.run("no-missing-link-fragments", rule, {
 				},
 			],
 		},
+		{
+			code: dedent`
+			<h1 id="one"> 
+			<!-- comment <h1 id="two"> </h1> -->
+			</h1>
+
+			[Link](#two)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "two" },
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 13,
+				},
+			],
+		},
 	],
 });

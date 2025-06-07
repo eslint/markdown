@@ -28,6 +28,7 @@ import GithubSlugger from "github-slugger";
 
 const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
 const customHeadingIdPattern = /\{#([^}\s]+)\}\s*$/u;
+const htmlCommentPattern = /<!--[\s\S]*?-->/gu;
 const htmlIdNamePattern = /<(?:[^>]+)\s+(?:id|name)="([^"]+)"/gu;
 const headingPrefixPattern = /^#{1,6}\s+/u;
 
@@ -123,11 +124,17 @@ export default {
 
 			html(node) {
 				const htmlText = node.value.trim();
-				if (htmlText.startsWith("<!--") && htmlText.endsWith("-->")) {
-					return;
-				}
 
-				for (const match of htmlText.matchAll(htmlIdNamePattern)) {
+				// First remove all comments
+				const textWithoutComments = htmlText.replace(
+					htmlCommentPattern,
+					"",
+				);
+
+				// Then look for IDs in the remaining text
+				for (const match of textWithoutComments.matchAll(
+					htmlIdNamePattern,
+				)) {
 					const extractedId = match[1];
 					const finalId = slugger.slug(extractedId);
 					fragmentIds.add(
