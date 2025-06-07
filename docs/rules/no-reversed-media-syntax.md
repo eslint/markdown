@@ -8,7 +8,7 @@ Markdown syntax for links requires the text to be in square brackets `[]` follow
 
 ## Rule Details
 
-This rule is triggered when text that appears to be a link or image is encountered, but where the syntax appears to have been reversed (the `[]` and `()` are reversed).
+This rule is triggered when text that appears to be a link or image is encountered, but the syntax seems to have been reversed (the `[]` and `()` are in the wrong order).
 
 Examples of **incorrect** code for this rule:
 

@@ -24,7 +24,7 @@ import { findOffsets } from "../util.js";
 
 /** Matches reversed link/image syntax like (text)[url], ignoring escaped characters like \(text\)[url]. */
 const reversedPattern =
-	/(?<!\\)\(((?:\\.|[^()\\])*)\)\[((?:\\.|[^\]\\\n])*)\](?!\()/gu;
+	/(?<!\\)\(((?:\\.|[^()\\]|\([\s\S]*\))*)\)\[((?:\\.|[^\]\\\n])*)\](?!\()/gu;
 const codeSpanPattern = /(?<!\\)`+[^`]*`+/gu;
 
 /**
@@ -106,16 +106,19 @@ export default {
 						columnOffset: endColumnOffset,
 					} = findOffsets(text, matchIndex + matchLength);
 
+					const baseColumn = 1;
 					const nodeStartLine = node.position.start.line;
 					const nodeStartColumn = node.position.start.column;
 					const startLine = nodeStartLine + startLineOffset;
 					const endLine = nodeStartLine + endLineOffset;
 					const startColumn =
-						(startLine === nodeStartLine ? nodeStartColumn : 1) +
-						startColumnOffset;
+						(startLine === nodeStartLine
+							? nodeStartColumn
+							: baseColumn) + startColumnOffset;
 					const endColumn =
-						(endLine === nodeStartLine ? nodeStartColumn : 1) +
-						endColumnOffset;
+						(endLine === nodeStartLine
+							? nodeStartColumn
+							: baseColumn) + endColumnOffset;
 
 					context.report({
 						loc: {

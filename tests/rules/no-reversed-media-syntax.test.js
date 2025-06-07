@@ -235,6 +235,23 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 			],
 		},
 		{
+			code: "[^1]: (Footnote text)[https://example.com]",
+			output: "[^1]: [Footnote text](https://example.com)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					data: {
+						label: "Footnote text",
+						url: "https://example.com",
+					},
+					line: 1,
+					column: 7,
+					endLine: 1,
+					endColumn: 43,
+				},
+			],
+		},
+		{
 			code: dedent`
 			(fo
 			o)[bar]`,
@@ -249,6 +266,24 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 					column: 1,
 					endLine: 2,
 					endColumn: 8,
+				},
+			],
+		},
+		{
+			code: dedent`
+			(foo
+			)[bar]`,
+			output: dedent`
+			[foo
+			](bar)`,
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					data: { label: "foo\n", url: "bar" },
+					line: 1,
+					column: 1,
+					endLine: 2,
+					endColumn: 7,
 				},
 			],
 		},
@@ -339,6 +374,20 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 					column: 11,
 					endLine: 1,
 					endColumn: 21,
+				},
+			],
+		},
+		{
+			code: "(text foo())[bar]",
+			output: "[text foo()](bar)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					data: { label: "text foo()", url: "bar" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 18,
 				},
 			],
 		},
