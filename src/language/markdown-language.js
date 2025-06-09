@@ -36,6 +36,23 @@ import { gfm } from "micromark-extension-gfm";
 //-----------------------------------------------------------------------------
 
 /**
+ * Parser configuration for JSON frontmatter.
+ * Example of supported frontmatter format:
+ * ```markdown
+ * ---
+ * {
+ *   "title": "My Document",
+ *   "date": "2025-06-09"
+ * }
+ * ---
+ * ```
+ */
+const jsonFrontmatterConfig = {
+	type: "json",
+	marker: "-",
+};
+
+/**
  * Create parser options based on `mode` and `languageOptions`.
  * @param {ParserMode} mode The markdown parser mode.
  * @param {MarkdownLanguageOptions} languageOptions Language options.
@@ -64,6 +81,11 @@ function createParserOptions(mode, languageOptions) {
 		} else if (frontmatterOption === "toml") {
 			extensions.push(frontmatter(["toml"]));
 			mdastExtensions.push(frontmatterFromMarkdown(["toml"]));
+		} else if (frontmatterOption === "json") {
+			extensions.push(frontmatter(jsonFrontmatterConfig));
+			mdastExtensions.push(
+				frontmatterFromMarkdown(jsonFrontmatterConfig),
+			);
 		}
 	}
 
@@ -139,7 +161,12 @@ export class MarkdownLanguage {
 	 */
 	validateLanguageOptions(languageOptions) {
 		const frontmatterOption = languageOptions?.frontmatter;
-		const validFrontmatterOptions = new Set([false, "yaml", "toml"]);
+		const validFrontmatterOptions = new Set([
+			false,
+			"yaml",
+			"toml",
+			"json",
+		]);
 
 		if (
 			frontmatterOption !== undefined &&
