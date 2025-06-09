@@ -20,7 +20,6 @@ import GithubSlugger from "github-slugger";
  *     allowPattern?: string;
  *   }];
  * }>} NoMissingLinkFragmentsRuleDefinition
- * @typedef {import("mdast").Node} MarkdownNode
  */
 
 //-----------------------------------------------------------------------------
@@ -43,7 +42,7 @@ function isGitHubLineReference(fragment) {
 
 /**
  * Extracts the text from a heading node
- * @param {MarkdownNode} node The heading node to extract text from
+ * @param {import("mdast").Node} node The heading node to extract text from
  * @returns {string} The extracted text
  */
 function extractText(node) {
