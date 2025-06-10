@@ -84,6 +84,7 @@ export default defineConfig([
 | [`no-invalid-label-refs`](./docs/rules/no-invalid-label-refs.md) | Disallow invalid label references | yes |
 | [`no-missing-atx-heading-space`](./docs/rules/no-missing-atx-heading-space.md) | Disallow headings without a space after the hash characters | yes |
 | [`no-missing-label-refs`](./docs/rules/no-missing-label-refs.md) | Disallow missing label references | yes |
+| [`no-missing-link-fragments`](./docs/rules/no-missing-link-fragments.md) | Disallow link fragments that do not reference valid headings | yes |
 | [`no-multiple-h1`](./docs/rules/no-multiple-h1.md) | Disallow multiple H1 headings in the same document | yes |
 | [`require-alt-text`](./docs/rules/require-alt-text.md) | Require alternative text for images | yes |
 | [`table-column-count`](./docs/rules/table-column-count.md) | Disallow data rows in a GitHub Flavored Markdown table from having more cells than the header row | yes |
