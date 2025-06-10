@@ -17,10 +17,24 @@ Lint Markdown with ESLint, as well JS, JSX, TypeScript, and more inside Markdown
 
 ### Installing
 
-Install the plugin alongside ESLint v9 or greater:
+Install the plugin alongside ESLint v9 or greater. 
+
+For Node.js and compatible runtimes:
 
 ```sh
-npm install --save-dev eslint @eslint/markdown
+npm install @eslint/markdown -D
+# or
+yarn add @eslint/markdown -D
+# or
+pnpm install @eslint/markdown -D
+# or
+bun add @eslint/markdown -D
+```
+
+For Deno:
+
+```sh
+deno add jsr:@eslint/markdown
 ```
 
 ### Configurations
