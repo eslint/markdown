@@ -181,6 +181,7 @@ By default, Markdown parsers do not support [front matter](https://jekyllrb.com/
 | `false`          | Disables front matter parsing in Markdown files. (Default) |
 | `"yaml"`         | Enables YAML front matter parsing in Markdown files.       |
 | `"toml"`         | Enables TOML front matter parsing in Markdown files.       |
+| `"json"`         | Enables JSON front matter parsing in Markdown files.       |
 
 ```js
 // eslint.config.js
@@ -195,7 +196,7 @@ export default defineConfig([
         },
         language: "markdown/gfm",
         languageOptions: {
-            frontmatter: "yaml", // Or pass `"toml"` to enable TOML front matter parsing.
+            frontmatter: "yaml", // Or pass `"toml"` or `"json"` to enable TOML or JSON front matter parsing.
         },
         rules: {
             "markdown/no-html": "error"
