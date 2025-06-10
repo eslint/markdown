@@ -98,6 +98,10 @@ export default {
 				}
 			},
 
+			json() {
+				// TODO
+			},
+
 			html(node) {
 				let match;
 				while ((match = h1TagPattern.exec(node.value)) !== null) {
