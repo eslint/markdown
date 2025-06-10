@@ -20,7 +20,7 @@ const ruleTester = new RuleTester({
 	plugins: {
 		markdown,
 	},
-	language: "markdown/commonmark",
+	language: "markdown/gfm",
 });
 
 ruleTester.run("no-missing-link-fragments", rule, {

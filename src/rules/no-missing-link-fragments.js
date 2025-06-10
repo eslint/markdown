@@ -13,6 +13,7 @@ import GithubSlugger from "github-slugger";
 // Type Definitions
 //-----------------------------------------------------------------------------
 
+/** @typedef {import("mdast").Node} Node */
 /**
  * @typedef {import("../types.ts").MarkdownRuleDefinition<{
  *   RuleOptions: [{
@@ -29,7 +30,7 @@ import GithubSlugger from "github-slugger";
 const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
 const customHeadingIdPattern = /\{#([^}\s]+)\}\s*$/u;
 const htmlCommentPattern = /<!--[\s\S]*?-->/gu;
-const htmlIdNamePattern = /<(?:[^>]+)\s+(?:id|name)="([^"]+)"/gu;
+const htmlIdNamePattern = /<(?:[^>]+)\s+(?:id|name)=["']([^"']+)["']/gu;
 
 /**
  * Checks if the fragment is a valid GitHub line reference
@@ -41,16 +42,16 @@ function isGitHubLineReference(fragment) {
 }
 
 /**
- * Extracts the text from a heading node
- * @param {import("mdast").Node} node The heading node to extract text from
+ * Extracts the text recursively from a node
+ * @param {Node} node The node from which to recursively extract text
  * @returns {string} The extracted text
  */
 function extractText(node) {
-	if ("value" in node && typeof node.value === "string") {
-		return node.value;
+	if ("value" in node) {
+		return /** @type {string} */ (node.value);
 	}
-	if ("children" in node && Array.isArray(node.children)) {
-		return node.children.map(extractText).join("");
+	if ("children" in node) {
+		return /** @type {Node[]} */ (node.children).map(extractText).join("");
 	}
 	return "";
 }
