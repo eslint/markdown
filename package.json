@@ -69,7 +69,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.4.0",
-    "@types/eslint": "^9.6.0",
     "c8": "^10.1.2",
     "dedent": "^1.5.3",
     "eslint": "^9.25.1",
