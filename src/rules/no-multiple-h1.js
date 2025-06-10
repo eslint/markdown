@@ -98,6 +98,12 @@ export default {
 				}
 			},
 
+			json(node) {
+				if (frontmatterHasTitle(node.value, titlePattern)) {
+					h1Count++;
+				}
+			},
+
 			html(node) {
 				let match;
 				while ((match = h1TagPattern.exec(node.value)) !== null) {

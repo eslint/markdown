@@ -12,7 +12,7 @@ This rule warns when it finds more than one H1 heading in a Markdown document. I
 
 - ATX-style headings (`# Heading`)
 - Setext-style headings (`Heading\n=========`)
-- Front matter title fields (YAML and TOML)
+- Front matter title fields (YAML, TOML, and JSON)
 - HTML h1 tags (`<h1>Heading</h1>`)
 
 Examples of **incorrect** code for this rule:
@@ -46,7 +46,7 @@ Another H1 heading
 
 The following options are available on this rule:
 
-* `frontmatterTitle: string` - A regex pattern to match title fields in front matter. The default pattern matches both YAML (`title:`) and TOML (`title =`) formats. Set to an empty string to disable front matter title checking.
+* `frontmatterTitle: string` - A regex pattern to match title fields in front matter. The default pattern matches YAML (`title:`), TOML (`title =`), and JSON (`"title":`) formats. Set to an empty string to disable front matter title checking.
 
 Examples of **incorrect** code for this rule:
 
