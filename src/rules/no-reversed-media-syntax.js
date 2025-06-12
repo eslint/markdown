@@ -77,7 +77,7 @@ export default {
 
 		messages: {
 			reversedSyntax:
-				"Unexpected reversed syntax found. Use [{{label}}]({{url}}) instead.",
+				"Unexpected reversed syntax found. Use [label](URL) syntax instead.",
 		},
 	},
 
@@ -132,10 +132,6 @@ export default {
 							},
 						},
 						messageId: "reversedSyntax",
-						data: {
-							label,
-							url,
-						},
 						fix(fixer) {
 							const startOffset =
 								node.position.start.offset + matchIndex;
