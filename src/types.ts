@@ -102,13 +102,32 @@ export interface Toml extends Literal {
 export interface TomlData extends Data {}
 
 /**
+ * Markdown JSON.
+ */
+export interface Json extends Literal {
+	/**
+	 * Node type of mdast JSON.
+	 */
+	type: "json";
+	/**
+	 * Data associated with the mdast JSON.
+	 */
+	data?: JsonData | undefined;
+}
+
+/**
+ * Info associated with mdast JSON nodes by the ecosystem.
+ */
+export interface JsonData extends Data {}
+
+/**
  * Language options provided for Markdown files.
  */
 export interface MarkdownLanguageOptions extends LanguageOptions {
 	/**
 	 * The options for parsing frontmatter.
 	 */
-	frontmatter?: false | "yaml" | "toml";
+	frontmatter?: false | "yaml" | "toml" | "json";
 }
 
 /**
@@ -148,7 +167,8 @@ export interface MarkdownRuleVisitor
 					| TableCell
 					| TableRow
 					| Yaml // Extensions (front matter)
-					| Toml as NodeType["type"]]?: (
+					| Toml
+					| Json as NodeType["type"]]?: (
 					node: NodeType,
 					parent?: Parent,
 				) => void;

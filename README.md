@@ -17,10 +17,24 @@ Lint Markdown with ESLint, as well JS, JSX, TypeScript, and more inside Markdown
 
 ### Installing
 
-Install the plugin alongside ESLint v9 or greater:
+Install the plugin alongside ESLint v9 or greater. 
+
+For Node.js and compatible runtimes:
 
 ```sh
-npm install --save-dev eslint @eslint/markdown
+npm install @eslint/markdown -D
+# or
+yarn add @eslint/markdown -D
+# or
+pnpm install @eslint/markdown -D
+# or
+bun add @eslint/markdown -D
+```
+
+For Deno:
+
+```sh
+deno add jsr:@eslint/markdown
 ```
 
 ### Configurations
@@ -84,6 +98,7 @@ export default defineConfig([
 | [`no-invalid-label-refs`](./docs/rules/no-invalid-label-refs.md) | Disallow invalid label references | yes |
 | [`no-missing-atx-heading-space`](./docs/rules/no-missing-atx-heading-space.md) | Disallow headings without a space after the hash characters | yes |
 | [`no-missing-label-refs`](./docs/rules/no-missing-label-refs.md) | Disallow missing label references | yes |
+| [`no-missing-link-fragments`](./docs/rules/no-missing-link-fragments.md) | Disallow link fragments that do not reference valid headings | yes |
 | [`no-multiple-h1`](./docs/rules/no-multiple-h1.md) | Disallow multiple H1 headings in the same document | yes |
 | [`require-alt-text`](./docs/rules/require-alt-text.md) | Require alternative text for images | yes |
 | [`table-column-count`](./docs/rules/table-column-count.md) | Disallow data rows in a GitHub Flavored Markdown table from having more cells than the header row | yes |
@@ -166,6 +181,7 @@ By default, Markdown parsers do not support [front matter](https://jekyllrb.com/
 | `false`          | Disables front matter parsing in Markdown files. (Default) |
 | `"yaml"`         | Enables YAML front matter parsing in Markdown files.       |
 | `"toml"`         | Enables TOML front matter parsing in Markdown files.       |
+| `"json"`         | Enables JSON front matter parsing in Markdown files.       |
 
 ```js
 // eslint.config.js
@@ -180,7 +196,7 @@ export default defineConfig([
         },
         language: "markdown/gfm",
         languageOptions: {
-            frontmatter: "yaml", // Or pass `"toml"` to enable TOML front matter parsing.
+            frontmatter: "yaml", // Or pass `"toml"` or `"json"` to enable TOML or JSON front matter parsing.
         },
         rules: {
             "markdown/no-html": "error"
