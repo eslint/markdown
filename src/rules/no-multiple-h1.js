@@ -98,8 +98,10 @@ export default {
 				}
 			},
 
-			json() {
-				// TODO
+			json(node) {
+				if (frontmatterHasTitle(node.value, titlePattern)) {
+					h1Count++;
+				}
 			},
 
 			html(node) {
