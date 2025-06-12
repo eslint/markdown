@@ -92,6 +92,19 @@ ruleTester.run("no-multiple-h1", rule, {
 		},
 		{
 			code: dedent`
+			    ---
+				[
+					"title="
+				]
+				---
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "json",
+			},
+		},
+		{
+			code: dedent`
 				---
 				title: My Title
 				---

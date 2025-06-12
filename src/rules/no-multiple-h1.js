@@ -77,7 +77,7 @@ export default {
 		defaultOptions: [
 			{
 				frontmatterTitle:
-					"^(?!\\s*['\"]title:['\"])\\s*['\"]?title['\"]?\\s*[:=]",
+					"^(?!\\s*['\"]title[:=]['\"])\\s*['\"]?title['\"]?\\s*[:=]",
 			},
 		],
 	},
