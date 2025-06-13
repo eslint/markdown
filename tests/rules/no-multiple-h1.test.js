@@ -670,28 +670,6 @@ ruleTester.run("no-multiple-h1", rule, {
 		{
 			code: dedent`
 				---
-				{
-					'title': 'My Title'
-				}
-				---
-				# Heading 1
-			`,
-			languageOptions: {
-				frontmatter: "json",
-			},
-			errors: [
-				{
-					messageId: "multipleH1",
-					line: 6,
-					column: 1,
-					endLine: 6,
-					endColumn: 12,
-				},
-			],
-		},
-		{
-			code: dedent`
-				---
 				author: Pixel998
 				title: My Title
 				---
