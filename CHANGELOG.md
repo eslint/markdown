@@ -1,5 +1,14 @@
 # Changelog
 
+## [6.6.0](https://github.com/eslint/markdown/compare/v6.5.0...v6.6.0) (2025-06-13)
+
+
+### Features
+
+* add checkSiblingsOnly option to no-duplicate-headings rule ([#393](https://github.com/eslint/markdown/issues/393)) ([2512729](https://github.com/eslint/markdown/commit/25127297f0ee8f63b860a42538cec9612e154b0b))
+* add JSON frontmatter support ([#411](https://github.com/eslint/markdown/issues/411)) ([8b77e69](https://github.com/eslint/markdown/commit/8b77e6993ed045482a966470d906d9636b1b4abc))
+* add no-missing-link-fragments rule ([#380](https://github.com/eslint/markdown/issues/380)) ([70e7dac](https://github.com/eslint/markdown/commit/70e7dacab279579c57396589da798d7e2e3a0a50))
+
 ## [6.5.0](https://github.com/eslint/markdown/compare/v6.4.0...v6.5.0) (2025-06-04)
 
 
