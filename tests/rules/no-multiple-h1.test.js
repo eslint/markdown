@@ -67,6 +67,17 @@ ruleTester.run("no-multiple-h1", rule, {
 		{
 			code: dedent`
 			    ---
+				[ "title" ]
+				---
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "json",
+			},
+		},
+		{
+			code: dedent`
+			    ---
 				[
 					"title"
 				]
@@ -548,6 +559,41 @@ ruleTester.run("no-multiple-h1", rule, {
 			`,
 			languageOptions: {
 				frontmatter: "toml",
+			},
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 4,
+					column: 1,
+					endLine: 4,
+					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: dedent`
+				---
+				{ "title": "My Title" }
+				---
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "json",
+			},
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 4,
+					column: 1,
+					endLine: 4,
+					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: '---\n   {    "title": "My Title" }\n---\n# Heading 1',
+			languageOptions: {
+				frontmatter: "json",
 			},
 			errors: [
 				{
