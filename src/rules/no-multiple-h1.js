@@ -75,7 +75,10 @@ export default {
 		],
 
 		defaultOptions: [
-			{ frontmatterTitle: "^\\s*['\"]?title['\"]?\\s*[:=]" },
+			{
+				frontmatterTitle:
+					"^(?!\\s*['\"]title[:=]['\"])\\s*\\{?\\s*['\"]?title['\"]?\\s*[:=]",
+			},
 		],
 	},
 
@@ -93,6 +96,12 @@ export default {
 			},
 
 			toml(node) {
+				if (frontmatterHasTitle(node.value, titlePattern)) {
+					h1Count++;
+				}
+			},
+
+			json(node) {
 				if (frontmatterHasTitle(node.value, titlePattern)) {
 					h1Count++;
 				}

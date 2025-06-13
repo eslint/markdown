@@ -31,6 +31,10 @@ ruleTester.run("no-multiple-h1", rule, {
 			Text
 		`,
 		dedent`
+			# Heading 1 #
+			Text
+		`,
+		dedent`
 			# Heading 1
 			## Heading 2
 		`,
@@ -62,6 +66,56 @@ ruleTester.run("no-multiple-h1", rule, {
 		`,
 		{
 			code: dedent`
+			    ---
+				[ "title" ]
+				---
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "json",
+			},
+		},
+		{
+			code: dedent`
+			    ---
+				[
+					"title"
+				]
+				---
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "json",
+			},
+		},
+		{
+			code: dedent`
+			    ---
+				[
+					"title:"
+				]
+				---
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "json",
+			},
+		},
+		{
+			code: dedent`
+			    ---
+				[
+					"title="
+				]
+				---
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "json",
+			},
+		},
+		{
+			code: dedent`
 				---
 				title: My Title
 				---
@@ -80,6 +134,32 @@ ruleTester.run("no-multiple-h1", rule, {
 			`,
 			languageOptions: {
 				frontmatter: "toml",
+			},
+		},
+		{
+			code: dedent`
+				---
+				{
+					"title": "My Title"
+				}
+				---
+				## Heading 2
+			`,
+			languageOptions: {
+				frontmatter: "json",
+			},
+		},
+		{
+			code: dedent`
+				---
+				[
+					"title"
+				]
+				---
+				## Heading 2
+			`,
+			languageOptions: {
+				frontmatter: "json",
 			},
 		},
 		{
@@ -153,6 +233,34 @@ ruleTester.run("no-multiple-h1", rule, {
 		{
 			code: dedent`
 				---
+				{
+					"heading": "My Title"
+				}
+				---
+				## Heading 2
+			`,
+			options: [{ frontmatterTitle: '^\\s*"heading"\\s*:' }],
+			languageOptions: {
+				frontmatter: "json",
+			},
+		},
+		{
+			code: dedent`
+				---
+				[
+					"heading"
+				]
+				---
+				## Heading 2
+			`,
+			options: [{ frontmatterTitle: '^\\s*"heading"\\s*:' }],
+			languageOptions: {
+				frontmatter: "json",
+			},
+		},
+		{
+			code: dedent`
+				---
 				author: Pixel998
 				---
 				# Heading 1
@@ -170,6 +278,32 @@ ruleTester.run("no-multiple-h1", rule, {
 			`,
 			languageOptions: {
 				frontmatter: "toml",
+			},
+		},
+		{
+			code: dedent`
+				---
+				{
+					"author": "name"
+				}
+				---
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "json",
+			},
+		},
+		{
+			code: dedent`
+				---
+				[
+					"author"
+				]
+				---
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "json",
 			},
 		},
 		{
@@ -194,6 +328,20 @@ ruleTester.run("no-multiple-h1", rule, {
 			options: [{ frontmatterTitle: "" }],
 			languageOptions: {
 				frontmatter: "toml",
+			},
+		},
+		{
+			code: dedent`
+				---
+				{
+					"title": "My Title"
+				}
+				---
+				# Heading 1
+			`,
+			options: [{ frontmatterTitle: "" }],
+			languageOptions: {
+				frontmatter: "json",
 			},
 		},
 		'<h1 class="title">Heading</h1>',
@@ -425,6 +573,63 @@ ruleTester.run("no-multiple-h1", rule, {
 		{
 			code: dedent`
 				---
+				{ "title": "My Title" }
+				---
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "json",
+			},
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 4,
+					column: 1,
+					endLine: 4,
+					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: '---\n   {    "title": "My Title" }\n---\n# Heading 1',
+			languageOptions: {
+				frontmatter: "json",
+			},
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 4,
+					column: 1,
+					endLine: 4,
+					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: dedent`
+				---
+				{
+					"title": "My Title"
+				}
+				---
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "json",
+			},
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 6,
+					column: 1,
+					endLine: 6,
+					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: dedent`
+				---
 				'title': My Title
 				---
 				# Heading 1
@@ -507,6 +712,29 @@ ruleTester.run("no-multiple-h1", rule, {
 		{
 			code: dedent`
 				---
+				{
+					"author": "name",
+					"title": "My Title"
+				}
+				---
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "json",
+			},
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 7,
+					column: 1,
+					endLine: 7,
+					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: dedent`
+				---
 				TITLE: My Title
 				---
 				# Heading 1
@@ -540,6 +768,28 @@ ruleTester.run("no-multiple-h1", rule, {
 					line: 4,
 					column: 1,
 					endLine: 4,
+					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: dedent`
+				---
+				{
+					"TITLE": "My Title"
+				}
+				---
+				# Heading 1
+			`,
+			languageOptions: {
+				frontmatter: "json",
+			},
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 6,
+					column: 1,
+					endLine: 6,
 					endColumn: 12,
 				},
 			],
@@ -589,6 +839,29 @@ ruleTester.run("no-multiple-h1", rule, {
 		{
 			code: dedent`
 				---
+				{
+					"heading": "My Title"
+				}
+				---
+				# Heading 1
+			`,
+			options: [{ frontmatterTitle: '^\\s*"heading"\\s*:' }],
+			languageOptions: {
+				frontmatter: "json",
+			},
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 6,
+					column: 1,
+					endLine: 6,
+					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: dedent`
+				---
 				title: My Title
 				---
 				# Heading 1
@@ -626,6 +899,30 @@ ruleTester.run("no-multiple-h1", rule, {
 					line: 5,
 					column: 1,
 					endLine: 5,
+					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: dedent`
+				---
+				{
+					"title": "My Title"
+				}
+				---
+				# Heading 1
+				# Another H1
+			`,
+			options: [{ frontmatterTitle: "" }],
+			languageOptions: {
+				frontmatter: "json",
+			},
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 7,
+					column: 1,
+					endLine: 7,
 					endColumn: 13,
 				},
 			],
@@ -765,6 +1062,37 @@ ruleTester.run("no-multiple-h1", rule, {
 					line: 6,
 					column: 1,
 					endLine: 6,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: dedent`
+				---
+				{
+					"title": "My Title"
+				}
+				---
+				# Heading 1
+				
+				<h1>Another H1</h1>
+			`,
+			languageOptions: {
+				frontmatter: "json",
+			},
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 6,
+					column: 1,
+					endLine: 6,
+					endColumn: 12,
+				},
+				{
+					messageId: "multipleH1",
+					line: 8,
+					column: 1,
+					endLine: 8,
 					endColumn: 20,
 				},
 			],

@@ -10,9 +10,9 @@ An H1 heading is meant to define the main heading of a page, providing important
 
 This rule warns when it finds more than one H1 heading in a Markdown document. It checks for:
 
-- ATX-style headings (`# Heading`)
+- ATX-style headings (`# Heading` or `# Heading #`)
 - Setext-style headings (`Heading\n=========`)
-- Front matter title fields (YAML and TOML)
+- Front matter title fields ([YAML](https://yaml.org/), [TOML](https://toml.io/en/), and [JSON](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON))
 - HTML h1 tags (`<h1>Heading</h1>`)
 
 Examples of **incorrect** code for this rule:
@@ -46,7 +46,7 @@ Another H1 heading
 
 The following options are available on this rule:
 
-* `frontmatterTitle: string` - A regex pattern to match title fields in front matter. The default pattern matches both YAML (`title:`) and TOML (`title =`) formats. Set to an empty string to disable front matter title checking.
+* `frontmatterTitle: string` - A regex pattern to match title fields in front matter. The default pattern matches both YAML (`title:`), TOML (`title =`), and JSON (`"title":`) formats. Set to an empty string to disable front matter title checking.
 
 Examples of **incorrect** code for this rule:
 
@@ -57,7 +57,27 @@ Examples of **incorrect** code for this rule:
 title: My Title
 ---
 
-# Heading 1
+# Heading 1 with YAML front matter
+```
+
+```markdown
+<!-- eslint markdown/no-multiple-h1: "error" -->
+
++++
+title = "My Title"
++++
+
+# Heading 1 with TOML front matter
+```
+
+```markdown
+<!-- eslint markdown/no-multiple-h1: "error" -->
+
+---
+{ "title": "My Title" }
+---
+
+# Heading 1 with JSON front matter
 ```
 
 Examples of **incorrect** code when configured as `"no-multiple-h1": ["error", { frontmatterTitle: "\\s*heading\\s*[:=]" }]`:
