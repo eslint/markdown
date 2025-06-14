@@ -249,6 +249,19 @@ ruleTester.run("no-bare-urls", rule, {
 			],
 		},
 		{
+			code: "Text <a>https://example.com</a> https://example.com",
+			output: "Text <a>https://example.com</a> <https://example.com>",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 33,
+					endLine: 1,
+					endColumn: 52,
+				},
+			],
+		},
+		{
 			code: "<br> Another violation: https://example.com. <br>",
 			output: "<br> Another violation: <https://example.com>. <br>",
 			errors: [

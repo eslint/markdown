@@ -15,7 +15,7 @@ A bare URL appears without angle brackets (`<>`), such as `https://example.com/`
 
 > [!IMPORTANT] <!-- eslint-disable-line -- This should be fixed in https://github.com/eslint/markdown/issues/294 -->
 >
-> This rule relies on bare URLs being link nodes, which requires a GFM-compatible parser (e.g., `language: "markdown/gfm"`).
+> This rule requires `language: "markdown/gfm"`.
 
 This rule flags bare URLs that should be formatted as autolinks or links.
 
@@ -27,6 +27,10 @@ Examples of **incorrect** code for this rule:
 For more info, visit https://www.example.com/
 
 Contact us at user@example.com
+
+[Read the [docs]](https://www.example.com/)
+
+[docs]: https://www.example.com/docs
 ```
 
 Examples of **correct** code for this rule:
@@ -41,6 +45,12 @@ For more info, visit [Example Website](https://www.example.com/)
 Contact us at <user@example.com>
 
 Contact us at [user@example.com](mailto:user@example.com)
+
+Not a clickable link: `https://www.example.com/`
+
+[https://www.example.com/]
+
+[Read the \[docs\]](https://www.example.com/)
 ```
 
 ## When Not to Use It
