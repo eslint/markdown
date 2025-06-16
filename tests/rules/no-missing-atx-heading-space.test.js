@@ -108,12 +108,12 @@ const validHeadings = [
 	"    #Heading 1",
 
 	// 13. Valid Spaces
-	"##  Normal outer non-breaking inner space",
+	"## \u00A0Normal outer non-breaking inner space",
 	"## Normal space (both) ##",
-	"##  Normal outer non-breaking inner space (both)  ##",
-	"##		Tab",
-	"##		Tab (left) ##",
-	"## Tab (right)		##",
+	"## \u00A0Normal outer non-breaking inner space (both)\u00A0 ##",
+	"##\tTab",
+	"##\tTab (left) ##",
+	"## Tab (right)\t##",
 ];
 
 //------------------------------------------------------------------------------
@@ -486,8 +486,8 @@ const invalidTests = [
 
 	// 8. Invalid Spaces
 	{
-		code: "## Non-breaking space",
-		output: "##  Non-breaking space",
+		code: "##\u00A0Non-breaking space",
+		output: "## \u00A0Non-breaking space",
 		errors: [
 			{
 				messageId: "missingSpace",
@@ -499,8 +499,8 @@ const invalidTests = [
 		],
 	},
 	{
-		code: "##  Extra non-breaking space",
-		output: "##   Extra non-breaking space",
+		code: "##\u00A0\u00A0Extra non-breaking space",
+		output: "## \u00A0\u00A0Extra non-breaking space",
 		errors: [
 			{
 				messageId: "missingSpace",
