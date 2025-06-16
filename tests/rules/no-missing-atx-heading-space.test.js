@@ -106,6 +106,14 @@ const validHeadings = [
 
 	// 12. Content starting with more than 4 spaces(turn to codeblock)
 	"    #Heading 1",
+
+	// 13. Valid Spaces
+	"##  Normal outer non-breaking inner space",
+	"## Normal space (both) ##",
+	"##  Normal outer non-breaking inner space (both)  ##",
+	"##		Tab",
+	"##		Tab (left) ##",
+	"## Tab (right)		##",
 ];
 
 //------------------------------------------------------------------------------
@@ -472,6 +480,34 @@ const invalidTests = [
 				line: 2,
 				endLine: 2,
 				endColumn: 5,
+			},
+		],
+	},
+
+	// 8. Invalid Spaces
+	{
+		code: "## Non-breaking space",
+		output: "##  Non-breaking space",
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 1,
+				line: 1,
+				endLine: 1,
+				endColumn: 4,
+			},
+		],
+	},
+	{
+		code: "##  Extra non-breaking space",
+		output: "##   Extra non-breaking space",
+		errors: [
+			{
+				messageId: "missingSpace",
+				column: 1,
+				line: 1,
+				endLine: 1,
+				endColumn: 4,
 			},
 		],
 	},
