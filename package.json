@@ -50,7 +50,10 @@
       "eslint --fix -c eslint.config-content.js"
     ],
     "!(*.{js,md})": "prettier --write --ignore-unknown",
-    "{src/rules/*.js,tools/update-rules-docs.js,README.md}": "npm run build:update-rules-docs"
+    "{src/rules/*.js,tools/update-rules-docs.js,README.md}": [
+      "npm run build:update-rules-docs",
+      "git add README.md"
+    ]
   },
   "scripts": {
     "lint": "eslint . && eslint -c eslint.config-content.js .",
