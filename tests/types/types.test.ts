@@ -5,7 +5,7 @@ import markdown, {
 	type RuleModule,
 } from "@eslint/markdown";
 import type { SourceLocation, SourceRange } from "@eslint/core";
-import { Toml } from "@eslint/markdown/types";
+import type { Toml, Json } from "@eslint/markdown/types";
 import { ESLint, Linter } from "eslint";
 import type {
 	// Nodes (abstract)
@@ -91,7 +91,6 @@ typeof processorPlugins satisfies {};
 			sourceCode.getLoc(node) satisfies SourceLocation;
 			sourceCode.getRange(node) satisfies SourceRange;
 			sourceCode.getParent(node) satisfies Node | undefined;
-			// @ts-expect-error It should be fixed in https://github.com/eslint/markdown/issues/341
 			sourceCode.getAncestors(node) satisfies Node[];
 			sourceCode.getText(node) satisfies string;
 		}
@@ -163,6 +162,8 @@ typeof processorPlugins satisfies {};
 			"yaml:exit": (...args) => testVisitor<Yaml>(...args),
 			toml: (...args) => testVisitor<Toml>(...args),
 			"toml:exit": (...args) => testVisitor<Toml>(...args),
+			json: (...args) => testVisitor<Json>(...args),
+			"json:exit": (...args) => testVisitor<Json>(...args),
 
 			// Unknown selectors allowed
 			"heading[depth=1]"(node: Node, parent?: ParentNode) {},

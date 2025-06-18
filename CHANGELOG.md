@@ -1,5 +1,25 @@
 # Changelog
 
+## [6.5.0](https://github.com/eslint/markdown/compare/v6.4.0...v6.5.0) (2025-06-04)
+
+
+### Features
+
+* add `no-missing-atx-heading-space` rule ([#371](https://github.com/eslint/markdown/issues/371)) ([84c87c4](https://github.com/eslint/markdown/commit/84c87c407bdfb64694581afb26066a5b233bd59c))
+* add no-empty-definitions rule ([#364](https://github.com/eslint/markdown/issues/364)) ([cb5a956](https://github.com/eslint/markdown/commit/cb5a95666524e3c26650371bfdcd59e15cae4053))
+* add no-multiple-h1 rule ([#377](https://github.com/eslint/markdown/issues/377)) ([d7c88e8](https://github.com/eslint/markdown/commit/d7c88e898b251cb1bf9eb3b19075b6b6c4a4d255))
+* add require-alt-text rule ([#368](https://github.com/eslint/markdown/issues/368)) ([32d8cbd](https://github.com/eslint/markdown/commit/32d8cbd8b6d2d121225b5291c2f9a0ea6c2ccd00))
+* added new rule `table-column-count` ([#392](https://github.com/eslint/markdown/issues/392)) ([c685139](https://github.com/eslint/markdown/commit/c68513942c0735fc7fbae7edbc95a36093a30ee0))
+* create `no-duplicate-definitions` ([#360](https://github.com/eslint/markdown/issues/360)) ([18c7d77](https://github.com/eslint/markdown/commit/18c7d776c768b901a0049b6e9bd7cf9e060ae835))
+* create `no-empty-images` ([#357](https://github.com/eslint/markdown/issues/357)) ([23e4ff0](https://github.com/eslint/markdown/commit/23e4ff0d7be9e10ce017357cb5f8e15276c6c404))
+
+
+### Bug Fixes
+
+* `no-invalid-label-refs` do not report correct position ([#366](https://github.com/eslint/markdown/issues/366)) ([ed01747](https://github.com/eslint/markdown/commit/ed01747d29eed0b1379211bb1d97d3dbff3389c8))
+* `no-missing-label-refs` rule does not respect escaping ([#348](https://github.com/eslint/markdown/issues/348)) ([cb6b437](https://github.com/eslint/markdown/commit/cb6b4376e94f2f89a100352d01857ad08deff652))
+* update `require-alt-text` rule to ignore commented images ([#385](https://github.com/eslint/markdown/issues/385)) ([b2fc801](https://github.com/eslint/markdown/commit/b2fc801727eb7ed554e74a9cf690c4777b66ff72))
+
 ## [6.4.0](https://github.com/eslint/markdown/compare/v6.3.0...v6.4.0) (2025-04-17)
 
 

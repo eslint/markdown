@@ -4,7 +4,7 @@
 [![Downloads](https://img.shields.io/npm/dm/@eslint/markdown.svg)](https://www.npmjs.com/package/@eslint/markdown)
 [![Build Status](https://github.com/eslint/markdown/workflows/CI/badge.svg)](https://github.com/eslint/markdown/actions)
 
-Lint JS, JSX, TypeScript, and more inside Markdown.
+Lint Markdown with ESLint, as well JS, JSX, TypeScript, and more inside Markdown.
 
 <img
     src="screenshot.png"
@@ -17,10 +17,24 @@ Lint JS, JSX, TypeScript, and more inside Markdown.
 
 ### Installing
 
-Install the plugin alongside ESLint v9 or greater:
+Install the plugin alongside ESLint v9 or greater. 
+
+For Node.js and compatible runtimes:
 
 ```sh
-npm install --save-dev eslint @eslint/markdown
+npm install @eslint/markdown -D
+# or
+yarn add @eslint/markdown -D
+# or
+pnpm install @eslint/markdown -D
+# or
+bun add @eslint/markdown -D
+```
+
+For Deno:
+
+```sh
+deno add jsr:@eslint/markdown
 ```
 
 ### Configurations
@@ -30,17 +44,40 @@ npm install --save-dev eslint @eslint/markdown
 | `recommended` | Lints all `.md` files with the recommended rules and assumes [CommonMark](https://commonmark.org/) format. |
 | `processor` | Enables extracting code blocks from all `.md` files so code blocks can be individually linted. |
 
-In your `eslint.config.js` file, import `@eslint/markdown` and include the recommended config to enable the Markdown processor on all `.md` files:
+In your `eslint.config.js` file, import `@eslint/markdown` and include the recommended config to enable Markdown parsing and linting:
 
 ```js
 // eslint.config.js
+import { defineConfig } from "eslint/config";
 import markdown from "@eslint/markdown";
 
-export default [
-    ...markdown.configs.recommended
+export default defineConfig([
+    markdown.configs.recommended
 
     // your other configs here
-];
+]);
+```
+
+You can also modify the recommended config by using `extends`:
+
+```js
+// eslint.config.js
+import { defineConfig } from "eslint/config";
+import markdown from "@eslint/markdown";
+
+export default defineConfig([
+    {
+        plugins: {
+            markdown
+        },
+        extends: ["markdown/recommended"],
+        rules: {
+            "markdown/no-html": "error"
+        }
+    }
+
+    // your other configs here
+]);
 ```
 
 ### Rules
@@ -52,11 +89,19 @@ export default [
 | :- | :- | :-: |
 | [`fenced-code-language`](./docs/rules/fenced-code-language.md) | Require languages for fenced code blocks | yes |
 | [`heading-increment`](./docs/rules/heading-increment.md) | Enforce heading levels increment by one | yes |
+| [`no-duplicate-definitions`](./docs/rules/no-duplicate-definitions.md) | Disallow duplicate definitions | yes |
 | [`no-duplicate-headings`](./docs/rules/no-duplicate-headings.md) | Disallow duplicate headings in the same document | no |
+| [`no-empty-definitions`](./docs/rules/no-empty-definitions.md) | Disallow empty definitions | yes |
+| [`no-empty-images`](./docs/rules/no-empty-images.md) | Disallow empty images | yes |
 | [`no-empty-links`](./docs/rules/no-empty-links.md) | Disallow empty links | yes |
 | [`no-html`](./docs/rules/no-html.md) | Disallow HTML tags | no |
 | [`no-invalid-label-refs`](./docs/rules/no-invalid-label-refs.md) | Disallow invalid label references | yes |
+| [`no-missing-atx-heading-space`](./docs/rules/no-missing-atx-heading-space.md) | Disallow headings without a space after the hash characters | yes |
 | [`no-missing-label-refs`](./docs/rules/no-missing-label-refs.md) | Disallow missing label references | yes |
+| [`no-missing-link-fragments`](./docs/rules/no-missing-link-fragments.md) | Disallow link fragments that do not reference valid headings | yes |
+| [`no-multiple-h1`](./docs/rules/no-multiple-h1.md) | Disallow multiple H1 headings in the same document | yes |
+| [`require-alt-text`](./docs/rules/require-alt-text.md) | Require alternative text for images | yes |
+| [`table-column-count`](./docs/rules/table-column-count.md) | Disallow data rows in a GitHub Flavored Markdown table from having more cells than the header row | yes |
 <!-- Rule Table End -->
 
 **Note:** This plugin does not provide formatting rules. We recommend using a source code formatter such as [Prettier](https://prettier.io) for that purpose.
@@ -65,9 +110,10 @@ In order to individually configure a rule in your `eslint.config.js` file, impor
 
 ```js
 // eslint.config.js
+import { defineConfig } from "eslint/config";
 import markdown from "@eslint/markdown";
 
-export default [
+export default defineConfig([
     {
         files: ["**/*.md"],
         plugins: {
@@ -78,7 +124,7 @@ export default [
             "markdown/no-html": "error"
         }
     }
-];
+]);
 ```
 
 You can individually disable rules in Markdown using HTML comments, such as:
@@ -105,9 +151,10 @@ In order to individually configure a language in your `eslint.config.js` file, i
 
 ```js
 // eslint.config.js
+import { defineConfig } from "eslint/config";
 import markdown from "@eslint/markdown";
 
-export default [
+export default defineConfig([
     {
         files: ["**/*.md"],
         plugins: {
@@ -118,7 +165,7 @@ export default [
             "markdown/no-html": "error"
         }
     }
-];
+]);
 ```
 
 ### Language Options
@@ -134,12 +181,14 @@ By default, Markdown parsers do not support [front matter](https://jekyllrb.com/
 | `false`          | Disables front matter parsing in Markdown files. (Default) |
 | `"yaml"`         | Enables YAML front matter parsing in Markdown files.       |
 | `"toml"`         | Enables TOML front matter parsing in Markdown files.       |
+| `"json"`         | Enables JSON front matter parsing in Markdown files.       |
 
 ```js
 // eslint.config.js
+import { defineConfig } from "eslint/config";
 import markdown from "@eslint/markdown";
 
-export default [
+export default defineConfig([
     {
         files: ["**/*.md"],
         plugins: {
@@ -147,13 +196,13 @@ export default [
         },
         language: "markdown/gfm",
         languageOptions: {
-            frontmatter: "yaml", // Or pass `"toml"` to enable TOML front matter parsing.
+            frontmatter: "yaml", // Or pass `"toml"` or `"json"` to enable TOML or JSON front matter parsing.
         },
         rules: {
             "markdown/no-html": "error"
         }
     }
-];
+]);
 ```
 
 ### Processors
@@ -202,11 +251,11 @@ The following companies, organizations, and individuals support ESLint's ongoing
 to get your logo on our READMEs and [website](https://eslint.org/sponsors).
 
 <h3>Diamond Sponsors</h3>
-<p><a href="https://www.ag-grid.com/"><img src="https://images.opencollective.com/ag-grid/2c8d545/logo.png" alt="AG Grid" height="128"></a></p><h3>Platinum Sponsors</h3>
+<p><a href="https://www.ag-grid.com/"><img src="https://images.opencollective.com/ag-grid/bec0580/logo.png" alt="AG Grid" height="128"></a></p><h3>Platinum Sponsors</h3>
 <p><a href="https://automattic.com"><img src="https://images.opencollective.com/automattic/d0ef3e1/logo.png" alt="Automattic" height="128"></a> <a href="https://www.airbnb.com/"><img src="https://images.opencollective.com/airbnb/d327d66/logo.png" alt="Airbnb" height="128"></a></p><h3>Gold Sponsors</h3>
 <p><a href="https://qlty.sh/"><img src="https://images.opencollective.com/qltysh/33d157d/logo.png" alt="Qlty Software" height="96"></a> <a href="https://trunk.io/"><img src="https://images.opencollective.com/trunkio/fb92d60/avatar.png" alt="trunk.io" height="96"></a> <a href="https://shopify.engineering/"><img src="https://avatars.githubusercontent.com/u/8085" alt="Shopify" height="96"></a></p><h3>Silver Sponsors</h3>
 <p><a href="https://vite.dev/"><img src="https://images.opencollective.com/vite/e6d15e1/logo.png" alt="Vite" height="64"></a> <a href="https://liftoff.io/"><img src="https://images.opencollective.com/liftoff/5c4fa84/logo.png" alt="Liftoff" height="64"></a> <a href="https://americanexpress.io"><img src="https://avatars.githubusercontent.com/u/3853301" alt="American Express" height="64"></a> <a href="https://stackblitz.com"><img src="https://avatars.githubusercontent.com/u/28635252" alt="StackBlitz" height="64"></a></p><h3>Bronze Sponsors</h3>
-<p><a href="https://cybozu.co.jp/"><img src="https://images.opencollective.com/cybozu/933e46d/logo.png" alt="Cybozu" height="32"></a> <a href="https://www.crosswordsolver.org/anagram-solver/"><img src="https://images.opencollective.com/anagram-solver/2666271/logo.png" alt="Anagram Solver" height="32"></a> <a href="https://icons8.com/"><img src="https://images.opencollective.com/icons8/7fa1641/logo.png" alt="Icons8" height="32"></a> <a href="https://discord.com"><img src="https://images.opencollective.com/discordapp/f9645d9/logo.png" alt="Discord" height="32"></a> <a href="https://www.gitbook.com"><img src="https://avatars.githubusercontent.com/u/7111340" alt="GitBook" height="32"></a> <a href="https://nolebase.ayaka.io"><img src="https://avatars.githubusercontent.com/u/11081491" alt="Neko" height="32"></a> <a href="https://nx.dev"><img src="https://avatars.githubusercontent.com/u/23692104" alt="Nx" height="32"></a> <a href="https://opensource.mercedes-benz.com/"><img src="https://avatars.githubusercontent.com/u/34240465" alt="Mercedes-Benz Group" height="32"></a> <a href="https://herocoders.com"><img src="https://avatars.githubusercontent.com/u/37549774" alt="HeroCoders" height="32"></a> <a href="https://www.lambdatest.com"><img src="https://avatars.githubusercontent.com/u/171592363" alt="LambdaTest" height="32"></a></p>
+<p><a href="https://sentry.io"><img src="https://github.com/getsentry.png" alt="Sentry" height="32"></a> <a href="https://syntax.fm"><img src="https://github.com/syntaxfm.png" alt="Syntax" height="32"></a> <a href="https://cybozu.co.jp/"><img src="https://images.opencollective.com/cybozu/933e46d/logo.png" alt="Cybozu" height="32"></a> <a href="https://www.crosswordsolver.org/anagram-solver/"><img src="https://images.opencollective.com/anagram-solver/2666271/logo.png" alt="Anagram Solver" height="32"></a> <a href="https://icons8.com/"><img src="https://images.opencollective.com/icons8/7fa1641/logo.png" alt="Icons8" height="32"></a> <a href="https://discord.com"><img src="https://images.opencollective.com/discordapp/f9645d9/logo.png" alt="Discord" height="32"></a> <a href="https://www.gitbook.com"><img src="https://avatars.githubusercontent.com/u/7111340" alt="GitBook" height="32"></a> <a href="https://nolebase.ayaka.io"><img src="https://avatars.githubusercontent.com/u/11081491" alt="Neko" height="32"></a> <a href="https://nx.dev"><img src="https://avatars.githubusercontent.com/u/23692104" alt="Nx" height="32"></a> <a href="https://opensource.mercedes-benz.com/"><img src="https://avatars.githubusercontent.com/u/34240465" alt="Mercedes-Benz Group" height="32"></a> <a href="https://herocoders.com"><img src="https://avatars.githubusercontent.com/u/37549774" alt="HeroCoders" height="32"></a> <a href="https://www.lambdatest.com"><img src="https://avatars.githubusercontent.com/u/171592363" alt="LambdaTest" height="32"></a></p>
 <h3>Technology Sponsors</h3>
 Technology sponsors allow us to use their products and services for free as part of a contribution to the open source ecosystem and our work.
 <p><a href="https://netlify.com"><img src="https://raw.githubusercontent.com/eslint/eslint.org/main/src/assets/images/techsponsors/netlify-icon.svg" alt="Netlify" height="32"></a> <a href="https://algolia.com"><img src="https://raw.githubusercontent.com/eslint/eslint.org/main/src/assets/images/techsponsors/algolia-icon.svg" alt="Algolia" height="32"></a> <a href="https://1password.com"><img src="https://raw.githubusercontent.com/eslint/eslint.org/main/src/assets/images/techsponsors/1password-icon.svg" alt="1Password" height="32"></a></p>
