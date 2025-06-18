@@ -198,6 +198,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 		{
 			code: "(~~foo~~)[]",
 			output: "[~~foo~~]()",
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "reversedSyntax",
@@ -224,6 +225,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 		{
 			code: "[^1]: (Footnote text)[https://example.com]",
 			output: "[^1]: [Footnote text](https://example.com)",
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "reversedSyntax",
@@ -396,6 +398,19 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 					column: 5,
 					endLine: 2,
 					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: '[link1](#link "`") ()[] [link2](#link "`")',
+			output: '[link1](#link "`") []() [link2](#link "`")',
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 20,
+					endLine: 1,
+					endColumn: 24,
 				},
 			],
 		},

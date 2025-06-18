@@ -13,6 +13,8 @@ import { findOffsets } from "../util.js";
 // Type Definitions
 //-----------------------------------------------------------------------------
 
+/** @typedef {import("mdast").Node} Node */
+/** @typedef {import("mdast").Paragraph} ParagraphNode */
 /**
  * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
  * NoReversedMediaSyntaxRuleDefinition
@@ -25,7 +27,6 @@ import { findOffsets } from "../util.js";
 /** Matches reversed link/image syntax like (text)[url], ignoring escaped characters like \(text\)[url]. */
 const reversedPattern =
 	/(?<!\\)\(((?:\\.|[^()\\]|\([\s\S]*\))*)\)\[((?:\\.|[^\]\\\n])*)\](?!\()/gu;
-const codeSpanPattern = /(?<!\\)`+[^`]*`+/gu;
 
 /**
  * Checks if a match is within any of the code spans
@@ -40,21 +41,33 @@ function isInCodeSpan(matchIndex, codeSpans) {
 }
 
 /**
- * Finds all code spans in the text
- * @param {string} text The text to search
+ * Finds all code spans in the paragraph node by traversing its children
+ * @param {ParagraphNode} node The paragraph node to search
  * @returns {Array<{start: number, end: number}>} Array of code span positions
  */
-function findCodeSpans(text) {
+function findCodeSpans(node) {
 	const codeSpans = [];
-	let match;
 
-	while ((match = codeSpanPattern.exec(text)) !== null) {
-		codeSpans.push({
-			start: match.index,
-			end: match.index + match[0].length,
-		});
+	/**
+	 * Recursively traverses the AST to find inline code nodes
+	 * @param {Node} currentNode The current node being traversed
+	 * @returns {void}
+	 */
+	function traverse(currentNode) {
+		if (currentNode.type === "inlineCode") {
+			codeSpans.push({
+				start: currentNode.position.start.offset,
+				end: currentNode.position.end.offset,
+			});
+			return;
+		}
+
+		if ("children" in currentNode && Array.isArray(currentNode.children)) {
+			currentNode.children.forEach(traverse);
+		}
 	}
 
+	traverse(node);
 	return codeSpans;
 }
 
@@ -85,7 +98,7 @@ export default {
 		return {
 			paragraph(node) {
 				const text = context.sourceCode.getText(node);
-				const codeSpans = findCodeSpans(text);
+				const codeSpans = findCodeSpans(node);
 				let match;
 
 				while ((match = reversedPattern.exec(text)) !== null) {
