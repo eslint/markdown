@@ -31,19 +31,19 @@ const reversedPattern =
 /**
  * Checks if a match is within any of the code spans
  * @param {number} matchIndex The index of the match
- * @param {Array<{start: number, end: number}>} codeSpans Array of code span positions
+ * @param {Array<{startOffset: number, endOffset: number}>} codeSpans Array of code span positions
  * @returns {boolean} True if the match is within a code span
  */
 function isInCodeSpan(matchIndex, codeSpans) {
 	return codeSpans.some(
-		span => matchIndex >= span.start && matchIndex < span.end,
+		span => matchIndex >= span.startOffset && matchIndex < span.endOffset,
 	);
 }
 
 /**
  * Finds all code spans in the paragraph node by traversing its children
  * @param {ParagraphNode} node The paragraph node to search
- * @returns {Array<{start: number, end: number}>} Array of code span positions
+ * @returns {Array<{startOffset: number, endOffset: number}>} Array of code span positions
  */
 function findCodeSpans(node) {
 	const codeSpans = [];
@@ -56,8 +56,8 @@ function findCodeSpans(node) {
 	function traverse(currentNode) {
 		if (currentNode.type === "inlineCode") {
 			codeSpans.push({
-				start: currentNode.position.start.offset,
-				end: currentNode.position.end.offset,
+				startOffset: currentNode.position.start.offset,
+				endOffset: currentNode.position.end.offset,
 			});
 			return;
 		}
