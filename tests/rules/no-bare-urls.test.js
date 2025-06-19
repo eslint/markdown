@@ -139,6 +139,19 @@ ruleTester.run("no-bare-urls", rule, {
 			],
 		},
 		{
+			code: "# https://www.example.com/",
+			output: "# <https://www.example.com/>",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 3,
+					endLine: 1,
+					endColumn: 27,
+				},
+			],
+		},
+		{
 			code: dedent`
             | Link                 |
             |----------------------|
@@ -315,6 +328,19 @@ ruleTester.run("no-bare-urls", rule, {
 					column: 1,
 					endLine: 3,
 					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: "text **<a>https://example.com</a>** *https://example.com*",
+			output: "text **<a>https://example.com</a>** *<https://example.com>*",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 38,
+					endLine: 1,
+					endColumn: 57,
 				},
 			],
 		},

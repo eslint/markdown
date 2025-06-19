@@ -28,6 +28,8 @@ For more info, visit https://www.example.com/
 
 Contact us at user@example.com
 
+# https://www.example.com/
+
 [Read the [docs]](https://www.example.com/)
 
 [docs]: https://www.example.com/docs
@@ -45,6 +47,8 @@ For more info, visit [Example Website](https://www.example.com/)
 Contact us at <user@example.com>
 
 Contact us at [user@example.com](mailto:user@example.com)
+
+# <https://www.example.com/>
 
 Not a clickable link: `https://www.example.com/`
 
