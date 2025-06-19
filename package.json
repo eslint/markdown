@@ -37,6 +37,9 @@
     "lint",
     "linter"
   ],
+  "workspaces": [
+    "examples/*"
+  ],
   "gitHooks": {
     "pre-commit": "lint-staged"
   },
@@ -50,7 +53,10 @@
       "eslint --fix -c eslint.config-content.js"
     ],
     "!(*.{js,md})": "prettier --write --ignore-unknown",
-    "{src/rules/*.js,tools/update-rules-docs.js,README.md}": "npm run build:update-rules-docs"
+    "{src/rules/*.js,tools/update-rules-docs.js,README.md}": [
+      "npm run build:update-rules-docs",
+      "git add README.md"
+    ]
   },
   "scripts": {
     "lint": "eslint . && eslint -c eslint.config-content.js .",
@@ -61,7 +67,7 @@
     "build:update-rules-docs": "node tools/update-rules-docs.js",
     "build": "npm run build:rules && tsc && npm run build:update-rules-docs",
     "build:readme": "node tools/update-readme.js",
-    "prepare": "node ./npm-prepare.cjs && npm run build",
+    "prepare": "npm run build",
     "test": "c8 mocha \"tests/**/*.test.js\" --timeout 30000",
     "test:jsr": "npx jsr@latest publish --dry-run",
     "test:types": "tsc -p tests/types/tsconfig.json"
@@ -78,7 +84,7 @@
     "lint-staged": "^15.2.9",
     "mocha": "^11.6.0",
     "prettier": "^3.3.3",
-    "typescript": "^5.5.4",
+    "typescript": "^5.8.3",
     "yorkie": "^2.0.0"
   },
   "dependencies": {
