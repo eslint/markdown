@@ -89,6 +89,7 @@ export default defineConfig([
 | :- | :- | :-: |
 | [`fenced-code-language`](./docs/rules/fenced-code-language.md) | Require languages for fenced code blocks | yes |
 | [`heading-increment`](./docs/rules/heading-increment.md) | Enforce heading levels increment by one | yes |
+| [`no-bare-urls`](./docs/rules/no-bare-urls.md) | Disallow bare URLs | no |
 | [`no-duplicate-definitions`](./docs/rules/no-duplicate-definitions.md) | Disallow duplicate definitions | yes |
 | [`no-duplicate-headings`](./docs/rules/no-duplicate-headings.md) | Disallow duplicate headings in the same document | no |
 | [`no-empty-definitions`](./docs/rules/no-empty-definitions.md) | Disallow empty definitions | yes |
