@@ -1,5 +1,5 @@
 /**
- * @fileoverview Functions to fix up rules to provide missing methods on the `context` object.
+ * @fileoverview The MarkdownLanguage class.
  * @author Nicholas C. Zakas
  */
 
