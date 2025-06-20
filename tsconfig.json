@@ -2,8 +2,6 @@
   "files": ["src/index.js"],
   "compilerOptions": {
     "declaration": true,
-    "emitDeclarationOnly": true,
-    "allowImportingTsExtensions": true,
     "allowJs": true,
     "checkJs": true,
     "outDir": "dist/esm",
