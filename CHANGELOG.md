@@ -1,5 +1,22 @@
 # Changelog
 
+## [6.6.0](https://github.com/eslint/markdown/compare/v6.5.0...v6.6.0) (2025-06-20)
+
+
+### Features
+
+* add checkSiblingsOnly option to no-duplicate-headings rule ([#393](https://github.com/eslint/markdown/issues/393)) ([2512729](https://github.com/eslint/markdown/commit/25127297f0ee8f63b860a42538cec9612e154b0b))
+* add JSON frontmatter support ([#411](https://github.com/eslint/markdown/issues/411)) ([8b77e69](https://github.com/eslint/markdown/commit/8b77e6993ed045482a966470d906d9636b1b4abc))
+* add no-bare-urls rule ([#418](https://github.com/eslint/markdown/issues/418)) ([5149927](https://github.com/eslint/markdown/commit/514992754650499cf1c8d7e4f56a1e7666a3d384))
+* add no-missing-link-fragments rule ([#380](https://github.com/eslint/markdown/issues/380)) ([70e7dac](https://github.com/eslint/markdown/commit/70e7dacab279579c57396589da798d7e2e3a0a50))
+* add no-reversed-media-syntax rule ([#398](https://github.com/eslint/markdown/issues/398)) ([ae547ab](https://github.com/eslint/markdown/commit/ae547ab935307f5bea60ea3d0e1ccefdc8fc43f6))
+* update `no-multiple-h1` rule to recognize JSON frontmatter ([#413](https://github.com/eslint/markdown/issues/413)) ([33dda18](https://github.com/eslint/markdown/commit/33dda184d2919ea33ba850a018b6972429aeb5c6))
+
+
+### Bug Fixes
+
+* ensure ATX headings follow spec for space after hash characters ([#421](https://github.com/eslint/markdown/issues/421)) ([bab9670](https://github.com/eslint/markdown/commit/bab96707428ee694888cfaa3f22ae8823a7880e0))
+
 ## [6.5.0](https://github.com/eslint/markdown/compare/v6.4.0...v6.5.0) (2025-06-04)
 
 
