@@ -10,7 +10,8 @@
 /**
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"skippedHeading"} HeadingIncrementMessageIds
- * @typedef {MarkdownRuleDefinition<{ RuleOptions: [], MessageIds: HeadingIncrementMessageIds }>} HeadingIncrementRuleDefinition
+ * @typedef {[]} HeadingIncrementOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: HeadingIncrementOptions, MessageIds: HeadingIncrementMessageIds }>} HeadingIncrementRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
