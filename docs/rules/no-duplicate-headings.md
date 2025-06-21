@@ -15,9 +15,11 @@ When generating in-document links, unique headings are necessary to ensure you c
 
 This rule warns when it finds more than one heading with the same text, even if the headings are of different levels.
 
-Examples of incorrect code:
+Examples of **incorrect** code for this rule:
 
 ```markdown
+<!-- eslint markdown/no-duplicate-headings: "error" -->
+
 # Hello world!
 
 ## Hello world!
@@ -27,6 +29,32 @@ Goodbye World!
 
 # Goodbye World!
 ```
+
+## Options
+
+The following options are available on this rule:
+
+* `checkSiblingsOnly: boolean` - When set to `true`, the rule will only check for duplicate headings among headings that share the same immediate parent heading. Default is `false`.
+
+Examples of **correct** code for this rule with `checkSiblingsOnly: true`:
+
+```markdown
+<!-- eslint markdown/no-duplicate-headings: ["error", { checkSiblingsOnly: true }] -->
+
+# Change log
+
+## 1.0.0
+
+### Features
+### Bug Fixes
+
+## 2.0.0
+
+### Features
+### Bug Fixes
+```
+
+In this example, the duplicate "Features" and "Bug Fixes" headings are allowed because they have different parent headings ("1.0.0" vs "2.0.0").
 
 ## When Not to Use It
 

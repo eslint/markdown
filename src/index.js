@@ -45,7 +45,7 @@ let recommendedPlugins, processorPlugins;
 const plugin = {
 	meta: {
 		name: "@eslint/markdown",
-		version: "6.4.0", // x-release-please-version
+		version: "6.6.0", // x-release-please-version
 	},
 	processors: {
 		markdown: processor,

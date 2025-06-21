@@ -1,5 +1,42 @@
 # Changelog
 
+## [6.6.0](https://github.com/eslint/markdown/compare/v6.5.0...v6.6.0) (2025-06-20)
+
+
+### Features
+
+* add checkSiblingsOnly option to no-duplicate-headings rule ([#393](https://github.com/eslint/markdown/issues/393)) ([2512729](https://github.com/eslint/markdown/commit/25127297f0ee8f63b860a42538cec9612e154b0b))
+* add JSON frontmatter support ([#411](https://github.com/eslint/markdown/issues/411)) ([8b77e69](https://github.com/eslint/markdown/commit/8b77e6993ed045482a966470d906d9636b1b4abc))
+* add no-bare-urls rule ([#418](https://github.com/eslint/markdown/issues/418)) ([5149927](https://github.com/eslint/markdown/commit/514992754650499cf1c8d7e4f56a1e7666a3d384))
+* add no-missing-link-fragments rule ([#380](https://github.com/eslint/markdown/issues/380)) ([70e7dac](https://github.com/eslint/markdown/commit/70e7dacab279579c57396589da798d7e2e3a0a50))
+* add no-reversed-media-syntax rule ([#398](https://github.com/eslint/markdown/issues/398)) ([ae547ab](https://github.com/eslint/markdown/commit/ae547ab935307f5bea60ea3d0e1ccefdc8fc43f6))
+* update `no-multiple-h1` rule to recognize JSON frontmatter ([#413](https://github.com/eslint/markdown/issues/413)) ([33dda18](https://github.com/eslint/markdown/commit/33dda184d2919ea33ba850a018b6972429aeb5c6))
+
+
+### Bug Fixes
+
+* ensure ATX headings follow spec for space after hash characters ([#421](https://github.com/eslint/markdown/issues/421)) ([bab9670](https://github.com/eslint/markdown/commit/bab96707428ee694888cfaa3f22ae8823a7880e0))
+
+## [6.5.0](https://github.com/eslint/markdown/compare/v6.4.0...v6.5.0) (2025-06-04)
+
+
+### Features
+
+* add `no-missing-atx-heading-space` rule ([#371](https://github.com/eslint/markdown/issues/371)) ([84c87c4](https://github.com/eslint/markdown/commit/84c87c407bdfb64694581afb26066a5b233bd59c))
+* add no-empty-definitions rule ([#364](https://github.com/eslint/markdown/issues/364)) ([cb5a956](https://github.com/eslint/markdown/commit/cb5a95666524e3c26650371bfdcd59e15cae4053))
+* add no-multiple-h1 rule ([#377](https://github.com/eslint/markdown/issues/377)) ([d7c88e8](https://github.com/eslint/markdown/commit/d7c88e898b251cb1bf9eb3b19075b6b6c4a4d255))
+* add require-alt-text rule ([#368](https://github.com/eslint/markdown/issues/368)) ([32d8cbd](https://github.com/eslint/markdown/commit/32d8cbd8b6d2d121225b5291c2f9a0ea6c2ccd00))
+* added new rule `table-column-count` ([#392](https://github.com/eslint/markdown/issues/392)) ([c685139](https://github.com/eslint/markdown/commit/c68513942c0735fc7fbae7edbc95a36093a30ee0))
+* create `no-duplicate-definitions` ([#360](https://github.com/eslint/markdown/issues/360)) ([18c7d77](https://github.com/eslint/markdown/commit/18c7d776c768b901a0049b6e9bd7cf9e060ae835))
+* create `no-empty-images` ([#357](https://github.com/eslint/markdown/issues/357)) ([23e4ff0](https://github.com/eslint/markdown/commit/23e4ff0d7be9e10ce017357cb5f8e15276c6c404))
+
+
+### Bug Fixes
+
+* `no-invalid-label-refs` do not report correct position ([#366](https://github.com/eslint/markdown/issues/366)) ([ed01747](https://github.com/eslint/markdown/commit/ed01747d29eed0b1379211bb1d97d3dbff3389c8))
+* `no-missing-label-refs` rule does not respect escaping ([#348](https://github.com/eslint/markdown/issues/348)) ([cb6b437](https://github.com/eslint/markdown/commit/cb6b4376e94f2f89a100352d01857ad08deff652))
+* update `require-alt-text` rule to ignore commented images ([#385](https://github.com/eslint/markdown/issues/385)) ([b2fc801](https://github.com/eslint/markdown/commit/b2fc801727eb7ed554e74a9cf690c4777b66ff72))
+
 ## [6.4.0](https://github.com/eslint/markdown/compare/v6.3.0...v6.4.0) (2025-04-17)
 
 

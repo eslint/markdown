@@ -55,6 +55,12 @@ export default {
 				additionalProperties: false,
 			},
 		],
+
+		defaultOptions: [
+			{
+				required: [],
+			},
+		],
 	},
 
 	create(context) {

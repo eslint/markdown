@@ -1,10 +1,10 @@
-import markdown, { MarkdownSourceCode } from "@eslint/markdown";
-import {
-	Toml,
+import markdown, {
+	MarkdownSourceCode,
 	MarkdownRuleDefinition,
 	MarkdownRuleVisitor,
-	RuleModule,
-} from "@eslint/markdown/types";
+	type RuleModule,
+} from "@eslint/markdown";
+import type { Toml, Json } from "@eslint/markdown/types";
 import { ESLint, Linter } from "eslint";
 import type { SourceLocation, SourceRange } from "@eslint/core";
 import type {
@@ -162,6 +162,8 @@ typeof processorPlugins satisfies {};
 			"yaml:exit": (...args) => testVisitor<Yaml>(...args),
 			toml: (...args) => testVisitor<Toml>(...args),
 			"toml:exit": (...args) => testVisitor<Toml>(...args),
+			json: (...args) => testVisitor<Json>(...args),
+			"json:exit": (...args) => testVisitor<Json>(...args),
 
 			// Unknown selectors allowed
 			"heading[depth=1]"(node: Node, parent?: ParentNode) {},

@@ -7,10 +7,10 @@
 // Type Definitions
 //-----------------------------------------------------------------------------
 
+/** @typedef {import("mdast").Heading} HeadingNode */
 /**
- * @import { MarkdownRuleDefinition } from "../types.js";
- * @typedef {"duplicateHeading"} NoDuplicateHeadingsMessageIds
- * @typedef {MarkdownRuleDefinition<{ RuleOptions: [], MessageIds: NoDuplicateHeadingsMessageIds }>} NoDuplicateHeadingsRuleDefinition
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ checkSiblingsOnly?: boolean; }]; }>}
+ * NoDuplicateHeadingsRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
@@ -30,46 +30,103 @@ export default {
 		messages: {
 			duplicateHeading: 'Duplicate heading "{{text}}" found.',
 		},
+
+		schema: [
+			{
+				type: "object",
+				properties: {
+					checkSiblingsOnly: {
+						type: "boolean",
+					},
+				},
+				additionalProperties: false,
+			},
+		],
+
+		defaultOptions: [{ checkSiblingsOnly: false }],
 	},
 
 	create(context) {
-		const headings = new Set();
+		const [{ checkSiblingsOnly }] = context.options;
 		const { sourceCode } = context;
+
+		const headingsByLevel = checkSiblingsOnly
+			? new Map([
+					[1, new Set()],
+					[2, new Set()],
+					[3, new Set()],
+					[4, new Set()],
+					[5, new Set()],
+					[6, new Set()],
+				])
+			: new Map([[1, new Set()]]);
+		let lastLevel = 1;
+		let currentLevelHeadings = headingsByLevel.get(lastLevel);
+
+		/**
+		 * Gets the text of a heading node
+		 * @param {HeadingNode} node The heading node
+		 * @returns {string} The heading text
+		 */
+		function getHeadingText(node) {
+			/*
+			 * There are two types of headings in markdown:
+			 * - ATX headings, which consist of 1-6 # characters followed by content
+			 *   and optionally ending with any number of # characters
+			 * - Setext headings, which are underlined with = or -
+			 * Setext headings are identified by being on two lines instead of one,
+			 * with the second line containing only = or - characters. In order to
+			 * get the correct heading text, we need to determine which type of
+			 * heading we're dealing with.
+			 */
+			const isSetext =
+				node.position.start.line !== node.position.end.line;
+
+			if (isSetext) {
+				// get only the text from the first line
+				return sourceCode.lines[node.position.start.line - 1].trim();
+			}
+
+			// For ATX headings, get the text between the # characters
+			const text = sourceCode.getText(node);
+			return text
+				.slice(node.depth)
+				.replace(/\s+#+\s*$/u, "")
+				.trim();
+		}
 
 		return {
 			heading(node) {
-				/*
-				 * There are two types of headings in markdown:
-				 * - ATX headings, which start with one or more # characters
-				 * - Setext headings, which are underlined with = or -
-				 * Setext headings are identified by being on two lines instead of one,
-				 * with the second line containing only = or - characters. In order to
-				 * get the correct heading text, we need to determine which type of
-				 * heading we're dealing with.
-				 */
-				const isSetext =
-					node.position.start.line !== node.position.end.line;
+				const headingText = getHeadingText(node);
 
-				const text = isSetext
-					? // get only the text from the first line
-						sourceCode.lines[node.position.start.line - 1].trim()
-					: // get the text without the leading # characters
-						sourceCode
-							.getText(node)
-							.slice(node.depth + 1)
-							.trim();
+				if (checkSiblingsOnly) {
+					const currentLevel = node.depth;
 
-				if (headings.has(text)) {
+					if (currentLevel < lastLevel) {
+						for (
+							let level = lastLevel;
+							level > currentLevel;
+							level--
+						) {
+							headingsByLevel.get(level).clear();
+						}
+					}
+
+					lastLevel = currentLevel;
+					currentLevelHeadings = headingsByLevel.get(currentLevel);
+				}
+
+				if (currentLevelHeadings.has(headingText)) {
 					context.report({
 						loc: node.position,
 						messageId: "duplicateHeading",
 						data: {
-							text,
+							text: headingText,
 						},
 					});
+				} else {
+					currentLevelHeadings.add(headingText);
 				}
-
-				headings.add(text);
 			},
 		};
 	},

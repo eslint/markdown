@@ -22,9 +22,11 @@ Confusingly, GitHub still treats this as a label reference and will render it as
 
 This rule warns when it finds text that looks like it's a shorthand label reference and there's white space between the brackets.
 
-Examples of incorrect code:
+Examples of **incorrect** code for this rule:
 
 ```markdown
+<!-- eslint markdown/no-invalid-label-refs: "error" -->
+
 [eslint][ ]
 
 [eslint][
