@@ -4,9 +4,9 @@ import markdown, {
 	MarkdownRuleVisitor,
 	type RuleModule,
 } from "@eslint/markdown";
+import type { SourceLocation, SourceRange } from "@eslint/core";
 import type { Toml, Json } from "@eslint/markdown/types";
 import { ESLint, Linter } from "eslint";
-import type { SourceLocation, SourceRange } from "@eslint/core";
 import type {
 	// Nodes (abstract)
 	Node,
