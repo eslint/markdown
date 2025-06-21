@@ -1,5 +1,16 @@
 # Changelog
 
+## [7.0.0](https://github.com/eslint/markdown/compare/v6.6.0...v7.0.0) (2025-06-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove rollup and extraneous types ([#383](https://github.com/eslint/markdown/issues/383))
+
+### Bug Fixes
+
+* remove rollup and extraneous types ([#383](https://github.com/eslint/markdown/issues/383)) ([e7ccd2e](https://github.com/eslint/markdown/commit/e7ccd2e3e58757fa1a1d616fda285e957880c36d))
+
 ## [6.6.0](https://github.com/eslint/markdown/compare/v6.5.0...v6.6.0) (2025-06-20)
 
 
