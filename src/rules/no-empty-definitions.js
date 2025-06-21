@@ -8,8 +8,10 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoEmptyDefinitionsRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"emptyDefinition"} NoEmptyDefinitionsMessageIds
+ * @typedef {[]} NoEmptyDefinitionsOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoEmptyDefinitionsOptions, MessageIds: NoEmptyDefinitionsMessageIds }>} NoEmptyDefinitionsRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
