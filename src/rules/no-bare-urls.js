@@ -7,14 +7,12 @@
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("mdast").Node} Node */
-/** @typedef {import("mdast").Paragraph} ParagraphNode */
-/** @typedef {import("mdast").Heading} HeadingNode */
-/** @typedef {import("mdast").TableCell} TableCellNode */
-/** @typedef {import("mdast").Link} LinkNode */
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoBareUrlsRuleDefinition
+ * @import { Node, Heading, Paragraph, TableCell, Link } from "mdast";
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"bareUrl"} NoBareUrlsMessageIds
+ * @typedef {[]} NoBareUrlsOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoBareUrlsOptions, MessageIds: NoBareUrlsMessageIds }>} NoBareUrlsRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
@@ -67,14 +65,14 @@ export default {
 
 	create(context) {
 		const { sourceCode } = context;
-		/** @type {Array<LinkNode>} */
+		/** @type {Array<Link>} */
 		const bareUrls = [];
 
 		/**
 		 * Finds bare URLs in markdown nodes while handling HTML tags.
 		 * When an HTML tag is found, it looks for its closing tag and skips all nodes
 		 * between them to prevent checking for bare URLs inside HTML content.
-		 * @param {ParagraphNode|HeadingNode|TableCellNode} node The node to process
+		 * @param {Paragraph|Heading|TableCell} node The node to process
 		 * @returns {void}
 		 */
 		function findBareUrls(node) {
