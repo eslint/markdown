@@ -14,8 +14,10 @@ import { findOffsets } from "../util.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * RequireAltTextRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"altTextRequired"} RequireAltTextMessageIds
+ * @typedef {[]} RequireAltTextOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: RequireAltTextOptions, MessageIds: RequireAltTextMessageIds }>} RequireAltTextRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
