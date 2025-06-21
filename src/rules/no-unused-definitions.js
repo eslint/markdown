@@ -8,8 +8,10 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ allowDefinitions: string[], allowFootnoteDefinitions: string[]; }]; }>}
- * NoUnusedDefinitionsRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"unusedDefinition" | "unusedFootnoteDefinition"} NoUnusedDefinitionsMessageIds
+ * @typedef {[{ allowDefinitions?: string[], allowFootnoteDefinitions?: string[]; }]} NoUnusedDefinitionsOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoUnusedDefinitionsOptions, MessageIds: NoUnusedDefinitionsMessageIds }>} NoUnusedDefinitionsRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
@@ -29,9 +31,9 @@ export default {
 
 		messages: {
 			unusedDefinition:
-				"Unexpected duplicate definition `{{ identifier }}` found.",
+				"Unexpected unused definition `{{ identifier }}` found.",
 			unusedFootnoteDefinition:
-				"Unexpected duplicate footnote definition `{{ identifier }}` found.",
+				"Unexpected unused footnote definition `{{ identifier }}` found.",
 		},
 
 		schema: [
@@ -65,8 +67,23 @@ export default {
 		],
 	},
 
-	// eslint-disable-next-line no-unused-vars -- TODO
 	create(context) {
-		// TODO
+		return {
+			definition(node) {
+				context.report({
+					node,
+					messageId: "unusedDefinition",
+					data: { identifier: node.identifier },
+				});
+			},
+
+			footnoteDefinition(node) {
+				context.report({
+					node,
+					messageId: "unusedFootnoteDefinition",
+					data: { identifier: node.identifier },
+				});
+			},
+		};
 	},
 };
