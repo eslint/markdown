@@ -197,5 +197,3 @@ export type MarkdownRuleDefinition<
 			Omit<MarkdownRuleDefinitionTypeOptions, keyof Options>
 	>
 >;
-
-export type RuleModule = MarkdownRuleDefinition;
