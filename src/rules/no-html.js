@@ -14,8 +14,10 @@ import { findOffsets } from "../util.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ allowed?: string[]; }]; }>}
- * NoHtmlRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"disallowedElement"} NoHtmlMessageIds
+ * @typedef {[{ allowed?: string[] }]} NoHtmlOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoHtmlOptions, MessageIds: NoHtmlMessageIds }>} NoHtmlRuleDefinition
  */
 
 //-----------------------------------------------------------------------------

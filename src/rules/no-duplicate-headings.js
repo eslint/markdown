@@ -7,10 +7,12 @@
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("mdast").Heading} HeadingNode */
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ checkSiblingsOnly?: boolean; }]; }>}
- * NoDuplicateHeadingsRuleDefinition
+ * @import { Heading } from "mdast";
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"duplicateHeading"} NoDuplicateHeadingsMessageIds
+ * @typedef {[{ checkSiblingsOnly?: boolean }]} NoDuplicateHeadingsOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoDuplicateHeadingsOptions, MessageIds: NoDuplicateHeadingsMessageIds }>} NoDuplicateHeadingsRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
@@ -65,7 +67,7 @@ export default {
 
 		/**
 		 * Gets the text of a heading node
-		 * @param {HeadingNode} node The heading node
+		 * @param {Heading} node The heading node
 		 * @returns {string} The heading text
 		 */
 		function getHeadingText(node) {

@@ -14,8 +14,10 @@ import { findOffsets } from "../util.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ frontmatterTitle?: string; }]; }>}
- * NoMultipleH1RuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"multipleH1"} NoMultipleH1MessageIds
+ * @typedef {[{ frontmatterTitle?: string }]} NoMultipleH1Options
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoMultipleH1Options, MessageIds: NoMultipleH1MessageIds }>} NoMultipleH1RuleDefinition
  */
 
 //-----------------------------------------------------------------------------
