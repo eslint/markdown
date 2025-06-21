@@ -10,7 +10,8 @@
 /**
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"emptyImage"} NoEmptyImagesMessageIds
- * @typedef {MarkdownRuleDefinition<{ RuleOptions: [], MessageIds: NoEmptyImagesMessageIds }>} NoEmptyImagesRuleDefinition
+ * @typedef {[]} NoEmptyImagesOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoEmptyImagesOptions, MessageIds: NoEmptyImagesMessageIds }>} NoEmptyImagesRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
