@@ -8,7 +8,8 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>} TableColumnCountRuleDefinition
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ checkMissingCells?: boolean; }]; }>}
+ * TableColumnCountRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
@@ -30,10 +31,28 @@ export default {
 		messages: {
 			inconsistentColumnCount:
 				"Table column count mismatch (Expected: {{expectedCells}}, Actual: {{actualCells}}), extra data starting here will be ignored.",
+			missingCells:
+				"Table column count mismatch (Expected: {{expectedCells}}, Actual: {{actualCells}}), row will be missing data.",
 		},
+
+		schema: [
+			{
+				type: "object",
+				properties: {
+					checkMissingCells: {
+						type: "boolean",
+					},
+				},
+				additionalProperties: false,
+			},
+		],
+
+		defaultOptions: [{ checkMissingCells: false }],
 	},
 
 	create(context) {
+		const [{ checkMissingCells }] = context.options;
+
 		return {
 			table(node) {
 				if (node.children.length < 1) {
@@ -60,6 +79,29 @@ export default {
 								end: lastActualCellNode.position.end,
 							},
 							messageId: "inconsistentColumnCount",
+							data: {
+								actualCells: String(actualCellsLength),
+								expectedCells: String(expectedCellsLength),
+							},
+						});
+					} else if (
+						checkMissingCells &&
+						actualCellsLength < expectedCellsLength
+					) {
+						const lastCellNode =
+							currentRow.children[actualCellsLength - 1];
+						const rowEnd = currentRow.position.end;
+
+						context.report({
+							loc: {
+								start: {
+									column:
+										lastCellNode.position.end.column - 1,
+									line: lastCellNode.position.end.line,
+								},
+								end: rowEnd,
+							},
+							messageId: "missingCells",
 							data: {
 								actualCells: String(actualCellsLength),
 								expectedCells: String(expectedCellsLength),

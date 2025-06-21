@@ -88,6 +88,24 @@ ruleTester.run("table-column-count", rule, {
 			| abc | def |
 			| --- | --- |
 		`,
+		{
+			code: dedent`
+            | Header | Header |
+            | ------ | ------ |
+            | Cell   | Cell   |
+            | Cell   | Cell   |
+        	`,
+			options: [{ checkMissingCells: true }],
+		},
+		{
+			code: dedent`
+            | Header | Header |
+            | ------ | ------ |
+            | Cell   |        |
+            | Cell   | Cell   |
+        	`,
+			options: [{ checkMissingCells: true }],
+		},
 	],
 
 	invalid: [
@@ -250,6 +268,155 @@ ruleTester.run("table-column-count", rule, {
 					column: 13,
 					endLine: 5,
 					endColumn: 23,
+				},
+			],
+		},
+		{
+			code: dedent`
+                | Header | Header | Header |
+                | ------ | ------ | ------ |
+                | Cell   | Cell   |
+            `,
+			options: [{ checkMissingCells: true }],
+			errors: [
+				{
+					messageId: "missingCells",
+					data: { actualCells: "2", expectedCells: "3" },
+					line: 3,
+					column: 19,
+					endLine: 3,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: dedent`
+                | Col A | Col B | Col C |
+                | ----- | ----- | ----- |
+                | Cell  |       | Cell  |
+                | Cell  | Cell  |
+            `,
+			options: [{ checkMissingCells: true }],
+			errors: [
+				{
+					messageId: "missingCells",
+					data: { actualCells: "2", expectedCells: "3" },
+					line: 4,
+					column: 17,
+					endLine: 4,
+					endColumn: 18,
+				},
+			],
+		},
+		{
+			code: dedent`
+                | Col A | Col B | Col C |
+                | ----- | ----- | ----- |
+                | Cell  |
+                | Cell  | Cell  |
+                | Cell  | Cell  | Cell  |
+            `,
+			options: [{ checkMissingCells: true }],
+			errors: [
+				{
+					messageId: "missingCells",
+					data: { actualCells: "1", expectedCells: "3" },
+					line: 3,
+					column: 9,
+					endLine: 3,
+					endColumn: 10,
+				},
+				{
+					messageId: "missingCells",
+					data: { actualCells: "2", expectedCells: "3" },
+					line: 4,
+					column: 17,
+					endLine: 4,
+					endColumn: 18,
+				},
+			],
+		},
+		{
+			code: dedent`
+                | Table |
+                | ----- |
+                | Cell  | Cell  |
+                | Cell  |
+                | Cell  | Cell  |
+            `,
+			options: [{ checkMissingCells: true }],
+			errors: [
+				{
+					messageId: "inconsistentColumnCount",
+					data: { actualCells: "2", expectedCells: "1" },
+					line: 3,
+					column: 9,
+					endLine: 3,
+					endColumn: 18,
+				},
+				{
+					messageId: "inconsistentColumnCount",
+					data: { actualCells: "2", expectedCells: "1" },
+					line: 5,
+					column: 9,
+					endLine: 5,
+					endColumn: 18,
+				},
+			],
+		},
+		{
+			code: dedent`
+                | Table | Header |
+                | ----- | ------ |
+                | Cell  | Cell   | Cell   |
+                | Cell  |
+                | Cell  | Cell   |
+            `,
+			options: [{ checkMissingCells: true }],
+			errors: [
+				{
+					messageId: "inconsistentColumnCount",
+					data: { actualCells: "3", expectedCells: "2" },
+					line: 3,
+					column: 18,
+					endLine: 3,
+					endColumn: 28,
+				},
+				{
+					messageId: "missingCells",
+					data: { actualCells: "1", expectedCells: "2" },
+					line: 4,
+					column: 9,
+					endLine: 4,
+					endColumn: 10,
+				},
+			],
+		},
+		{
+			code: dedent`
+                | Table | Header | Header |
+                | ----- | ------ | ------ |
+                | Cell  | Cell   | Cell   |
+                | Cell  | Cell   | Cell   | Cell   |
+                | Cell  |
+            `,
+			options: [{ checkMissingCells: true }],
+			errors: [
+				{
+					messageId: "inconsistentColumnCount",
+					data: { actualCells: "4", expectedCells: "3" },
+					line: 4,
+					column: 27,
+					endLine: 4,
+					endColumn: 37,
+				},
+				{
+					messageId: "missingCells",
+					data: { actualCells: "1", expectedCells: "3" },
+					line: 5,
+					column: 9,
+					endLine: 5,
+					endColumn: 10,
 				},
 			],
 		},
