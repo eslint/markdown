@@ -1,5 +1,6 @@
 {
   "private": true,
+  "name": "example-react",
   "scripts": {
     "test": "eslint ."
   },

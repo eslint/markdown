@@ -89,6 +89,7 @@ export default defineConfig([
 | :- | :- | :-: |
 | [`fenced-code-language`](./docs/rules/fenced-code-language.md) | Require languages for fenced code blocks | yes |
 | [`heading-increment`](./docs/rules/heading-increment.md) | Enforce heading levels increment by one | yes |
+| [`no-bare-urls`](./docs/rules/no-bare-urls.md) | Disallow bare URLs | no |
 | [`no-duplicate-definitions`](./docs/rules/no-duplicate-definitions.md) | Disallow duplicate definitions | yes |
 | [`no-duplicate-headings`](./docs/rules/no-duplicate-headings.md) | Disallow duplicate headings in the same document | no |
 | [`no-empty-definitions`](./docs/rules/no-empty-definitions.md) | Disallow empty definitions | yes |
@@ -100,6 +101,7 @@ export default defineConfig([
 | [`no-missing-label-refs`](./docs/rules/no-missing-label-refs.md) | Disallow missing label references | yes |
 | [`no-missing-link-fragments`](./docs/rules/no-missing-link-fragments.md) | Disallow link fragments that do not reference valid headings | yes |
 | [`no-multiple-h1`](./docs/rules/no-multiple-h1.md) | Disallow multiple H1 headings in the same document | yes |
+| [`no-reversed-media-syntax`](./docs/rules/no-reversed-media-syntax.md) | Disallow reversed link and image syntax | yes |
 | [`no-unused-definitions`](./docs/rules/no-unused-definitions.md) | Disallow unused definitions | yes |
 | [`require-alt-text`](./docs/rules/require-alt-text.md) | Require alternative text for images | yes |
 | [`table-column-count`](./docs/rules/table-column-count.md) | Disallow data rows in a GitHub Flavored Markdown table from having more cells than the header row | yes |
