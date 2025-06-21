@@ -18,7 +18,8 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
  * @import { Text } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"notFound"} NoMissingLabelRefsMessageIds
- * @typedef {MarkdownRuleDefinition<{ RuleOptions: [], MessageIds: NoMissingLabelRefsMessageIds }>} NoMissingLabelRefsRuleDefinition
+ * @typedef {[]} NoMissingLabelRefsOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoMissingLabelRefsOptions, MessageIds: NoMissingLabelRefsMessageIds }>} NoMissingLabelRefsRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
