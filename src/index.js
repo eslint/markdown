@@ -14,10 +14,19 @@ import recommendedRules from "./build/recommended-config.js";
 import rules from "./build/rules.js";
 
 //-----------------------------------------------------------------------------
+// Type Definitions
+//-----------------------------------------------------------------------------
+
+/**
+ * @import { Linter } from "eslint";
+ * @typedef {Linter.RulesRecord} RulesRecord
+ */
+
+//-----------------------------------------------------------------------------
 // Exports
 //-----------------------------------------------------------------------------
 
-/** @type {import("eslint").Linter.RulesRecord} */
+/** @type {RulesRecord} */
 const processorRulesConfig = {
 	// The Markdown parser automatically trims trailing
 	// newlines from code blocks.
