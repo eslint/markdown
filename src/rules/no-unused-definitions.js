@@ -3,11 +3,14 @@
  * @author 루밀LuMir(lumirlumir)
  */
 
+// @ts-check -- TODO: Remove it later.
+
 //-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
 /**
+ * @import { Definition, FootnoteDefinition } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"unusedDefinition" | "unusedFootnoteDefinition"} NoUnusedDefinitionsMessageIds
  * @typedef {[{ allowDefinitions?: string[], allowFootnoteDefinitions?: string[]; }]} NoUnusedDefinitionsOptions
@@ -68,21 +71,46 @@ export default {
 	},
 
 	create(context) {
+		/*
+		const allowDefinitions = new Set(context.options[0]?.allowDefinitions);
+		const allowFootnoteDefinitions = new Set(
+			context.options[0]?.allowFootnoteDefinitions,
+		);
+		*/
+
+		/** @type {Set<string>} Set to track used identifiers */
+		const usedIdentifiers = new Set();
+		/** @type {Set<string>} Set to track used footnote identifiers */
+		const usedFootnoteIdentifiers = new Set();
+		/** @type {Set<Definition>} */
+		const definitions = new Set();
+		/** @type {Set<FootnoteDefinition>} */
+		const footnoteDefinitions = new Set();
+
 		return {
+			imageReference(node) {
+				usedIdentifiers.add(node.identifier);
+			},
+
+			linkReference(node) {
+				usedIdentifiers.add(node.identifier);
+			},
+
+			footnoteReference(node) {
+				usedFootnoteIdentifiers.add(node.identifier);
+			},
+
 			definition(node) {
-				context.report({
-					node,
-					messageId: "unusedDefinition",
-					data: { identifier: node.identifier },
-				});
+				definitions.add(node);
 			},
 
 			footnoteDefinition(node) {
-				context.report({
-					node,
-					messageId: "unusedFootnoteDefinition",
-					data: { identifier: node.identifier },
-				});
+				footnoteDefinitions.add(node);
+			},
+
+			"root:exit"() {
+				// @ts-ignore -- TODO
+				context.report();
 			},
 		};
 	},
