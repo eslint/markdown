@@ -1,5 +1,5 @@
 {
-  "files": ["src/index.js"],
+  "include": ["src/**/*.js", "src/**/*.ts"],
   "compilerOptions": {
     "declaration": true,
     "allowJs": true,
