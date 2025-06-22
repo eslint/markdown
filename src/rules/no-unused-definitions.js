@@ -3,8 +3,6 @@
  * @author 루밀LuMir(lumirlumir)
  */
 
-// @ts-check -- TODO: Remove it later.
-
 //-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
@@ -109,8 +107,29 @@ export default {
 			},
 
 			"root:exit"() {
-				// @ts-ignore -- TODO
-				context.report();
+				for (const definition of definitions) {
+					if (!usedIdentifiers.has(definition.identifier)) {
+						context.report({
+							node: definition,
+							messageId: "unusedDefinition",
+							data: { identifier: definition.identifier },
+						});
+					}
+				}
+
+				for (const footnoteDefinition of footnoteDefinitions) {
+					if (
+						!usedFootnoteIdentifiers.has(
+							footnoteDefinition.identifier,
+						)
+					) {
+						context.report({
+							node: footnoteDefinition,
+							messageId: "unusedFootnoteDefinition",
+							data: { identifier: footnoteDefinition.identifier },
+						});
+					}
+				}
 			},
 		};
 	},
