@@ -10,7 +10,7 @@
 /**
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"duplicateDefinition" | "duplicateFootnoteDefinition"} NoDuplicateDefinitionsMessageIds
- * @typedef {[{ allowDefinitions?: string[], allowFootnoteDefinitions?: string[]; }]} NoDuplicateDefinitionsOptions
+ * @typedef {[{ allowDefinitions?: string[], allowFootnoteDefinitions?: string[] }]} NoDuplicateDefinitionsOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoDuplicateDefinitionsOptions, MessageIds: NoDuplicateDefinitionsMessageIds }>} NoDuplicateDefinitionsRuleDefinition
  */
 
