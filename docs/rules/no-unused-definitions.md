@@ -27,6 +27,15 @@ Examples of **incorrect** code:
 ```markdown
 <!-- eslint markdown/no-unused-definitions: "error" -->
 
+<!-- definition -->
+
+[mercury]: https://example.com/mercury/
+
+[venus]: https://example.com/venus.jpg
+
+<!-- footnote definition -->
+
+[^mercury]: Hello, Mercury!
 ```
 
 Examples of **correct** code:
@@ -34,6 +43,26 @@ Examples of **correct** code:
 ```markdown
 <!-- eslint markdown/no-unused-definitions: "error" -->
 
+<!-- definition -->
+
+[Mercury][mercury]
+
+[mercury]: https://example.com/mercury/
+
+![Venus Image][venus]
+
+[venus]: https://example.com/venus.jpg
+
+<!-- footnote definition -->
+
+Mercury[^mercury]
+
+[^mercury]: Hello, Mercury!
+
+<!-- definition-style comment -->
+
+[//]: # (This is a comment 1)
+[//]: <> (This is a comment 2)
 ```
 
 ## Options
@@ -45,6 +74,8 @@ Examples of **correct** code:
     ```markdown
     <!-- eslint markdown/no-unused-definitions: ["error", { allowDefinitions: ["mercury"] }] -->
 
+    [mercury]: https://example.com/mercury/
+    [mercury]: https://example.com/venus/
     ```
 
 - `allowFootnoteDefinitions: Array<string>` - when specified, unused footnote definitions are allowed if they match one of the identifiers in this array. This is useful for ignoring footnote definitions that are intentionally unused. (default: `[]`)
@@ -54,6 +85,8 @@ Examples of **correct** code:
     ```markdown
     <!-- eslint markdown/no-unused-definitions: ["error", { allowFootnoteDefinitions: ["mercury"] }] -->
 
+    [^mercury]: Hello, Mercury!
+    [^mercury]: Hello, Venus!
     ```
 
 ## When Not to Use It
