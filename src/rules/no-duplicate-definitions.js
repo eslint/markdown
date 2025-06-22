@@ -72,7 +72,9 @@ export default {
 			context.options[0]?.allowFootnoteDefinitions,
 		);
 
+		/** @type {Set<string>} */
 		const definitions = new Set();
+		/** @type {Set<string>} */
 		const footnoteDefinitions = new Set();
 
 		return {
