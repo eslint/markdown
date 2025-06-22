@@ -69,12 +69,10 @@ export default {
 	},
 
 	create(context) {
-		/*
 		const allowDefinitions = new Set(context.options[0]?.allowDefinitions);
 		const allowFootnoteDefinitions = new Set(
 			context.options[0]?.allowFootnoteDefinitions,
 		);
-		*/
 
 		/** @type {Set<string>} Set to track used identifiers */
 		const usedIdentifiers = new Set();
@@ -99,10 +97,18 @@ export default {
 			},
 
 			definition(node) {
+				if (allowDefinitions.has(node.identifier)) {
+					return;
+				}
+
 				definitions.add(node);
 			},
 
 			footnoteDefinition(node) {
+				if (allowFootnoteDefinitions.has(node.identifier)) {
+					return;
+				}
+
 				footnoteDefinitions.add(node);
 			},
 
