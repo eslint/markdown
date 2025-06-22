@@ -22,7 +22,7 @@ import { findOffsets } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-const imgTagPattern = /<img[^>]*>/giu;
+const imgTagPattern = /(?<!<!--[\s\S]*?)<img[^>]*>/giu;
 
 /**
  * Creates a regex to match HTML attributes

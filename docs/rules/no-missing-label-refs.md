@@ -18,9 +18,11 @@ If the label is never defined, then Markdown doesn't render a link and instead r
 
 This rule warns when it finds text that looks like it's a label but the label reference doesn't exist.
 
-Examples of incorrect code:
+Examples of **incorrect** code for this rule:
 
 ```markdown
+<!-- eslint markdown/no-missing-label-refs: "error" -->
+
 [ESLint][eslint]
 
 [eslint][]

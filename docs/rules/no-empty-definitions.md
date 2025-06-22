@@ -18,18 +18,22 @@ If the definition's URL is empty or only contains an empty fragment (`#`), then 
 
 This rule warns when it finds definitions where the URL is either not specified or contains only an empty fragment (`#`).
 
-Examples of incorrect code:
+Examples of **incorrect** code for this rule:
 
 ```markdown
+<!-- eslint markdown/no-empty-definitions: "error" -->
+
 [earth]: <>
-[earth]: #
+[moon]: #
 ```
 
 Examples of correct code:
 
 ```markdown
+<!-- eslint markdown/no-empty-definitions: "error" -->
+
 [earth]: https://example.com/earth/
-[earth]: #section
+[moon]: #section
 ```
 
 ## When Not to Use It

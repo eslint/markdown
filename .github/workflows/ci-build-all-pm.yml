@@ -1,0 +1,131 @@
+name: CI Build install
+# This workflow creates a tarball from repo sources
+# It then checks that each of the following package managers is able to install:
+# - npm
+# - Yarn v1 Classic
+# - Yarn (Modern)
+# - pnpm
+# - bun
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+    workflow_dispatch:
+jobs:
+    npm-build:
+        name: Build tarball
+        runs-on: ubuntu-latest
+        outputs:
+            version: ${{ steps.get_version.outputs.version }}
+        steps:
+            - uses: actions/checkout@v4
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "lts/*"
+            - run: npm install
+            - run: npm pack
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: build
+                  path: eslint-markdown-*.tgz
+                  retention-days: 1
+            - name: Get version
+              id: get_version
+              run: echo "version=$(jq -r '.version' package.json)" >> "$GITHUB_OUTPUT"
+    npm-install:
+        name: Install with npm
+        needs: npm-build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/download-artifact@v4
+              with:
+                  name: build
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "lts/*"
+            - name: npm install
+              run: |
+                  npm install ./eslint-markdown-${{ needs.npm-build.outputs.version }}.tgz -D
+    yarn-v1-install:
+        name: Install with Yarn v1
+        needs: npm-build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/download-artifact@v4
+              with:
+                  name: build
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "lts/*"
+            - name: yarn add
+              run: |
+                  yarn add ./eslint-markdown-${{ needs.npm-build.outputs.version }}.tgz -D
+    yarn-install:
+        name: Install with Yarn
+        needs: npm-build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/download-artifact@v4
+              with:
+                  name: build
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "lts/*"
+            - name: Install Corepack latest
+              run: |
+                  npm install -g corepack@latest
+                  corepack enable yarn
+            - name: yarn add
+              run: |
+                  corepack use yarn@latest
+                  yarn init -p
+                  yarn add ./eslint-markdown-${{ needs.npm-build.outputs.version }}.tgz -D
+              env:
+                  YARN_ENABLE_IMMUTABLE_INSTALLS: 0 # Allow installs to modify lockfile
+    pnpm-install:
+        name: Install with pnpm
+        needs: npm-build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/download-artifact@v4
+              with:
+                  name: build
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: latest
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "lts/*"
+            - name: pnpm add
+              run: |
+                  cat > .npmrc <<EOT
+                  auto-install-peers=true
+                  node-linker=hoisted
+                  EOT
+                  pnpm add ./eslint-markdown-${{ needs.npm-build.outputs.version }}.tgz -D
+    bun-install:
+        name: Install with bun
+        needs: npm-build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/download-artifact@v4
+              with:
+                  name: build
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "lts/*"
+            - name: setup bun
+              uses: oven-sh/setup-bun@v2
+            - name: bun install
+              run: |
+                  bun install ./eslint-markdown-${{ needs.npm-build.outputs.version }}.tgz -D

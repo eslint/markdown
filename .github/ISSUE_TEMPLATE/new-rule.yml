@@ -29,6 +29,11 @@ body:
           render: markdown
       validations:
           required: true
+    - type: textarea
+      attributes:
+          label: Prior Art
+          description: If this rule already exists in another Markdown linter, please mention that here and provide link(s) to documentation.
+          render: markdown
     - type: checkboxes
       attributes:
           label: Participation
