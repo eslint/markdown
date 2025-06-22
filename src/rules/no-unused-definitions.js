@@ -11,7 +11,7 @@
  * @import { Definition, FootnoteDefinition } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"unusedDefinition" | "unusedFootnoteDefinition"} NoUnusedDefinitionsMessageIds
- * @typedef {[{ allowDefinitions?: string[], allowFootnoteDefinitions?: string[]; }]} NoUnusedDefinitionsOptions
+ * @typedef {[{ allowDefinitions?: string[], allowFootnoteDefinitions?: string[] }]} NoUnusedDefinitionsOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoUnusedDefinitionsOptions, MessageIds: NoUnusedDefinitionsMessageIds }>} NoUnusedDefinitionsRuleDefinition
  */
 
