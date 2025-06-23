@@ -74,6 +74,7 @@ export default {
 
 		/** @type {Set<string>} */
 		const definitions = new Set();
+
 		/** @type {Set<string>} */
 		const footnoteDefinitions = new Set();
 
