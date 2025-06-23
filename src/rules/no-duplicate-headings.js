@@ -14,6 +14,12 @@
  */
 
 //-----------------------------------------------------------------------------
+// Helpers
+//-----------------------------------------------------------------------------
+
+const closingAtxHashPattern = /[ \t]+#+[ \t]*$/u;
+
+//-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
 
@@ -74,10 +80,10 @@ export default {
 			 * - ATX headings, which consist of 1-6 # characters followed by content
 			 *   and optionally ending with any number of # characters
 			 * - Setext headings, which are underlined with = or -
-			 * Setext headings are identified by being on two lines instead of one,
-			 * with the second line containing only = or - characters. In order to
-			 * get the correct heading text, we need to determine which type of
-			 * heading we're dealing with.
+			 *   Setext headings are identified by being on two lines instead of one,
+			 *   with the second line containing only = or - characters. In order to
+			 *   get the correct heading text, we need to determine which type of
+			 *   heading we're dealing with.
 			 */
 			const isSetext =
 				node.position.start.line !== node.position.end.line;
@@ -90,8 +96,8 @@ export default {
 			// For ATX headings, get the text between the # characters
 			const text = sourceCode.getText(node);
 			return text
-				.slice(node.depth)
-				.replace(/\s+#+\s*$/u, "")
+				.slice(node.depth) // Remove leading # characters
+				.replace(closingAtxHashPattern, "") // Remove trailing # characters
 				.trim();
 		}
 
