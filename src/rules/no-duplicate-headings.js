@@ -17,7 +17,7 @@
 // Helpers
 //-----------------------------------------------------------------------------
 
-const closingAtxHashPattern = /[ \t]+#+[ \t]*$/u;
+const closingAtxHeadingHashPattern = /[ \t]+#+[ \t]*$/u;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -97,7 +97,7 @@ export default {
 			const text = sourceCode.getText(node);
 			return text
 				.slice(node.depth) // Remove leading # characters
-				.replace(closingAtxHashPattern, "") // Remove trailing # characters
+				.replace(closingAtxHeadingHashPattern, "") // Remove trailing # characters
 				.trim();
 		}
 
