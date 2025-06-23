@@ -35,6 +35,7 @@
  * @see https://spec.commonmark.org/0.31.2/#example-76
  */
 const closingAtxHeadingHashPattern = /[ \t]+#+[ \t]*$/u;
+const openingAtxHeadingHashPattern = /^#{1,6}[ \t]+/u;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -106,7 +107,11 @@ export default {
 				node.position.start.line !== node.position.end.line;
 
 			if (isSetext) {
-				// get only the text from the first line
+				/*
+				 * - Get only the text from the first line.
+				 * - Please avoid using `String.prototype.trim()` here,
+				 *   as it would remove intentional non-breaking space (NBSP) characters.
+				 */
 				return sourceCode.lines[node.position.start.line - 1].trim();
 			}
 
@@ -118,9 +123,8 @@ export default {
 			 * as it would remove intentional non-breaking space (NBSP) characters.
 			 */
 			return text
-				.slice(node.depth) // Remove leading # characters
-				.replace(closingAtxHeadingHashPattern, "") // Remove trailing # characters
-				.trim();
+				.replace(openingAtxHeadingHashPattern, "") // Remove leading # characters
+				.replace(closingAtxHeadingHashPattern, ""); // Remove trailing # characters
 		}
 
 		return {
