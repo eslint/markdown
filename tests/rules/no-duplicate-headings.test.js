@@ -42,6 +42,9 @@ ruleTester.run("no-duplicate-headings", rule, {
 		"# Heading 1 #\n# Heading 1\u00a0#",
 		"#  Heading 1  #\n# \u00a0Heading 1\u00a0#",
 		"# \u00a0Heading 1 #\n# Heading 1\u00a0 #",
+		"# foo \\###\n# foo ###",
+		"# foo #\\##\n# foo ###",
+		"# foo \\#",
 		{
 			code: dedent`
 				# Change log
