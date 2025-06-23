@@ -34,8 +34,8 @@
  *
  * @see https://spec.commonmark.org/0.31.2/#example-76
  */
-const closingAtxHeadingHashPattern = /[ \t]+#+[ \t]*$/u;
-const openingAtxHeadingHashPattern = /^#{1,6}[ \t]+/u;
+const trailingAtxHeadingHashPattern = /[ \t]+#+[ \t]*$/u;
+const leadingAtxHeadingHashPattern = /^#{1,6}[ \t]+/u;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -74,6 +74,7 @@ export default {
 		const [{ checkSiblingsOnly }] = context.options;
 		const { sourceCode } = context;
 
+		/** @type {Map<number, Set<string>>} */
 		const headingsByLevel = checkSiblingsOnly
 			? new Map([
 					[1, new Set()],
@@ -123,8 +124,8 @@ export default {
 			 * as it would remove intentional non-breaking space (NBSP) characters.
 			 */
 			return text
-				.replace(openingAtxHeadingHashPattern, "") // Remove leading # characters
-				.replace(closingAtxHeadingHashPattern, ""); // Remove trailing # characters
+				.replace(leadingAtxHeadingHashPattern, "") // Remove leading # characters
+				.replace(trailingAtxHeadingHashPattern, ""); // Remove trailing # characters
 		}
 
 		return {
