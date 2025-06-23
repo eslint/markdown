@@ -25,14 +25,17 @@ const ruleTester = new RuleTester({
 
 ruleTester.run("no-duplicate-headings", rule, {
 	valid: [
-		`# Heading 1
+		dedent`
+			# Heading 1
 
-        ## Heading 2`,
+			## Heading 2
+        `,
 		dedent`
 			# Heading 1
 
 			# Heading 1#
 		`,
+		"# Heading 1 #\n# Heading 1\u00a0#", // With non-breaking space
 		{
 			code: dedent`
 				# Change log

@@ -112,6 +112,11 @@ export default {
 
 			// For ATX headings, get the text between the # characters
 			const text = sourceCode.getText(node);
+
+			/*
+			 * Please avoid using `String.prototype.trim()` here,
+			 * as it would remove intentional non-breaking space (NBSP) characters.
+			 */
 			return text
 				.slice(node.depth) // Remove leading # characters
 				.replace(closingAtxHeadingHashPattern, "") // Remove trailing # characters
