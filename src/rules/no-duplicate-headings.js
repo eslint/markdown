@@ -17,6 +17,23 @@
 // Helpers
 //-----------------------------------------------------------------------------
 
+/**
+ * This pattern does not match backslash-escaped `#` characters
+ * @example
+ * ```markdown
+ * <!-- OK -->
+ * ### foo ###
+ * ## foo ###
+ * # foo #
+ *
+ * <!-- NOT OK -->
+ * ### foo \###
+ * ## foo #\##
+ * # foo \#
+ * ```
+ *
+ * @see https://spec.commonmark.org/0.31.2/#example-76
+ */
 const closingAtxHeadingHashPattern = /[ \t]+#+[ \t]*$/u;
 
 //-----------------------------------------------------------------------------
