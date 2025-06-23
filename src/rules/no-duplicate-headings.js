@@ -108,11 +108,7 @@ export default {
 				node.position.start.line !== node.position.end.line;
 
 			if (isSetext) {
-				/*
-				 * - Get only the text from the first line.
-				 * - Please avoid using `String.prototype.trim()` here,
-				 *   as it would remove intentional non-breaking space (NBSP) characters.
-				 */
+				// get only the text from the first line
 				return sourceCode.lines[node.position.start.line - 1].trim();
 			}
 
