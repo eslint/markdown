@@ -32,7 +32,7 @@ export default {
 			inconsistentColumnCount:
 				"Table column count mismatch (Expected: {{expectedCells}}, Actual: {{actualCells}}), extra data starting here will be ignored.",
 			missingCells:
-				"Table column count mismatch (Expected: {{expectedCells}}, Actual: {{actualCells}}), row will be missing data.",
+				"Table column count mismatch (Expected: {{expectedCells}}, Actual: {{actualCells}}), row might be missing data.",
 		},
 
 		schema: [
