@@ -54,6 +54,10 @@ Examples of **correct** code for this rule:
 [Link to top of page](#top)
 
 [Link](#L2)
+
+# café
+
+[Link to café](#caf%C3%A9)
 ```
 
 ## Options

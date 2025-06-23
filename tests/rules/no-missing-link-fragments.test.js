@@ -228,6 +228,40 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		# foo_
 		[Link](#foo_)
 		`,
+		dedent`
+		# Hèading
+		[Link](#h%C3%A8ading)
+
+		# Hèading with \`inline code\`
+		[Link](#h%C3%A8ading-with-inline-code)
+
+		# Héading with _italic_
+		[Link](#h%C3%A9ading-with-italic)
+
+		# Héading with **bold**
+		[Link](#h%C3%A9ading-with-bold)
+
+		# Heading Name {#custom-namé}
+		[Link](#custom-nam%C3%A9)
+
+		<div id="réal-id"></div>
+
+		[Link](#r%C3%A9al-id)
+		`,
+		{
+			code: dedent`
+			# Héading Name
+			[Link](#H%C3%89ADING-NAME)
+			`,
+			options: [{ ignoreCase: true }],
+		},
+		{
+			code: dedent`
+			[Link](#figur%C3%A9-1)
+			[Link](#figur%C3%A9-2)
+			`,
+			options: [{ allowPattern: "^figuré-" }],
+		},
 	],
 
 	invalid: [
@@ -477,6 +511,45 @@ ruleTester.run("no-missing-link-fragments", rule, {
 					column: 1,
 					endLine: 15,
 					endColumn: 17,
+				},
+			],
+		},
+		{
+			code: dedent`
+			# Heading With Space
+			[Invalid](#heading%20with%20space)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading%20with%20space" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 35,
+				},
+			],
+		},
+		{
+			code: dedent`
+			# fóo
+
+			## fóo
+
+			[Link](#f%C3%B3o)
+
+			[Link](#f%C3%B3o-1)
+
+			[Link](#f%C3%B3o-2)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "f%C3%B3o-2" },
+					line: 9,
+					column: 1,
+					endLine: 9,
+					endColumn: 20,
 				},
 			],
 		},
