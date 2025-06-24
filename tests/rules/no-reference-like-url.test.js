@@ -26,6 +26,8 @@ const ruleTester = new RuleTester({
 ruleTester.run("no-reference-like-url", rule, {
 	valid: [
 		"[Mercury](https://example.com/mercury/)",
+		'[Mercury](https://example.com/mercury/ "Go to Mercury")',
+		"![Venus](https://example.com/venus/)",
 		'![Venus](https://example.com/venus/ "Go to Venus")',
 		"[text][mercury]",
 		"[mercury]: https://example.com/mercury/",
@@ -71,6 +73,12 @@ ruleTester.run("no-reference-like-url", rule, {
 
 			[mercury]: https://example.com/mercury/
 		`,
+		dedent`
+			[foo bar](foo bar)
+			![foo bar](foo bar)
+
+			[foo bar]: https://example.com/foo-bar
+		`,
 	],
 	invalid: [
 		{
@@ -87,7 +95,7 @@ ruleTester.run("no-reference-like-url", rule, {
 			errors: [
 				{
 					messageId: "referenceLikeUrl",
-					data: { type: "link" },
+					data: { type: "link", prefix: "" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -109,7 +117,7 @@ ruleTester.run("no-reference-like-url", rule, {
 			errors: [
 				{
 					messageId: "referenceLikeUrl",
-					data: { type: "link" },
+					data: { type: "link", prefix: "" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -131,7 +139,7 @@ ruleTester.run("no-reference-like-url", rule, {
 			errors: [
 				{
 					messageId: "referenceLikeUrl",
-					data: { type: "link" },
+					data: { type: "link", prefix: "" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -153,7 +161,7 @@ ruleTester.run("no-reference-like-url", rule, {
 			errors: [
 				{
 					messageId: "referenceLikeUrl",
-					data: { type: "image" },
+					data: { type: "image", prefix: "!" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -175,7 +183,7 @@ ruleTester.run("no-reference-like-url", rule, {
 			errors: [
 				{
 					messageId: "referenceLikeUrl",
-					data: { type: "image" },
+					data: { type: "image", prefix: "!" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -197,7 +205,7 @@ ruleTester.run("no-reference-like-url", rule, {
 			errors: [
 				{
 					messageId: "referenceLikeUrl",
-					data: { type: "image" },
+					data: { type: "image", prefix: "!" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -219,7 +227,7 @@ ruleTester.run("no-reference-like-url", rule, {
 			errors: [
 				{
 					messageId: "referenceLikeUrl",
-					data: { type: "link" },
+					data: { type: "link", prefix: "" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -243,7 +251,7 @@ ruleTester.run("no-reference-like-url", rule, {
 			errors: [
 				{
 					messageId: "referenceLikeUrl",
-					data: { type: "link" },
+					data: { type: "link", prefix: "" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -251,7 +259,7 @@ ruleTester.run("no-reference-like-url", rule, {
 				},
 				{
 					messageId: "referenceLikeUrl",
-					data: { type: "link" },
+					data: { type: "link", prefix: "" },
 					line: 1,
 					column: 25,
 					endLine: 1,
@@ -275,7 +283,7 @@ ruleTester.run("no-reference-like-url", rule, {
 			errors: [
 				{
 					messageId: "referenceLikeUrl",
-					data: { type: "link" },
+					data: { type: "link", prefix: "" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -283,11 +291,169 @@ ruleTester.run("no-reference-like-url", rule, {
 				},
 				{
 					messageId: "referenceLikeUrl",
-					data: { type: "image" },
+					data: { type: "image", prefix: "!" },
 					line: 1,
 					column: 44,
 					endLine: 1,
 					endColumn: 59,
+				},
+			],
+		},
+		{
+			code: dedent`
+				[Mercury](mercury "")
+
+				[mercury]: https://example.com/mercury
+			`,
+			output: dedent`
+				[Mercury][mercury]
+
+				[mercury]: https://example.com/mercury
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: dedent`
+				![Venus](venus "")
+
+				[venus]: https://example.com/venus.jpg
+			`,
+			output: dedent`
+				![Venus][venus]
+
+				[venus]: https://example.com/venus.jpg
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 19,
+				},
+			],
+		},
+		{
+			code: dedent`
+				[Mercury](mercury "Go to Mercury")
+
+				[mercury]: https://example.com/mercury
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 35,
+				},
+			],
+		},
+		{
+			code: dedent`
+				![Venus](venus "Venus Image")
+
+				[venus]: https://example.com/venus.jpg
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 30,
+				},
+			],
+		},
+		{
+			code: dedent`
+				[Click Me
+				](test)
+				
+				[test]: https://abc.com
+			`,
+			output: dedent`
+				[Click Me
+				][test]
+				
+				[test]: https://abc.com
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 2,
+					endColumn: 8,
+				},
+			],
+		},
+		{
+			code: dedent`
+				![Click Me
+				](test)
+				
+				[test]: https://abc.com
+			`,
+			output: dedent`
+				![Click Me
+				][test]
+				
+				[test]: https://abc.com
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 1,
+					endLine: 2,
+					endColumn: 8,
+				},
+			],
+		},
+		{
+			code: dedent`
+				[Mercury](@mercury)
+				![Mercury](@mercury)
+
+				[@mercury]: https://example.com/mercury
+			`,
+			output: dedent`
+				[Mercury][@mercury]
+				![Mercury][@mercury]
+
+				[@mercury]: https://example.com/mercury
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 20,
+				},
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 21,
 				},
 			],
 		},

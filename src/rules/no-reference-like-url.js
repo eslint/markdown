@@ -35,7 +35,7 @@ export default {
 
 		messages: {
 			referenceLikeUrl:
-				"Unexpected resource {{type}} with URL that matches a definition identifier. Use [text][id] syntax instead.",
+				"Unexpected resource {{type}} ('{{prefix}}[text](url)') with URL that matches a definition identifier. Use '[text][id]' syntax instead.",
 		},
 	},
 
@@ -57,8 +57,13 @@ export default {
 							messageId: "referenceLikeUrl",
 							data: {
 								type: node.type,
+								prefix: node.type === "image" ? "!" : "",
 							},
 							fix(fixer) {
+								if (node.title !== null) {
+									return null;
+								}
+
 								const text = sourceCode.getText(node);
 
 								const bracketParenIndex = text.indexOf("](");
