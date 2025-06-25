@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ checkFootnoteDefinitions?: boolean; }] }>}
  * NoEmptyDefinitionsRuleDefinition
  */
 
@@ -29,16 +29,43 @@ export default {
 
 		messages: {
 			emptyDefinition: "Unexpected empty definition found.",
+			emptyFootnoteDefinition:
+				"Unexpected empty footnote definition found.",
 		},
+
+		schema: [
+			{
+				type: "object",
+				properties: {
+					checkFootnoteDefinitions: {
+						type: "boolean",
+					},
+				},
+				additionalProperties: false,
+			},
+		],
+
+		defaultOptions: [{ checkFootnoteDefinitions: true }],
 	},
 
 	create(context) {
+		const [{ checkFootnoteDefinitions }] = context.options;
+
 		return {
 			definition(node) {
 				if (!node.url || node.url === "#") {
 					context.report({
 						loc: node.position,
 						messageId: "emptyDefinition",
+					});
+				}
+			},
+
+			footnoteDefinition(node) {
+				if (checkFootnoteDefinitions && node.children.length === 0) {
+					context.report({
+						loc: node.position,
+						messageId: "emptyFootnoteDefinition",
 					});
 				}
 			},
