@@ -18,7 +18,7 @@ Cleaning up unused definitions helps maintain a more organized and intentional d
 
 > [!IMPORTANT] <!-- eslint-disable-line -- This should be fixed in https://github.com/eslint/markdown/issues/294 -->
 >
-> The `FootnoteDefinition` node is detected only when using `language` mode [`markdown/gfm`](/README.md#languages).
+> The footnotes are only supported when using `language` mode [`markdown/gfm`](/README.md#languages).
 
 This rule warns about unused reference definitions in Markdown documents. It detects definition entries (e.g., `[reference-id]: http://example.com`) that aren't used by any links, images, or footnotes in the document, and reports them as violations. Please note that this rule doesn't report definition-style comments (e.g., `[//]: # (This is a comment)`) by default.
 
