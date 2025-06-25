@@ -35,7 +35,7 @@ ruleTester.run("no-duplicate-headings", rule, {
 
 			# Heading 1#
 		`,
-		"# Heading 1\n# \u00a0Heading 1",
+		"# Heading 1\n# \u00a0Heading 1", // We can't use `dedent` library when detecting NBSP(U+00A0) characters, as it automatically removes them.
 		"# Heading 1\n# Heading 1\u00a0",
 		"# Heading 1 #\n# \u00a0Heading 1 #",
 		"# Heading 1 #\n# Heading 1\u00a0 #",
