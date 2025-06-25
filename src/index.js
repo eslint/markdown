@@ -19,14 +19,15 @@ import rules from "./build/rules.js";
 
 /**
  * @import { Linter } from "eslint";
- * @import { MarkdownRuleVisitor as MRV, MarkdownRuleDefinition as MRD, MarkdownRuleDefinitionTypeOptions } from "./types.js";
+ * @import * as Types from "./types.js";
  * @typedef {Linter.RulesRecord} RulesRecord
- * @typedef {MarkdownRuleDefinition} RuleModule
- * @typedef {MRV} MarkdownRuleVisitor
+ * @typedef {Types.MarkdownRuleDefinition} RuleModule
+ * @typedef {Types.MarkdownRuleVisitor} MarkdownRuleVisitor
+ * @typedef {Types.MarkdownRuleDefinitionTypeOptions} MarkdownRuleDefinitionTypeOptions
  */
 
 /**
- * @typedef {MRD<Options>} MarkdownRuleDefinition<Options>
+ * @typedef {Types.MarkdownRuleDefinition<Options>} MarkdownRuleDefinition<Options>
  * @template {Partial<MarkdownRuleDefinitionTypeOptions>} [Options={}]
  */
 
