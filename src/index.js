@@ -25,7 +25,6 @@ import rules from "./build/rules.js";
  * @template {Partial<import("./types.ts").MarkdownRuleDefinitionTypeOptions>} [Options={}]
  */
 /** @typedef {MarkdownRuleDefinition} RuleModule */
-/** @typedef {import("./types.ts").MarkdownRuleVisitor} MarkdownRuleVisitor */
 /** @typedef {import("@eslint/core").Language} Language */
 
 //-----------------------------------------------------------------------------
