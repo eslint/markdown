@@ -10,7 +10,8 @@ Unused definitions can cause several issues:
 
 - They add unnecessary clutter to the document.
 - They might indicate broken references or content that was intended to be included.
-- They can mislead readers who might assume the definitions are purposefully being used somewhere.
+- They can mislead readers who might assume the definitions are being used somewhere.
+
 
 Cleaning up unused definitions helps maintain a more organized and intentional document structure.
 
