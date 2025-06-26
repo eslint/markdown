@@ -172,17 +172,25 @@ export default {
 
 			"root:exit"() {
 				for (const { node, fragment } of linkNodes) {
-					if (allowPattern?.test(fragment)) {
+					let decodedFragment;
+					try {
+						decodedFragment = decodeURIComponent(fragment);
+					} catch {
+						// fallback if not valid encoding
+						decodedFragment = fragment;
+					}
+
+					if (allowPattern?.test(decodedFragment)) {
 						continue;
 					}
 
-					if (isGitHubLineReference(fragment)) {
+					if (isGitHubLineReference(decodedFragment)) {
 						continue;
 					}
 
 					const normalizedFragment = ignoreCase
-						? fragment.toLowerCase()
-						: fragment;
+						? decodedFragment.toLowerCase()
+						: decodedFragment;
 
 					if (!fragmentIds.has(normalizedFragment)) {
 						context.report({
