@@ -69,17 +69,16 @@ Examples of **correct** code for this rule:
 This rule supports the following options:
 
 * `ignoreCase: boolean` -
-    When `true`, link fragments are compared with heading and anchor IDs in a case-insensitive manner. (default: `false`)
+    When `false`, link fragments are compared with heading and anchor IDs in a case-sensitive manner. Default is `true`.
 
-    Examples of **correct** code when configured as `"no-missing-link-fragments": ["error", { ignoreCase: true }]`:
+    Examples of **incorrect** code when configured as `"no-missing-link-fragments": ["error", { ignoreCase: false }]`:
 
     ```markdown
-    <!-- eslint markdown/no-missing-link-fragments: ["error", { ignoreCase: true }] -->
+    <!-- eslint markdown/no-missing-link-fragments: ["error", { ignoreCase: false }] -->
     
     # Case Test
 
-    [Valid Link with different case](#CASE-TEST)
-    
+    [Invalid Link with different case](#CASE-TEST)
     ```
 
 * `allowPattern: string` -

@@ -104,14 +104,11 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		[Reference Line Range with Columns](#L6C13-L8C1)
 		`,
 
-		// Case-insensitive matching (with option)
-		{
-			code: dedent`
-			# Heading Name
-			[Link](#HEADING-NAME)
-			`,
-			options: [{ ignoreCase: true }],
-		},
+		// Case-insensitive matching
+		dedent`
+		# Heading Name
+		[Link](#HEADING-NAME)
+		`,
 
 		// Ignored pattern (with option)
 		{
@@ -313,12 +310,13 @@ ruleTester.run("no-missing-link-fragments", rule, {
 			],
 		},
 
-		// Case-sensitive mismatch (without ignoreCase option)
+		// Case-sensitive mismatch (with ignoreCase option)
 		{
 			code: dedent`
 			# Heading Name
 			[Invalid](#HEADING-NAME)
 			`,
+			options: [{ ignoreCase: false }],
 			errors: [
 				{
 					messageId: "invalidFragment",
@@ -382,6 +380,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 			# Heading {#Invalid-ID-With-Caps}
 			[Link](#Invalid-ID-With-Caps)
 			`,
+			options: [{ ignoreCase: false }],
 			errors: [
 				{
 					messageId: "invalidFragment",
