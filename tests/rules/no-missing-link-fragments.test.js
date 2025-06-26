@@ -262,6 +262,37 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		# foo_
 		[Link](#foo_)
 		`,
+		dedent`
+		# <picture></picture> Heading Name
+		[Link](#-heading-name)
+		`,
+		dedent`
+		# Heading Name <picture></picture>
+		[Link](#heading-name-)
+		`,
+		dedent`
+		# Heading <picture></picture> Name
+		[Link](#heading--name)
+		`,
+		dedent`
+		# <span>Text</span> Heading Name
+		[Link](#text-heading-name)
+		`,
+		dedent`
+		# ![alt text](img.png) Heading Name
+		[Link](#-heading-name)
+		`,
+		dedent`
+		# Heading Name ![alt text](img.png)
+		[Link](#heading-name-)
+		`,
+		{
+			code: dedent`
+			# <picture></picture> Heading Name
+			[Link](#-HEADING-NAME)
+			`,
+			options: [{ ignoreCase: true }],
+		},
 	],
 
 	invalid: [
@@ -562,5 +593,37 @@ ruleTester.run("no-missing-link-fragments", rule, {
 					},
 				]
 			: []),
+		{
+			code: dedent`
+			# <picture></picture> Heading Name
+			[Link](#heading-name)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-name" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: dedent`
+			# ![alt text](img.png) Heading Name
+			[Link](#heading-name)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-name" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 22,
+				},
+			],
+		},
 	],
 });

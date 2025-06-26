@@ -1,6 +1,6 @@
 {
   "name": "@eslint/markdown",
-  "version": "6.5.0",
+  "version": "6.6.0",
   "description": "The official ESLint language plugin for Markdown",
   "license": "MIT",
   "author": {
@@ -63,10 +63,9 @@
     "lint:fix": "eslint --fix . && eslint --fix -c eslint.config-content.js .",
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
-    "build:dedupe-types": "node tools/dedupe-types.js dist/esm/index.js",
     "build:rules": "node tools/build-rules.js",
     "build:update-rules-docs": "node tools/update-rules-docs.js",
-    "build": "npm run build:rules && rollup -c && npm run build:dedupe-types && tsc -p tsconfig.esm.json && npm run build:update-rules-docs",
+    "build": "npm run build:rules && tsc && npm run build:update-rules-docs",
     "build:readme": "node tools/update-readme.js",
     "prepare": "npm run build",
     "test": "c8 mocha \"tests/**/*.test.js\" --timeout 30000",
@@ -85,9 +84,6 @@
     "lint-staged": "^15.2.9",
     "mocha": "^11.6.0",
     "prettier": "^3.3.3",
-    "rollup": "^4.19.0",
-    "rollup-plugin-copy": "^3.5.0",
-    "rollup-plugin-delete": "^3.0.1",
     "typescript": "^5.8.3",
     "yorkie": "^2.0.0"
   },

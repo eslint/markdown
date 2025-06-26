@@ -58,6 +58,10 @@ Examples of **correct** code for this rule:
 # café
 
 [Link to café](#caf%C3%A9)
+
+# <span class="icon-star"></span> Starred Projects
+
+[Link to starred projects](#-starred-projects)
 ```
 
 ## Options
