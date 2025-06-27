@@ -638,11 +638,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
+				data: { position: "before" },
 				line: 1,
 				column: 12,
 				endLine: 1,
 				endColumn: 15,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -653,11 +653,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
+				data: { position: "before" },
 				line: 1,
 				column: 13,
 				endLine: 1,
 				endColumn: 17,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -668,11 +668,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
+				data: { position: "before" },
 				line: 1,
 				column: 14,
 				endLine: 1,
 				endColumn: 19,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -683,11 +683,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
+				data: { position: "before" },
 				line: 1,
 				column: 15,
 				endLine: 1,
 				endColumn: 21,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -698,11 +698,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
+				data: { position: "before" },
 				line: 1,
 				column: 16,
 				endLine: 1,
 				endColumn: 23,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -713,11 +713,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
+				data: { position: "before" },
 				line: 1,
 				column: 12,
 				endLine: 1,
 				endColumn: 14,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -728,11 +728,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
+				data: { position: "before" },
 				line: 1,
 				column: 13,
 				endLine: 1,
 				endColumn: 15,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -743,19 +743,19 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
+				data: { position: "after" },
 				line: 1,
 				column: 1,
 				endLine: 1,
 				endColumn: 3,
-				data: { position: "after" },
 			},
 			{
 				messageId: "missingSpace",
+				data: { position: "before" },
 				line: 1,
 				column: 10,
 				endLine: 1,
 				endColumn: 12,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -774,11 +774,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
+				data: { position: "before" },
 				line: 3,
 				column: 12,
 				endLine: 3,
 				endColumn: 15,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -789,11 +789,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
-				column: 30,
+				data: { position: "before" },
 				line: 1,
+				column: 30,
 				endLine: 1,
 				endColumn: 32,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -804,11 +804,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
-				column: 52,
+				data: { position: "before" },
 				line: 1,
+				column: 52,
 				endLine: 1,
 				endColumn: 54,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -819,11 +819,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
-				column: 28,
+				data: { position: "before" },
 				line: 1,
+				column: 28,
 				endLine: 1,
 				endColumn: 30,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -834,11 +834,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
-				column: 29,
+				data: { position: "before" },
 				line: 1,
+				column: 29,
 				endLine: 1,
 				endColumn: 31,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -853,11 +853,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
-				column: 31,
+				data: { position: "before" },
 				line: 2,
+				column: 31,
 				endLine: 2,
 				endColumn: 33,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -869,11 +869,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
+				data: { position: "before" },
 				line: 1,
 				column: 15,
 				endLine: 1,
 				endColumn: 18,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -896,27 +896,27 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
-				column: 15,
+				data: { position: "before" },
 				line: 1,
+				column: 15,
 				endLine: 1,
 				endColumn: 17,
-				data: { position: "before" },
 			},
 			{
 				messageId: "missingSpace",
-				column: 17,
+				data: { position: "before" },
 				line: 5,
+				column: 17,
 				endLine: 5,
 				endColumn: 20,
-				data: { position: "before" },
 			},
 			{
 				messageId: "missingSpace",
-				column: 17,
+				data: { position: "before" },
 				line: 7,
+				column: 17,
 				endLine: 7,
 				endColumn: 21,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -927,11 +927,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
-				column: 6,
+				data: { position: "before" },
 				line: 1,
+				column: 6,
 				endLine: 1,
 				endColumn: 8,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -942,11 +942,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
-				column: 6,
+				data: { position: "before" },
 				line: 1,
+				column: 6,
 				endLine: 1,
 				endColumn: 8,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -957,11 +957,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
-				column: 6,
+				data: { position: "before" },
 				line: 1,
+				column: 6,
 				endLine: 1,
 				endColumn: 8,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -972,11 +972,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
-				column: 8,
+				data: { position: "before" },
 				line: 1,
+				column: 8,
 				endLine: 1,
 				endColumn: 10,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -987,11 +987,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
-				column: 18,
+				data: { position: "before" },
 				line: 1,
+				column: 18,
 				endLine: 1,
 				endColumn: 20,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -1002,11 +1002,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
-				column: 19,
+				data: { position: "before" },
 				line: 1,
+				column: 19,
 				endLine: 1,
 				endColumn: 22,
-				data: { position: "before" },
 			},
 		],
 	},
@@ -1019,11 +1019,11 @@ const invalidTests = [
 		errors: [
 			{
 				messageId: "missingSpace",
-				column: 26,
+				data: { position: "before" },
 				line: 2,
+				column: 26,
 				endLine: 2,
 				endColumn: 28,
-				data: { position: "before" },
 			},
 		],
 	},
