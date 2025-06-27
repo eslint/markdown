@@ -1,13 +1,11 @@
 import markdown, {
 	MarkdownSourceCode,
-	MarkdownNode,
 	MarkdownRuleDefinition,
 	MarkdownRuleVisitor,
-	SourceLocation,
-	SourceRange,
 	type RuleModule,
 } from "@eslint/markdown";
-import { Toml, Json } from "@eslint/markdown/types";
+import type { SourceLocation, SourceRange } from "@eslint/core";
+import type { Toml, Json } from "@eslint/markdown/types";
 import { ESLint, Linter } from "eslint";
 import type {
 	// Nodes (abstract)
@@ -168,8 +166,8 @@ typeof processorPlugins satisfies {};
 			"json:exit": (...args) => testVisitor<Json>(...args),
 
 			// Unknown selectors allowed
-			"heading[depth=1]"(node: MarkdownNode, parent?: ParentNode) {},
-			"randomSelector:exit"(node: MarkdownNode, parent?: ParentNode) {},
+			"heading[depth=1]"(node: Node, parent?: ParentNode) {},
+			"randomSelector:exit"(node: Node, parent?: ParentNode) {},
 		};
 	},
 });

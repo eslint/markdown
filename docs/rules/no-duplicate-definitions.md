@@ -17,7 +17,7 @@ Please note that this rule does not report definition-style comments. For exampl
 
 > [!IMPORTANT] <!-- eslint-disable-line -- This should be fixed in https://github.com/eslint/markdown/issues/294 -->
 >
-> The `FootnoteDefinition` node is detected only when using `language` mode [`markdown/gfm`](/README.md#languages).
+> The footnotes are only supported when using `language` mode [`markdown/gfm`](/README.md#languages).
 
 This rule warns when `Definition` and `FootnoteDefinition` type identifiers are defined multiple times. Please note that this rule is **case-insensitive**, meaning `earth` and `Earth` are treated as the same identifier.
 

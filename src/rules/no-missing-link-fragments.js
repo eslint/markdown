@@ -47,6 +47,9 @@ function isGitHubLineReference(fragment) {
  * @returns {string} The extracted text
  */
 function extractText(node) {
+	if (node.type === "html") {
+		return "";
+	}
 	if ("value" in node) {
 		return /** @type {string} */ (node.value);
 	}
