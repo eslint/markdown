@@ -39,6 +39,14 @@ ruleTester.run("no-empty-definitions", rule, {
 		"[\\^note]:",
 		"[^note\\]:",
 		"[^note]\\:",
+		"[^foo]: <span></span> <!-- comment -->",
+		"[^foo]: content <!-- comment -->",
+		"[^foo]: <!-- comment --> content",
+		"[^foo]: <!-- comment --> content <!-- comment -->",
+		dedent`
+		[^foo]: <!-- comm
+		    ent --> content <!-- comment -->
+		`,
 		{
 			code: "[^note]:",
 			options: [{ checkFootnoteDefinitions: false }],
@@ -175,6 +183,46 @@ ruleTester.run("no-empty-definitions", rule, {
 					column: 1,
 					endLine: 1,
 					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: "[^foo]: <!-- comment -->",
+			errors: [
+				{
+					messageId: "emptyFootnoteDefinition",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 25,
+				},
+			],
+		},
+		{
+			code: dedent`
+			[^foo]: <!-- comment
+			    -->`,
+			errors: [
+				{
+					messageId: "emptyFootnoteDefinition",
+					line: 1,
+					column: 1,
+					endLine: 2,
+					endColumn: 8,
+				},
+			],
+		},
+		{
+			code: dedent`
+			[^foo]: <!-- comment -->
+			    <!-- another comment -->`,
+			errors: [
+				{
+					messageId: "emptyFootnoteDefinition",
+					line: 1,
+					column: 1,
+					endLine: 2,
+					endColumn: 29,
 				},
 			],
 		},

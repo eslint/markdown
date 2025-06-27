@@ -4,12 +4,16 @@ Disallow empty definitions.
 
 ## Background
 
-Markdown allows you to specify a label as a placeholder for a URL in both links and images using square brackets, such as:
+Markdown allows you to specify a label as a placeholder for a URL in both links and images, or as a footnote reference, using square brackets. For example:
 
 ```markdown
 [ESLint][eslint]
 
 [eslint]: https://eslint.org
+
+[ESLint][^eslint]
+
+[^eslint]: Find and fix problmes in your JavaScript code
 ```
 
 Definitions with an empty URL or only an empty fragment (`#`), as well as footnote definitions with no content, are usually mistakes and do not provide useful information.
@@ -58,7 +62,7 @@ Examples of **correct** code for this rule with `checkFootnoteDefinitions: false
 
 ## When Not to Use It
 
-If you aren't concerned with empty definitions or empty footnote definitions, you can safely disable this rule.
+If you aren't concerned with empty definitions, you can safely disable this rule.
 
 ## Prior Art
 
