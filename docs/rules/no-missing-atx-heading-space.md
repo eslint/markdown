@@ -38,6 +38,24 @@ Examples of **correct** code for this rule:
 This is a paragraph with a #hashtag, not a heading.
 ```
 
+## Options
+
+This rule supports the following options:
+
+* `checkClosedHeadings: boolean` -
+    When `true`, this option also checks for missing spaces before the closing `#` characters in ATX-style headings. (default: `false`)
+
+    Examples of **incorrect** code when configured as `"no-missing-atx-heading-space": ["error", { checkClosedHeadings: true }]`:
+
+    ```markdown
+    <!-- eslint markdown/no-missing-atx-heading-space: ["error", { checkClosedHeadings: true }] -->
+    
+    # Heading 1#
+    ## Heading 2##
+    ### Heading 3###
+    
+    ```
+
 ## When Not To Use It
 
 You might want to turn this rule off if you're working with a Markdown variant that doesn't require spaces after hash characters in headings.
