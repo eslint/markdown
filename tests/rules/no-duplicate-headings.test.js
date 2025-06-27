@@ -25,14 +25,26 @@ const ruleTester = new RuleTester({
 
 ruleTester.run("no-duplicate-headings", rule, {
 	valid: [
-		`# Heading 1
+		dedent`
+			# Heading 1
 
-        ## Heading 2`,
+			## Heading 2
+        `,
 		dedent`
 			# Heading 1
 
 			# Heading 1#
 		`,
+		"# Heading 1\n# \u00a0Heading 1", // We can't use `dedent` library when detecting NBSP(U+00A0) characters, as it automatically removes them.
+		"# Heading 1\n# Heading 1\u00a0",
+		"# Heading 1 #\n# \u00a0Heading 1 #",
+		"# Heading 1 #\n# Heading 1\u00a0 #",
+		"# Heading 1 #\n# Heading 1\u00a0#",
+		"#  Heading 1  #\n# \u00a0Heading 1\u00a0#",
+		"# \u00a0Heading 1 #\n# Heading 1\u00a0 #",
+		"# foo \\###\n# foo ###",
+		"# foo #\\##\n# foo ###",
+		"# foo \\#",
 		{
 			code: dedent`
 				# Change log
