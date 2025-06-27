@@ -8,8 +8,10 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ checkClosedHeadings?: boolean; }]; }>}
- * NoMissingAtxHeadingSpaceRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"missingSpace"} NoMissingAtxHeadingSpaceMessageIds
+ * @typedef {[{ checkClosedHeadings?: boolean }]} NoMissingAtxHeadingSpaceOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoMissingAtxHeadingSpaceOptions, MessageIds: NoMissingAtxHeadingSpaceMessageIds }>} NoMissingAtxHeadingSpaceRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
