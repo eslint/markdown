@@ -8,8 +8,10 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ checkMissingCells?: boolean; }]; }>}
- * TableColumnCountRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"inconsistentColumnCount" | "missingCells"} TableColumnCountMessageIds
+ * @typedef {[{ checkMissingCells?: boolean }]} TableColumnCountOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: TableColumnCountOptions, MessageIds: TableColumnCountMessageIds }>} TableColumnCountRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
