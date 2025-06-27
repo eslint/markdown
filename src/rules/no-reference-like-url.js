@@ -7,13 +7,12 @@
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("mdast").Node} Node */
-/** @typedef {import("mdast").Link} LinkNode */
-/** @typedef {import("mdast").Image} ImageNode */
-/** @typedef {import("mdast").Definition} DefinitionNode */
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoReferenceLikeUrlRuleDefinition
+ * @import { Link, Image } from "mdast";
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"referenceLikeUrl"} NoReferenceLikeUrlMessageIds
+ * @typedef {[]} NoReferenceLikeUrlOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoReferenceLikeUrlOptions, MessageIds: NoReferenceLikeUrlMessageIds }>} NoReferenceLikeUrlRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
@@ -26,6 +25,7 @@ export default {
 		type: "problem",
 
 		docs: {
+			recommended: true,
 			description:
 				"Disallow URLs that match defined reference identifiers",
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-reference-like-url.md",
@@ -43,7 +43,7 @@ export default {
 		const { sourceCode } = context;
 		/** @type {Set<string>} */
 		const definitionIdentifiers = new Set();
-		/** @type {Array<LinkNode|ImageNode>} */
+		/** @type {Array<Link|Image>} */
 		const resources = [];
 
 		return {

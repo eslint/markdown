@@ -101,7 +101,7 @@ export default defineConfig([
 | [`no-missing-label-refs`](./docs/rules/no-missing-label-refs.md) | Disallow missing label references | yes |
 | [`no-missing-link-fragments`](./docs/rules/no-missing-link-fragments.md) | Disallow link fragments that do not reference valid headings | yes |
 | [`no-multiple-h1`](./docs/rules/no-multiple-h1.md) | Disallow multiple H1 headings in the same document | yes |
-| [`no-reference-like-url`](./docs/rules/no-reference-like-url.md) | Disallow URLs that match defined reference identifiers | no |
+| [`no-reference-like-url`](./docs/rules/no-reference-like-url.md) | Disallow URLs that match defined reference identifiers | yes |
 | [`no-reversed-media-syntax`](./docs/rules/no-reversed-media-syntax.md) | Disallow reversed link and image syntax | yes |
 | [`require-alt-text`](./docs/rules/require-alt-text.md) | Require alternative text for images | yes |
 | [`table-column-count`](./docs/rules/table-column-count.md) | Disallow data rows in a GitHub Flavored Markdown table from having more cells than the header row | yes |
