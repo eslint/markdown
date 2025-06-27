@@ -10,13 +10,34 @@ function hello(name: String) {
 hello(42 as any);
 ```
 
+## Running the Example
+
+### Clone Repository and Install Dependencies
+
 ```sh
 $ git clone https://github.com/eslint/markdown.git
 $ cd markdown
 $ npm install
+```
+
+### Run ESLint
+
+```sh
+# Run from the root
+$ npm test -w examples/typescript
+```
+
+Or
+
+```sh
+# Navigate to the directory and run
 $ cd examples/typescript
 $ npm test
+```
 
+### Expected Output
+
+```sh
 markdown/examples/typescript/README.md
    6:22  error  Prefer using the primitive `string` as a type name, rather than the upper-cased `String`  @typescript-eslint/no-wrapper-object-types
   10:13  error  Unexpected any. Specify a different type                                                  @typescript-eslint/no-explicit-any

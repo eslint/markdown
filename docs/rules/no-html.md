@@ -24,7 +24,7 @@ Hello <b>world!</b>
 
 The following options are available on this rule:
 
-* `allowed: Array<string>` - when specified, HTML tags are allowed only if they match one of the tags in this array.
+* `allowed: Array<string>` - when specified, HTML tags are allowed only if they match one of the tags in this array. (default: `[]`)
 
 Examples of **incorrect** code when configured as `"no-html": ["error", { allowed: ["b"] }]`:
 

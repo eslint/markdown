@@ -14,6 +14,30 @@
  */
 
 //-----------------------------------------------------------------------------
+// Helpers
+//-----------------------------------------------------------------------------
+
+/**
+ * This pattern does not match backslash-escaped `#` characters
+ * @example
+ * ```markdown
+ * <!-- OK -->
+ * ### foo ###
+ * ## foo ###
+ * # foo #
+ *
+ * <!-- NOT OK -->
+ * ### foo \###
+ * ## foo #\##
+ * # foo \#
+ * ```
+ *
+ * @see https://spec.commonmark.org/0.31.2/#example-76
+ */
+const trailingAtxHeadingHashPattern = /[ \t]+#+[ \t]*$/u;
+const leadingAtxHeadingHashPattern = /^#{1,6}[ \t]+/u;
+
+//-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
 
@@ -50,6 +74,7 @@ export default {
 		const [{ checkSiblingsOnly }] = context.options;
 		const { sourceCode } = context;
 
+		/** @type {Map<number, Set<string>>} */
 		const headingsByLevel = checkSiblingsOnly
 			? new Map([
 					[1, new Set()],
@@ -74,10 +99,10 @@ export default {
 			 * - ATX headings, which consist of 1-6 # characters followed by content
 			 *   and optionally ending with any number of # characters
 			 * - Setext headings, which are underlined with = or -
-			 * Setext headings are identified by being on two lines instead of one,
-			 * with the second line containing only = or - characters. In order to
-			 * get the correct heading text, we need to determine which type of
-			 * heading we're dealing with.
+			 *   Setext headings are identified by being on two lines instead of one,
+			 *   with the second line containing only = or - characters. In order to
+			 *   get the correct heading text, we need to determine which type of
+			 *   heading we're dealing with.
 			 */
 			const isSetext =
 				node.position.start.line !== node.position.end.line;
@@ -89,10 +114,14 @@ export default {
 
 			// For ATX headings, get the text between the # characters
 			const text = sourceCode.getText(node);
+
+			/*
+			 * Please avoid using `String.prototype.trim()` here,
+			 * as it would remove intentional non-breaking space (NBSP) characters.
+			 */
 			return text
-				.slice(node.depth)
-				.replace(/\s+#+\s*$/u, "")
-				.trim();
+				.replace(leadingAtxHeadingHashPattern, "") // Remove leading # characters
+				.replace(trailingAtxHeadingHashPattern, ""); // Remove trailing # characters
 		}
 
 		return {
