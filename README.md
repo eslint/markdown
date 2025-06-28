@@ -103,6 +103,7 @@ export default defineConfig([
 | [`no-multiple-h1`](./docs/rules/no-multiple-h1.md) | Disallow multiple H1 headings in the same document | yes |
 | [`no-reversed-media-syntax`](./docs/rules/no-reversed-media-syntax.md) | Disallow reversed link and image syntax | yes |
 | [`no-space-in-emphasis`](./docs/rules/no-space-in-emphasis.md) | Disallow spaces around emphasis markers | yes |
+| [`no-unused-definitions`](./docs/rules/no-unused-definitions.md) | Disallow unused definitions | yes |
 | [`require-alt-text`](./docs/rules/require-alt-text.md) | Require alternative text for images | yes |
 | [`table-column-count`](./docs/rules/table-column-count.md) | Disallow data rows in a GitHub Flavored Markdown table from having more cells than the header row | yes |
 <!-- Rule Table End -->
