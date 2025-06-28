@@ -18,7 +18,6 @@
 
 const headingPattern = /^(#{1,6})(?:[^# \t]|$)/u;
 const newLinePattern = /\r?\n/u;
-const closedHeadingPattern = /^(.+?)\s*(#{1,6})\s*$/u;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -64,68 +63,69 @@ export default {
 
 		return {
 			heading(node) {
-				// Check for closed headings without space before closing hashes
-				if (
-					checkClosedHeadings &&
-					node.children &&
-					node.children.length > 0
-				) {
-					const textChild = node.children.find(
-						child => child.type === "text",
-					);
-					if (!textChild) {
-						return;
+				if (!checkClosedHeadings) {
+					return;
+				}
+
+				const lastChild = node.children.at(-1);
+
+				if (lastChild.type !== "text") {
+					return;
+				}
+
+				// Case 1: Single child, the heading is closed with hashes
+				// Example: ### Heading 3###, # Heading 1#
+				if (lastChild.value.endsWith("#")) {
+					if (node.children.length === 1) {
+						const indexOfHash = lastChild.value.indexOf("#");
+						const content = lastChild.value.slice(0, indexOfHash);
+						const closingHashes =
+							lastChild.value.slice(indexOfHash);
+
+						context.report({
+							loc: {
+								start: {
+									line: lastChild.position.start.line,
+									column:
+										lastChild.position.start.column +
+										indexOfHash -
+										1,
+								},
+								end: {
+									line: lastChild.position.end.line,
+									column: lastChild.position.end.column,
+								},
+							},
+							messageId: "missingSpaceBeforeClosing",
+							fix(fixer) {
+								return fixer.replaceText(
+									lastChild,
+									`${content} ${closingHashes}`,
+								);
+							},
+						});
 					}
 
-					const text = context.sourceCode.getText(textChild);
-					const lines = text.split(newLinePattern);
-
-					lines.forEach((line, idx) => {
-						const lineNum = textChild.position.start.line + idx;
-						const closedMatch = closedHeadingPattern.exec(line);
-						if (closedMatch) {
-							const content = closedMatch[1];
-							const closingHashes = closedMatch[2];
-
-							// Check if there's no space before closing hashes
-							if (!content.endsWith(" ")) {
-								const startColumn =
-									textChild.position.start.column;
-								const contentStart = startColumn;
-								const contentEnd =
-									contentStart + content.length;
-
-								context.report({
-									loc: {
-										start: {
-											line: lineNum,
-											column: contentEnd - 1,
-										},
-										end: {
-											line: lineNum,
-											column:
-												contentEnd +
-												closingHashes.length,
-										},
-									},
-									messageId: "missingSpaceBeforeClosing",
-									fix(fixer) {
-										const offset =
-											textChild.position.start.offset +
-											lines.slice(0, idx).join("\n")
-												.length +
-											(idx > 0 ? 1 : 0) +
-											content.length;
-
-										return fixer.insertTextBeforeRange(
-											[offset, offset],
-											" ",
-										);
-									},
-								});
-							}
-						}
-					});
+					// Case 2: Multiple children, in that case we need to check if the last child is a text node and if it ends with a hash
+					// Example: # Heading **bold**#, # Heading [link](url)#, # Heading <span></span>#
+					if (node.children.length > 1) {
+						context.report({
+							loc: {
+								start: {
+									line: lastChild.position.start.line,
+									column: lastChild.position.start.column - 1,
+								},
+								end: {
+									line: lastChild.position.end.line,
+									column: lastChild.position.end.column,
+								},
+							},
+							messageId: "missingSpaceBeforeClosing",
+							fix(fixer) {
+								return fixer.insertTextBefore(lastChild, " ");
+							},
+						});
+					}
 				}
 			},
 
