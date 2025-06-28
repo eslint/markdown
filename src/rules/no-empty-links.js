@@ -7,8 +7,10 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoEmptyLinksRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"emptyLink"} NoEmptyLinksMessageIds
+ * @typedef {[]} NoEmptyLinksOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoEmptyLinksOptions, MessageIds: NoEmptyLinksMessageIds }>} NoEmptyLinksRuleDefinition
  */
 
 //-----------------------------------------------------------------------------

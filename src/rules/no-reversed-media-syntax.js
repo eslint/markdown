@@ -13,11 +13,12 @@ import { findOffsets } from "../util.js";
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("mdast").Node} Node */
-/** @typedef {import("mdast").Paragraph} ParagraphNode */
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoReversedMediaSyntaxRuleDefinition
+ * @import { Node, Paragraph } from "mdast";
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"reversedSyntax"} NoReversedMediaSyntaxMessageIds
+ * @typedef {[]} NoReversedMediaSyntaxOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoReversedMediaSyntaxOptions, MessageIds: NoReversedMediaSyntaxMessageIds }>} NoReversedMediaSyntaxRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
@@ -42,7 +43,7 @@ function isInCodeSpan(matchIndex, codeSpans) {
 
 /**
  * Finds all code spans in the paragraph node by traversing its children
- * @param {ParagraphNode} node The paragraph node to search
+ * @param {Paragraph} node The paragraph node to search
  * @returns {Array<{startOffset: number, endOffset: number}>} Array of code span positions
  */
 function findCodeSpans(node) {
