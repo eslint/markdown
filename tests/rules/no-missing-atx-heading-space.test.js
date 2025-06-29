@@ -513,7 +513,318 @@ const invalidTests = [
 	},
 ];
 
+//------------------------------------------------------------------------------
+// Test Cases for checkClosedHeadings Option
+//------------------------------------------------------------------------------
+
+const validClosedHeadings = [
+	// Valid closed headings with proper spacing
+	{
+		code: "# Heading 1 #",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "## Heading 2 ##",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "### Heading 3 ###",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "#### Heading 4 ####",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "##### Heading 5 #####",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "###### Heading 6 ######",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "# heading **bold** #",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "# heading _italic_ #",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "# heading [link](url) #",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "# heading <span>html</span> #",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "# heading `code` #",
+		options: [{ checkClosedHeadings: true }],
+	},
+];
+
+const invalidClosedHeadings = [
+	// Missing space before closing hash
+	{
+		code: "# Heading 1#",
+		options: [{ checkClosedHeadings: true }],
+		output: "# Heading 1 #",
+		errors: [
+			{
+				messageId: "missingSpaceBeforeClosing",
+				column: 11,
+				line: 1,
+				endLine: 1,
+				endColumn: 13,
+			},
+		],
+	},
+	{
+		code: "## Heading 2##",
+		output: "## Heading 2 ##",
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpaceBeforeClosing",
+				column: 12,
+				line: 1,
+				endLine: 1,
+				endColumn: 15,
+			},
+		],
+	},
+	{
+		code: "### Heading 3###",
+		output: "### Heading 3 ###",
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpaceBeforeClosing",
+				column: 13,
+				line: 1,
+				endLine: 1,
+				endColumn: 17,
+			},
+		],
+	},
+	{
+		code: "#### Heading 4####",
+		output: "#### Heading 4 ####",
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpaceBeforeClosing",
+				column: 14,
+				line: 1,
+				endLine: 1,
+				endColumn: 19,
+			},
+		],
+	},
+	{
+		code: "##### Heading 5#####",
+		output: "##### Heading 5 #####",
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpaceBeforeClosing",
+				column: 15,
+				line: 1,
+				endLine: 1,
+				endColumn: 21,
+			},
+		],
+	},
+	{
+		code: "###### Heading 6######",
+		output: "###### Heading 6 ######",
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpaceBeforeClosing",
+				column: 16,
+				line: 1,
+				endLine: 1,
+				endColumn: 23,
+			},
+		],
+	},
+	{
+		code: "# Simple#",
+		output: "# Simple #",
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpaceBeforeClosing",
+				column: 8,
+				line: 1,
+				endLine: 1,
+				endColumn: 10,
+			},
+		],
+	},
+	{
+		code: "## Simple##",
+		output: "## Simple ##",
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpaceBeforeClosing",
+				column: 9,
+				line: 1,
+				endLine: 1,
+				endColumn: 12,
+			},
+		],
+	},
+	{
+		code: "### Simple###",
+		output: "### Simple ###",
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpaceBeforeClosing",
+				column: 10,
+				line: 1,
+				endLine: 1,
+				endColumn: 14,
+			},
+		],
+	},
+	// Multiple closed headings in one document
+	{
+		code: dedent`# Heading 1#
+
+		## Heading 2##
+		
+		### Heading 3###`,
+		output: dedent`# Heading 1 #
+
+		## Heading 2 ##
+		
+		### Heading 3 ###`,
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpaceBeforeClosing",
+				line: 1,
+				column: 11,
+				endLine: 1,
+				endColumn: 13,
+			},
+			{
+				messageId: "missingSpaceBeforeClosing",
+				line: 3,
+				column: 12,
+				endLine: 3,
+				endColumn: 15,
+			},
+			{
+				messageId: "missingSpaceBeforeClosing",
+				line: 5,
+				column: 13,
+				endLine: 5,
+				endColumn: 17,
+			},
+		],
+	},
+	{
+		code: "# heading **bold**#",
+		output: "# heading **bold** #",
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpaceBeforeClosing",
+				column: 18,
+				line: 1,
+				endLine: 1,
+				endColumn: 20,
+			},
+		],
+	},
+	{
+		code: "# heading _italic_#",
+		output: "# heading _italic_ #",
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpaceBeforeClosing",
+				column: 18,
+				line: 1,
+				endLine: 1,
+				endColumn: 20,
+			},
+		],
+	},
+	{
+		code: "## heading [link](url)##",
+		output: "## heading [link](url) ##",
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpaceBeforeClosing",
+				column: 22,
+				line: 1,
+				endLine: 1,
+				endColumn: 25,
+			},
+		],
+	},
+	{
+		code: "### heading <span>html</span>###",
+		output: "### heading <span>html</span> ###",
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpaceBeforeClosing",
+				column: 29,
+				line: 1,
+				endLine: 1,
+				endColumn: 33,
+			},
+		],
+	},
+	{
+		code: "#### heading `code`####",
+		output: "#### heading `code` ####",
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpaceBeforeClosing",
+				column: 19,
+				line: 1,
+				endLine: 1,
+				endColumn: 24,
+			},
+		],
+	},
+	{
+		code: "##heading##",
+		// In second pass, it will be fixed to ## heading ## as expected
+		output: "## heading##",
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpace",
+			},
+		],
+	},
+	{
+		code: "##heading **bold**##",
+		// In second pass, it will be fixed to ## heading **bold** ## as expected
+		output: "## heading **bold**##",
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpace",
+			},
+		],
+	},
+];
+
 ruleTester.run("no-missing-atx-heading-space", rule, {
-	valid: validHeadings,
-	invalid: invalidTests,
+	valid: [...validHeadings, ...validClosedHeadings],
+	invalid: [...invalidTests, ...invalidClosedHeadings],
 });

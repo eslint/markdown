@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
+ * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ checkClosedHeadings?: boolean }]; }>}
  * NoMissingAtxHeadingSpaceRuleDefinition
  */
 
@@ -37,13 +37,98 @@ export default {
 
 		fixable: "whitespace",
 
+		schema: [
+			{
+				type: "object",
+				properties: {
+					checkClosedHeadings: {
+						type: "boolean",
+						default: false,
+					},
+				},
+				additionalProperties: false,
+			},
+		],
+
 		messages: {
 			missingSpace: "Missing space after hash(es) on ATX style heading.",
+			missingSpaceBeforeClosing:
+				"Missing space before closing hash(es) on ATX style heading.",
 		},
 	},
 
 	create(context) {
+		const options = context.options[0] || {};
+		const checkClosedHeadings = options.checkClosedHeadings || false;
+
 		return {
+			heading(node) {
+				if (!checkClosedHeadings) {
+					return;
+				}
+
+				const lastChild = node.children.at(-1);
+
+				if (lastChild.type !== "text") {
+					return;
+				}
+
+				// Case 1: Single child, the heading is closed with hashes
+				// Example: ### Heading 3###, # Heading 1#
+				if (lastChild.value.endsWith("#")) {
+					if (node.children.length === 1) {
+						const indexOfHash = lastChild.value.indexOf("#");
+						const content = lastChild.value.slice(0, indexOfHash);
+						const closingHashes =
+							lastChild.value.slice(indexOfHash);
+
+						context.report({
+							loc: {
+								start: {
+									line: lastChild.position.start.line,
+									column:
+										lastChild.position.start.column +
+										indexOfHash -
+										1,
+								},
+								end: {
+									line: lastChild.position.end.line,
+									column: lastChild.position.end.column,
+								},
+							},
+							messageId: "missingSpaceBeforeClosing",
+							fix(fixer) {
+								return fixer.replaceText(
+									lastChild,
+									`${content} ${closingHashes}`,
+								);
+							},
+						});
+					}
+
+					// Case 2: Multiple children, in that case we need to check if the last child is a text node and if it ends with a hash
+					// Example: # Heading **bold**#, # Heading [link](url)#, # Heading <span></span>#
+					if (node.children.length > 1) {
+						context.report({
+							loc: {
+								start: {
+									line: lastChild.position.start.line,
+									column: lastChild.position.start.column - 1,
+								},
+								end: {
+									line: lastChild.position.end.line,
+									column: lastChild.position.end.column,
+								},
+							},
+							messageId: "missingSpaceBeforeClosing",
+							fix(fixer) {
+								return fixer.insertTextBefore(lastChild, " ");
+							},
+						});
+					}
+				}
+			},
+
 			paragraph(node) {
 				if (node.children && node.children.length > 0) {
 					const firstTextChild = node.children.find(
