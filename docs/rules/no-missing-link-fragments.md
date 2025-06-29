@@ -69,7 +69,7 @@ Examples of **correct** code for this rule:
 This rule supports the following options:
 
 * `ignoreCase: boolean` -
-    When `false`, link fragments are compared with heading and anchor IDs in a case-sensitive manner. (default: `true`).
+    When `false`, link fragments are compared with heading and anchor IDs in a case-sensitive manner. (default: `true`)
 
     Examples of **incorrect** code when configured as `"no-missing-link-fragments": ["error", { ignoreCase: false }]`:
 
