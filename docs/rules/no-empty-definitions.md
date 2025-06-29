@@ -50,7 +50,7 @@ Examples of **correct** code for this rule:
 
 The following options are available on this rule:
 
-* `checkFootnoteDefinitions: boolean` - When set to `false`, the rule will not report empty footnote definitions. Default is `true`.
+* `checkFootnoteDefinitions: boolean` - When set to `false`, the rule will not report empty footnote definitions. (default: `true`).
 
 Examples of **correct** code for this rule with `checkFootnoteDefinitions: false`:
 
