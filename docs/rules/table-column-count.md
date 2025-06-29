@@ -43,7 +43,7 @@ Examples of **correct** code for this rule:
 <!-- Rows with fewer cells are valid because they render correctly and no data is lost -->
 | Header | Header | Header |
 | ------ | ------ | ------ |
-| Cell   | Cell   |        |
+| Cell   | Cell   |
 
 <!-- Table with some empty cells (VALID for this rule) -->
 <!-- Missing cells are treated as empty and don't cause rendering issues -->
@@ -56,6 +56,23 @@ Examples of **correct** code for this rule:
 | Single Header |
 | ------------- |
 | Single Cell   |
+```
+
+## Options
+
+The following options are available on this rule:
+
+* `checkMissingCells: boolean` - When set to `true`, the rule will also flag rows that have fewer cells than the header row. Default is `false`.
+
+Examples of **incorrect** code for this rule with `checkMissingCells: true`:
+
+```markdown
+<!-- eslint markdown/table-column-count: ["error", { checkMissingCells: true }] -->
+
+<!-- Data row with fewer cells than header -->
+| Header | Header | Header |
+| ------ | ------ | ------ |
+| Cell   | Cell   |
 ```
 
 ## When Not To Use It
