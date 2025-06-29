@@ -109,6 +109,14 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		# Heading Name
 		[Link](#HEADING-NAME)
 		`,
+		dedent`
+		# Heading Name
+		[Link](#HeAdInG-nAmE)
+		`,
+		dedent`
+		# Heading Name
+		[Link](#Heading-Name)
+		`,
 
 		// Ignored pattern (with option)
 		{
@@ -310,7 +318,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 			],
 		},
 
-		// Case-sensitive mismatch (with ignoreCase option)
+		// Case-sensitive mismatch (with ignoreCase false option)
 		{
 			code: dedent`
 			# Heading Name
