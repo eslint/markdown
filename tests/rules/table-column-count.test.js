@@ -117,7 +117,7 @@ ruleTester.run("table-column-count", rule, {
             `,
 			errors: [
 				{
-					messageId: "inconsistentColumnCount",
+					messageId: "extraCells",
 					data: { actualCells: "3", expectedCells: "2" },
 					line: 3,
 					column: 17,
@@ -134,7 +134,7 @@ ruleTester.run("table-column-count", rule, {
             `,
 			errors: [
 				{
-					messageId: "inconsistentColumnCount",
+					messageId: "extraCells",
 					data: { actualCells: "4", expectedCells: "2" },
 					line: 3,
 					column: 17,
@@ -151,7 +151,7 @@ ruleTester.run("table-column-count", rule, {
             `,
 			errors: [
 				{
-					messageId: "inconsistentColumnCount",
+					messageId: "extraCells",
 					data: { actualCells: "2", expectedCells: "1" },
 					line: 3,
 					column: 5,
@@ -173,7 +173,7 @@ ruleTester.run("table-column-count", rule, {
             `,
 			errors: [
 				{
-					messageId: "inconsistentColumnCount",
+					messageId: "extraCells",
 					data: { actualCells: "3", expectedCells: "2" },
 					line: 5,
 					column: 21,
@@ -191,7 +191,7 @@ ruleTester.run("table-column-count", rule, {
             `,
 			errors: [
 				{
-					messageId: "inconsistentColumnCount",
+					messageId: "extraCells",
 					data: { actualCells: "3", expectedCells: "2" },
 					line: 4,
 					column: 11,
@@ -209,7 +209,7 @@ ruleTester.run("table-column-count", rule, {
 				`,
 			errors: [
 				{
-					messageId: "inconsistentColumnCount",
+					messageId: "extraCells",
 					data: { actualCells: "3", expectedCells: "2" },
 					line: 3,
 					column: 13,
@@ -227,7 +227,7 @@ ruleTester.run("table-column-count", rule, {
 			`,
 			errors: [
 				{
-					messageId: "inconsistentColumnCount",
+					messageId: "extraCells",
 					data: { actualCells: "3", expectedCells: "2" },
 					line: 3,
 					column: 13,
@@ -235,7 +235,7 @@ ruleTester.run("table-column-count", rule, {
 					endColumn: 23,
 				},
 				{
-					messageId: "inconsistentColumnCount",
+					messageId: "extraCells",
 					data: { actualCells: "3", expectedCells: "2" },
 					line: 4,
 					column: 13,
@@ -254,7 +254,7 @@ ruleTester.run("table-column-count", rule, {
 		`,
 			errors: [
 				{
-					messageId: "inconsistentColumnCount",
+					messageId: "extraCells",
 					data: { actualCells: "3", expectedCells: "2" },
 					line: 3,
 					column: 13,
@@ -262,7 +262,7 @@ ruleTester.run("table-column-count", rule, {
 					endColumn: 23,
 				},
 				{
-					messageId: "inconsistentColumnCount",
+					messageId: "extraCells",
 					data: { actualCells: "3", expectedCells: "2" },
 					line: 5,
 					column: 13,
@@ -347,7 +347,7 @@ ruleTester.run("table-column-count", rule, {
 			options: [{ checkMissingCells: true }],
 			errors: [
 				{
-					messageId: "inconsistentColumnCount",
+					messageId: "extraCells",
 					data: { actualCells: "2", expectedCells: "1" },
 					line: 3,
 					column: 9,
@@ -355,7 +355,7 @@ ruleTester.run("table-column-count", rule, {
 					endColumn: 18,
 				},
 				{
-					messageId: "inconsistentColumnCount",
+					messageId: "extraCells",
 					data: { actualCells: "2", expectedCells: "1" },
 					line: 5,
 					column: 9,
@@ -375,7 +375,7 @@ ruleTester.run("table-column-count", rule, {
 			options: [{ checkMissingCells: true }],
 			errors: [
 				{
-					messageId: "inconsistentColumnCount",
+					messageId: "extraCells",
 					data: { actualCells: "3", expectedCells: "2" },
 					line: 3,
 					column: 18,
@@ -403,7 +403,7 @@ ruleTester.run("table-column-count", rule, {
 			options: [{ checkMissingCells: true }],
 			errors: [
 				{
-					messageId: "inconsistentColumnCount",
+					messageId: "extraCells",
 					data: { actualCells: "4", expectedCells: "3" },
 					line: 4,
 					column: 27,

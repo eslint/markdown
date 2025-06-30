@@ -62,9 +62,9 @@ Examples of **correct** code for this rule:
 
 The following options are available on this rule:
 
-* `checkMissingCells: boolean` - When set to `true`, the rule will also flag rows that have fewer cells than the header row. Default is `false`.
+* `checkMissingCells: boolean` - When set to `true`, the rule will also flag rows that have fewer cells than the header row. (default: `false`)
 
-Examples of **incorrect** code for this rule with `checkMissingCells: true`:
+Examples of **incorrect** code when configured as `"table-column-count": ["error", { checkMissingCells: true }]`:
 
 ```markdown
 <!-- eslint markdown/table-column-count: ["error", { checkMissingCells: true }] -->
