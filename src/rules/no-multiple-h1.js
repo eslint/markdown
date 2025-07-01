@@ -7,14 +7,17 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { findOffsets } from "../util.js";
+import { findOffsets, frontmatterHasTitle } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ frontmatterTitle?: string; }]; }>}
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"multipleH1"} NoMultipleH1MessageIds
+ * @typedef {[{ frontmatterTitle?: string }]} NoMultipleH1Options
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoMultipleH1Options, MessageIds: NoMultipleH1MessageIds }>}
  * NoMultipleH1RuleDefinition
  */
 
@@ -23,25 +26,6 @@ import { findOffsets } from "../util.js";
 //-----------------------------------------------------------------------------
 
 const h1TagPattern = /(?<!<!--[\s\S]*?)<h1[^>]*>[\s\S]*?<\/h1>/giu;
-
-/**
- * Checks if a frontmatter block contains a title matching the given pattern
- * @param {string} value The frontmatter content
- * @param {RegExp|null} pattern The pattern to match against
- * @returns {boolean} Whether a title was found
- */
-function frontmatterHasTitle(value, pattern) {
-	if (!pattern) {
-		return false;
-	}
-	const lines = value.split("\n");
-	for (const line of lines) {
-		if (pattern.test(line)) {
-			return true;
-		}
-	}
-	return false;
-}
 
 //-----------------------------------------------------------------------------
 // Rule Definition

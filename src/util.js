@@ -37,3 +37,22 @@ export function findOffsets(text, offset) {
 		columnOffset,
 	};
 }
+
+/**
+ * Checks if a frontmatter block contains a title matching the given pattern
+ * @param {string} value The frontmatter content
+ * @param {RegExp|null} pattern The pattern to match against
+ * @returns {boolean} Whether a title was found
+ */
+export function frontmatterHasTitle(value, pattern) {
+	if (!pattern) {
+		return false;
+	}
+	const lines = value.split("\n");
+	for (const line of lines) {
+		if (pattern.test(line)) {
+			return true;
+		}
+	}
+	return false;
+}

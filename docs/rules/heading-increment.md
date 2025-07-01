@@ -25,6 +25,68 @@ Goodbye World!
 #EEE Goodbye World!
 ```
 
+## Options
+
+The following options are available on this rule:
+
+* `frontmatterTitle: string` - A regex pattern to match title fields in front matter. The default pattern matches both YAML (`title:`), TOML (`title =`), and JSON (`"title":`) formats. Set to an empty string to disable front matter title checking.
+
+Examples of **incorrect** code for this rule:
+
+```markdown
+<!-- eslint markdown/heading-increment: "error" -->
+
+---
+title: My Title
+---
+
+### Heading 3 with YAML front matter
+```
+
+```markdown
+<!-- eslint markdown/heading-increment: "error" -->
+
++++
+title = "My Title"
++++
+
+### Heading 3 with TOML front matter
+```
+
+```markdown
+<!-- eslint markdown/heading-increment: "error" -->
+
+---
+{ "title": "My Title" }
+---
+
+### Heading 3 with JSON front matter
+```
+
+Examples of **incorrect** code when configured as `"heading-increment": ["error", { frontmatterTitle: "\\s*heading\\s*[:=]" }]`:
+
+```markdown
+<!-- eslint markdown/heading-increment: ["error", { frontmatterTitle: "\\s*heading\\s*[:=]" }] -->
+
+---
+heading: My Title
+---
+
+### Heading 3
+```
+
+Examples of **correct** code when configured as `"heading-increment": ["error", { frontmatterTitle: "" }]`:
+
+```markdown
+<!-- eslint markdown/heading-increment: ["error", { frontmatterTitle: "" }] -->
+
+---
+title: My Title
+---
+
+### Heading 3
+```
+
 ## When Not to Use It
 
 If you aren't concerned with enforcing heading levels increment by one, you can safely disable this rule.
