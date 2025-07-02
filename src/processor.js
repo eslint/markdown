@@ -13,15 +13,14 @@ import { fromMarkdown } from "mdast-util-from-markdown";
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("./types.ts").Block} Block */
-/** @typedef {import("./types.ts").RangeMap} RangeMap */
-/** @typedef {import("mdast").Node} Node */
-/** @typedef {import("mdast").Parent} ParentNode */
-/** @typedef {import("mdast").Code} CodeNode */
-/** @typedef {import("mdast").Html} HtmlNode */
-/** @typedef {import("eslint").Linter.LintMessage} Message */
-/** @typedef {import("eslint").Rule.Fix} Fix */
-/** @typedef {import("eslint").AST.Range} Range */
+/**
+ * @import { Node, Parent, Code, Html } from "mdast";
+ * @import { Linter, Rule, AST } from "eslint";
+ * @import { Block, RangeMap } from "./types.js";
+ * @typedef {Linter.LintMessage} Message
+ * @typedef {Rule.Fix} Fix
+ * @typedef {AST.Range} Range
+ */
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -53,7 +52,7 @@ function traverse(node, callbacks) {
 		callbacks["*"]();
 	}
 
-	const parent = /** @type {ParentNode} */ (node);
+	const parent = /** @type {Parent} */ (node);
 
 	if (typeof parent.children !== "undefined") {
 		for (let i = 0; i < parent.children.length; i++) {
@@ -291,7 +290,7 @@ function preprocess(sourceText, filename) {
 
 		/**
 		 * Visit a code node.
-		 * @param {CodeNode} node The visited node.
+		 * @param {Code} node The visited node.
 		 * @returns {void}
 		 */
 		code(node) {
@@ -320,7 +319,7 @@ function preprocess(sourceText, filename) {
 
 		/**
 		 * Visit an HTML node.
-		 * @param {HtmlNode} node The visited node.
+		 * @param {Html} node The visited node.
 		 * @returns {void}
 		 */
 		html(node) {

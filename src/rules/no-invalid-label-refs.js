@@ -13,12 +13,14 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("unist").Position} Position */
-/** @typedef {import("mdast").Text} TextNode */
-/** @typedef {Parameters<import("../types.ts").MarkdownRuleDefinition['create']>[0]['sourceCode']} sourceCode */
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoInvalidLabelRuleDefinition
+ * @import { Position } from "unist";
+ * @import { Text } from "mdast";
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"invalidLabelRef"} NoInvalidLabelRefsMessageIds
+ * @typedef {[]} NoInvalidLabelRefsOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoInvalidLabelRefsOptions, MessageIds: NoInvalidLabelRefsMessageIds }>} NoInvalidLabelRefsRuleDefinition
+ * @typedef {Parameters<MarkdownRuleDefinition['create']>[0]['sourceCode']} SourceCode
  */
 
 //-----------------------------------------------------------------------------
@@ -30,8 +32,8 @@ const labelPattern = /\]\[([^\]]+)\]/u;
 
 /**
  * Finds missing references in a node.
- * @param {TextNode} node The node to check.
- * @param {sourceCode} sourceCode The Markdown source code object.
+ * @param {Text} node The node to check.
+ * @param {SourceCode} sourceCode The Markdown source code object.
  * @returns {Array<{label:string,position:Position}>} The missing references.
  */
 function findInvalidLabelReferences(node, sourceCode) {
@@ -126,7 +128,7 @@ function findInvalidLabelReferences(node, sourceCode) {
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoInvalidLabelRuleDefinition} */
+/** @type {NoInvalidLabelRefsRuleDefinition} */
 export default {
 	meta: {
 		type: "problem",

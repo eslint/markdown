@@ -8,8 +8,10 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ required?: string[]; }]; }>}
- * FencedCodeLanguageRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"missingLanguage" | "disallowedLanguage"} FencedCodeLanguageMessageIds
+ * @typedef {[{ required?: string[] }]} FencedCodeLanguageOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: FencedCodeLanguageOptions, MessageIds: FencedCodeLanguageMessageIds }>} FencedCodeLanguageRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
