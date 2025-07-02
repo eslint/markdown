@@ -88,9 +88,9 @@ export default {
 	},
 
 	create(context) {
-		const allowDefinitions = new Set(context.options[0]?.allowDefinitions);
+		const allowDefinitions = new Set(context.options[0].allowDefinitions);
 		const allowFootnoteDefinitions = new Set(
-			context.options[0]?.allowFootnoteDefinitions,
+			context.options[0].allowFootnoteDefinitions,
 		);
 		const [{ checkFootnoteDefinitions }] = context.options;
 
