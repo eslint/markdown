@@ -114,6 +114,17 @@ ruleTester.run("heading-increment", rule, {
 		},
 		{
 			code: dedent`
+				---
+				title: "My Title"
+				---
+				## Heading 2
+			`,
+			languageOptions: {
+				frontmatter: "yaml",
+			},
+		},
+		{
+			code: dedent`
 				+++
 				title = "My Title"
 				+++
@@ -197,6 +208,18 @@ ruleTester.run("heading-increment", rule, {
 			code: dedent`
 				---
 				heading: My Title
+				---
+				## Heading 2
+			`,
+			options: [{ frontmatterTitle: "^\\s*heading\\s*:" }],
+			languageOptions: {
+				frontmatter: "yaml",
+			},
+		},
+		{
+			code: dedent`
+				---
+				heading: "My Title"
 				---
 				## Heading 2
 			`,
@@ -297,6 +320,18 @@ ruleTester.run("heading-increment", rule, {
 			code: dedent`
 				---
 				title: My Title
+				---
+				### Heading 3
+			`,
+			options: [{ frontmatterTitle: "" }],
+			languageOptions: {
+				frontmatter: "yaml",
+			},
+		},
+		{
+			code: dedent`
+				---
+				title: "My Title"
 				---
 				### Heading 3
 			`,
@@ -534,6 +569,30 @@ ruleTester.run("heading-increment", rule, {
 		},
 		{
 			code: dedent`
+				---
+				title: "My Title"
+				---
+				### Heading 3
+			`,
+			languageOptions: {
+				frontmatter: "yaml",
+			},
+			errors: [
+				{
+					messageId: "skippedHeading",
+					data: {
+						fromLevel: 1,
+						toLevel: 3,
+					},
+					line: 4,
+					column: 1,
+					endLine: 4,
+					endColumn: 14,
+				},
+			],
+		},
+		{
+			code: dedent`
 				+++
 				title = "My Title"
 				+++
@@ -560,6 +619,30 @@ ruleTester.run("heading-increment", rule, {
 			code: dedent`
 				---
 				"title": My Title
+				---
+				### Heading 3
+			`,
+			languageOptions: {
+				frontmatter: "yaml",
+			},
+			errors: [
+				{
+					messageId: "skippedHeading",
+					data: {
+						fromLevel: 1,
+						toLevel: 3,
+					},
+					line: 4,
+					column: 1,
+					endLine: 4,
+					endColumn: 14,
+				},
+			],
+		},
+		{
+			code: dedent`
+				---
+				"title": "My Title"
 				---
 				### Heading 3
 			`,
@@ -677,6 +760,30 @@ ruleTester.run("heading-increment", rule, {
 			code: dedent`
 				---
 				'title': My Title
+				---
+				### Heading 3
+			`,
+			languageOptions: {
+				frontmatter: "yaml",
+			},
+			errors: [
+				{
+					messageId: "skippedHeading",
+					data: {
+						fromLevel: 1,
+						toLevel: 3,
+					},
+					line: 4,
+					column: 1,
+					endLine: 4,
+					endColumn: 14,
+				},
+			],
+		},
+		{
+			code: dedent`
+				---
+				'title': "My Title"
 				---
 				### Heading 3
 			`,
@@ -899,6 +1006,31 @@ ruleTester.run("heading-increment", rule, {
 		},
 		{
 			code: dedent`
+				---
+				heading: "My Title"
+				---
+				### Heading 3
+			`,
+			options: [{ frontmatterTitle: "^\\s*heading\\s*:" }],
+			languageOptions: {
+				frontmatter: "yaml",
+			},
+			errors: [
+				{
+					messageId: "skippedHeading",
+					data: {
+						fromLevel: 1,
+						toLevel: 3,
+					},
+					line: 4,
+					column: 1,
+					endLine: 4,
+					endColumn: 14,
+				},
+			],
+		},
+		{
+			code: dedent`
 				+++
 				heading = "My Title"
 				+++
@@ -953,6 +1085,32 @@ ruleTester.run("heading-increment", rule, {
 			code: dedent`
 				---
 				title: My Title
+				---
+				# Heading 1
+				### Heading 3
+			`,
+			options: [{ frontmatterTitle: "" }],
+			languageOptions: {
+				frontmatter: "yaml",
+			},
+			errors: [
+				{
+					messageId: "skippedHeading",
+					data: {
+						fromLevel: 1,
+						toLevel: 3,
+					},
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 14,
+				},
+			],
+		},
+		{
+			code: dedent`
+				---
+				title: "My Title"
 				---
 				# Heading 1
 				### Heading 3
