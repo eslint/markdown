@@ -10,7 +10,7 @@
 /**
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"emptyDefinition" | "emptyFootnoteDefinition"} NoEmptyDefinitionsMessageIds
- * @typedef {[{ checkFootnoteDefinitions?: boolean }]} NoEmptyDefinitionsOptions
+ * @typedef {[{ allowDefinitions?: string[], allowFootnoteDefinitions?: string[], checkFootnoteDefinitions?: boolean }]} NoEmptyDefinitionsOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoEmptyDefinitionsOptions, MessageIds: NoEmptyDefinitionsMessageIds }>} NoEmptyDefinitionsRuleDefinition
  */
 
@@ -56,6 +56,20 @@ export default {
 			{
 				type: "object",
 				properties: {
+					allowDefinitions: {
+						type: "array",
+						items: {
+							type: "string",
+						},
+						uniqueItems: true,
+					},
+					allowFootnoteDefinitions: {
+						type: "array",
+						items: {
+							type: "string",
+						},
+						uniqueItems: true,
+					},
 					checkFootnoteDefinitions: {
 						type: "boolean",
 					},
@@ -64,15 +78,28 @@ export default {
 			},
 		],
 
-		defaultOptions: [{ checkFootnoteDefinitions: true }],
+		defaultOptions: [
+			{
+				allowDefinitions: ["//"],
+				allowFootnoteDefinitions: [],
+				checkFootnoteDefinitions: true,
+			},
+		],
 	},
 
 	create(context) {
+		const allowDefinitions = new Set(context.options[0]?.allowDefinitions);
+		const allowFootnoteDefinitions = new Set(
+			context.options[0]?.allowFootnoteDefinitions,
+		);
 		const [{ checkFootnoteDefinitions }] = context.options;
 
 		return {
 			definition(node) {
-				if (!node.url || node.url === "#") {
+				if (
+					(!node.url || node.url === "#") &&
+					!allowDefinitions.has(node.identifier)
+				) {
 					context.report({
 						loc: node.position,
 						messageId: "emptyDefinition",
@@ -83,6 +110,7 @@ export default {
 			footnoteDefinition(node) {
 				if (
 					checkFootnoteDefinitions &&
+					!allowFootnoteDefinitions.has(node.identifier) &&
 					(node.children.length === 0 ||
 						node.children.every(
 							child =>

@@ -24,7 +24,7 @@ Definitions with an empty URL or only an empty fragment (`#`), as well as footno
 >
 > Footnotes are only supported when using `language` mode [`markdown/gfm`](/README.md#languages).
 
-This rule warns when it finds definitions where the URL is either not specified or contains only an empty fragment (`#`). It also warns for empty footnote definitions by default.
+This rule warns when it finds definitions where the URL is either not specified or contains only an empty fragment (`#`). It also warns for empty footnote definitions by default. Please note that this rule doesn't report definition-style comments (e.g., `[//]: # (This is a comment)`) by default.
 
 Examples of **incorrect** code for this rule:
 
@@ -43,6 +43,8 @@ Examples of **correct** code for this rule:
 
 [earth]: https://example.com/earth/
 [moon]: #section
+[//]: <> (This is a comment 1)
+[//]: # (This is a comment 2)
 [^note]: This is a footnote.
 ```
 
@@ -50,15 +52,35 @@ Examples of **correct** code for this rule:
 
 The following options are available on this rule:
 
-* `checkFootnoteDefinitions: boolean` - When set to `false`, the rule will not report empty footnote definitions. (default: `true`).
+- `allowDefinitions: Array<string>` - When specified, empty definitions are allowed if they match one of the identifiers in this array. This is useful for ignoring definitions that are intentionally empty. (default: `["//"]`)
 
-Examples of **correct** code for this rule with `checkFootnoteDefinitions: false`:
+    Examples of **correct** code when configured as `"no-empty-definitions": ["error", { allowDefinitions: ["moon"] }]`:
 
-```markdown
-<!-- eslint markdown/no-empty-definitions: ["error", { checkFootnoteDefinitions: false }] -->
+    ```markdown
+    <!-- eslint markdown/no-empty-definitions: ["error", { allowDefinitions: ["moon"] }] -->
 
-[^note]:
-```
+    [moon]: <>
+    ```
+
+- `allowFootnoteDefinitions: Array<string>` - When specified, empty footnote definitions are allowed if they match one of the identifiers in this array. This is useful for ignoring footnote definitions that are intentionally empty. (default: `[]`)
+
+    Examples of **correct** code when configured as `"no-empty-definitions": ["error", { allowFootnoteDefinitions: ["note"] }]`:
+
+    ```markdown
+    <!-- eslint markdown/no-empty-definitions: ["error", { allowFootnoteDefinitions: ["note"] }] -->
+
+    [^note]:
+    ```
+
+- `checkFootnoteDefinitions: boolean` - When set to `false`, the rule will not report empty footnote definitions. (default: `true`)
+
+    Examples of **correct** code when configured as `"no-empty-definitions": ["error", { checkFootnoteDefinitions: false }]`:
+
+    ```markdown
+    <!-- eslint markdown/no-empty-definitions: ["error", { checkFootnoteDefinitions: false }] -->
+
+    [^note]:
+    ```
 
 ## When Not to Use It
 
