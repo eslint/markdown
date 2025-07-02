@@ -8,7 +8,10 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>} TableColumnCountRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"inconsistentColumnCount"} TableColumnCountMessageIds
+ * @typedef {[]} TableColumnCountOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: TableColumnCountOptions, MessageIds: TableColumnCountMessageIds }>} TableColumnCountRuleDefinition
  */
 
 //-----------------------------------------------------------------------------

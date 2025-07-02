@@ -13,14 +13,12 @@ import GithubSlugger from "github-slugger";
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("mdast").Node} Node */
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{
- *   RuleOptions: [{
- *     ignoreCase?: boolean;
- *     allowPattern?: string;
- *   }];
- * }>} NoMissingLinkFragmentsRuleDefinition
+ * @import { Node } from "mdast";
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"invalidFragment"} NoMissingLinkFragmentsMessageIds
+ * @typedef {[{ ignoreCase?: boolean; allowPattern?: string }]} NoMissingLinkFragmentsOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoMissingLinkFragmentsOptions, MessageIds: NoMissingLinkFragmentsMessageIds }>} NoMissingLinkFragmentsRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
