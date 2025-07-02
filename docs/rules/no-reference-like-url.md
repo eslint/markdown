@@ -8,6 +8,13 @@ In Markdown, you can create links using either inline syntax `[text](url)` or re
 
 For example, if you have a definition like `[mercury]: https://example.com/mercury/`, then using `[text](mercury)` should be written as `[text][mercury]` instead.
 
+Please note that autofix is not performed for links or images that include a title. For example:
+
+```markdown
+[Mercury](mercury "The planet Mercury")
+![Venus](venus "The planet Venus")
+```
+
 ## Rule Details
 
 This rule flags URLs that match defined reference identifiers.

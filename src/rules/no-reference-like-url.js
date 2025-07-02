@@ -4,6 +4,12 @@
  */
 
 //-----------------------------------------------------------------------------
+// Imports
+//-----------------------------------------------------------------------------
+
+import { normalizeIdentifier } from "micromark-util-normalize-identifier";
+
+//-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
@@ -49,7 +55,7 @@ export default {
 		return {
 			"root:exit"() {
 				for (const node of resources) {
-					const url = node.url.toLowerCase();
+					const url = normalizeIdentifier(node.url).toLowerCase();
 
 					if (definitionIdentifiers.has(url)) {
 						context.report({
@@ -89,11 +95,13 @@ export default {
 			},
 
 			definition(node) {
-				definitionIdentifiers.add(node.identifier.toLowerCase());
+				definitionIdentifiers.add(node.identifier);
 			},
 
 			link(node) {
-				resources.push(node);
+				if (sourceCode.getText(node).startsWith("[")) {
+					resources.push(node);
+				}
 			},
 
 			image(node) {

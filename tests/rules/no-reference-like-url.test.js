@@ -79,6 +79,22 @@ ruleTester.run("no-reference-like-url", rule, {
 
 			[foo bar]: https://example.com/foo-bar
 		`,
+		{
+			code: dedent`
+				<http://foo>
+
+				[http://foo]: hi
+			`,
+			language: "markdown/gfm",
+		},
+		{
+			code: dedent`
+				http://foo
+
+				[http://foo]: hi
+			`,
+			language: "markdown/gfm",
+		},
 	],
 	invalid: [
 		{
@@ -149,12 +165,78 @@ ruleTester.run("no-reference-like-url", rule, {
 		},
 		{
 			code: dedent`
+				[Mercury](MeRcUrY)
+
+				[mercury]: https://example.com/mercury
+			`,
+			output: dedent`
+				[Mercury][MeRcUrY]
+
+				[mercury]: https://example.com/mercury
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 19,
+				},
+			],
+		},
+		{
+			code: dedent`
 				![Venus](venus)
 
 				[venus]: https://example.com/venus.jpg
 			`,
 			output: dedent`
 				![Venus][venus]
+
+				[venus]: https://example.com/venus.jpg
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: dedent`
+				![Venus](VENUS)
+
+				[venus]: https://example.com/venus.jpg
+			`,
+			output: dedent`
+				![Venus][VENUS]
+
+				[venus]: https://example.com/venus.jpg
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: dedent`
+				![Venus](VeNuS)
+
+				[venus]: https://example.com/venus.jpg
+			`,
+			output: dedent`
+				![Venus][VeNuS]
 
 				[venus]: https://example.com/venus.jpg
 			`,
@@ -454,6 +536,28 @@ ruleTester.run("no-reference-like-url", rule, {
 					column: 1,
 					endLine: 2,
 					endColumn: 21,
+				},
+			],
+		},
+		{
+			code: dedent`
+				[link](GRÜẞE)
+				
+				[Grüsse]: https://example.com/
+			`,
+			output: dedent`
+				[link][GRÜẞE]
+				
+				[Grüsse]: https://example.com/
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 14,
 				},
 			],
 		},
