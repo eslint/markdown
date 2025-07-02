@@ -23,11 +23,11 @@ const atxHeadingClosedPattern = /([ \t]*)(?<!\\)(#+)([ \t]*)$/u;
 const newLinePattern = /\r?\n/u;
 
 /**
- * Returns info for missing space before closing hashes in ATX headings, or null if not found.
+ * Finds missing space before the closing hashes in an ATX heading.
  * @param {string} text The input text to check.
- * @returns {{ closingHashIdx: number, beforeHashIdx: number, endIdx: number, closingSequenceLength: number } | null} Info for reporting or null
+ * @returns {{ closingHashIdx: number, beforeHashIdx: number, endIdx: number } | null} The positions of the closing hashes in the heading, or null if no missing space is found.
  */
-function getMissingSpaceBeforeClosingInfo(text) {
+function findMissingSpaceBeforeClosingHash(text) {
 	const match = atxHeadingClosedPattern.exec(text);
 
 	if (match) {
@@ -43,7 +43,6 @@ function getMissingSpaceBeforeClosingInfo(text) {
 				closingHashIdx,
 				beforeHashIdx,
 				endIdx,
-				closingSequenceLength: closingSequence.length,
 			};
 		}
 	}
@@ -102,17 +101,18 @@ export default {
 				const lineNum = node.position.start.line;
 				const startColumn = node.position.start.column;
 
-				const info = getMissingSpaceBeforeClosingInfo(text);
-				if (info) {
+				const missingSpace = findMissingSpaceBeforeClosingHash(text);
+				if (missingSpace) {
 					context.report({
 						loc: {
 							start: {
 								line: lineNum,
-								column: startColumn + info.beforeHashIdx,
+								column:
+									startColumn + missingSpace.beforeHashIdx,
 							},
 							end: {
 								line: lineNum,
-								column: startColumn + info.endIdx,
+								column: startColumn + missingSpace.endIdx,
 							},
 						},
 						messageId: "missingSpace",
@@ -121,9 +121,9 @@ export default {
 							return fixer.insertTextBeforeRange(
 								[
 									node.position.start.offset +
-										info.closingHashIdx,
+										missingSpace.closingHashIdx,
 									node.position.start.offset +
-										info.closingHashIdx +
+										missingSpace.closingHashIdx +
 										1,
 								],
 								" ",
@@ -136,12 +136,12 @@ export default {
 			paragraph(node) {
 				const text = context.sourceCode.getText(node);
 				const lines = text.split(newLinePattern);
+				const startColumn = node.position.start.column;
 				let offset = node.position.start.offset;
 
 				lines.forEach((line, idx) => {
 					const match = atxHeadingPattern.exec(line);
 					const lineNum = node.position.start.line + idx;
-					const startColumn = node.position.start.column;
 
 					if (match) {
 						const hashes = match[1];
@@ -168,19 +168,22 @@ export default {
 						});
 
 						if (checkClosedHeadings) {
-							const info = getMissingSpaceBeforeClosingInfo(line);
-							if (info) {
+							const missingSpace =
+								findMissingSpaceBeforeClosingHash(line);
+							if (missingSpace) {
 								context.report({
 									loc: {
 										start: {
 											line: lineNum,
 											column:
 												startColumn +
-												info.beforeHashIdx,
+												missingSpace.beforeHashIdx,
 										},
 										end: {
 											line: lineNum,
-											column: startColumn + info.endIdx,
+											column:
+												startColumn +
+												missingSpace.endIdx,
 										},
 									},
 									messageId: "missingSpace",
@@ -188,9 +191,10 @@ export default {
 									fix(fixer) {
 										return fixer.insertTextBeforeRange(
 											[
-												offset + info.closingHashIdx,
 												offset +
-													info.closingHashIdx +
+													missingSpace.closingHashIdx,
+												offset +
+													missingSpace.closingHashIdx +
 													1,
 											],
 											" ",

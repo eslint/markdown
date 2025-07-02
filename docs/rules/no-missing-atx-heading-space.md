@@ -42,7 +42,7 @@ This is a paragraph with a #hashtag, not a heading.
 
 The following options are available on this rule:
 
-* `checkClosedHeadings: boolean` - When set to `true`, the rule will also check for missing spaces before closing hash characters in ATX headings. Default is `false`.
+* `checkClosedHeadings: boolean` - When set to `true`, the rule will also check for missing spaces before closing hash characters in ATX headings. (default: `false`)
 
 Examples of **incorrect** code when configured as `"no-missing-atx-heading-space": ["error", { checkClosedHeadings: true }]`:
 
