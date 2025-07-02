@@ -539,27 +539,35 @@ ruleTester.run("no-reference-like-url", rule, {
 				},
 			],
 		},
-		{
-			code: dedent`
-				[link](GRÜẞE)
-				
-				[Grüsse]: https://example.com/
-			`,
-			output: dedent`
-				[link][GRÜẞE]
-				
-				[Grüsse]: https://example.com/
-			`,
-			errors: [
-				{
-					messageId: "referenceLikeUrl",
-					data: { type: "link", prefix: "" },
-					line: 1,
-					column: 1,
-					endLine: 1,
-					endColumn: 14,
-				},
-			],
-		},
+		// This test case is skipped for non-Node environments like Bun
+		...(typeof process !== "undefined" &&
+		process.release &&
+		process.release.name === "node" &&
+		(!process.versions || !process.versions.bun)
+			? [
+					{
+						code: dedent`
+						[link](GRÜẞE)
+						
+						[Grüsse]: https://example.com/
+					`,
+						output: dedent`
+						[link][GRÜẞE]
+						
+						[Grüsse]: https://example.com/
+					`,
+						errors: [
+							{
+								messageId: "referenceLikeUrl",
+								data: { type: "link", prefix: "" },
+								line: 1,
+								column: 1,
+								endLine: 1,
+								endColumn: 14,
+							},
+						],
+					},
+				]
+			: []),
 	],
 });
