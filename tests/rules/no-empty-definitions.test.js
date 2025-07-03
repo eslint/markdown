@@ -29,6 +29,8 @@ ruleTester.run("no-empty-definitions", rule, {
 		"[foo]: #bar",
 		"[foo]: http://bar.com",
 		"[foo]: <https://bar.com>",
+		"[//]: # (This is a comment 1)",
+		"[//]: <> (This is a comment 2)",
 		"[^note]: This is a footnote.",
 		"[^note]: ![]()",
 		"[^note]: [text](url)",
@@ -48,8 +50,29 @@ ruleTester.run("no-empty-definitions", rule, {
 		    ent --> content <!-- comment -->
 		`,
 		{
+			code: "[foo]: #",
+			options: [{ allowDefinitions: ["foo"] }],
+		},
+		{
+			code: "[bar]: <>",
+			options: [{ allowDefinitions: ["bar"] }],
+		},
+		{
+			code: "[foo]: #\n[bar]: <>",
+			options: [{ allowDefinitions: ["foo", "bar"] }],
+		},
+		{
 			code: "[^note]:",
 			options: [{ checkFootnoteDefinitions: false }],
+		},
+		{
+			code: "[^note]:",
+			options: [
+				{
+					checkFootnoteDefinitions: true,
+					allowFootnoteDefinitions: ["note"],
+				},
+			],
 		},
 	],
 	invalid: [
@@ -223,6 +246,54 @@ ruleTester.run("no-empty-definitions", rule, {
 					column: 1,
 					endLine: 2,
 					endColumn: 29,
+				},
+			],
+		},
+		{
+			code: "[//]: #\n[foo]: #",
+			errors: [
+				{
+					messageId: "emptyDefinition",
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: "[foo]: #",
+			options: [
+				{
+					allowDefinitions: ["bar"],
+					allowFootnoteDefinitions: ["foo"],
+				},
+			],
+			errors: [
+				{
+					messageId: "emptyDefinition",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: "[^foo]:",
+			options: [
+				{
+					allowDefinitions: ["foo"],
+					allowFootnoteDefinitions: ["bar"],
+				},
+			],
+			errors: [
+				{
+					messageId: "emptyFootnoteDefinition",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 8,
 				},
 			],
 		},
