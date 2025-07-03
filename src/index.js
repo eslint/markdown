@@ -19,9 +19,7 @@ import rules from "./build/rules.js";
 
 /**
  * @import { Linter } from "eslint";
- * @import * as Types from "./types.js";
  * @typedef {Linter.RulesRecord} RulesRecord
- * @typedef {Types.MarkdownRuleDefinition} RuleModule
  */
 
 //-----------------------------------------------------------------------------
