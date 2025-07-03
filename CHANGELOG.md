@@ -1,5 +1,25 @@
 # Changelog
 
+## [7.0.0](https://github.com/eslint/markdown/compare/v6.6.0...v7.0.0) (2025-07-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove rollup and extraneous types ([#383](https://github.com/eslint/markdown/issues/383))
+
+### Features
+
+* add checkFootnoteDefinitions option to no-empty-definitions ([#442](https://github.com/eslint/markdown/issues/442)) ([4d504e5](https://github.com/eslint/markdown/commit/4d504e523d7c63820aaaa7b4d2dd9de7edb50960))
+* create `no-unused-definitions` rule ([#425](https://github.com/eslint/markdown/issues/425)) ([6b43333](https://github.com/eslint/markdown/commit/6b43333e54a7685211252ae994091a066520861b))
+
+
+### Bug Fixes
+
+* handle URL-encoded link fragments in no-missing-link-fragments rule ([#437](https://github.com/eslint/markdown/issues/437)) ([76685c5](https://github.com/eslint/markdown/commit/76685c58eab498bf4b4b2661d9fb303f37f18303))
+* remove rollup and extraneous types ([#383](https://github.com/eslint/markdown/issues/383)) ([e7ccd2e](https://github.com/eslint/markdown/commit/e7ccd2e3e58757fa1a1d616fda285e957880c36d))
+* skip HTML nodes in heading slugs for no-missing-link-fragments ([#445](https://github.com/eslint/markdown/issues/445)) ([e4dcf6a](https://github.com/eslint/markdown/commit/e4dcf6a27e6761964293258c37c925029fdfaf22))
+* update `no-duplicate-headings` to align with CommonMark spec ([#438](https://github.com/eslint/markdown/issues/438)) ([2bc0a38](https://github.com/eslint/markdown/commit/2bc0a38a2e5558f06f2f015012901a1741d35338))
+
 ## [6.6.0](https://github.com/eslint/markdown/compare/v6.5.0...v6.6.0) (2025-06-20)
 
 
