@@ -14,8 +14,11 @@ import { findOffsets } from "../util.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoSpaceInEmphasisRuleDefinition
+ * @import { Node, Paragraph } from "mdast";
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"spaceInEmphasis"} NoSpaceInEmphasisMessageIds
+ * @typedef {[]} NoSpaceInEmphasisOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoSpaceInEmphasisOptions, MessageIds: NoSpaceInEmphasisMessageIds }>} NoSpaceInEmphasisRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
@@ -24,6 +27,7 @@ import { findOffsets } from "../util.js";
 
 const markerPattern = /(?<!\\)(\*\*\*|\*\*|\*|___|__|_|~~|~)/gu;
 const whitespacePattern = /\s/u;
+const emphasisTypes = new Set(["emphasis", "strong", "delete"]);
 
 /**
  * Finds all emphasis markers in the text
@@ -35,11 +39,11 @@ function findEmphasisMarkers(text) {
 	let match;
 
 	while ((match = markerPattern.exec(text)) !== null) {
-		const marker = match[1];
-		const start = match.index;
-		const end = start + marker.length;
-
-		markers.push({ marker, start, end });
+		markers.push({
+			marker: match[1],
+			start: match.index,
+			end: match.index + match[1].length,
+		});
 	}
 
 	return markers;
@@ -70,73 +74,152 @@ export default {
 	create(context) {
 		const { sourceCode } = context;
 
+		/**
+		 * Extracts text from a node, replacing emphasis and HTML nodes with whitespace
+		 * @param {Paragraph} node The node to extract text from
+		 * @returns {string} The extracted text with certain nodes replaced by whitespace
+		 */
+		function extractText(node) {
+			let result = "";
+
+			/**
+			 * Traverses the AST and builds the filtered text
+			 * @param {Node} currentNode The current AST node being traversed.
+			 * @returns {void}
+			 */
+			function traverse(currentNode) {
+				if (currentNode.type === "text") {
+					result += sourceCode.getText(currentNode);
+					return;
+				}
+
+				if (
+					currentNode.type === "html" ||
+					emphasisTypes.has(currentNode.type)
+				) {
+					result += " ".repeat(
+						currentNode.position.end.offset -
+							currentNode.position.start.offset,
+					);
+					return;
+				}
+
+				if (
+					"children" in currentNode &&
+					Array.isArray(currentNode.children)
+				) {
+					currentNode.children.forEach(traverse);
+				}
+			}
+
+			traverse(node);
+			return result;
+		}
+
 		return {
-			text(node) {
-				const text = sourceCode.getText(node);
-				const markers = findEmphasisMarkers(text);
+			paragraph(node) {
+				const originalText = sourceCode.getText(node);
+				const filteredText = extractText(node);
+				const markers = findEmphasisMarkers(filteredText);
 
-				for (let i = 0; i < markers.length - 1; i += 2) {
-					const startMarker = markers[i];
-					const endMarker = markers[i + 1];
-
-					if (startMarker.marker !== endMarker.marker) {
-						continue;
+				const markerGroups = markers.reduce((groups, marker) => {
+					if (!groups[marker.marker]) {
+						groups[marker.marker] = [];
 					}
+					groups[marker.marker].push(marker);
+					return groups;
+				}, {});
 
-					const hasStartSpace = whitespacePattern.test(
-						text[startMarker.end],
-					);
-					const hasEndSpace = whitespacePattern.test(
-						text[endMarker.start - 1],
-					);
+				const nodeStartLine = node.position.start.line;
+				const nodeStartColumn = node.position.start.column;
 
-					if (hasStartSpace || hasEndSpace) {
-						const {
-							lineOffset: startLineOffset,
-							columnOffset: startColumnOffset,
-						} = findOffsets(text, startMarker.start);
-						const {
-							lineOffset: endLineOffset,
-							columnOffset: endColumnOffset,
-						} = findOffsets(text, endMarker.end);
+				for (const group of Object.values(markerGroups)) {
+					for (let i = 0; i < group.length - 1; i += 2) {
+						const startMarker = group[i];
+						const startSpacePosition = startMarker.end;
+						if (
+							whitespacePattern.test(
+								originalText[startSpacePosition],
+							)
+						) {
+							const {
+								lineOffset: startLineOffset,
+								columnOffset: startColumnOffset,
+							} = findOffsets(originalText, startMarker.start);
+							const {
+								lineOffset: endLineOffset,
+								columnOffset: endColumnOffset,
+							} = findOffsets(originalText, startMarker.end + 2);
 
-						const startLine =
-							node.position.start.line + startLineOffset;
-						const endLine =
-							node.position.start.line + endLineOffset;
-						const startColumn =
-							node.position.start.column + startColumnOffset;
-						const endColumn =
-							node.position.start.column + endColumnOffset;
+							context.report({
+								loc: {
+									start: {
+										line: nodeStartLine + startLineOffset,
+										column:
+											nodeStartColumn + startColumnOffset,
+									},
+									end: {
+										line: nodeStartLine + endLineOffset,
+										column:
+											nodeStartColumn + endColumnOffset,
+									},
+								},
+								messageId: "spaceInEmphasis",
+								fix(fixer) {
+									const nodeStart =
+										node.position.start.offset;
+									const relativePosition =
+										nodeStart + startSpacePosition;
+									return fixer.removeRange([
+										relativePosition,
+										relativePosition + 1,
+									]);
+								},
+							});
+						}
 
-						context.report({
-							loc: {
-								start: { line: startLine, column: startColumn },
-								end: { line: endLine, column: endColumn },
-							},
-							messageId: "spaceInEmphasis",
-							fix(fixer) {
-								const betweenText = text.slice(
-									startMarker.end,
-									endMarker.start,
-								);
+						const endMarker = group[i + 1];
+						const endSpacePosition = endMarker.start - 1;
+						if (
+							whitespacePattern.test(
+								originalText[endSpacePosition],
+							)
+						) {
+							const {
+								lineOffset: startLineOffset,
+								columnOffset: startColumnOffset,
+							} = findOffsets(originalText, endMarker.start - 2);
+							const {
+								lineOffset: endLineOffset,
+								columnOffset: endColumnOffset,
+							} = findOffsets(originalText, endMarker.end);
 
-								const fixedText =
-									startMarker.marker +
-									betweenText.trim() +
-									endMarker.marker;
-
-								const nodeStart = node.position.start.offset;
-								const relativeStart =
-									nodeStart + startMarker.start;
-								const relativeEnd = nodeStart + endMarker.end;
-
-								return fixer.replaceTextRange(
-									[relativeStart, relativeEnd],
-									fixedText,
-								);
-							},
-						});
+							context.report({
+								loc: {
+									start: {
+										line: nodeStartLine + startLineOffset,
+										column:
+											nodeStartColumn + startColumnOffset,
+									},
+									end: {
+										line: nodeStartLine + endLineOffset,
+										column:
+											nodeStartColumn + endColumnOffset,
+									},
+								},
+								messageId: "spaceInEmphasis",
+								fix(fixer) {
+									const nodeStart =
+										node.position.start.offset;
+									const relativePosition =
+										nodeStart + endSpacePosition;
+									return fixer.removeRange([
+										relativePosition,
+										relativePosition + 1,
+									]);
+								},
+							});
+						}
 					}
 				}
 			},
