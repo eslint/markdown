@@ -35,7 +35,7 @@ body:
       attributes:
           label: What did you do?
           description: |
-              Please include a *minimal* reproduction case.
+              Please include a *minimal* reproduction case. Use this [StackBlitz template](https://stackblitz.com/edit/stackblitz-starters-jqcrssas?file=eslint.config.js) as a starting point.
           value: |
               <details>
               <summary>Configuration</summary>

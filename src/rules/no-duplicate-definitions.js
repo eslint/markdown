@@ -8,8 +8,10 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ allowDefinitions: string[], allowFootnoteDefinitions: string[]; }]; }>}
- * NoDuplicateDefinitionsRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"duplicateDefinition" | "duplicateFootnoteDefinition"} NoDuplicateDefinitionsMessageIds
+ * @typedef {[{ allowDefinitions?: string[], allowFootnoteDefinitions?: string[] }]} NoDuplicateDefinitionsOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoDuplicateDefinitionsOptions, MessageIds: NoDuplicateDefinitionsMessageIds }>} NoDuplicateDefinitionsRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
@@ -70,7 +72,10 @@ export default {
 			context.options[0]?.allowFootnoteDefinitions,
 		);
 
+		/** @type {Set<string>} */
 		const definitions = new Set();
+
+		/** @type {Set<string>} */
 		const footnoteDefinitions = new Set();
 
 		return {
