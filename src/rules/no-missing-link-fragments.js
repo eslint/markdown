@@ -79,11 +79,9 @@ export default {
 				properties: {
 					ignoreCase: {
 						type: "boolean",
-						default: false,
 					},
 					allowPattern: {
 						type: "string",
-						default: "",
 					},
 				},
 				additionalProperties: false,
@@ -97,7 +95,7 @@ export default {
 
 		defaultOptions: [
 			{
-				ignoreCase: false,
+				ignoreCase: true,
 				allowPattern: "",
 			},
 		],
