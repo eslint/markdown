@@ -46,7 +46,7 @@ Another H1 heading
 
 The following options are available on this rule:
 
-* `frontmatterTitle: string` - A regex pattern to match title fields in front matter. The default pattern matches both YAML (`title:`), TOML (`title =`), and JSON (`"title":`) formats. Set to an empty string to disable front matter title checking.
+* `frontmatterTitle: string` - A regex pattern to match title fields in front matter. The default pattern matches YAML (`title:`), TOML (`title =`), and JSON (`"title":`) formats. Set to an empty string to disable front matter title checking.
 
 Examples of **incorrect** code for this rule:
 
