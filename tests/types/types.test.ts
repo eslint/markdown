@@ -1,11 +1,11 @@
-import markdown, {
-	MarkdownSourceCode,
+import markdown, { MarkdownSourceCode } from "@eslint/markdown";
+import type { SourceLocation, SourceRange } from "@eslint/core";
+import type {
 	MarkdownRuleDefinition,
 	MarkdownRuleVisitor,
-	type RuleModule,
-} from "@eslint/markdown";
-import type { SourceLocation, SourceRange } from "@eslint/core";
-import type { Toml, Json } from "@eslint/markdown/types";
+	Toml,
+	Json,
+} from "@eslint/markdown/types";
 import { ESLint, Linter } from "eslint";
 import type {
 	// Nodes (abstract)
@@ -77,7 +77,7 @@ typeof processorPlugins satisfies {};
 	null as AssertAllNamesIn<RecommendedRuleName, RuleName>;
 }
 
-(): RuleModule => ({
+(): MarkdownRuleDefinition => ({
 	create({ sourceCode }): MarkdownRuleVisitor {
 		sourceCode satisfies MarkdownSourceCode;
 		sourceCode.ast satisfies Root;
@@ -172,16 +172,11 @@ typeof processorPlugins satisfies {};
 	},
 });
 
-// All options optional - MarkdownRuleDefinition, MarkdownRuleDefinition<{}> and RuleModule
+// All options optional - MarkdownRuleDefinition and MarkdownRuleDefinition<{}>
 // should be the same type.
-(
-	rule1: MarkdownRuleDefinition,
-	rule2: MarkdownRuleDefinition<{}>,
-	rule3: RuleModule,
-) => {
-	rule1 satisfies typeof rule2 satisfies typeof rule3;
-	rule2 satisfies typeof rule1 satisfies typeof rule3;
-	rule3 satisfies typeof rule1 satisfies typeof rule2;
+(rule1: MarkdownRuleDefinition, rule2: MarkdownRuleDefinition<{}>) => {
+	rule1 satisfies typeof rule2;
+	rule2 satisfies typeof rule1;
 };
 
 // Type restrictions should be enforced
