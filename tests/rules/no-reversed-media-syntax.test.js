@@ -39,6 +39,15 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 		\`\`\`
 		`,
 		"`myobj.getFiles(test)[0]`",
+		dedent`
+		# Heading,
+		\`myobj.getFiles(test)[0]\`,
+		`,
+		dedent`
+		foo
+		# Heading,
+		\`myobj.getFiles(test)[0]\`,
+		`,
 		"&lpar;reversed&rpar;[link]",
 		"a &rpar; a &lpar; a &rpar;[a]~",
 		"a<pre>&rpar; a &lpar; a &rpar;[a]~</pre>",

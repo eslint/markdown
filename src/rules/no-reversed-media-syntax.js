@@ -107,7 +107,12 @@ export default {
 					const matchIndex = match.index;
 					const matchLength = reversedSyntax.length;
 
-					if (isInCodeSpan(matchIndex, codeSpans)) {
+					if (
+						isInCodeSpan(
+							matchIndex + node.position.start.offset,
+							codeSpans,
+						)
+					) {
 						continue;
 					}
 
