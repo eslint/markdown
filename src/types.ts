@@ -38,7 +38,6 @@ import type {
 	// Extensions (front matter)
 	Yaml,
 } from "mdast";
-import type { Linter } from "eslint";
 import type {
 	LanguageOptions,
 	LanguageContext,
@@ -77,10 +76,6 @@ export interface BlockBase {
 export interface Block extends Node, BlockBase {
 	meta: string | null;
 }
-
-export type Message = Linter.LintMessage;
-
-export type RuleType = "problem" | "suggestion" | "layout";
 
 /**
  * Markdown TOML.
