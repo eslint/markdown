@@ -16,6 +16,7 @@ import { findOffsets } from "../util.js";
 /**
  * @import { Node, Paragraph } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {{marker: string, startIndex: number, endIndex: number}} EmphasisMarker
  * @typedef {"spaceInEmphasis"} NoSpaceInEmphasisMessageIds
  * @typedef {[]} NoSpaceInEmphasisOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoSpaceInEmphasisOptions, MessageIds: NoSpaceInEmphasisMessageIds }>} NoSpaceInEmphasisRuleDefinition
@@ -26,23 +27,25 @@ import { findOffsets } from "../util.js";
 //-----------------------------------------------------------------------------
 
 const markerPattern = /(?<!\\)(\*\*\*|\*\*|\*|___|__|_|~~|~)/gu;
-const whitespacePattern = /\s/u;
+const whitespacePattern = /[ \t]/u;
 const emphasisTypes = new Set(["emphasis", "strong", "delete"]);
 
 /**
  * Finds all emphasis markers in the text
  * @param {string} text The text to search
- * @returns {Array<{marker: string, start: number, end: number}>} Array of emphasis markers
+ * @returns {Array<EmphasisMarker>} Array of emphasis markers
  */
 function findEmphasisMarkers(text) {
+	/** @type {Array<EmphasisMarker>} */
 	const markers = [];
+	/** @type {RegExpExecArray | null} */
 	let match;
 
 	while ((match = markerPattern.exec(text)) !== null) {
 		markers.push({
 			marker: match[1],
-			start: match.index,
-			end: match.index + match[1].length,
+			startIndex: match.index,
+			endIndex: match.index + match[1].length,
 		});
 	}
 
@@ -136,7 +139,7 @@ export default {
 				for (const group of Object.values(markerGroups)) {
 					for (let i = 0; i < group.length - 1; i += 2) {
 						const startMarker = group[i];
-						const startSpacePosition = startMarker.end;
+						const startSpacePosition = startMarker.endIndex;
 						if (
 							whitespacePattern.test(
 								originalText[startSpacePosition],
@@ -145,11 +148,17 @@ export default {
 							const {
 								lineOffset: startLineOffset,
 								columnOffset: startColumnOffset,
-							} = findOffsets(originalText, startMarker.start);
+							} = findOffsets(
+								originalText,
+								startMarker.startIndex,
+							);
 							const {
 								lineOffset: endLineOffset,
 								columnOffset: endColumnOffset,
-							} = findOffsets(originalText, startMarker.end + 2);
+							} = findOffsets(
+								originalText,
+								startMarker.endIndex + 2,
+							);
 
 							context.report({
 								loc: {
@@ -179,7 +188,7 @@ export default {
 						}
 
 						const endMarker = group[i + 1];
-						const endSpacePosition = endMarker.start - 1;
+						const endSpacePosition = endMarker.startIndex - 1;
 						if (
 							whitespacePattern.test(
 								originalText[endSpacePosition],
@@ -188,11 +197,14 @@ export default {
 							const {
 								lineOffset: startLineOffset,
 								columnOffset: startColumnOffset,
-							} = findOffsets(originalText, endMarker.start - 2);
+							} = findOffsets(
+								originalText,
+								endMarker.startIndex - 2,
+							);
 							const {
 								lineOffset: endLineOffset,
 								columnOffset: endColumnOffset,
-							} = findOffsets(originalText, endMarker.end);
+							} = findOffsets(originalText, endMarker.endIndex);
 
 							context.report({
 								loc: {

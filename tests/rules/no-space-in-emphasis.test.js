@@ -260,6 +260,7 @@ ruleTester.run("no-space-in-emphasis", rule, {
 		"Escaped underscores __ should _\\_ be ignored.",
 		"Escaped tildes \\~ should \\~ be ignored.",
 		"Escaped tildes \\~~ should ~~ be ignored.",
+		"This is *\u00A0some\u00A0* text",
 	],
 	invalid: [
 		{
@@ -1227,6 +1228,26 @@ ruleTester.run("no-space-in-emphasis", rule, {
 					column: 41,
 					endLine: 1,
 					endColumn: 44,
+				},
+			],
+		},
+		{
+			code: "This is _\temphasized\t_ text",
+			output: "This is _emphasized_ text",
+			errors: [
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 9,
+					endLine: 1,
+					endColumn: 12,
+				},
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 20,
+					endLine: 1,
+					endColumn: 23,
 				},
 			],
 		},

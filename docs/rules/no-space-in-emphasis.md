@@ -6,6 +6,8 @@ Disallow spaces around emphasis markers.
 
 In Markdown, emphasis (bold and italic) is created using asterisks (`*`) or underscores (`_`), and a strikethrough is created using tildes (`~`). The emphasis markers must be directly adjacent to the text they're emphasizing, with no spaces between the markers and the text. When spaces are present, the emphasis is not rendered correctly.
 
+Please note that this rule does not check for spaces inside emphasis markers when the content is itself an emphasis (i.e., nested emphasis). For example, `**_ bold _**` and `_** italic **_` are not flagged, even though there are spaces inside the inner emphasis markers.
+
 ## Rule Details
 
 This rule warns when it finds emphasis markers that have spaces between the markers and the text they're emphasizing.
@@ -19,6 +21,8 @@ Here is some ** bold ** text.
 Here is some * italic * text.
 Here is some __ bold __ text.
 Here is some _ italic _ text.
+Here is some *** bold italic *** text.
+Here is some ~ strikethrough ~ text.
 Here is some ~~ strikethrough ~~ text.
 ```
 
@@ -31,6 +35,10 @@ Here is some **bold** text.
 Here is some *italic* text.
 Here is some __bold__ text.
 Here is some _italic_ text.
+Here is some ***bold italic*** text.
+Here is some **_ bold _** text.
+Here is some _** italic **_ text.
+Here is some ~strikethrough~ text.
 Here is some ~~strikethrough~~ text.
 ```
 
