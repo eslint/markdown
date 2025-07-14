@@ -74,9 +74,7 @@ export interface BlockBase {
 	rangeMap: RangeMap[];
 }
 
-export interface Block extends Node, BlockBase {
-	meta: string | null;
-}
+export type Block = Code & BlockBase;
 
 export type Message = Linter.LintMessage;
 
