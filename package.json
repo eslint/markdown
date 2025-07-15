@@ -61,6 +61,7 @@
   "scripts": {
     "lint": "eslint . && eslint -c eslint.config-content.js .",
     "lint:fix": "eslint --fix . && eslint --fix -c eslint.config-content.js .",
+    "lint:unused": "knip",
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
     "build:rules": "node tools/build-rules.js",
@@ -74,6 +75,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.4.0",
+    "@types/mdast": "^4.0.4",
+    "@types/unist": "^3.0.3",
     "c8": "^10.1.2",
     "dedent": "^1.5.3",
     "eslint": "^9.28.0",
@@ -81,9 +84,11 @@
     "eslint-plugin-eslint-plugin": "^6.3.2",
     "globals": "^15.1.0",
     "got": "^14.4.2",
+    "knip": "^5.61.3",
     "lint-staged": "^15.2.9",
     "mocha": "^11.6.0",
     "prettier": "^3.3.3",
+    "semver": "^7.7.2",
     "typescript": "^5.8.3",
     "yorkie": "^2.0.0"
   },
