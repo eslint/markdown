@@ -43,9 +43,33 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		[Link](#bookmark)
 		`,
 
+		// HTML anchor tags case-insensitive
+		dedent`
+		<a ID="bookmark"></a>
+		[Link](#bookmark)
+		`,
+
+		// HTML anchor tags case-insensitive
+		dedent`
+		<a Id="bookmark"></a>
+		[Link](#bookmark)
+		`,
+
 		// HTML name attribute
 		dedent`
 		<a name="old-style"></a>
+		[Link](#old-style)
+		`,
+
+		// HTML name attribute case-insensitive
+		dedent`
+		<a NAME="old-style"></a>
+		[Link](#old-style)
+		`,
+
+		// HTML name attribute case-insensitive
+		dedent`
+		<a NaMe="old-style"></a>
 		[Link](#old-style)
 		`,
 
