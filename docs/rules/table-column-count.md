@@ -43,7 +43,7 @@ Examples of **correct** code for this rule:
 <!-- Rows with fewer cells are valid because they render correctly and no data is lost -->
 | Header | Header | Header |
 | ------ | ------ | ------ |
-| Cell   | Cell   |
+| Cell   | Cell   |        |
 
 <!-- Table with some empty cells (VALID for this rule) -->
 <!-- Missing cells are treated as empty and don't cause rendering issues -->
@@ -70,9 +70,10 @@ Examples of **incorrect** code when configured as `"table-column-count": ["error
 <!-- eslint markdown/table-column-count: ["error", { checkMissingCells: true }] -->
 
 <!-- Data row with fewer cells than header -->
-| Header | Header | Header |
-| ------ | ------ | ------ |
-| Cell   | Cell   |
+| Col A | Col B | Col C |
+| ----- | ----- | ----- |
+| 1     |       | 3     |
+| 4     | 5     |
 ```
 
 ## When Not To Use It
