@@ -8,18 +8,70 @@
 //-----------------------------------------------------------------------------
 
 import { normalizeIdentifier } from "micromark-util-normalize-identifier";
+import { findOffsets } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Link, Image } from "mdast";
+ * @import { Node, Root } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"referenceLikeUrl"} NoReferenceLikeUrlMessageIds
  * @typedef {[]} NoReferenceLikeUrlOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoReferenceLikeUrlOptions, MessageIds: NoReferenceLikeUrlMessageIds }>} NoReferenceLikeUrlRuleDefinition
  */
+
+//-----------------------------------------------------------------------------
+// Helpers
+//-----------------------------------------------------------------------------
+
+// Pattern to match both inline links: [text](url) and images: ![alt](url), with optional title
+const linkOrImagePattern =
+	/(?<!\\)(!)?\[((?:\\.|[^()\\]|\([\s\S]*\))*?)\]\(((?:<[^>]*>)|(?:[^ \t)]+))(?:[ \t]+("[^"]*"|'[^']*'|\([^)]*\)))?\)(?!\()/gu;
+
+/**
+ * Checks if a given index is within any skip range.
+ * @param {number} index The index to check
+ * @param {Array<{startOffset: number, endOffset: number}>} skipRanges The skip ranges
+ * @returns {boolean} True if index is in a skip range
+ */
+function isInSkipRange(index, skipRanges) {
+	return skipRanges.some(
+		range => index >= range.startOffset && index < range.endOffset,
+	);
+}
+
+/**
+ * Finds all code span and HTML block ranges in the AST.
+ * @param {Root} node The root AST node
+ * @returns {Array<{startOffset: number, endOffset: number}>} Array of skip ranges
+ */
+function findSkipRanges(node) {
+	const skipRanges = [];
+
+	/**
+	 * Recursively traverses the AST to find inlineCode and html nodes.
+	 * @param {Node} currentNode The current node being traversed
+	 * @returns {void}
+	 */
+	function traverse(currentNode) {
+		if (currentNode.type === "inlineCode" || currentNode.type === "html") {
+			skipRanges.push({
+				startOffset: currentNode.position.start.offset,
+				endOffset: currentNode.position.end.offset,
+			});
+			return;
+		}
+
+		if ("children" in currentNode && Array.isArray(currentNode.children)) {
+			currentNode.children.forEach(traverse);
+		}
+	}
+
+	traverse(node);
+	return skipRanges;
+}
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -49,63 +101,89 @@ export default {
 		const { sourceCode } = context;
 		/** @type {Set<string>} */
 		const definitionIdentifiers = new Set();
-		/** @type {Array<Link|Image>} */
-		const resources = [];
 
 		return {
-			"root:exit"() {
-				for (const node of resources) {
-					const url = normalizeIdentifier(node.url).toLowerCase();
+			definition(node) {
+				definitionIdentifiers.add(node.identifier);
+			},
 
+			"root:exit"(node) {
+				const text = sourceCode.getText(node);
+				const skipRanges = findSkipRanges(node);
+
+				let match;
+				while ((match = linkOrImagePattern.exec(text)) !== null) {
+					const [fullMatch, imageBang, label, destination, titleRaw] =
+						match;
+					const title = titleRaw?.slice(1, -1);
+					const matchIndex = match.index;
+					const matchLength = fullMatch.length;
+
+					if (
+						isInSkipRange(
+							matchIndex + node.position.start.offset,
+							skipRanges,
+						)
+					) {
+						continue;
+					}
+
+					const isImage = !!imageBang;
+					const type = isImage ? "image" : "link";
+					const prefix = isImage ? "!" : "";
+					const url = normalizeIdentifier(destination).toLowerCase();
 					if (definitionIdentifiers.has(url)) {
+						const {
+							lineOffset: startLineOffset,
+							columnOffset: startColumnOffset,
+						} = findOffsets(text, matchIndex);
+						const {
+							lineOffset: endLineOffset,
+							columnOffset: endColumnOffset,
+						} = findOffsets(text, matchIndex + matchLength);
+
+						const baseColumn = 1;
+						const nodeStartLine = node.position.start.line;
+						const nodeStartColumn = node.position.start.column;
+						const startLine = nodeStartLine + startLineOffset;
+						const endLine = nodeStartLine + endLineOffset;
+						const startColumn =
+							(startLine === nodeStartLine
+								? nodeStartColumn
+								: baseColumn) + startColumnOffset;
+						const endColumn =
+							(endLine === nodeStartLine
+								? nodeStartColumn
+								: baseColumn) + endColumnOffset;
+
 						context.report({
-							node,
+							loc: {
+								start: { line: startLine, column: startColumn },
+								end: { line: endLine, column: endColumn },
+							},
 							messageId: "referenceLikeUrl",
 							data: {
-								type: node.type,
-								prefix: node.type === "image" ? "!" : "",
+								type,
+								prefix,
 							},
 							fix(fixer) {
-								if (node.title !== null) {
+								// The AST treats both missing and empty titles as null, so it's safe to auto-fix in both cases.
+								if (title) {
 									return null;
 								}
 
-								const text = sourceCode.getText(node);
-
-								const bracketParenIndex = text.indexOf("](");
-								const closeParenIndex = text.lastIndexOf(")");
-
 								const startOffset =
-									node.position.start.offset +
-									bracketParenIndex +
-									1;
-								const endOffset =
-									node.position.start.offset +
-									closeParenIndex +
-									1;
+									node.position.start.offset + matchIndex;
+								const endOffset = startOffset + matchLength;
 
 								return fixer.replaceTextRange(
 									[startOffset, endOffset],
-									`[${node.url}]`,
+									`${prefix}[${label}][${destination}]`,
 								);
 							},
 						});
 					}
 				}
-			},
-
-			definition(node) {
-				definitionIdentifiers.add(node.identifier);
-			},
-
-			link(node) {
-				if (sourceCode.getText(node).startsWith("[")) {
-					resources.push(node);
-				}
-			},
-
-			image(node) {
-				resources.push(node);
 			},
 		};
 	},

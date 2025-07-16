@@ -79,6 +79,14 @@ ruleTester.run("no-reference-like-url", rule, {
 
 			[foo bar]: https://example.com/foo-bar
 		`,
+		dedent`
+		    [link](<uri>)
+   		    [uri]: https://example.com/uri
+		`,
+		dedent`
+			![image](<uri>)
+			[uri]: https://example.com/uri
+		`,
 		{
 			code: dedent`
 				<http://foo>
@@ -187,6 +195,28 @@ ruleTester.run("no-reference-like-url", rule, {
 		},
 		{
 			code: dedent`
+				[Mercury](<mercury>)
+
+				[<mercury>]: https://example.com/mercury
+			`,
+			output: dedent`
+				[Mercury][<mercury>]
+
+				[<mercury>]: https://example.com/mercury
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 21,
+				},
+			],
+		},
+		{
+			code: dedent`
 				![Venus](venus)
 
 				[venus]: https://example.com/venus.jpg
@@ -248,6 +278,28 @@ ruleTester.run("no-reference-like-url", rule, {
 					column: 1,
 					endLine: 1,
 					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: dedent`
+				![Venus](<venus>)
+
+				[<venus>]: https://example.com/venus.jpg
+			`,
+			output: dedent`
+				![Venus][<venus>]
+
+				[<venus>]: https://example.com/venus.jpg
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 18,
 				},
 			],
 		},
@@ -427,6 +479,94 @@ ruleTester.run("no-reference-like-url", rule, {
 		},
 		{
 			code: dedent`
+				[Mercury](mercury '')
+
+				[mercury]: https://example.com/mercury
+			`,
+			output: dedent`
+				[Mercury][mercury]
+
+				[mercury]: https://example.com/mercury
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: dedent`
+				![Venus](venus '')
+
+				[venus]: https://example.com/venus.jpg
+			`,
+			output: dedent`
+				![Venus][venus]
+
+				[venus]: https://example.com/venus.jpg
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 19,
+				},
+			],
+		},
+		{
+			code: dedent`
+				[Mercury](mercury ())
+
+				[mercury]: https://example.com/mercury
+			`,
+			output: dedent`
+				[Mercury][mercury]
+
+				[mercury]: https://example.com/mercury
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: dedent`
+				![Venus](venus ())
+
+				[venus]: https://example.com/venus.jpg
+			`,
+			output: dedent`
+				![Venus][venus]
+
+				[venus]: https://example.com/venus.jpg
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 19,
+				},
+			],
+		},
+		{
+			code: dedent`
 				[Mercury](mercury "Go to Mercury")
 
 				[mercury]: https://example.com/mercury
@@ -445,6 +585,74 @@ ruleTester.run("no-reference-like-url", rule, {
 		{
 			code: dedent`
 				![Venus](venus "Venus Image")
+
+				[venus]: https://example.com/venus.jpg
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 30,
+				},
+			],
+		},
+		{
+			code: dedent`
+				[Mercury](mercury 'Go to Mercury')
+
+				[mercury]: https://example.com/mercury
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 35,
+				},
+			],
+		},
+		{
+			code: dedent`
+				![Venus](venus 'Venus Image')
+
+				[venus]: https://example.com/venus.jpg
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 30,
+				},
+			],
+		},
+		{
+			code: dedent`
+				[Mercury](mercury (Go to Mercury))
+
+				[mercury]: https://example.com/mercury
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 35,
+				},
+			],
+		},
+		{
+			code: dedent`
+				![Venus](venus (Venus Image))
 
 				[venus]: https://example.com/venus.jpg
 			`,
