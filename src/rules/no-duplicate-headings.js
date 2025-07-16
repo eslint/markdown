@@ -28,7 +28,7 @@ import { toString } from "mdast-util-to-string";
 //-----------------------------------------------------------------------------
 
 /**
- * Creates a new node without `position` and `data` property, recursively for all children.
+ * Removes `position` and `data` properties from a node, recursively for all children.
  * @param {Node} node The node to process.
  * @returns {NodeWithoutPositionAndData} A new node without `position` and `data` properties.
  */
@@ -131,7 +131,7 @@ export default {
 						loc: node.position,
 						messageId: "duplicateHeading",
 						data: {
-							text: toString(headingChildren),
+							text: toString(node),
 						},
 					});
 				} else {
