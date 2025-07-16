@@ -4,15 +4,23 @@
  */
 
 //-----------------------------------------------------------------------------
+// Imports
+//-----------------------------------------------------------------------------
+
+import equal from "fast-deep-equal";
+import { toString } from "mdast-util-to-string";
+
+//-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Heading } from "mdast";
+ * @import { Node } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"duplicateHeading"} NoDuplicateHeadingsMessageIds
  * @typedef {[{ checkSiblingsOnly?: boolean }]} NoDuplicateHeadingsOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoDuplicateHeadingsOptions, MessageIds: NoDuplicateHeadingsMessageIds }>} NoDuplicateHeadingsRuleDefinition
+ * @typedef {Omit<Node, 'position' | 'data'>} NodeWithoutPositionAndData
  */
 
 //-----------------------------------------------------------------------------
@@ -20,24 +28,26 @@
 //-----------------------------------------------------------------------------
 
 /**
- * This pattern does not match backslash-escaped `#` characters
- * @example
- * ```markdown
- * <!-- OK -->
- * ### foo ###
- * ## foo ###
- * # foo #
- *
- * <!-- NOT OK -->
- * ### foo \###
- * ## foo #\##
- * # foo \#
- * ```
- *
- * @see https://spec.commonmark.org/0.31.2/#example-76
+ * Creates a new node without `position` and `data` property, recursively for all children.
+ * @param {Node} node The node to process.
+ * @returns {NodeWithoutPositionAndData} A new node without `position` and `data` properties.
  */
-const trailingAtxHeadingHashPattern = /[ \t]+#+[ \t]*$/u;
-const leadingAtxHeadingHashPattern = /^#{1,6}[ \t]+/u;
+function removePositionAndDataFromNode(node) {
+	// eslint-disable-next-line no-unused-vars -- Needed to remove `position` and `data` properties.
+	const { position, data, ...nodeWithoutPositionAndData } = node;
+
+	if (
+		"children" in nodeWithoutPositionAndData &&
+		Array.isArray(nodeWithoutPositionAndData.children)
+	) {
+		nodeWithoutPositionAndData.children =
+			nodeWithoutPositionAndData.children.map(
+				removePositionAndDataFromNode,
+			);
+	}
+
+	return nodeWithoutPositionAndData;
+}
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -74,9 +84,8 @@ export default {
 
 	create(context) {
 		const [{ checkSiblingsOnly }] = context.options;
-		const { sourceCode } = context;
 
-		/** @type {Map<number, Set<string>>} */
+		/** @type {Map<number, Set<NodeWithoutPositionAndData[]>>} */
 		const headingsByLevel = checkSiblingsOnly
 			? new Map([
 					[1, new Set()],
@@ -90,45 +99,11 @@ export default {
 		let lastLevel = 1;
 		let currentLevelHeadings = headingsByLevel.get(lastLevel);
 
-		/**
-		 * Gets the text of a heading node
-		 * @param {Heading} node The heading node
-		 * @returns {string} The heading text
-		 */
-		function getHeadingText(node) {
-			/*
-			 * There are two types of headings in markdown:
-			 * - ATX headings, which consist of 1-6 # characters followed by content
-			 *   and optionally ending with any number of # characters
-			 * - Setext headings, which are underlined with = or -
-			 *   Setext headings are identified by being on two lines instead of one,
-			 *   with the second line containing only = or - characters. In order to
-			 *   get the correct heading text, we need to determine which type of
-			 *   heading we're dealing with.
-			 */
-			const isSetext =
-				node.position.start.line !== node.position.end.line;
-
-			if (isSetext) {
-				// get only the text from the first line
-				return sourceCode.lines[node.position.start.line - 1].trim();
-			}
-
-			// For ATX headings, get the text between the # characters
-			const text = sourceCode.getText(node);
-
-			/*
-			 * Please avoid using `String.prototype.trim()` here,
-			 * as it would remove intentional non-breaking space (NBSP) characters.
-			 */
-			return text
-				.replace(leadingAtxHeadingHashPattern, "") // Remove leading # characters
-				.replace(trailingAtxHeadingHashPattern, ""); // Remove trailing # characters
-		}
-
 		return {
 			heading(node) {
-				const headingText = getHeadingText(node);
+				const headingChildren = node.children.map(
+					removePositionAndDataFromNode,
+				);
 
 				if (checkSiblingsOnly) {
 					const currentLevel = node.depth;
@@ -147,16 +122,20 @@ export default {
 					currentLevelHeadings = headingsByLevel.get(currentLevel);
 				}
 
-				if (currentLevelHeadings.has(headingText)) {
+				if (
+					[...currentLevelHeadings].some(item =>
+						equal(item, headingChildren),
+					)
+				) {
 					context.report({
 						loc: node.position,
 						messageId: "duplicateHeading",
 						data: {
-							text: headingText,
+							text: toString(headingChildren),
 						},
 					});
 				} else {
-					currentLevelHeadings.add(headingText);
+					currentLevelHeadings.add(headingChildren);
 				}
 			},
 		};
