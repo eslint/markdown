@@ -70,7 +70,7 @@
     "build:readme": "node tools/update-readme.js",
     "prepare": "npm run build",
     "test": "c8 mocha \"tests/**/*.test.js\" --timeout 30000",
-    "test:jsr": "npx jsr@latest publish --dry-run",
+    "test:jsr": "npx -y jsr@latest publish --dry-run",
     "test:types": "tsc -p tests/types/tsconfig.json"
   },
   "devDependencies": {
