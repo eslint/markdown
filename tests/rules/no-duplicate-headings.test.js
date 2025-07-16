@@ -119,6 +119,9 @@ ruleTester.run("no-duplicate-headings", rule, {
 					column: 1,
 					endLine: 4,
 					endColumn: 12,
+					data: {
+						text: "Heading 1",
+					},
 				},
 			],
 		},
@@ -135,6 +138,9 @@ ruleTester.run("no-duplicate-headings", rule, {
 					column: 1,
 					endLine: 3,
 					endColumn: 15,
+					data: {
+						text: "Heading 1",
+					},
 				},
 			],
 		},
@@ -151,6 +157,9 @@ ruleTester.run("no-duplicate-headings", rule, {
 					column: 1,
 					endLine: 3,
 					endColumn: 23,
+					data: {
+						text: "Heading 1",
+					},
 				},
 			],
 		},
@@ -167,6 +176,9 @@ ruleTester.run("no-duplicate-headings", rule, {
 					column: 1,
 					endLine: 4,
 					endColumn: 13,
+					data: {
+						text: "Heading 1",
+					},
 				},
 			],
 		},
@@ -184,6 +196,9 @@ Heading 1
 					column: 1,
 					endLine: 5,
 					endColumn: 10,
+					data: {
+						text: "Heading 1",
+					},
 				},
 			],
 		},
@@ -201,6 +216,9 @@ Heading 1
 					column: 1,
 					endLine: 5,
 					endColumn: 10,
+					data: {
+						text: "Heading 1",
+					},
 				},
 			],
 		},
@@ -218,6 +236,9 @@ Heading 1
 					column: 1,
 					endLine: 3,
 					endColumn: 12,
+					data: {
+						text: "Heading 1",
+					},
 				},
 			],
 		},
@@ -240,6 +261,9 @@ Heading 1
 					column: 1,
 					endLine: 4,
 					endColumn: 16,
+					data: {
+						text: "Subsection A",
+					},
 				},
 			],
 		},
@@ -262,6 +286,9 @@ Heading 1
 					column: 1,
 					endLine: 4,
 					endColumn: 20,
+					data: {
+						text: "Subsection A",
+					},
 				},
 			],
 		},
@@ -285,6 +312,9 @@ Heading 1
 					column: 1,
 					endLine: 9,
 					endColumn: 16,
+					data: {
+						text: "Subsection A",
+					},
 				},
 			],
 		},
@@ -312,6 +342,9 @@ Heading 1
 					column: 1,
 					endLine: 7,
 					endColumn: 13,
+					data: {
+						text: "Subsection A",
+					},
 				},
 			],
 		},
@@ -341,6 +374,9 @@ Heading 1
 					column: 1,
 					endLine: 15,
 					endColumn: 13,
+					data: {
+						text: "Subsection A",
+					},
 				},
 			],
 		},
@@ -366,6 +402,9 @@ Heading 1
 					column: 1,
 					endLine: 9,
 					endColumn: 16,
+					data: {
+						text: "Subsection A",
+					},
 				},
 				{
 					messageId: "duplicateHeading",
@@ -373,6 +412,9 @@ Heading 1
 					column: 1,
 					endLine: 11,
 					endColumn: 13,
+					data: {
+						text: "Subsection A",
+					},
 				},
 			],
 		},
