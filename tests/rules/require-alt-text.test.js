@@ -45,6 +45,22 @@ ruleTester.run("require-alt-text", rule, {
 		'<img src="image.png" ARIA-HIDDEN="TRUE" />',
 		'<p><img src="image.png" alt="Descriptive text" /></p>',
 		'<!-- <img src="image.png" /> -->',
+		'Some text <!-- <img src="image.png" /> --> more text.',
+		dedent`
+			<!--
+			<img src="image.png" />
+			<p>Some text</p>
+			-->
+		`,
+		dedent`
+			<!--<img src="image.png" />-->
+			<!--    <img src="image.png" />    -->
+		`,
+		dedent`
+			\`\`\`html
+			<img src="image.png" />
+			\`\`\`
+		`,
 	],
 	invalid: [
 		{
@@ -237,6 +253,58 @@ ruleTester.run("require-alt-text", rule, {
 					column: 1,
 					endLine: 2,
 					endColumn: 19,
+				},
+			],
+		},
+		{
+			code: dedent`
+				<!-- <img src="image.png" /> -->
+				<img src="image.png" />
+			`,
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 24,
+				},
+			],
+		},
+		{
+			code: dedent`
+				<!- Not a valid comment ->
+				<img src="image.png" />
+			`,
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 24,
+				},
+			],
+		},
+		{
+			code: dedent`
+				<img src="image.png" />
+				<!-- comment --> <img src="image.png" />
+			`,
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 24,
+				},
+				{
+					messageId: "altTextRequired",
+					line: 2,
+					column: 18,
+					endLine: 2,
+					endColumn: 41,
 				},
 			],
 		},
