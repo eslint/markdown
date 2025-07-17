@@ -39,9 +39,10 @@ import type {
 	Yaml,
 } from "mdast";
 import type {
-	LanguageOptions,
+	CustomRuleDefinitionType,
+	CustomRuleTypeDefinitions,
 	LanguageContext,
-	RuleDefinition,
+	LanguageOptions,
 	RuleVisitor,
 } from "@eslint/core";
 import type { MarkdownSourceCode } from "./index.js";
@@ -170,25 +171,16 @@ export interface MarkdownRuleVisitor
 			}
 		> {}
 
-export type MarkdownRuleDefinitionTypeOptions = {
-	RuleOptions: unknown[];
-	MessageIds: string;
-	ExtRuleDocs: Record<string, unknown>;
-};
+export type MarkdownRuleDefinitionTypeOptions = CustomRuleTypeDefinitions;
 
 export type MarkdownRuleDefinition<
 	Options extends Partial<MarkdownRuleDefinitionTypeOptions> = {},
-> = RuleDefinition<
-	// Language specific type options (non-configurable)
+> = CustomRuleDefinitionType<
 	{
 		LangOptions: MarkdownLanguageOptions;
 		Code: MarkdownSourceCode;
 		Visitor: MarkdownRuleVisitor;
 		Node: Node;
-	} & Required<
-		// Rule specific type options (custom)
-		Options &
-			// Rule specific type options (defaults)
-			Omit<MarkdownRuleDefinitionTypeOptions, keyof Options>
-	>
+	},
+	Options
 >;
