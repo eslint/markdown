@@ -50,6 +50,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 		"text [foo](bar)[foo](bar) text",
 		"text [foo](bar)[foo](bar)[foo](bar) text",
 		"text (text `func()[index]`) text",
+		'hi <span class="foo(bar)[baz]">hi</span>',
 		// Heading
 		"# [ESLint](https://eslint.org/)",
 		"# ![A beautiful sunset](sunset.png)",
