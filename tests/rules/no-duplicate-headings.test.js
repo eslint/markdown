@@ -25,6 +25,17 @@ const ruleTester = new RuleTester({
 
 ruleTester.run("no-duplicate-headings", rule, {
 	valid: [
+		// Using emphasis in headings should not be considered a duplicate by default.
+		dedent`
+			# Heading 1
+			
+			# Heading *1*
+		`,
+		dedent`
+			# ***Heading 1***
+			
+			# Heading 1
+		`,
 		dedent`
 			# Heading 1
 
@@ -178,6 +189,21 @@ ruleTester.run("no-duplicate-headings", rule, {
 					endColumn: 12,
 					data: {
 						text: "Heading 1",
+					},
+				},
+			],
+		},
+		{
+			code: "Heading \nHi\n===\n\nHeading\nHi\n===", // The first setext heading uses a single space, so the second setext heading is considered a duplicate.
+			errors: [
+				{
+					messageId: "duplicateHeading",
+					line: 5,
+					column: 1,
+					endLine: 7,
+					endColumn: 4,
+					data: {
+						text: "Heading\nHi",
 					},
 				},
 			],
