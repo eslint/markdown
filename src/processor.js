@@ -95,7 +95,7 @@ const leadingWhitespaceRegex = /^[>\s]*/u;
 /**
  * Gets the offset for the first column of the node's first line in the
  * original source text.
- * @param {Node} node A Markdown code block AST node.
+ * @param {Code} node A Markdown code block AST node.
  * @returns {number} The offset for the first column of the node's first line.
  */
 function getBeginningOfLineOffset(node) {
@@ -106,7 +106,7 @@ function getBeginningOfLineOffset(node) {
  * Gets the leading text, typically whitespace with possible blockquote chars,
  * used to indent a code block.
  * @param {string} text The text of the file.
- * @param {Node} node A Markdown code block AST node.
+ * @param {Code} node A Markdown code block AST node.
  * @returns {string} The text from the start of the first line to the opening
  *     fence of the code block.
  */
@@ -140,7 +140,7 @@ function getIndentText(text, node) {
  * differences within the line, so the mapping need only provide the offset
  * delta at the beginning of each line.
  * @param {string} text The text of the file.
- * @param {Node} node A Markdown code block AST node.
+ * @param {Code} node A Markdown code block AST node.
  * @param {string[]} comments List of configuration comment strings that will be
  *     inserted at the beginning of the code block.
  * @returns {RangeMap[]} A list of offset-based adjustments, where lookups are
@@ -263,12 +263,14 @@ const languageToFileExtension = {
 /**
  * Extracts lintable code blocks from Markdown text.
  * @param {string} sourceText The text of the file.
- * @param {string} filename The filename of the file
+ * @param {string} filename The filename of the file.
  * @returns {Array<{ filename: string, text: string }>} Source code blocks to lint.
  */
 function preprocess(sourceText, filename) {
 	const text = sourceText.startsWith(BOM) ? sourceText.slice(1) : sourceText;
 	const ast = fromMarkdown(text);
+
+	/** @type {Block[]} */
 	const blocks = [];
 
 	blocksCache.set(filename, blocks);
@@ -295,6 +297,7 @@ function preprocess(sourceText, filename) {
 		 */
 		code(node) {
 			if (node.lang) {
+				/** @type {string[]} */
 				const comments = [];
 
 				for (const comment of htmlComments) {
