@@ -37,7 +37,7 @@ const reversedPattern =
  */
 function isInCodeSpan(matchIndex, codeSpans) {
 	return codeSpans.some(
-		span => matchIndex >= span.startOffset && matchIndex < span.endOffset,
+		span => span.startOffset <= matchIndex && matchIndex < span.endOffset,
 	);
 }
 
@@ -47,6 +47,7 @@ function isInCodeSpan(matchIndex, codeSpans) {
  * @returns {Array<{startOffset: number, endOffset: number}>} Array of code span positions
  */
 function findCodeSpans(node) {
+	/** @type {Array<{startOffset: number, endOffset: number}>} */
 	const codeSpans = [];
 
 	/**
@@ -107,7 +108,12 @@ export default {
 					const matchIndex = match.index;
 					const matchLength = reversedSyntax.length;
 
-					if (isInCodeSpan(matchIndex, codeSpans)) {
+					if (
+						isInCodeSpan(
+							matchIndex + node.position.start.offset,
+							codeSpans,
+						)
+					) {
 						continue;
 					}
 
