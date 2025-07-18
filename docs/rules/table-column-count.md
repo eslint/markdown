@@ -58,6 +58,24 @@ Examples of **correct** code for this rule:
 | Single Cell   |
 ```
 
+## Options
+
+The following options are available on this rule:
+
+* `checkMissingCells: boolean` - When set to `true`, the rule will also flag rows that have fewer cells than the header row. (default: `false`)
+
+Examples of **incorrect** code when configured as `"table-column-count": ["error", { checkMissingCells: true }]`:
+
+```markdown
+<!-- eslint markdown/table-column-count: ["error", { checkMissingCells: true }] -->
+
+<!-- Data row with fewer cells than header -->
+| Col A | Col B | Col C |
+| ----- | ----- | ----- |
+| 1     |       | 3     |
+| 4     | 5     |
+```
+
 ## When Not To Use It
 
 If you intentionally create Markdown tables where data rows are expected to contain more cells than the header, and you have a specific (perhaps non-standard) processing or rendering pipeline that handles this scenario correctly, you might choose to disable this rule. However, adhering to this rule is recommended for typical GFM rendering and data consistency.
