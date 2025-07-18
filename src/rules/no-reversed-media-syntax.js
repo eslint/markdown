@@ -42,22 +42,22 @@ function isInCodeSpan(matchIndex, codeSpans) {
 }
 
 /**
- * Finds all code spans in the node by traversing its children
+ * Extracts the start and end offsets from inline code and HTML nodes
  * @param {Heading | Paragraph | TableCell} node The node to search
- * @returns {Array<{startOffset: number, endOffset: number}>} Array of code span positions
+ * @returns {Array<{startOffset: number, endOffset: number}>} Array of objects containing start and end offsets
  */
-function findCodeSpans(node) {
+function extractOffsets(node) {
 	/** @type {Array<{startOffset: number, endOffset: number}>} */
-	const codeSpans = [];
+	const offsets = [];
 
 	/**
-	 * Recursively traverses the AST to find inline code nodes
+	 * Recursively traverses the AST to find inline code and HTML nodes
 	 * @param {Node} currentNode The current node being traversed
 	 * @returns {void}
 	 */
 	function traverse(currentNode) {
-		if (currentNode.type === "inlineCode") {
-			codeSpans.push({
+		if (currentNode.type === "inlineCode" || currentNode.type === "html") {
+			offsets.push({
 				startOffset: currentNode.position.start.offset,
 				endOffset: currentNode.position.end.offset,
 			});
@@ -70,7 +70,7 @@ function findCodeSpans(node) {
 	}
 
 	traverse(node);
-	return codeSpans;
+	return offsets;
 }
 
 //-----------------------------------------------------------------------------
@@ -104,7 +104,7 @@ export default {
 		 */
 		function findReversedMediaSyntax(node) {
 			const text = context.sourceCode.getText(node);
-			const codeSpans = findCodeSpans(node);
+			const codeSpans = extractOffsets(node);
 			let match;
 
 			while ((match = reversedPattern.exec(text)) !== null) {
