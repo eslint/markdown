@@ -1,5 +1,20 @@
 # Changelog
 
+## [7.1.0](https://github.com/eslint/markdown/compare/v7.0.0...v7.1.0) (2025-07-18)
+
+
+### Features
+
+* add checkMissingCells option to table-column-count ([#434](https://github.com/eslint/markdown/issues/434)) ([bf3f39b](https://github.com/eslint/markdown/commit/bf3f39be366f6dec6ad6a8d26751c06d04988e3f))
+
+
+### Bug Fixes
+
+* case-insensitive attribute checks in `no-missing-link-fragment` ([#465](https://github.com/eslint/markdown/issues/465)) ([094a59d](https://github.com/eslint/markdown/commit/094a59d13b294f62c45693f41e921e08d15f0ccb))
+* case-insensitive checks for HTML attributes in `no-missing-link-fragment` ([094a59d](https://github.com/eslint/markdown/commit/094a59d13b294f62c45693f41e921e08d15f0ccb))
+* potential super-linear regular expressions ([#463](https://github.com/eslint/markdown/issues/463)) ([bc82567](https://github.com/eslint/markdown/commit/bc82567458f8fc41b36cbcb2c67aac746078e044))
+* remove unused types from `types.ts` ([#462](https://github.com/eslint/markdown/issues/462)) ([466f80e](https://github.com/eslint/markdown/commit/466f80e1b66e4894853ed26e7475fdab944a33ce))
+
 ## [7.0.0](https://github.com/eslint/markdown/compare/v6.6.0...v7.0.0) (2025-07-11)
 
 
