@@ -47,6 +47,7 @@ function isInCodeSpan(matchIndex, codeSpans) {
  * @returns {Array<{startOffset: number, endOffset: number}>} Array of code span positions
  */
 function findCodeSpans(node) {
+	/** @type {Array<{startOffset: number, endOffset: number}>} */
 	const codeSpans = [];
 
 	/**
