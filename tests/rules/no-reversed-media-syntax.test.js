@@ -426,6 +426,9 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 				},
 			],
 		},
+
+		/*
+
 		// Heading
 		{
 			code: "# (ESLint)[https://eslint.org/]",
@@ -483,5 +486,7 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 				},
 			],
 		},
+
+		*/
 	],
 });

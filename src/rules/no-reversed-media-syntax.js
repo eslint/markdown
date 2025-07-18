@@ -14,7 +14,7 @@ import { findOffsets } from "../util.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Node, Paragraph } from "mdast";
+ * @import { Node, Heading, Paragraph, TableCell } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"reversedSyntax"} NoReversedMediaSyntaxMessageIds
  * @typedef {[]} NoReversedMediaSyntaxOptions
@@ -42,8 +42,8 @@ function isInCodeSpan(matchIndex, codeSpans) {
 }
 
 /**
- * Finds all code spans in the paragraph node by traversing its children
- * @param {Paragraph} node The paragraph node to search
+ * Finds all code spans in the node by traversing its children
+ * @param {Heading | Paragraph | TableCell} node The node to search
  * @returns {Array<{startOffset: number, endOffset: number}>} Array of code span positions
  */
 function findCodeSpans(node) {
@@ -97,73 +97,81 @@ export default {
 	},
 
 	create(context) {
+		/**
+		 * Finds reversed link/image syntax in a node.
+		 * @param {Heading | Paragraph | TableCell} node The node to check.
+		 * @returns {void} Reports any reversed syntax found.
+		 */
+		function findReversedMediaSyntax(node) {
+			const text = context.sourceCode.getText(node);
+			const codeSpans = findCodeSpans(node);
+			let match;
+
+			while ((match = reversedPattern.exec(text)) !== null) {
+				const [reversedSyntax, label, url] = match;
+				const matchIndex = match.index;
+				const matchLength = reversedSyntax.length;
+
+				if (
+					isInCodeSpan(
+						matchIndex + node.position.start.offset,
+						codeSpans,
+					)
+				) {
+					continue;
+				}
+
+				const {
+					lineOffset: startLineOffset,
+					columnOffset: startColumnOffset,
+				} = findOffsets(text, matchIndex);
+				const {
+					lineOffset: endLineOffset,
+					columnOffset: endColumnOffset,
+				} = findOffsets(text, matchIndex + matchLength);
+
+				const baseColumn = 1;
+				const nodeStartLine = node.position.start.line;
+				const nodeStartColumn = node.position.start.column;
+				const startLine = nodeStartLine + startLineOffset;
+				const endLine = nodeStartLine + endLineOffset;
+				const startColumn =
+					(startLine === nodeStartLine
+						? nodeStartColumn
+						: baseColumn) + startColumnOffset;
+				const endColumn =
+					(endLine === nodeStartLine ? nodeStartColumn : baseColumn) +
+					endColumnOffset;
+
+				context.report({
+					loc: {
+						start: {
+							line: startLine,
+							column: startColumn,
+						},
+						end: {
+							line: endLine,
+							column: endColumn,
+						},
+					},
+					messageId: "reversedSyntax",
+					fix(fixer) {
+						const startOffset =
+							node.position.start.offset + matchIndex;
+						const endOffset = startOffset + matchLength;
+
+						return fixer.replaceTextRange(
+							[startOffset, endOffset],
+							`[${label}](${url})`,
+						);
+					},
+				});
+			}
+		}
+
 		return {
 			paragraph(node) {
-				const text = context.sourceCode.getText(node);
-				const codeSpans = findCodeSpans(node);
-				let match;
-
-				while ((match = reversedPattern.exec(text)) !== null) {
-					const [reversedSyntax, label, url] = match;
-					const matchIndex = match.index;
-					const matchLength = reversedSyntax.length;
-
-					if (
-						isInCodeSpan(
-							matchIndex + node.position.start.offset,
-							codeSpans,
-						)
-					) {
-						continue;
-					}
-
-					const {
-						lineOffset: startLineOffset,
-						columnOffset: startColumnOffset,
-					} = findOffsets(text, matchIndex);
-					const {
-						lineOffset: endLineOffset,
-						columnOffset: endColumnOffset,
-					} = findOffsets(text, matchIndex + matchLength);
-
-					const baseColumn = 1;
-					const nodeStartLine = node.position.start.line;
-					const nodeStartColumn = node.position.start.column;
-					const startLine = nodeStartLine + startLineOffset;
-					const endLine = nodeStartLine + endLineOffset;
-					const startColumn =
-						(startLine === nodeStartLine
-							? nodeStartColumn
-							: baseColumn) + startColumnOffset;
-					const endColumn =
-						(endLine === nodeStartLine
-							? nodeStartColumn
-							: baseColumn) + endColumnOffset;
-
-					context.report({
-						loc: {
-							start: {
-								line: startLine,
-								column: startColumn,
-							},
-							end: {
-								line: endLine,
-								column: endColumn,
-							},
-						},
-						messageId: "reversedSyntax",
-						fix(fixer) {
-							const startOffset =
-								node.position.start.offset + matchIndex;
-							const endOffset = startOffset + matchLength;
-
-							return fixer.replaceTextRange(
-								[startOffset, endOffset],
-								`[${label}](${url})`,
-							);
-						},
-					});
-				}
+				findReversedMediaSyntax(node);
 			},
 		};
 	},
