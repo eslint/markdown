@@ -125,6 +125,8 @@ export default {
 
 	create(context) {
 		const { sourceCode } = context;
+
+		/** @type {Array<{label:string,position:Position}>} */
 		let allMissingReferences = [];
 
 		return {
