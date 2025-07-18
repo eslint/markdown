@@ -170,7 +170,15 @@ export default {
 		}
 
 		return {
+			heading(node) {
+				findReversedMediaSyntax(node);
+			},
+
 			paragraph(node) {
+				findReversedMediaSyntax(node);
+			},
+
+			tableCell(node) {
 				findReversedMediaSyntax(node);
 			},
 		};
