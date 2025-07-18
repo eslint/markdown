@@ -50,6 +50,18 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 		"text [foo](bar)[foo](bar) text",
 		"text [foo](bar)[foo](bar)[foo](bar) text",
 		"text (text `func()[index]`) text",
+		// Heading
+		"# [ESLint](https://eslint.org/)",
+		"# ![A beautiful sunset](sunset.png)",
+		// TableCell
+		{
+			code: dedent`
+			| ESLint                        | Sunset                            |
+			| ----------------------------- | --------------------------------- |
+			| [ESLint](https://eslint.org/) | ![A beautiful sunset](sunset.png) |
+			`,
+			language: "markdown/gfm",
+		},
 	],
 	invalid: [
 		{
@@ -411,6 +423,63 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 					column: 20,
 					endLine: 1,
 					endColumn: 24,
+				},
+			],
+		},
+		// Heading
+		{
+			code: "# (ESLint)[https://eslint.org/]",
+			output: "# [ESLint](https://eslint.org/)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 3,
+					endLine: 1,
+					endColumn: 32,
+				},
+			],
+		},
+		{
+			code: "# !(A beautiful sunset)[sunset.png]",
+			output: "# ![A beautiful sunset](sunset.png)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 3,
+					endLine: 1,
+					endColumn: 36,
+				},
+			],
+		},
+		// TableCell
+		{
+			code: dedent`
+			| ESLint                        | Sunset                            |
+			| ----------------------------- | --------------------------------- |
+			| (ESLint)[https://eslint.org/] | !(A beautiful sunset)[sunset.png] |
+			`,
+			output: dedent`
+			| ESLint                        | Sunset                            |
+			| ----------------------------- | --------------------------------- |
+			| [ESLint](https://eslint.org/) | ![A beautiful sunset](sunset.png) |
+			`,
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 3,
+					column: 3,
+					endLine: 3,
+					endColumn: 32,
+				},
+				{
+					messageId: "reversedSyntax",
+					line: 3,
+					column: 36,
+					endLine: 3,
+					endColumn: 69,
 				},
 			],
 		},
