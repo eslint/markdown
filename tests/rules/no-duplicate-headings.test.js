@@ -85,6 +85,7 @@ ruleTester.run("no-duplicate-headings", rule, {
 		"# foo \\###\n# foo ###",
 		"# foo #\\##\n# foo ###",
 		"# foo \\#",
+		"Heading  \nHi\n===\n\nHeading\nHi\n===", // The first setext heading uses a Break node (double spaces), so the second setext heading isn't considered a duplicate.
 		{
 			code: dedent`
 				# Change log
@@ -158,6 +159,22 @@ ruleTester.run("no-duplicate-headings", rule, {
 					line: 4,
 					column: 1,
 					endLine: 4,
+					endColumn: 12,
+					data: {
+						text: "Heading 1",
+					},
+				},
+			],
+		},
+		{
+			// Should handle CRLF line endings
+			code: "# Heading 1\r\n# Heading 1",
+			errors: [
+				{
+					messageId: "duplicateHeading",
+					line: 2,
+					column: 1,
+					endLine: 2,
 					endColumn: 12,
 					data: {
 						text: "Heading 1",
@@ -258,6 +275,45 @@ Heading 1
 					endColumn: 10,
 					data: {
 						text: "Heading 1",
+					},
+				},
+			],
+		},
+		{
+			code: dedent`
+				Heading 1
+				Hi
+				===
+
+				Heading 1
+				Hi
+				===
+			`,
+			errors: [
+				{
+					messageId: "duplicateHeading",
+					line: 5,
+					column: 1,
+					endLine: 7,
+					endColumn: 4,
+					data: {
+						text: "Heading 1\nHi",
+					},
+				},
+			],
+		},
+		{
+			// Should handle CRLF line endings
+			code: "Heading 1\r\nHi\r\n===\r\n\r\nHeading 1\r\nHi\r\n===",
+			errors: [
+				{
+					messageId: "duplicateHeading",
+					line: 5,
+					column: 1,
+					endLine: 7,
+					endColumn: 4,
+					data: {
+						text: "Heading 1\r\nHi",
 					},
 				},
 			],
