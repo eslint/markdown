@@ -14,7 +14,7 @@ import GithubSlugger from "github-slugger";
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Node } from "mdast";
+ * @import { Node, Link } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"invalidFragment"} NoMissingLinkFragmentsMessageIds
  * @typedef {[{ ignoreCase?: boolean; allowPattern?: string }]} NoMissingLinkFragmentsOptions
@@ -110,6 +110,8 @@ export default {
 
 		const fragmentIds = new Set(["top"]);
 		const slugger = new GithubSlugger();
+
+		/** @type {Array<{node: Link, fragment: string}>} */
 		const linkNodes = [];
 
 		return {

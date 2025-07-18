@@ -205,7 +205,9 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 	 *      that ESLint needs to further process the directives.
 	 */
 	getDisableDirectives() {
+		/** @type {Array<FileProblem>} */
 		const problems = [];
+		/** @type {Array<Directive>} */
 		const directives = [];
 
 		this.getInlineConfigNodes().forEach(comment => {
@@ -263,7 +265,9 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 	 *      that ESLint needs to further process the rule configurations.
 	 */
 	applyInlineConfig() {
+		/** @type {Array<FileProblem>} */
 		const problems = [];
+		/** @type {Array<{config:{rules:RulesConfig},loc:SourceLocation}>} */
 		const configs = [];
 
 		this.getInlineConfigNodes().forEach(comment => {
