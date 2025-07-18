@@ -453,6 +453,27 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 				},
 			],
 		},
+		{
+			code: dedent`
+			Setext Heading
+			  (ESLint)[https://eslint.org/]
+			===
+			`,
+			output: dedent`
+			Setext Heading
+			  [ESLint](https://eslint.org/)
+			===
+			`,
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 2,
+					column: 3,
+					endLine: 2,
+					endColumn: 32,
+				},
+			],
+		},
 		// TableCell
 		{
 			code: dedent`
