@@ -194,7 +194,8 @@ ruleTester.run("no-duplicate-headings", rule, {
 			],
 		},
 		{
-			code: "Heading \nHi\n===\n\nHeading\nHi\n===", // The first setext heading uses a single space, so the second setext heading is considered a duplicate.
+			// The first setext heading uses a single space, so the second setext heading is considered a duplicate.
+			code: "Heading \nHi\n===\n\nHeading\nHi\n===",
 			errors: [
 				{
 					messageId: "duplicateHeading",
