@@ -330,6 +330,30 @@ Heading 1
 			],
 		},
 		{
+			// `*` and `_` emphasis should be considered duplicates.
+			code: dedent`
+				Heading *1*
+				Hi
+				===
+
+				Heading _1_
+				Hi
+				===
+			`,
+			errors: [
+				{
+					messageId: "duplicateHeading",
+					line: 5,
+					column: 1,
+					endLine: 7,
+					endColumn: 4,
+					data: {
+						text: "Heading 1\nHi",
+					},
+				},
+			],
+		},
+		{
 			// Should handle CRLF line endings
 			code: "Heading 1\r\nHi\r\n===\r\n\r\nHeading 1\r\nHi\r\n===",
 			errors: [
