@@ -18,8 +18,8 @@
 // Helpers
 //-----------------------------------------------------------------------------
 
-const atxHeadingPattern = /^(#{1,6})(?:[^# \t]|$)/u;
-const atxHeadingClosedPattern = /([ \t]*)(?<!\\)(#+)([ \t]*)$/u;
+const leadingAtxHeadingHashPattern = /^(#{1,6})(?:[^# \t]|$)/u;
+const trailingAtxHeadingHashPattern = /(?<![ \t])([ \t]*)(?<!\\)(#+)([ \t]*)$/u;
 const newLinePattern = /\r?\n/u;
 
 /**
@@ -28,7 +28,7 @@ const newLinePattern = /\r?\n/u;
  * @returns {{ closingHashIdx: number, beforeHashIdx: number, endIdx: number } | null} The positions of the closing hashes in the heading, or null if no missing space is found.
  */
 function findMissingSpaceBeforeClosingHash(text) {
-	const match = atxHeadingClosedPattern.exec(text);
+	const match = trailingAtxHeadingHashPattern.exec(text);
 
 	if (match) {
 		const [, closingSequenceSpaces, closingSequence, trailingSpaces] =
@@ -140,7 +140,7 @@ export default {
 				let offset = node.position.start.offset;
 
 				lines.forEach((line, idx) => {
-					const match = atxHeadingPattern.exec(line);
+					const match = leadingAtxHeadingHashPattern.exec(line);
 					const lineNum = node.position.start.line + idx;
 
 					if (match) {
@@ -166,43 +166,6 @@ export default {
 								);
 							},
 						});
-
-						if (checkClosedHeadings) {
-							const missingSpace =
-								findMissingSpaceBeforeClosingHash(line);
-							if (missingSpace) {
-								context.report({
-									loc: {
-										start: {
-											line: lineNum,
-											column:
-												startColumn +
-												missingSpace.beforeHashIdx,
-										},
-										end: {
-											line: lineNum,
-											column:
-												startColumn +
-												missingSpace.endIdx,
-										},
-									},
-									messageId: "missingSpace",
-									data: { position: "before" },
-									fix(fixer) {
-										return fixer.insertTextBeforeRange(
-											[
-												offset +
-													missingSpace.closingHashIdx,
-												offset +
-													missingSpace.closingHashIdx +
-													1,
-											],
-											" ",
-										);
-									},
-								});
-							}
-						}
 					}
 
 					offset += line.length + 1;

@@ -179,7 +179,7 @@ const validHeadings = [
 		options: [{ checkClosedHeadings: true }],
 	},
 	{
-		code: "    #Heading 1#",
+		code: "    #Heading 1#", // Recognized as an indented code block.
 		options: [{ checkClosedHeadings: true }],
 	},
 	{
@@ -190,6 +190,30 @@ const validHeadings = [
 	},
 	{
 		code: "# Heading with extra spaces  #",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "#Setext Heading\n===",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "Setext Heading#\n===",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "#Setext Heading#\n===",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "#Setext Heading\n---",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "Setext Heading#\n---",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "#Setext Heading#\n---",
 		options: [{ checkClosedHeadings: true }],
 	},
 ];
@@ -738,7 +762,7 @@ const invalidTests = [
 	},
 	{
 		code: "#Heading 1#",
-		output: "# Heading 1 #",
+		output: "# Heading 1#",
 		options: [{ checkClosedHeadings: true }],
 		errors: [
 			{
@@ -748,14 +772,6 @@ const invalidTests = [
 				column: 1,
 				endLine: 1,
 				endColumn: 3,
-			},
-			{
-				messageId: "missingSpace",
-				data: { position: "before" },
-				line: 1,
-				column: 10,
-				endLine: 1,
-				endColumn: 12,
 			},
 		],
 	},
@@ -977,6 +993,21 @@ const invalidTests = [
 				column: 8,
 				endLine: 1,
 				endColumn: 10,
+			},
+		],
+	},
+	{
+		code: "# Heading [#123](issue-link)#",
+		output: "# Heading [#123](issue-link) #",
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				data: { position: "before" },
+				line: 1,
+				column: 28,
+				endLine: 1,
+				endColumn: 30,
 			},
 		],
 	},

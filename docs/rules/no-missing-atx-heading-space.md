@@ -4,7 +4,7 @@ This rule warns when spaces are missing after the hash characters in an ATX styl
 
 ## Rule Details
 
-In Markdown, headings can be created using ATX style (using hash (`#`) characters at the beginning of the line) or Setext style (using underlining with equals (`=`) or hyphens (`-`)).
+In Markdown, headings can be created using ATX style (using hash (`#`) characters at the beginning of the line, with optional closing hash characters) or Setext style (using underlining with equals (`=`) or hyphens (`-`)).
 
 For ATX style headings, a space should be used after the hash characters to improve readability and ensure proper rendering across various Markdown parsers.
 
