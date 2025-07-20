@@ -15,7 +15,7 @@ import { htmlCommentPattern } from "../util.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Node } from "mdast";
+ * @import { Node, Link } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"invalidFragment"} NoMissingLinkFragmentsMessageIds
  * @typedef {[{ ignoreCase?: boolean; allowPattern?: string }]} NoMissingLinkFragmentsOptions
@@ -28,7 +28,7 @@ import { htmlCommentPattern } from "../util.js";
 
 const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
 const customHeadingIdPattern = /\{#([^}\s]+)\}\s*$/u;
-const htmlIdNamePattern = /<(?:[^>]+)\s+(?:id|name)=["']([^"']+)["']/giu;
+const htmlIdNamePattern = /(?<!<)<(?:[^>]+)\s(?:id|name)=["']([^"']+)["']/giu;
 
 /**
  * Checks if the fragment is a valid GitHub line reference
@@ -110,6 +110,8 @@ export default {
 
 		const fragmentIds = new Set(["top"]);
 		const slugger = new GithubSlugger();
+
+		/** @type {Array<{node: Link, fragment: string}>} */
 		const linkNodes = [];
 
 		return {

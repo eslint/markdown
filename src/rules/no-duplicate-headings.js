@@ -36,7 +36,7 @@
  *
  * @see https://spec.commonmark.org/0.31.2/#example-76
  */
-const trailingAtxHeadingHashPattern = /[ \t]+#+[ \t]*$/u;
+const trailingAtxHeadingHashPattern = /(?<![ \t])[ \t]+#+[ \t]*$/u;
 const leadingAtxHeadingHashPattern = /^#{1,6}[ \t]+/u;
 
 //-----------------------------------------------------------------------------

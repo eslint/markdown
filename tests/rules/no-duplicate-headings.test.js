@@ -9,7 +9,7 @@
 
 import rule from "../../src/rules/no-duplicate-headings.js";
 import markdown from "../../src/index.js";
-import { RuleTester } from "eslint";
+import { Linter, RuleTester } from "eslint";
 import dedent from "dedent";
 
 //------------------------------------------------------------------------------
@@ -125,7 +125,7 @@ ruleTester.run("no-duplicate-headings", rule, {
 		{
 			code: dedent`
 				# Heading 1
-			
+
 				# Heading 1 ##
             `,
 			errors: [
@@ -141,7 +141,7 @@ ruleTester.run("no-duplicate-headings", rule, {
 		{
 			code: dedent`
 				# Heading 1
-				
+
 				# Heading 1 ##########
             `,
 			errors: [
@@ -377,4 +377,14 @@ Heading 1
 			],
 		},
 	],
+});
+
+// https://github.com/eslint/markdown/pull/463
+it("`no-duplicate-headings` should not timeout for large inputs", () => {
+	const linter = new Linter();
+	linter.verify(`# example${" ".repeat(500_000)}?#`, {
+		language: "markdown/commonmark",
+		plugins: { markdown },
+		rules: { "markdown/no-duplicate-headings": "error" },
+	});
 });
