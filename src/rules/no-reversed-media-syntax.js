@@ -30,23 +30,24 @@ const reversedPattern =
 	/(?<!\\)\(((?:\\.|[^()\\]|\([\s\S]*\))*)\)\[((?:\\.|[^\]\\\n])*)\](?!\()/gu;
 
 /**
- * Checks if a match is within any of the code spans
+ * Checks if a given index is within any skip range
  * @param {number} matchIndex The index of the match
- * @param {Array<{startOffset: number, endOffset: number}>} codeSpans Array of code span positions
- * @returns {boolean} True if the match is within a code span
+ * @param {Array<{startOffset: number, endOffset: number}>} skipRanges The skip ranges
+ * @returns {boolean} True if index is in a skip range
  */
-function isInCodeSpan(matchIndex, codeSpans) {
-	return codeSpans.some(
-		span => span.startOffset <= matchIndex && matchIndex < span.endOffset,
+function isInSkipRange(matchIndex, skipRanges) {
+	return skipRanges.some(
+		range =>
+			range.startOffset <= matchIndex && matchIndex < range.endOffset,
 	);
 }
 
 /**
- * Extracts the start and end offsets from inline code and HTML nodes
+ * Finds ranges of inline code and HTML nodes within a given node
  * @param {Heading | Paragraph | TableCell} node The node to search
  * @returns {Array<{startOffset: number, endOffset: number}>} Array of objects containing start and end offsets
  */
-function extractOffsets(node) {
+function findSkipRanges(node) {
 	/** @type {Array<{startOffset: number, endOffset: number}>} */
 	const offsets = [];
 
@@ -104,7 +105,7 @@ export default {
 		 */
 		function findReversedMediaSyntax(node) {
 			const text = context.sourceCode.getText(node);
-			const codeSpans = extractOffsets(node);
+			const codeSpans = findSkipRanges(node);
 			let match;
 
 			while ((match = reversedPattern.exec(text)) !== null) {
@@ -113,7 +114,7 @@ export default {
 				const matchLength = reversedSyntax.length;
 
 				if (
-					isInCodeSpan(
+					isInSkipRange(
 						matchIndex + node.position.start.offset,
 						codeSpans,
 					)
