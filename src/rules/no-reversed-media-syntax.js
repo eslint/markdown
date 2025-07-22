@@ -25,7 +25,7 @@ import { findOffsets } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-/** Matches reversed link/image syntax like (text)[url], ignoring escaped characters like \(text\)[url]. */
+/** Matches reversed link/image syntax like `(text)[url]`, ignoring escaped characters like `\(text\)[url]`. */
 const reversedPattern =
 	/(?<!\\)\(((?:\\.|[^()\\]|\([\s\S]*\))*)\)\[((?:\\.|[^\]\\\n])*)\](?!\()/gu;
 
@@ -105,7 +105,7 @@ export default {
 		 */
 		function findReversedMediaSyntax(node) {
 			const text = context.sourceCode.getText(node);
-			const codeSpans = findSkipRanges(node);
+			const skipRanges = findSkipRanges(node);
 			let match;
 
 			while ((match = reversedPattern.exec(text)) !== null) {
@@ -116,7 +116,7 @@ export default {
 				if (
 					isInSkipRange(
 						matchIndex + node.position.start.offset,
-						codeSpans,
+						skipRanges,
 					)
 				) {
 					continue;
