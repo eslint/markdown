@@ -17,8 +17,7 @@ import { frontmatterHasTitle } from "../util.js";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"skippedHeading"} HeadingIncrementMessageIds
  * @typedef {[{ frontmatterTitle?: string }]} HeadingIncrementOptions
- * @typedef {MarkdownRuleDefinition<{ RuleOptions: HeadingIncrementOptions, MessageIds: HeadingIncrementMessageIds }>}
- * HeadingIncrementRuleDefinition
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: HeadingIncrementOptions, MessageIds: HeadingIncrementMessageIds }>} HeadingIncrementRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
