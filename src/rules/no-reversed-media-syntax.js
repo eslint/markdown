@@ -30,10 +30,10 @@ const reversedPattern =
 	/(?<!\\)\(((?:\\.|[^()\\]|\([\s\S]*\))*)\)\[((?:\\.|[^\]\\\n])*)\](?!\()/gu;
 
 /**
- * Checks if a given index is within any skip range
+ * Checks if a match is within any skip range
  * @param {number} matchIndex The index of the match
  * @param {Array<{startOffset: number, endOffset: number}>} skipRanges The skip ranges
- * @returns {boolean} True if index is in a skip range
+ * @returns {boolean} True if the match is within a skip range
  */
 function isInSkipRange(matchIndex, skipRanges) {
 	return skipRanges.some(
@@ -49,7 +49,7 @@ function isInSkipRange(matchIndex, skipRanges) {
  */
 function findSkipRanges(node) {
 	/** @type {Array<{startOffset: number, endOffset: number}>} */
-	const offsets = [];
+	const skipRanges = [];
 
 	/**
 	 * Recursively traverses the AST to find inline code and HTML nodes
@@ -58,7 +58,7 @@ function findSkipRanges(node) {
 	 */
 	function traverse(currentNode) {
 		if (currentNode.type === "inlineCode" || currentNode.type === "html") {
-			offsets.push({
+			skipRanges.push({
 				startOffset: currentNode.position.start.offset,
 				endOffset: currentNode.position.end.offset,
 			});
@@ -71,7 +71,7 @@ function findSkipRanges(node) {
 	}
 
 	traverse(node);
-	return offsets;
+	return skipRanges;
 }
 
 //-----------------------------------------------------------------------------
