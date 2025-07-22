@@ -1,5 +1,22 @@
 # Changelog
 
+## [7.1.0](https://github.com/eslint/markdown/compare/v7.0.0...v7.1.0) (2025-07-22)
+
+
+### Features
+
+* add checkMissingCells option to table-column-count ([#434](https://github.com/eslint/markdown/issues/434)) ([bf3f39b](https://github.com/eslint/markdown/commit/bf3f39be366f6dec6ad6a8d26751c06d04988e3f))
+
+
+### Bug Fixes
+
+* bump `plugin-kit` to latest to resolve security vulnerabilities ([#485](https://github.com/eslint/markdown/issues/485)) ([c5398ca](https://github.com/eslint/markdown/commit/c5398caac221daa147a2993cc945e42e374a6c5d))
+* case-insensitive attribute checks in `no-missing-link-fragment` ([#465](https://github.com/eslint/markdown/issues/465)) ([094a59d](https://github.com/eslint/markdown/commit/094a59d13b294f62c45693f41e921e08d15f0ccb))
+* case-insensitive checks for HTML attributes in `no-missing-link-fragment` ([094a59d](https://github.com/eslint/markdown/commit/094a59d13b294f62c45693f41e921e08d15f0ccb))
+* no-reversed-media-syntax add missing offset for code spans ([#460](https://github.com/eslint/markdown/issues/460)) ([af7736c](https://github.com/eslint/markdown/commit/af7736c51d2ad6d065d12b5b92ff01aff8d58a4a))
+* potential super-linear regular expressions ([#463](https://github.com/eslint/markdown/issues/463)) ([bc82567](https://github.com/eslint/markdown/commit/bc82567458f8fc41b36cbcb2c67aac746078e044))
+* remove unused types from `types.ts` ([#462](https://github.com/eslint/markdown/issues/462)) ([466f80e](https://github.com/eslint/markdown/commit/466f80e1b66e4894853ed26e7475fdab944a33ce))
+
 ## [7.0.0](https://github.com/eslint/markdown/compare/v6.6.0...v7.0.0) (2025-07-11)
 
 
