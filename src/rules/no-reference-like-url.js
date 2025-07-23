@@ -26,9 +26,9 @@ import { findOffsets } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-// Pattern to match both inline links: [text](url) and images: ![alt](url), with optional title
+/** Pattern to match both inline links: `[text](url)` and images: `![alt](url)`, with optional title */
 const linkOrImagePattern =
-	/(?<!\\)(!)?\[((?:\\.|[^()\\]|\([\s\S]*\))*?)\]\(((?:<[^>]*>)|(?:[^ \t)]+))(?:[ \t]+("[^"]*"|'[^']*'|\([^)]*\)))?\)(?!\()/gu;
+	/(?<!\\)(?<imageBang>!)?\[(?<label>(?:\\.|[^()\\]|\([\s\S]*\))*?)\]\((?<destination>(?:<[^>]*>)|(?:[^ \t)]+))(?:[ \t]+(?<title>"[^"]*"|'[^']*'|\([^)]*\)))?\)(?!\()/gu;
 
 /**
  * Checks if a given index is within any skip range.
@@ -48,6 +48,7 @@ function isInSkipRange(index, skipRanges) {
  * @returns {Array<{startOffset: number, endOffset: number}>} Array of skip ranges
  */
 function findSkipRanges(node) {
+	/** @type {Array<{startOffset: number, endOffset: number}>} */
 	const skipRanges = [];
 
 	/**
@@ -113,11 +114,15 @@ export default {
 
 				let match;
 				while ((match = linkOrImagePattern.exec(text)) !== null) {
-					const [fullMatch, imageBang, label, destination, titleRaw] =
-						match;
+					const {
+						imageBang,
+						label,
+						destination,
+						title: titleRaw,
+					} = match.groups;
 					const title = titleRaw?.slice(1, -1);
 					const matchIndex = match.index;
-					const matchLength = fullMatch.length;
+					const matchLength = match[0].length;
 
 					if (
 						isInSkipRange(

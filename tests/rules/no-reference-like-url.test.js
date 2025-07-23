@@ -103,6 +103,56 @@ ruleTester.run("no-reference-like-url", rule, {
 			`,
 			language: "markdown/gfm",
 		},
+		dedent`
+				# Heading with [Mercury](mercury)
+				# Heading with ![Mercury](mercury)
+
+				[venus]: https://example.com/venus/
+			`,
+		dedent`
+				# Heading with [Mercury][mercury]
+				# Heading with ![Mercury][mercury]
+
+				[mercury]: https://example.com/mercury
+			`,
+		dedent`
+				Heading with [Mercury](mercury)
+				===============================
+				Heading with ![Mercury](mercury)
+				================================
+
+				[venus]: https://example.com/venus/
+			`,
+		dedent`
+				Heading with [Mercury][mercury]
+				===============================
+				Heading with ![Mercury][mercury]
+				================================
+
+				[mercury]: https://example.com/mercury
+			`,
+		{
+			code: dedent`
+				| Planet  | Link                |
+				|---------|---------------------|
+				| Mercury | [Mercury](mercury)  |
+				| Mercury | ![Mercury](mercury) |
+
+				[venus]: https://example.com/venus/
+			`,
+			language: "markdown/gfm",
+		},
+		{
+			code: dedent`
+				| Planet  | Link                |
+				|---------|---------------------|
+				| Mercury | [Mercury][mercury]  |
+				| Mercury | ![Mercury][mercury] |
+
+				[mercury]: https://example.com/mercury
+			`,
+			language: "markdown/gfm",
+		},
 	],
 	invalid: [
 		{
@@ -744,6 +794,111 @@ ruleTester.run("no-reference-like-url", rule, {
 					column: 1,
 					endLine: 2,
 					endColumn: 21,
+				},
+			],
+		},
+		{
+			code: dedent`
+				# Heading with [Mercury](mercury)
+				# Heading with ![Mercury](mercury)
+
+				[mercury]: https://example.com/mercury
+			`,
+			output: dedent`
+				# Heading with [Mercury][mercury]
+				# Heading with ![Mercury][mercury]
+
+				[mercury]: https://example.com/mercury
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 16,
+					endLine: 1,
+					endColumn: 34,
+				},
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 2,
+					column: 16,
+					endLine: 2,
+					endColumn: 35,
+				},
+			],
+		},
+		{
+			code: dedent`
+				Heading with [Mercury](mercury)
+				===============================
+				Heading with ![Mercury](mercury)
+				================================
+
+				[mercury]: https://example.com/mercury
+			`,
+			output: dedent`
+				Heading with [Mercury][mercury]
+				===============================
+				Heading with ![Mercury][mercury]
+				================================
+
+				[mercury]: https://example.com/mercury
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 14,
+					endLine: 1,
+					endColumn: 32,
+				},
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 3,
+					column: 14,
+					endLine: 3,
+					endColumn: 33,
+				},
+			],
+		},
+		{
+			code: dedent`
+				| Planet  | Link                |
+				|---------|---------------------|
+				| Mercury | [Mercury](mercury)  |
+				| Mercury | ![Mercury](mercury) |
+
+				[mercury]: https://example.com/mercury
+			`,
+			output: dedent`
+				| Planet  | Link                |
+				|---------|---------------------|
+				| Mercury | [Mercury][mercury]  |
+				| Mercury | ![Mercury][mercury] |
+
+				[mercury]: https://example.com/mercury
+			`,
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 3,
+					column: 13,
+					endLine: 3,
+					endColumn: 31,
+				},
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 4,
+					column: 13,
+					endLine: 4,
+					endColumn: 32,
 				},
 			],
 		},
