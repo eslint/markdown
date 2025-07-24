@@ -9,7 +9,7 @@
 
 import rule from "../../src/rules/no-missing-link-fragments.js";
 import markdown from "../../src/index.js";
-import { RuleTester } from "eslint";
+import { Linter, RuleTester } from "eslint";
 import dedent from "dedent";
 
 //------------------------------------------------------------------------------
@@ -43,9 +43,33 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		[Link](#bookmark)
 		`,
 
+		// HTML anchor tags case-insensitive
+		dedent`
+		<a ID="bookmark"></a>
+		[Link](#bookmark)
+		`,
+
+		// HTML anchor tags case-insensitive
+		dedent`
+		<a Id="bookmark"></a>
+		[Link](#bookmark)
+		`,
+
 		// HTML name attribute
 		dedent`
 		<a name="old-style"></a>
+		[Link](#old-style)
+		`,
+
+		// HTML name attribute case-insensitive
+		dedent`
+		<a NAME="old-style"></a>
+		[Link](#old-style)
+		`,
+
+		// HTML name attribute case-insensitive
+		dedent`
+		<a NaMe="old-style"></a>
 		[Link](#old-style)
 		`,
 
@@ -633,4 +657,21 @@ ruleTester.run("no-missing-link-fragments", rule, {
 			],
 		},
 	],
+});
+
+// https://github.com/eslint/markdown/pull/463
+it("`no-missing-link-fragments` should not timeout for large inputs", () => {
+	const inputs = [
+		`<div>${"<".repeat(500_000)}x</div>`,
+		`<div><${" ".repeat(500_000)}x</div>`,
+	];
+
+	const linter = new Linter();
+	for (const input of inputs) {
+		linter.verify(input, {
+			language: "markdown/commonmark",
+			plugins: { markdown },
+			rules: { "markdown/no-missing-link-fragments": "error" },
+		});
+	}
 });
