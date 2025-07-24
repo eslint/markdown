@@ -50,6 +50,48 @@ console.log("Hello, world!");
 \`\`\``,
 			options: [{ required: ["js"] }],
 		},
+		{
+			code: `\`\`\`js foo
+console.log("Hello, world!");
+\`\`\``,
+			options: [{ required: ["js"] }],
+		},
+		{
+			code: `\`\`\` js
+console.log("Hello, world!");
+\`\`\``,
+			options: [{ required: ["js"] }],
+		},
+		{
+			code: `\`\`\`JS
+console.log("Hello, world!");
+\`\`\``,
+			options: [{ required: ["JS"] }],
+		},
+		{
+			code: `~~~js
+console.log("Hello, world!");
+~~~`,
+			options: [{ required: ["js"] }],
+		},
+		{
+			code: `~~~js foo
+console.log("Hello, world!");
+~~~`,
+			options: [{ required: ["js"] }],
+		},
+		{
+			code: `~~~ js
+console.log("Hello, world!");
+~~~`,
+			options: [{ required: ["js"] }],
+		},
+		{
+			code: `~~~JS
+console.log("Hello, world!");
+~~~`,
+			options: [{ required: ["JS"] }],
+		},
 	],
 	invalid: [
 		{
@@ -61,7 +103,7 @@ console.log("Hello, world!");
 					messageId: "missingLanguage",
 					line: 1,
 					column: 1,
-					endLine: 3,
+					endLine: 1,
 					endColumn: 4,
 				},
 			],
@@ -75,7 +117,7 @@ console.log("Hello, world!");
 					messageId: "missingLanguage",
 					line: 1,
 					column: 1,
-					endLine: 3,
+					endLine: 1,
 					endColumn: 4,
 				},
 			],
@@ -91,8 +133,56 @@ console.log("Hello, world!");
 					data: { lang: "javascript" },
 					line: 1,
 					column: 1,
-					endLine: 3,
-					endColumn: 4,
+					endLine: 1,
+					endColumn: 14,
+				},
+			],
+		},
+		{
+			code: `\`\`\`js
+console.log("Hello, world!");
+\`\`\``,
+			options: [{ required: ["JS"] }],
+			errors: [
+				{
+					messageId: "disallowedLanguage",
+					data: { lang: "js" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
+			code: `~~~javascript
+console.log("Hello, world!");
+~~~`,
+			options: [{ required: ["js"] }],
+			errors: [
+				{
+					messageId: "disallowedLanguage",
+					data: { lang: "javascript" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 14,
+				},
+			],
+		},
+		{
+			code: `~~~js
+console.log("Hello, world!");
+~~~`,
+			options: [{ required: ["JS"] }],
+			errors: [
+				{
+					messageId: "disallowedLanguage",
+					data: { lang: "js" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
 				},
 			],
 		},
