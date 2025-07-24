@@ -86,8 +86,13 @@ export default {
 			},
 
 			html(node) {
-				const ast = parse(node.value);
+				// Some elements (e.g., <code>) generate two nodes: one for the opening tag and one for the closing tag.
+				// Parsing closing tags (e.g., </code>) with ultrahtml results in a crash, so these nodes are skipped.
+				if (node.value.startsWith("</")) {
+					return;
+				}
 
+				const ast = parse(node.value);
 				walkSync(ast, htmlNode => {
 					if (
 						htmlNode.type === ELEMENT_NODE &&
