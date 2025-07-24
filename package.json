@@ -95,7 +95,8 @@
     "mdast-util-frontmatter": "^2.0.1",
     "mdast-util-gfm": "^3.0.0",
     "micromark-extension-frontmatter": "^2.0.0",
-    "micromark-extension-gfm": "^3.0.0"
+    "micromark-extension-gfm": "^3.0.0",
+    "ultrahtml": "^1.6.0"
   },
   "engines": {
     "node": "^18.18.0 || ^20.9.0 || >=21.1.0"

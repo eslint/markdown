@@ -37,19 +37,3 @@ export function findOffsets(text, offset) {
 		columnOffset,
 	};
 }
-
-/**
- * Regular expression to match HTML comments, including multiline comments.
- */
-export const htmlCommentPattern = /<!--[\s\S]*?-->/gu;
-
-/**
- * Remove all HTML comments from a string.
- * @param {string} value The string to remove HTML comments from.
- * @returns {string} The string with HTML comments removed.
- */
-export function stripHtmlComments(value) {
-	return value.replace(htmlCommentPattern, match =>
-		match.replace(/[^\n]/gu, " "),
-	);
-}

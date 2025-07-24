@@ -8,7 +8,6 @@
 //-----------------------------------------------------------------------------
 
 import GithubSlugger from "github-slugger";
-import { htmlCommentPattern } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -28,6 +27,7 @@ import { htmlCommentPattern } from "../util.js";
 
 const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
 const customHeadingIdPattern = /\{#([^}\s]+)\}\s*$/u;
+const htmlCommentPattern = /<!--[\s\S]*?-->/gu;
 const htmlIdNamePattern = /(?<!<)<(?:[^>]+)\s(?:id|name)=["']([^"']+)["']/giu;
 
 /**

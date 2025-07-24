@@ -7,7 +7,8 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { findOffsets, stripHtmlComments } from "../util.js";
+import { ELEMENT_NODE, parse, walkSync } from "ultrahtml";
+import { findOffsets } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -19,21 +20,6 @@ import { findOffsets, stripHtmlComments } from "../util.js";
  * @typedef {[]} RequireAltTextOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: RequireAltTextOptions, MessageIds: RequireAltTextMessageIds }>} RequireAltTextRuleDefinition
  */
-
-//-----------------------------------------------------------------------------
-// Helpers
-//-----------------------------------------------------------------------------
-
-const imgTagPattern = /<img[^>]*>/giu;
-
-/**
- * Creates a regex to match HTML attributes
- * @param {string} name The attribute name to match
- * @returns {RegExp} Regular expression for matching the attribute
- */
-function getHtmlAttributeRe(name) {
-	return new RegExp(`\\s${name}(?:\\s*=\\s*['"]([^'"]*)['"])?`, "iu");
-}
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -76,68 +62,86 @@ export default {
 			},
 
 			html(node) {
-				const text = stripHtmlComments(node.value);
+				const ast = parse(node.value);
 
-				let match;
-				while ((match = imgTagPattern.exec(text)) !== null) {
-					const imgTag = match[0];
-					const ariaHiddenMatch = imgTag.match(
-						getHtmlAttributeRe("aria-hidden"),
-					);
+				walkSync(ast, htmlNode => {
 					if (
-						ariaHiddenMatch &&
-						ariaHiddenMatch[1].toLowerCase() === "true"
+						htmlNode.type === ELEMENT_NODE &&
+						htmlNode.name.toLowerCase() === "img"
 					) {
-						continue;
-					}
+						let altValue;
+						let ariaHiddenValue;
 
-					const altMatch = imgTag.match(getHtmlAttributeRe("alt"));
-					if (
-						!altMatch ||
-						(altMatch[1] &&
-							altMatch[1].trim().length === 0 &&
-							altMatch[1].length > 0)
-					) {
-						const {
-							lineOffset: startLineOffset,
-							columnOffset: startColumnOffset,
-						} = findOffsets(node.value, match.index);
+						for (const [
+							attributeName,
+							attributeValue,
+						] of Object.entries(htmlNode.attributes)) {
+							if (attributeName.toLowerCase() === "alt") {
+								altValue = attributeValue;
+							} else if (
+								attributeName.toLowerCase() === "aria-hidden"
+							) {
+								ariaHiddenValue = attributeValue;
+								if (ariaHiddenValue.toLowerCase() === "true") {
+									return;
+								}
+							}
 
-						const {
-							lineOffset: endLineOffset,
-							columnOffset: endColumnOffset,
-						} = findOffsets(
-							node.value,
-							match.index + imgTag.length,
-						);
+							if (
+								altValue !== undefined &&
+								ariaHiddenValue !== undefined
+							) {
+								break;
+							}
+						}
 
-						const nodeStartLine = node.position.start.line;
-						const nodeStartColumn = node.position.start.column;
-						const startLine = nodeStartLine + startLineOffset;
-						const endLine = nodeStartLine + endLineOffset;
-						const startColumn =
-							(startLine === nodeStartLine
-								? nodeStartColumn
-								: 1) + startColumnOffset;
-						const endColumn =
-							(endLine === nodeStartLine ? nodeStartColumn : 1) +
-							endColumnOffset;
+						if (
+							altValue === undefined ||
+							(altValue.trim().length === 0 &&
+								altValue.length > 0)
+						) {
+							const startOffset = htmlNode.loc[0].start;
+							const endOffset = htmlNode.loc[1].end;
 
-						context.report({
-							loc: {
-								start: {
-									line: startLine,
-									column: startColumn,
+							const {
+								lineOffset: startLineOffset,
+								columnOffset: startColumnOffset,
+							} = findOffsets(node.value, startOffset);
+
+							const {
+								lineOffset: endLineOffset,
+								columnOffset: endColumnOffset,
+							} = findOffsets(node.value, endOffset);
+
+							const nodeStartLine = node.position.start.line;
+							const nodeStartColumn = node.position.start.column;
+							const startLine = nodeStartLine + startLineOffset;
+							const endLine = nodeStartLine + endLineOffset;
+							const startColumn =
+								(startLine === nodeStartLine
+									? nodeStartColumn
+									: 1) + startColumnOffset;
+							const endColumn =
+								(endLine === nodeStartLine
+									? nodeStartColumn
+									: 1) + endColumnOffset;
+
+							context.report({
+								loc: {
+									start: {
+										line: startLine,
+										column: startColumn,
+									},
+									end: {
+										line: endLine,
+										column: endColumn,
+									},
 								},
-								end: {
-									line: endLine,
-									column: endColumn,
-								},
-							},
-							messageId: "altTextRequired",
-						});
+								messageId: "altTextRequired",
+							});
+						}
 					}
-				}
+				});
 			},
 		};
 	},

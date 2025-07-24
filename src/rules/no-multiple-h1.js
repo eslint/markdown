@@ -7,7 +7,8 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { findOffsets, stripHtmlComments } from "../util.js";
+import { ELEMENT_NODE, parse, walkSync } from "ultrahtml";
+import { findOffsets } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -23,8 +24,6 @@ import { findOffsets, stripHtmlComments } from "../util.js";
 //-----------------------------------------------------------------------------
 // Helpers
 //-----------------------------------------------------------------------------
-
-const h1TagPattern = /<h1[^>]*>[\s\S]*?<\/h1>/giu;
 
 /**
  * Checks if a frontmatter block contains a title matching the given pattern
@@ -110,52 +109,57 @@ export default {
 			},
 
 			html(node) {
-				const text = stripHtmlComments(node.value);
+				const ast = parse(node.value);
 
-				let match;
-				while ((match = h1TagPattern.exec(text)) !== null) {
-					h1Count++;
-					if (h1Count > 1) {
-						const {
-							lineOffset: startLineOffset,
-							columnOffset: startColumnOffset,
-						} = findOffsets(node.value, match.index);
+				walkSync(ast, htmlNode => {
+					if (
+						htmlNode.type === ELEMENT_NODE &&
+						htmlNode.name.toLowerCase() === "h1"
+					) {
+						h1Count++;
+						if (h1Count > 1) {
+							const startOffset = htmlNode.loc[0].start;
+							const endOffset = htmlNode.loc[1].end;
 
-						const {
-							lineOffset: endLineOffset,
-							columnOffset: endColumnOffset,
-						} = findOffsets(
-							node.value,
-							match.index + match[0].length,
-						);
+							const {
+								lineOffset: startLineOffset,
+								columnOffset: startColumnOffset,
+							} = findOffsets(node.value, startOffset);
 
-						const nodeStartLine = node.position.start.line;
-						const nodeStartColumn = node.position.start.column;
-						const startLine = nodeStartLine + startLineOffset;
-						const endLine = nodeStartLine + endLineOffset;
-						const startColumn =
-							(startLine === nodeStartLine
-								? nodeStartColumn
-								: 1) + startColumnOffset;
-						const endColumn =
-							(endLine === nodeStartLine ? nodeStartColumn : 1) +
-							endColumnOffset;
+							const {
+								lineOffset: endLineOffset,
+								columnOffset: endColumnOffset,
+							} = findOffsets(node.value, endOffset);
 
-						context.report({
-							loc: {
-								start: {
-									line: startLine,
-									column: startColumn,
+							const nodeStartLine = node.position.start.line;
+							const nodeStartColumn = node.position.start.column;
+							const startLine = nodeStartLine + startLineOffset;
+							const endLine = nodeStartLine + endLineOffset;
+							const startColumn =
+								(startLine === nodeStartLine
+									? nodeStartColumn
+									: 1) + startColumnOffset;
+							const endColumn =
+								(endLine === nodeStartLine
+									? nodeStartColumn
+									: 1) + endColumnOffset;
+
+							context.report({
+								loc: {
+									start: {
+										line: startLine,
+										column: startColumn,
+									},
+									end: {
+										line: endLine,
+										column: endColumn,
+									},
 								},
-								end: {
-									line: endLine,
-									column: endColumn,
-								},
-							},
-							messageId: "multipleH1",
-						});
+								messageId: "multipleH1",
+							});
+						}
 					}
-				}
+				});
 			},
 
 			heading(node) {
