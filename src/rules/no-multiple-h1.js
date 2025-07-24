@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 
 import { ELEMENT_NODE, parse, walkSync } from "ultrahtml";
-import { findOffsets } from "../util.js";
+import { findOffsets, frontmatterHasTitle } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -20,29 +20,6 @@ import { findOffsets } from "../util.js";
  * @typedef {[{ frontmatterTitle?: string }]} NoMultipleH1Options
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoMultipleH1Options, MessageIds: NoMultipleH1MessageIds }>} NoMultipleH1RuleDefinition
  */
-
-//-----------------------------------------------------------------------------
-// Helpers
-//-----------------------------------------------------------------------------
-
-/**
- * Checks if a frontmatter block contains a title matching the given pattern
- * @param {string} value The frontmatter content
- * @param {RegExp|null} pattern The pattern to match against
- * @returns {boolean} Whether a title was found
- */
-function frontmatterHasTitle(value, pattern) {
-	if (!pattern) {
-		return false;
-	}
-	const lines = value.split("\n");
-	for (const line of lines) {
-		if (pattern.test(line)) {
-			return true;
-		}
-	}
-	return false;
-}
 
 //-----------------------------------------------------------------------------
 // Rule Definition

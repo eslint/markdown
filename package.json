@@ -1,6 +1,6 @@
 {
   "name": "@eslint/markdown",
-  "version": "7.0.0",
+  "version": "7.1.0",
   "description": "The official ESLint language plugin for Markdown",
   "license": "MIT",
   "author": {
@@ -73,10 +73,10 @@
     "test:types": "tsc -p tests/types/tsconfig.json"
   },
   "devDependencies": {
-    "@eslint/js": "^9.4.0",
+    "@eslint/js": "^9.31.0",
     "c8": "^10.1.2",
     "dedent": "^1.5.3",
-    "eslint": "^9.28.0",
+    "eslint": "^9.31.0",
     "eslint-config-eslint": "^11.0.0",
     "eslint-plugin-eslint-plugin": "^6.3.2",
     "globals": "^15.1.0",
@@ -88,12 +88,12 @@
     "yorkie": "^2.0.0"
   },
   "dependencies": {
-    "@eslint/core": "^0.15.0",
-    "@eslint/plugin-kit": "^0.3.1",
+    "@eslint/core": "^0.15.1",
+    "@eslint/plugin-kit": "^0.3.4",
     "github-slugger": "^2.0.0",
     "mdast-util-from-markdown": "^2.0.2",
     "mdast-util-frontmatter": "^2.0.1",
-    "mdast-util-gfm": "^3.0.0",
+    "mdast-util-gfm": "^3.1.0",
     "micromark-extension-frontmatter": "^2.0.0",
     "micromark-extension-gfm": "^3.0.0",
     "ultrahtml": "^1.6.0"
