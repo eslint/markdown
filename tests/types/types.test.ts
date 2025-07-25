@@ -13,8 +13,8 @@ import { Position } from "unist";
 import type {
 	// Nodes (abstract)
 	Node,
-	Data,
 	Parent,
+	CodeData,
 	// Nodes
 	Blockquote,
 	Break,
@@ -47,6 +47,7 @@ import type {
 } from "mdast";
 
 // Test that `Block` extends `Code` and `BlockBase` correctly
+// `meta` property is optional and not required in `Block`
 const validBlock: Block = {
 	// `Code` properties
 	type: "code",
@@ -64,7 +65,7 @@ validBlock.position satisfies Position | undefined;
 validBlock.value satisfies string;
 validBlock.lang satisfies string | null | undefined;
 validBlock.meta satisfies string | null | undefined;
-validBlock.data satisfies Data | undefined;
+validBlock.data satisfies CodeData | undefined;
 
 // Verify `Block` has `BlockBase` properties
 validBlock.baseIndentText satisfies string;
@@ -72,10 +73,9 @@ validBlock.comments satisfies string[];
 validBlock.rangeMap satisfies RangeMap[];
 
 // Verify `RangeMap` structure
-const rangeMapItem: RangeMap = validBlock.rangeMap[0];
-rangeMapItem.indent satisfies number;
-rangeMapItem.js satisfies number;
-rangeMapItem.md satisfies number;
+validBlock.rangeMap[0].indent satisfies number;
+validBlock.rangeMap[0].js satisfies number;
+validBlock.rangeMap[0].md satisfies number;
 
 // Test that `Block` can be used where `Code` is expected
 const codeNode: Code = validBlock;
