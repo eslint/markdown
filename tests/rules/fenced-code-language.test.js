@@ -139,10 +139,58 @@ console.log("Hello, world!");
 			],
 		},
 		{
+			code: `\`\`\`\`javascript
+console.log("Hello, world!");
+\`\`\`\``,
+			options: [{ required: ["js"] }],
+			errors: [
+				{
+					messageId: "disallowedLanguage",
+					data: { lang: "javascript" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
+		{
 			code: `\`\`\`js
 console.log("Hello, world!");
 \`\`\``,
 			options: [{ required: ["JS"] }],
+			errors: [
+				{
+					messageId: "disallowedLanguage",
+					data: { lang: "js" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
+			code: `\`\`\` js
+console.log("Hello, world!");
+\`\`\``,
+			options: [{ required: ["JS"] }],
+			errors: [
+				{
+					messageId: "disallowedLanguage",
+					data: { lang: "js" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 7,
+				},
+			],
+		},
+		{
+			code: `\`\`\`js foo
+console.log("Hello, world!");
+\`\`\``,
+			options: [{ required: ["foo"] }],
 			errors: [
 				{
 					messageId: "disallowedLanguage",
@@ -171,10 +219,58 @@ console.log("Hello, world!");
 			],
 		},
 		{
+			code: `~~~~javascript
+console.log("Hello, world!");
+~~~~`,
+			options: [{ required: ["js"] }],
+			errors: [
+				{
+					messageId: "disallowedLanguage",
+					data: { lang: "javascript" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
+		{
 			code: `~~~js
 console.log("Hello, world!");
 ~~~`,
 			options: [{ required: ["JS"] }],
+			errors: [
+				{
+					messageId: "disallowedLanguage",
+					data: { lang: "js" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
+			code: `~~~ js
+console.log("Hello, world!");
+~~~`,
+			options: [{ required: ["JS"] }],
+			errors: [
+				{
+					messageId: "disallowedLanguage",
+					data: { lang: "js" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 7,
+				},
+			],
+		},
+		{
+			code: `~~~js foo
+console.log("Hello, world!");
+~~~`,
+			options: [{ required: ["foo"] }],
 			errors: [
 				{
 					messageId: "disallowedLanguage",
