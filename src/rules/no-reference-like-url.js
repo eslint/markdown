@@ -15,7 +15,7 @@ import { findOffsets } from "../util.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Node, Root } from "mdast";
+ * @import { Heading, Node, Paragraph, TableCell } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"referenceLikeUrl"} NoReferenceLikeUrlMessageIds
  * @typedef {[]} NoReferenceLikeUrlOptions
@@ -43,8 +43,8 @@ function isInSkipRange(index, skipRanges) {
 }
 
 /**
- * Finds all code span and HTML block ranges in the AST.
- * @param {Root} node The root AST node
+ * Finds ranges of inline code and HTML nodes within a given node
+ * @param {Heading | Paragraph | TableCell} node The node to search
  * @returns {Array<{startOffset: number, endOffset: number}>} Array of skip ranges
  */
 function findSkipRanges(node) {
@@ -52,7 +52,7 @@ function findSkipRanges(node) {
 	const skipRanges = [];
 
 	/**
-	 * Recursively traverses the AST to find inlineCode and html nodes.
+	 * Recursively traverses the AST to find inline code and HTML nodes.
 	 * @param {Node} currentNode The current node being traversed
 	 * @returns {void}
 	 */
@@ -102,91 +102,112 @@ export default {
 		const { sourceCode } = context;
 		/** @type {Set<string>} */
 		const definitionIdentifiers = new Set();
+		/** @type {Array<Heading | Paragraph | TableCell>} */
+		const relevantNodes = [];
 
 		return {
 			definition(node) {
 				definitionIdentifiers.add(node.identifier);
 			},
 
-			"root:exit"(node) {
-				const text = sourceCode.getText(node);
-				const skipRanges = findSkipRanges(node);
+			heading(node) {
+				relevantNodes.push(node);
+			},
 
-				let match;
-				while ((match = linkOrImagePattern.exec(text)) !== null) {
-					const {
-						imageBang,
-						label,
-						destination,
-						title: titleRaw,
-					} = match.groups;
-					const title = titleRaw?.slice(1, -1);
-					const matchIndex = match.index;
-					const matchLength = match[0].length;
+			paragraph(node) {
+				relevantNodes.push(node);
+			},
 
-					if (
-						isInSkipRange(
-							matchIndex + node.position.start.offset,
-							skipRanges,
-						)
-					) {
-						continue;
-					}
+			tableCell(node) {
+				relevantNodes.push(node);
+			},
 
-					const isImage = !!imageBang;
-					const type = isImage ? "image" : "link";
-					const prefix = isImage ? "!" : "";
-					const url = normalizeIdentifier(destination).toLowerCase();
-					if (definitionIdentifiers.has(url)) {
+			"root:exit"() {
+				for (const node of relevantNodes) {
+					const text = sourceCode.getText(node);
+					const skipRanges = findSkipRanges(node);
+
+					let match;
+					while ((match = linkOrImagePattern.exec(text)) !== null) {
 						const {
-							lineOffset: startLineOffset,
-							columnOffset: startColumnOffset,
-						} = findOffsets(text, matchIndex);
-						const {
-							lineOffset: endLineOffset,
-							columnOffset: endColumnOffset,
-						} = findOffsets(text, matchIndex + matchLength);
+							imageBang,
+							label,
+							destination,
+							title: titleRaw,
+						} = match.groups;
+						const title = titleRaw?.slice(1, -1);
+						const matchIndex = match.index;
+						const matchLength = match[0].length;
 
-						const baseColumn = 1;
-						const nodeStartLine = node.position.start.line;
-						const nodeStartColumn = node.position.start.column;
-						const startLine = nodeStartLine + startLineOffset;
-						const endLine = nodeStartLine + endLineOffset;
-						const startColumn =
-							(startLine === nodeStartLine
-								? nodeStartColumn
-								: baseColumn) + startColumnOffset;
-						const endColumn =
-							(endLine === nodeStartLine
-								? nodeStartColumn
-								: baseColumn) + endColumnOffset;
+						if (
+							isInSkipRange(
+								matchIndex + node.position.start.offset,
+								skipRanges,
+							)
+						) {
+							continue;
+						}
 
-						context.report({
-							loc: {
-								start: { line: startLine, column: startColumn },
-								end: { line: endLine, column: endColumn },
-							},
-							messageId: "referenceLikeUrl",
-							data: {
-								type,
-								prefix,
-							},
-							fix(fixer) {
-								// The AST treats both missing and empty titles as null, so it's safe to auto-fix in both cases.
-								if (title) {
-									return null;
-								}
+						const isImage = !!imageBang;
+						const type = isImage ? "image" : "link";
+						const prefix = isImage ? "!" : "";
+						const url =
+							normalizeIdentifier(destination).toLowerCase();
 
-								const startOffset =
-									node.position.start.offset + matchIndex;
-								const endOffset = startOffset + matchLength;
+						if (definitionIdentifiers.has(url)) {
+							const {
+								lineOffset: startLineOffset,
+								columnOffset: startColumnOffset,
+							} = findOffsets(text, matchIndex);
+							const {
+								lineOffset: endLineOffset,
+								columnOffset: endColumnOffset,
+							} = findOffsets(text, matchIndex + matchLength);
 
-								return fixer.replaceTextRange(
-									[startOffset, endOffset],
-									`${prefix}[${label}][${destination}]`,
-								);
-							},
-						});
+							const baseColumn = 1;
+							const nodeStartLine = node.position.start.line;
+							const nodeStartColumn = node.position.start.column;
+							const startLine = nodeStartLine + startLineOffset;
+							const endLine = nodeStartLine + endLineOffset;
+							const startColumn =
+								(startLine === nodeStartLine
+									? nodeStartColumn
+									: baseColumn) + startColumnOffset;
+							const endColumn =
+								(endLine === nodeStartLine
+									? nodeStartColumn
+									: baseColumn) + endColumnOffset;
+
+							context.report({
+								loc: {
+									start: {
+										line: startLine,
+										column: startColumn,
+									},
+									end: { line: endLine, column: endColumn },
+								},
+								messageId: "referenceLikeUrl",
+								data: {
+									type,
+									prefix,
+								},
+								fix(fixer) {
+									// The AST treats both missing and empty titles as null, so it's safe to auto-fix in both cases.
+									if (title) {
+										return null;
+									}
+
+									const startOffset =
+										node.position.start.offset + matchIndex;
+									const endOffset = startOffset + matchLength;
+
+									return fixer.replaceTextRange(
+										[startOffset, endOffset],
+										`${prefix}[${label}][${destination}]`,
+									);
+								},
+							});
+						}
 					}
 				}
 			},
