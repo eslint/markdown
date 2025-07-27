@@ -90,6 +90,7 @@ export default {
 					) {
 						continue;
 					}
+
 					const altMatch = imgTag.match(getHtmlAttributeRe("alt"));
 					if (
 						!altMatch ||
@@ -101,6 +102,7 @@ export default {
 							lineOffset: startLineOffset,
 							columnOffset: startColumnOffset,
 						} = findOffsets(node.value, match.index);
+
 						const {
 							lineOffset: endLineOffset,
 							columnOffset: endColumnOffset,
@@ -108,6 +110,7 @@ export default {
 							node.value,
 							match.index + imgTag.length,
 						);
+
 						const nodeStartLine = node.position.start.line;
 						const nodeStartColumn = node.position.start.column;
 						const startLine = nodeStartLine + startLineOffset;
@@ -119,6 +122,7 @@ export default {
 						const endColumn =
 							(endLine === nodeStartLine ? nodeStartColumn : 1) +
 							endColumnOffset;
+
 						context.report({
 							loc: {
 								start: {
