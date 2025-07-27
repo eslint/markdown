@@ -119,6 +119,118 @@ Mercury[^mercury]
 				},
 			],
 		},
+		{
+			code: "[MERCURY]: https://example.com/mercury/",
+			options: [
+				{
+					allowDefinitions: ["MERCURY"],
+				},
+			],
+		},
+		{
+			code: "[mercury]: https://example.com/mercury/",
+			options: [
+				{
+					allowDefinitions: ["MERCURY"],
+				},
+			],
+		},
+		{
+			code: "[MERCURY]: https://example.com/mercury/",
+			options: [
+				{
+					allowDefinitions: ["mercury"],
+				},
+			],
+		},
+		{
+			code: "[   mercury   ]: https://example.com/mercury/",
+			options: [
+				{
+					allowDefinitions: ["mercury"],
+				},
+			],
+		},
+		{
+			code: "[mercury]: https://example.com/mercury/",
+			options: [
+				{
+					allowDefinitions: ["   mercury   "],
+				},
+			],
+		},
+		{
+			code: "[foo bar]: https://example.com/foo-bar/",
+			options: [
+				{
+					allowDefinitions: ["foo\t\r\nbar"],
+				},
+			],
+		},
+		{
+			code: "[^MERCURY]: Hello, Mercury!",
+			options: [
+				{
+					allowFootnoteDefinitions: ["MERCURY"],
+				},
+			],
+		},
+		{
+			code: "[^mercury]: Hello, Mercury!",
+			options: [
+				{
+					allowFootnoteDefinitions: ["MERCURY"],
+				},
+			],
+		},
+		{
+			code: "[^MERCURY]: Hello, Mercury!",
+			options: [
+				{
+					allowFootnoteDefinitions: ["mercury"],
+				},
+			],
+		},
+		{
+			code: "[^   mercury   ]: Hello, Mercury!",
+			options: [
+				{
+					allowFootnoteDefinitions: ["mercury"],
+				},
+			],
+		},
+		{
+			code: "[^mercury]: Hello, Mercury!",
+			options: [
+				{
+					allowFootnoteDefinitions: ["   mercury   "],
+				},
+			],
+		},
+		// This test case is skipped for non-Node environments like Bun
+		...(typeof process !== "undefined" &&
+		process.release &&
+		process.release.name === "node" &&
+		(!process.versions || !process.versions.bun)
+			? [
+					{
+						code: "[Grüsse]: https://example.com/",
+						options: [
+							{
+								allowDefinitions: ["GRÜẞE"],
+							},
+						],
+					},
+					{
+						code: "[^Grüsse]: Grüsse",
+						options: [
+							{
+								allowFootnoteDefinitions: ["GRÜẞE"],
+							},
+						],
+					},
+				]
+			: []),
 	],
 
 	invalid: [
