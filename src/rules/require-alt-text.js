@@ -7,8 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { ELEMENT_NODE, parse, walkSync } from "ultrahtml";
-import { findOffsets } from "../util.js";
+import { findOffsets, stripHtmlComments } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -20,6 +19,21 @@ import { findOffsets } from "../util.js";
  * @typedef {[]} RequireAltTextOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: RequireAltTextOptions, MessageIds: RequireAltTextMessageIds }>} RequireAltTextRuleDefinition
  */
+
+//-----------------------------------------------------------------------------
+// Helpers
+//-----------------------------------------------------------------------------
+
+const imgTagPattern = /<img[^>]*>/giu;
+
+/**
+ * Creates a regex to match HTML attributes
+ * @param {string} name The attribute name to match
+ * @returns {RegExp} Regular expression for matching the attribute
+ */
+function getHtmlAttributeRe(name) {
+	return new RegExp(`\\s${name}(?:\\s*=\\s*['"]([^'"]*)['"])?`, "iu");
+}
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -62,91 +76,64 @@ export default {
 			},
 
 			html(node) {
-				// Some elements (e.g., <code>) generate two nodes: one for the opening tag and one for the closing tag.
-				// Parsing closing tags (e.g., </code>) with ultrahtml results in a crash, so these nodes are skipped.
-				if (node.value.startsWith("</")) {
-					return;
-				}
+				const text = stripHtmlComments(node.value);
 
-				const ast = parse(node.value);
-				walkSync(ast, htmlNode => {
+				let match;
+				while ((match = imgTagPattern.exec(text)) !== null) {
+					const imgTag = match[0];
+					const ariaHiddenMatch = imgTag.match(
+						getHtmlAttributeRe("aria-hidden"),
+					);
 					if (
-						htmlNode.type === ELEMENT_NODE &&
-						htmlNode.name.toLowerCase() === "img"
+						ariaHiddenMatch &&
+						ariaHiddenMatch[1].toLowerCase() === "true"
 					) {
-						let altValue;
-						let ariaHiddenValue;
-
-						for (const [
-							attributeName,
-							attributeValue,
-						] of Object.entries(htmlNode.attributes)) {
-							if (attributeName.toLowerCase() === "alt") {
-								altValue = attributeValue;
-							} else if (
-								attributeName.toLowerCase() === "aria-hidden"
-							) {
-								ariaHiddenValue = attributeValue;
-								if (ariaHiddenValue.toLowerCase() === "true") {
-									return;
-								}
-							}
-
-							if (
-								altValue !== undefined &&
-								ariaHiddenValue !== undefined
-							) {
-								break;
-							}
-						}
-
-						if (
-							altValue === undefined ||
-							(altValue.trim().length === 0 &&
-								altValue.length > 0)
-						) {
-							const startOffset = htmlNode.loc[0].start;
-							const endOffset = htmlNode.loc[1].end;
-
-							const {
-								lineOffset: startLineOffset,
-								columnOffset: startColumnOffset,
-							} = findOffsets(node.value, startOffset);
-
-							const {
-								lineOffset: endLineOffset,
-								columnOffset: endColumnOffset,
-							} = findOffsets(node.value, endOffset);
-
-							const nodeStartLine = node.position.start.line;
-							const nodeStartColumn = node.position.start.column;
-							const startLine = nodeStartLine + startLineOffset;
-							const endLine = nodeStartLine + endLineOffset;
-							const startColumn =
-								(startLine === nodeStartLine
-									? nodeStartColumn
-									: 1) + startColumnOffset;
-							const endColumn =
-								(endLine === nodeStartLine
-									? nodeStartColumn
-									: 1) + endColumnOffset;
-
-							context.report({
-								loc: {
-									start: {
-										line: startLine,
-										column: startColumn,
-									},
-									end: {
-										line: endLine,
-										column: endColumn,
-									},
-								},
-								messageId: "altTextRequired",
-							});
-						}
+						continue;
 					}
-				});
+					const altMatch = imgTag.match(getHtmlAttributeRe("alt"));
+					if (
+						!altMatch ||
+						(altMatch[1] &&
+							altMatch[1].trim().length === 0 &&
+							altMatch[1].length > 0)
+					) {
+						const {
+							lineOffset: startLineOffset,
+							columnOffset: startColumnOffset,
+						} = findOffsets(node.value, match.index);
+						const {
+							lineOffset: endLineOffset,
+							columnOffset: endColumnOffset,
+						} = findOffsets(
+							node.value,
+							match.index + imgTag.length,
+						);
+						const nodeStartLine = node.position.start.line;
+						const nodeStartColumn = node.position.start.column;
+						const startLine = nodeStartLine + startLineOffset;
+						const endLine = nodeStartLine + endLineOffset;
+						const startColumn =
+							(startLine === nodeStartLine
+								? nodeStartColumn
+								: 1) + startColumnOffset;
+						const endColumn =
+							(endLine === nodeStartLine ? nodeStartColumn : 1) +
+							endColumnOffset;
+						context.report({
+							loc: {
+								start: {
+									line: startLine,
+									column: startColumn,
+								},
+								end: {
+									line: endLine,
+									column: endColumn,
+								},
+							},
+							messageId: "altTextRequired",
+						});
+					}
+				}
 			},
 		};
 	},

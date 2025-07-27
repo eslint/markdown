@@ -7,8 +7,11 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { ELEMENT_NODE, parse, walkSync } from "ultrahtml";
-import { findOffsets, frontmatterHasTitle } from "../util.js";
+import {
+	findOffsets,
+	frontmatterHasTitle,
+	stripHtmlComments,
+} from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -20,6 +23,12 @@ import { findOffsets, frontmatterHasTitle } from "../util.js";
  * @typedef {[{ frontmatterTitle?: string }]} NoMultipleH1Options
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoMultipleH1Options, MessageIds: NoMultipleH1MessageIds }>} NoMultipleH1RuleDefinition
  */
+
+//-----------------------------------------------------------------------------
+// Helpers
+//-----------------------------------------------------------------------------
+
+const h1TagPattern = /<h1[^>]*>[\s\S]*?<\/h1>/giu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -86,62 +95,52 @@ export default {
 			},
 
 			html(node) {
-				// Some elements (e.g., <code>) generate two nodes: one for the opening tag and one for the closing tag.
-				// Parsing closing tags (e.g., </code>) with ultrahtml results in a crash, so these nodes are skipped.
-				if (node.value.startsWith("</")) {
-					return;
-				}
+				const text = stripHtmlComments(node.value);
 
-				const ast = parse(node.value);
-				walkSync(ast, htmlNode => {
-					if (
-						htmlNode.type === ELEMENT_NODE &&
-						htmlNode.name.toLowerCase() === "h1"
-					) {
-						h1Count++;
-						if (h1Count > 1) {
-							const startOffset = htmlNode.loc[0].start;
-							const endOffset = htmlNode.loc[1].end;
+				let match;
+				while ((match = h1TagPattern.exec(text)) !== null) {
+					h1Count++;
+					if (h1Count > 1) {
+						const {
+							lineOffset: startLineOffset,
+							columnOffset: startColumnOffset,
+						} = findOffsets(node.value, match.index);
 
-							const {
-								lineOffset: startLineOffset,
-								columnOffset: startColumnOffset,
-							} = findOffsets(node.value, startOffset);
+						const {
+							lineOffset: endLineOffset,
+							columnOffset: endColumnOffset,
+						} = findOffsets(
+							node.value,
+							match.index + match[0].length,
+						);
 
-							const {
-								lineOffset: endLineOffset,
-								columnOffset: endColumnOffset,
-							} = findOffsets(node.value, endOffset);
+						const nodeStartLine = node.position.start.line;
+						const nodeStartColumn = node.position.start.column;
+						const startLine = nodeStartLine + startLineOffset;
+						const endLine = nodeStartLine + endLineOffset;
+						const startColumn =
+							(startLine === nodeStartLine
+								? nodeStartColumn
+								: 1) + startColumnOffset;
+						const endColumn =
+							(endLine === nodeStartLine ? nodeStartColumn : 1) +
+							endColumnOffset;
 
-							const nodeStartLine = node.position.start.line;
-							const nodeStartColumn = node.position.start.column;
-							const startLine = nodeStartLine + startLineOffset;
-							const endLine = nodeStartLine + endLineOffset;
-							const startColumn =
-								(startLine === nodeStartLine
-									? nodeStartColumn
-									: 1) + startColumnOffset;
-							const endColumn =
-								(endLine === nodeStartLine
-									? nodeStartColumn
-									: 1) + endColumnOffset;
-
-							context.report({
-								loc: {
-									start: {
-										line: startLine,
-										column: startColumn,
-									},
-									end: {
-										line: endLine,
-										column: endColumn,
-									},
+						context.report({
+							loc: {
+								start: {
+									line: startLine,
+									column: startColumn,
 								},
-								messageId: "multipleH1",
-							});
-						}
+								end: {
+									line: endLine,
+									column: endColumn,
+								},
+							},
+							messageId: "multipleH1",
+						});
 					}
-				});
+				}
 			},
 
 			heading(node) {
