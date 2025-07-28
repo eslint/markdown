@@ -1,36 +1,24 @@
 {
   "name": "ultrahtml",
   "type": "module",
-  "types": "./dist/index.d.ts",
-  "main": "./dist/index.js",
   "scripts": {
     "dev": "vitest",
     "test": "vitest run"
   },
-  "files": [
-    "dist",
-    "CHANGELOG.md"
-  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./package.json": "./package.json",
     "./selector": {
       "types": "./dist/selector.d.ts",
       "import": "./dist/selector.js"
     },
-    "./transformers/*": {
-      "types": "./dist/transformers/*.d.ts",
-      "import": "./dist/transformers/*.js"
-    }
+    "./package.json": "./package.json"
   },
   "devDependencies": {
-    "@types/stylis": "^4.2.6",
     "markdown-it": "^13.0.2",
     "parsel-js": "^1.1.2",
-    "stylis": "^4.3.4",
     "vitest": "^2.1.1"
   }
 }
