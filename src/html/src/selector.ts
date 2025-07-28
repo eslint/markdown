@@ -1,15 +1,7 @@
 import type { Node } from "./index.js";
 import { ELEMENT_NODE, TEXT_NODE, walkSync } from "./index.js";
 import type { AST, AttributeToken } from "parsel-js";
-import {
-	parse,
-	specificity as getSpecificity,
-	specificityToNumber,
-} from "parsel-js";
-
-export function specificity(selector: string) {
-	return specificityToNumber(getSpecificity(selector), 10);
-}
+import { parse } from "parsel-js";
 
 export function matches(node: Node, selector: string): boolean {
 	const match = selectorToMatch(selector);
