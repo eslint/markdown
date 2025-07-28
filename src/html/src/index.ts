@@ -438,26 +438,6 @@ function canSelfClose(node: Node): boolean {
 	return false;
 }
 
-async function renderElement(node: Node): Promise<string> {
-	const { name, attributes = {} } = node;
-	const children = await Promise.all(
-		node.children.map((child: Node) => render(child)),
-	).then(res => res.join(""));
-	if (RenderFn in node) {
-		const value = await (node as any)[RenderFn](attributes, mark(children));
-		if (value && (value as any)[HTMLString]) return value.value;
-		return escapeHTML(String(value));
-	}
-	if (name === Fragment) return children;
-	const isSelfClosing = canSelfClose(node);
-	if (isSelfClosing || VOID_TAGS.has(name)) {
-		return `<${node.name}${attrs(attributes).value}${
-			isSelfClosing ? " /" : ""
-		}>`;
-	}
-	return `<${node.name}${attrs(attributes).value}>${children}</${node.name}>`;
-}
-
 function renderElementSync(node: Node): string {
 	const { name, attributes = {} } = node;
 	const children = node.children
@@ -486,23 +466,6 @@ export function renderSync(node: Node): string {
 				.join("");
 		case ELEMENT_NODE:
 			return renderElementSync(node);
-		case TEXT_NODE:
-			return `${node.value}`;
-		case COMMENT_NODE:
-			return `<!--${node.value}-->`;
-		case DOCTYPE_NODE:
-			return `<!${node.value}>`;
-	}
-}
-
-export async function render(node: Node): Promise<string> {
-	switch (node.type) {
-		case DOCUMENT_NODE:
-			return Promise.all(
-				node.children.map((child: Node) => render(child)),
-			).then(res => res.join(""));
-		case ELEMENT_NODE:
-			return renderElement(node);
 		case TEXT_NODE:
 			return `${node.value}`;
 		case COMMENT_NODE:

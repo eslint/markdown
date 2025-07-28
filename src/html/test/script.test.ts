@@ -1,15 +1,15 @@
-import { parse, render, walkSync, ELEMENT_NODE } from "../src";
+import { parse, renderSync, walkSync, ELEMENT_NODE } from "../src";
 import { describe, expect, it } from "vitest";
 
 describe("script", () => {
 	it("works for elements", async () => {
 		const input = `<script>console.log("Hello <name>!")</script>`;
-		const output = await render(parse(input));
+		const output = renderSync(parse(input));
 		expect(output).toEqual(input);
 	});
 	it("works without quotes", async () => {
 		const input = `<script>0<1>0</name></script>`;
-		const output = await render(parse(input));
+		const output = renderSync(parse(input));
 		expect(output).toEqual(input);
 	});
 	it("works with <script> in string", async () => {
@@ -28,17 +28,17 @@ describe("script", () => {
 	});
 	it("works with <script> inside script", async () => {
 		const input = `<script>const a = "<script>"</script>`;
-		const output = await render(parse(input));
+		const output = renderSync(parse(input));
 		expect(output).toEqual(input);
 	});
 	it("works with <any> inside script", async () => {
 		const input = `<script>const a = "<any>"</script>`;
-		const output = await render(parse(input));
+		const output = renderSync(parse(input));
 		expect(output).toEqual(input);
 	});
 	it("works with <\\/script> inside script", async () => {
 		const input = `<script>const a = "<\\/script>"</script>`;
-		const output = await render(parse(input));
+		const output = renderSync(parse(input));
 		expect(output).toEqual(input);
 	});
 });
@@ -46,12 +46,12 @@ describe("script", () => {
 describe("style", () => {
 	it("works for elements", async () => {
 		const input = `<style><name></name><foo></style>`;
-		const output = await render(parse(input));
+		const output = renderSync(parse(input));
 		expect(output).toEqual(input);
 	});
 	it("works without quotes", async () => {
 		const input = `<style>0>1</name></style>`;
-		const output = await render(parse(input));
+		const output = renderSync(parse(input));
 		expect(output).toEqual(input);
 	});
 });

@@ -1,4 +1,4 @@
-import { parse, render } from "../src/";
+import { parse, renderSync } from "../src/";
 import { describe, expect, it } from "vitest";
 import Markdown from "markdown-it";
 
@@ -15,7 +15,7 @@ like [Tailwind](https://tailwindcss.com), [Styled System](https://styled-system.
 describe("markdown", () => {
 	it("works", async () => {
 		const input = md.render(src);
-		const output = await render(parse(input));
+		const output = renderSync(parse(input));
 		expect(input).eq(output);
 	});
 });
