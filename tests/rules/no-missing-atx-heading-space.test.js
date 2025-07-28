@@ -760,6 +760,7 @@ const invalidTests = [
 			},
 		],
 	},
+	// Note: Closing ATX patterns (e.g., missing space before trailing #) are reported in the next iteration and will be fixed. This behavior is consistent with Markdownlint.
 	{
 		code: "#Heading 1#",
 		output: "# Heading 1#",

@@ -34,7 +34,7 @@ function findMissingSpaceBeforeClosingHash(text) {
 		const [, closingSequenceSpaces, closingSequence, trailingSpaces] =
 			match;
 
-		if (!closingSequenceSpaces.length) {
+		if (closingSequenceSpaces.length === 0) {
 			const closingHashIdx =
 				text.length - (trailingSpaces.length + closingSequence.length);
 			const beforeHashIdx = closingHashIdx - 1;
