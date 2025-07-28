@@ -17,7 +17,6 @@
     "./package.json": "./package.json"
   },
   "devDependencies": {
-    "markdown-it": "^13.0.2",
     "parsel-js": "^1.1.2",
     "vitest": "^2.1.1"
   }
