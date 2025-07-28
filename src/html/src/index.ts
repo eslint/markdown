@@ -195,8 +195,8 @@ function splitAttrs(str?: string) {
 	return obj;
 }
 
-export function parse(input: string | ReturnType<typeof html>): any {
-	let str = typeof input === "string" ? input : input.value;
+export function parse(input: string): any {
+	let str = input;
 	let doc: Node,
 		parent: Node,
 		token: any,
@@ -400,27 +400,6 @@ export function attrs(attributes: Record<string, string>) {
 		attrStr += ` ${key}="${value}"`;
 	}
 	return mark(attrStr, [HTMLString, AttrString]);
-}
-export function html(tmpl: TemplateStringsArray, ...vals: any[]) {
-	let buf = "";
-	for (let i = 0; i < tmpl.length; i++) {
-		buf += tmpl[i];
-		const expr = vals[i];
-		if (buf.endsWith("...") && expr && typeof expr === "object") {
-			buf = buf.slice(0, -3).trimEnd();
-			buf += attrs(expr).value;
-		} else if (expr && expr[AttrString]) {
-			buf = buf.trimEnd();
-			buf += expr.value;
-		} else if (expr && expr[HTMLString]) {
-			buf += expr.value;
-		} else if (typeof expr === "string") {
-			buf += escapeHTML(expr);
-		} else if (expr || expr === 0) {
-			buf += String(expr);
-		}
-	}
-	return mark(buf);
 }
 
 export function walkSync(node: Node, callback: VisitorSync): void {
