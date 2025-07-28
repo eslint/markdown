@@ -38,7 +38,8 @@
     "linter"
   ],
   "workspaces": [
-    "examples/*"
+    "examples/*",
+    "src/html"
   ],
   "gitHooks": {
     "pre-commit": "lint-staged"
