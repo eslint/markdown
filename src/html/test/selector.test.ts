@@ -1,12 +1,10 @@
-import $, { querySelector, querySelectorAll } from "../src/selector";
+import { querySelector, querySelectorAll } from "../src/selector";
 import { parse, renderSync } from "../src";
 import { describe, expect, it, test } from "vitest";
 
 test("sanity", () => {
 	expect(querySelector).toBeTypeOf("function");
 	expect(querySelectorAll).toBeTypeOf("function");
-	expect($).toBeTypeOf("function");
-	expect($).toEqual(querySelectorAll);
 });
 
 describe("type selector", () => {
