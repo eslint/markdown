@@ -354,27 +354,8 @@ export function parse(input: string | ReturnType<typeof html>): any {
 	return doc;
 }
 
-export interface Visitor {
-	(node: Node, parent?: Node, index?: number): void | Promise<void>;
-}
-
 export interface VisitorSync {
 	(node: Node, parent?: Node, index?: number): void;
-}
-
-class Walker {
-	constructor(private callback: Visitor) {}
-	async visit(node: Node, parent?: Node, index?: number): Promise<void> {
-		await this.callback(node, parent, index);
-		if (Array.isArray(node.children)) {
-			let promises: Promise<void>[] = [];
-			for (let i = 0; i < node.children.length; i++) {
-				const child = node.children[i];
-				promises.push(this.visit(child, node, i));
-			}
-			await Promise.all(promises);
-		}
-	}
 }
 
 class WalkerSync {
@@ -440,11 +421,6 @@ export function html(tmpl: TemplateStringsArray, ...vals: any[]) {
 		}
 	}
 	return mark(buf);
-}
-
-export function walk(node: Node, callback: Visitor): Promise<void> {
-	const walker = new Walker(callback);
-	return walker.visit(node);
 }
 
 export function walkSync(node: Node, callback: VisitorSync): void {
