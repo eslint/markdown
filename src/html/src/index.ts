@@ -59,28 +59,6 @@ export const TEXT_NODE = 2;
 export const COMMENT_NODE = 3;
 export const DOCTYPE_NODE = 4;
 
-export function h( // TODO: remove this function, as it is about JSX.
-	type: any,
-	props: null | Record<string, any> = {},
-	...children: any[]
-) {
-	const vnode: ElementNode = {
-		type: ELEMENT_NODE,
-		name: typeof type === "function" ? type.name : type,
-		attributes: props || {},
-		children: children.map(child =>
-			typeof child === "string"
-				? { type: TEXT_NODE, value: escapeHTML(String(child)) }
-				: child,
-		),
-		parent: undefined as any,
-		loc: [] as any,
-	};
-	if (typeof type === "function") {
-		__unsafeRenderFn(vnode, type);
-	}
-	return vnode;
-}
 export const Fragment = Symbol("Fragment");
 
 const VOID_TAGS = new Set<string>([
