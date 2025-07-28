@@ -405,20 +405,6 @@ function mark(str: string, tags: symbol[] = [HTMLString]): { value: string } {
 	return v;
 }
 
-export function __unsafeHTML(str: string) {
-	return mark(str);
-}
-export function __unsafeRenderFn(
-	node: ElementNode,
-	fn: (props: Record<string, any>, ...children: Node[]) => Node,
-) {
-	Object.defineProperty(node, RenderFn, {
-		value: fn,
-		enumerable: false,
-	});
-	return node;
-}
-
 const ESCAPE_CHARS: Record<string, string> = {
 	"&": "&amp;",
 	"<": "&lt;",
