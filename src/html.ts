@@ -487,11 +487,46 @@ export function parse(input: string): any {
 	return doc;
 }
 
+/**
+ * The `walkSync` function provides full control over the AST.
+ * It can be used to scan for text, elements, components,
+ * or any other validation you might want to do.
+ *
+ * `walkSync` is **synchronous**. This should only be used
+ * when it is guaranteed there are no `async` components in the tree.
+ *
+ * @example
+ * ```js
+ * import { parse, walkSync, ELEMENT_NODE } from "path/to/html.js";
+ *
+ * const ast = parse(`<h1>Hello world!</h1>`);
+ * walkSync(ast, (node) => {
+ *   if (node.type === ELEMENT_NODE && node.name === "script") {
+ *     throw new Error("Found a script!");
+ *   }
+ * });
+ * ```
+ */
 export function walkSync(node: Node, callback: VisitorSync): void {
 	const walker = new WalkerSync(callback);
 	return walker.visit(node);
 }
 
+/**
+ * The `renderSync` function allows you to serialize an AST back into a string.
+ *
+ * - **Note**: By default, `renderSync` will sanitize your markup,
+ *   removing any `script` tags. Pass `{ sanitize: false }` to disable this behavior.
+ *
+ * @example
+ *
+ * ```js
+ * import { parse, renderSync } from "path/to/html.js";
+ *
+ * const ast = parse(`<h1>Hello world!</h1>`);
+ * console.log(renderSync(ast)); // <h1>Hello world!</h1>
+ * ```
+ */
 export function renderSync(node: Node): string {
 	switch (node.type) {
 		case DOCUMENT_NODE:
