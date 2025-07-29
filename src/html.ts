@@ -328,6 +328,23 @@ class WalkerSync {
 // Exports
 //-----------------------------------------------------------------------------
 
+/**
+ * The `parse` function takes a string of HTML and returns an AST (Abstract Syntax Tree).
+ *
+ * @example
+ * ```js
+ * import { parse } from "path/to/html.js";
+ *
+ * const ast = parse(`<h1>Hello world!</h1>`);
+ * console.log(ast);
+ * // {
+ * //   type: 0, // DOCUMENT_NODE
+ * //   children: [
+ * //     ...
+ * //   ]
+ * // }
+ * ```
+ */
 export function parse(input: string): any {
 	let str = input;
 	let doc: Node,
