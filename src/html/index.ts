@@ -53,6 +53,9 @@
  * THE SOFTWARE.
  */
 
+// TODO: if (selector.content === "*") return true;
+// TODO: getElementByTagName, getElementById, getElementsByClassName, getElementByName
+
 //-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
@@ -63,16 +66,19 @@ export type Node =
 	| TextNode
 	| CommentNode
 	| DoctypeNode;
+
 export type NodeType =
 	| typeof DOCUMENT_NODE
 	| typeof ELEMENT_NODE
 	| typeof TEXT_NODE
 	| typeof COMMENT_NODE
 	| typeof DOCTYPE_NODE;
+
 export interface Location {
 	start: number;
 	end: number;
 }
+
 interface BaseNode {
 	type: NodeType;
 	loc: [Location, Location];
@@ -112,8 +118,12 @@ export interface DoctypeNode extends LiteralNode {
 	type: typeof DOCTYPE_NODE;
 }
 
+interface VisitorSync {
+	(node: Node, parent?: Node, index?: number): void;
+}
+
 //-----------------------------------------------------------------------------
-// Helpers
+// Helpers: Constants
 //-----------------------------------------------------------------------------
 
 export const DOCUMENT_NODE = 0;
@@ -122,7 +132,10 @@ export const TEXT_NODE = 2;
 export const COMMENT_NODE = 3;
 export const DOCTYPE_NODE = 4;
 
-export const Fragment = Symbol("Fragment");
+const Fragment = Symbol("Fragment");
+const HTMLString = Symbol("HTMLString");
+const AttrString = Symbol("AttrString");
+const RenderFn = Symbol("RenderFn");
 
 const VOID_TAGS = new Set<string>([
 	"area",
@@ -142,9 +155,73 @@ const VOID_TAGS = new Set<string>([
 	"wbr",
 ]);
 const RAW_TAGS = new Set<string>(["script", "style"]);
+const ESCAPE_CHARS: Record<string, string> = {
+	"&": "&amp;",
+	"<": "&lt;",
+	">": "&gt;",
+};
+
 const DOM_PARSER_RE =
 	/(?:<(\/?)([a-zA-Z][a-zA-Z0-9\:-]*)(?:\s([^>]*?))?((?:\s*\/)?)>|(<\!\-\-)([\s\S]*?)(\-\->)|(<\!)([\s\S]*?)(>))/gm;
 const ATTR_KEY_IDENTIFIER_RE = /[\@\.a-z0-9_\:\-]/i;
+
+//-----------------------------------------------------------------------------
+// Helpers: Functions
+//-----------------------------------------------------------------------------
+
+function attrs(attributes: Record<string, string>) {
+	let attrStr = "";
+	for (const [key, value] of Object.entries(attributes)) {
+		attrStr += ` ${key}="${value}"`;
+	}
+	return mark(attrStr, [HTMLString, AttrString]);
+}
+
+function canSelfClose(node: Node): boolean {
+	if (node.children.length === 0) {
+		let n: Node | undefined = node;
+		while ((n = n.parent)) {
+			if (n.name === "svg") return true;
+		}
+	}
+	return false;
+}
+
+function escapeHTML(str: string): string {
+	return str.replace(/[&<>]/g, c => ESCAPE_CHARS[c] || c);
+}
+
+function mark(str: string, tags: symbol[] = [HTMLString]): { value: string } {
+	const v = { value: str };
+	for (const tag of tags) {
+		Object.defineProperty(v, tag, {
+			value: true,
+			enumerable: false,
+			writable: false,
+		});
+	}
+	return v;
+}
+
+function renderElementSync(node: Node): string {
+	const { name, attributes = {} } = node;
+	const children = node.children
+		.map((child: Node) => renderSync(child))
+		.join("");
+	if (RenderFn in node) {
+		const value = (node as any)[RenderFn](attributes, mark(children));
+		if (value && (value as any)[HTMLString]) return value.value;
+		return escapeHTML(String(value));
+	}
+	if (name === Fragment) return children;
+	const isSelfClosing = canSelfClose(node);
+	if (isSelfClosing || VOID_TAGS.has(name)) {
+		return `<${node.name}${attrs(attributes).value}${
+			isSelfClosing ? " /" : ""
+		}>`;
+	}
+	return `<${node.name}${attrs(attributes).value}>${children}</${node.name}>`;
+}
 
 function splitAttrs(str?: string) {
 	let obj: Record<string, string> = {};
@@ -216,6 +293,40 @@ function splitAttrs(str?: string) {
 	}
 	return obj;
 }
+
+function select(
+	node: Node,
+	opts: { single?: boolean } = { single: false },
+): Node[] {
+	let nodes: Node[] = [];
+	walkSync(node, (n): void => {
+		if (n && n.type !== ELEMENT_NODE) return;
+		if (opts.single) throw n;
+		nodes.push(n);
+	});
+	return nodes;
+}
+
+//-----------------------------------------------------------------------------
+// Helpers: Classes
+//-----------------------------------------------------------------------------
+
+class WalkerSync {
+	constructor(private callback: VisitorSync) {}
+	visit(node: Node, parent?: Node, index?: number): void {
+		this.callback(node, parent, index);
+		if (Array.isArray(node.children)) {
+			for (let i = 0; i < node.children.length; i++) {
+				const child = node.children[i];
+				this.visit(child, node, i);
+			}
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Exports
+//-----------------------------------------------------------------------------
 
 export function parse(input: string): any {
 	let str = input;
@@ -376,87 +487,9 @@ export function parse(input: string): any {
 	return doc;
 }
 
-export interface VisitorSync {
-	(node: Node, parent?: Node, index?: number): void;
-}
-
-class WalkerSync {
-	constructor(private callback: VisitorSync) {}
-	visit(node: Node, parent?: Node, index?: number): void {
-		this.callback(node, parent, index);
-		if (Array.isArray(node.children)) {
-			for (let i = 0; i < node.children.length; i++) {
-				const child = node.children[i];
-				this.visit(child, node, i);
-			}
-		}
-	}
-}
-
-const HTMLString = Symbol("HTMLString");
-const AttrString = Symbol("AttrString");
-export const RenderFn = Symbol("RenderFn");
-function mark(str: string, tags: symbol[] = [HTMLString]): { value: string } {
-	const v = { value: str };
-	for (const tag of tags) {
-		Object.defineProperty(v, tag, {
-			value: true,
-			enumerable: false,
-			writable: false,
-		});
-	}
-	return v;
-}
-
-const ESCAPE_CHARS: Record<string, string> = {
-	"&": "&amp;",
-	"<": "&lt;",
-	">": "&gt;",
-};
-function escapeHTML(str: string): string {
-	return str.replace(/[&<>]/g, c => ESCAPE_CHARS[c] || c);
-}
-export function attrs(attributes: Record<string, string>) {
-	let attrStr = "";
-	for (const [key, value] of Object.entries(attributes)) {
-		attrStr += ` ${key}="${value}"`;
-	}
-	return mark(attrStr, [HTMLString, AttrString]);
-}
-
 export function walkSync(node: Node, callback: VisitorSync): void {
 	const walker = new WalkerSync(callback);
 	return walker.visit(node);
-}
-
-function canSelfClose(node: Node): boolean {
-	if (node.children.length === 0) {
-		let n: Node | undefined = node;
-		while ((n = n.parent)) {
-			if (n.name === "svg") return true;
-		}
-	}
-	return false;
-}
-
-function renderElementSync(node: Node): string {
-	const { name, attributes = {} } = node;
-	const children = node.children
-		.map((child: Node) => renderSync(child))
-		.join("");
-	if (RenderFn in node) {
-		const value = (node as any)[RenderFn](attributes, mark(children));
-		if (value && (value as any)[HTMLString]) return value.value;
-		return escapeHTML(String(value));
-	}
-	if (name === Fragment) return children;
-	const isSelfClosing = canSelfClose(node);
-	if (isSelfClosing || VOID_TAGS.has(name)) {
-		return `<${node.name}${attrs(attributes).value}${
-			isSelfClosing ? " /" : ""
-		}>`;
-	}
-	return `<${node.name}${attrs(attributes).value}>${children}</${node.name}>`;
 }
 
 export function renderSync(node: Node): string {
@@ -476,8 +509,6 @@ export function renderSync(node: Node): string {
 	}
 }
 
-// --------------------------------------------------------------------------------
-
 export function querySelector(node: Node, selector: string): Node {
 	try {
 		return select(node, { single: true })[0];
@@ -492,19 +523,3 @@ export function querySelector(node: Node, selector: string): Node {
 export function querySelectorAll(node: Node, selector: string): Node[] {
 	return select(node);
 }
-
-function select(
-	node: Node,
-	opts: { single?: boolean } = { single: false },
-): Node[] {
-	let nodes: Node[] = [];
-	walkSync(node, (n): void => {
-		if (n && n.type !== ELEMENT_NODE) return;
-		if (opts.single) throw n;
-		nodes.push(n);
-	});
-	return nodes;
-}
-
-// TODO: if (selector.content === "*") return true;
-// TODO: getElementByTagName, getElementById, getElementsByClassName, getElementByName
