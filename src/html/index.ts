@@ -3,6 +3,8 @@
  * @author Json Miller, Nate Moore, 루밀LuMir(lumirlumir)
  * @license MIT
  *
+ * ---
+ *
  * Portions of this code were borrowed from `ultrahtml` - https://github.com/natemoo-re/ultrahtml
  *
  * MIT License Copyright (c) 2022 Nate Moore
