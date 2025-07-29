@@ -5,19 +5,7 @@
     "dev": "vitest",
     "test": "vitest run"
   },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./selector": {
-      "types": "./dist/selector.d.ts",
-      "import": "./dist/selector.js"
-    },
-    "./package.json": "./package.json"
-  },
   "devDependencies": {
-    "parsel-js": "^1.1.2",
     "vitest": "^2.1.1"
   }
 }
