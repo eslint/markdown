@@ -118,10 +118,6 @@ export interface DoctypeNode extends LiteralNode {
 	type: typeof DOCTYPE_NODE;
 }
 
-interface VisitorSync {
-	(node: Node, parent?: Node, index?: number): void;
-}
-
 //-----------------------------------------------------------------------------
 // Helpers: Constants
 //-----------------------------------------------------------------------------
@@ -507,7 +503,10 @@ export function parse(input: string): any {
  * });
  * ```
  */
-export function walkSync(node: Node, callback: VisitorSync): void {
+export function walkSync(
+	node: Node,
+	callback: (node: Node, parent?: Node, index?: number) => void,
+): void {
 	function visit(node: Node, parent?: Node, index?: number): void {
 		callback(node, parent, index);
 		if (Array.isArray(node.children)) {
