@@ -1,19 +1,24 @@
+import assert from "node:assert";
 import {
 	parse,
-	renderSync,
 	walkSync,
-	ELEMENT_NODE,
+	renderSync,
 	querySelector,
 	querySelectorAll,
+	ELEMENT_NODE,
 } from "./index.js";
-import { describe, expect, it, test } from "vitest";
+import { describe, expect, it } from "vitest";
 
 describe("html", () => {
-	describe("basic", () => {
-		test("sanity", () => {
-			expect(parse).toBeTypeOf("function");
-		});
+	it("sanity", () => {
+		assert.strictEqual(typeof parse, "function");
+		assert.strictEqual(typeof walkSync, "function");
+		assert.strictEqual(typeof renderSync, "function");
+		assert.strictEqual(typeof querySelector, "function");
+		assert.strictEqual(typeof querySelectorAll, "function");
+	});
 
+	describe("basic", () => {
 		describe("input === output", () => {
 			it("works for elements", async () => {
 				const input = `<h1>Hello world!</h1>`;
@@ -177,11 +182,6 @@ more&quot;"></div>`);
 	});
 
 	describe("selector", () => {
-		test("sanity", () => {
-			expect(querySelector).toBeTypeOf("function");
-			expect(querySelectorAll).toBeTypeOf("function");
-		});
-
 		describe("type selector", () => {
 			it("type", async () => {
 				const input = `<h1>Hello world!</h1>`;
