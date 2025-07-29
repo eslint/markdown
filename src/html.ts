@@ -308,23 +308,6 @@ function select(
 }
 
 //-----------------------------------------------------------------------------
-// Helpers: Classes
-//-----------------------------------------------------------------------------
-
-class WalkerSync {
-	constructor(private callback: VisitorSync) {}
-	visit(node: Node, parent?: Node, index?: number): void {
-		this.callback(node, parent, index);
-		if (Array.isArray(node.children)) {
-			for (let i = 0; i < node.children.length; i++) {
-				const child = node.children[i];
-				this.visit(child, node, i);
-			}
-		}
-	}
-}
-
-//-----------------------------------------------------------------------------
 // Exports
 //-----------------------------------------------------------------------------
 
@@ -350,11 +333,11 @@ export function parse(input: string): any {
 	let doc: Node,
 		parent: Node,
 		token: any,
-		text,
-		i,
-		bStart,
-		bText,
-		bEnd,
+		text: string,
+		i: number,
+		bStart: string,
+		bText: string,
+		bEnd: string,
 		tag: Node;
 	const tags: Node[] = [];
 	DOM_PARSER_RE.lastIndex = 0;
@@ -525,8 +508,17 @@ export function parse(input: string): any {
  * ```
  */
 export function walkSync(node: Node, callback: VisitorSync): void {
-	const walker = new WalkerSync(callback);
-	return walker.visit(node);
+	function visit(node: Node, parent?: Node, index?: number): void {
+		callback(node, parent, index);
+		if (Array.isArray(node.children)) {
+			for (let i = 0; i < node.children.length; i++) {
+				const child = node.children[i];
+				visit(child, node, i);
+			}
+		}
+	}
+
+	return visit(node);
 }
 
 /**
