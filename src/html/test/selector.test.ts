@@ -1,4 +1,4 @@
-import { querySelector, querySelectorAll } from "../src/selector";
+import { querySelector, querySelectorAll } from "../src";
 import { parse, renderSync } from "../src";
 import { describe, expect, it, test } from "vitest";
 
