@@ -5,7 +5,7 @@ import {
 	ELEMENT_NODE,
 	querySelector,
 	querySelectorAll,
-} from "../src/";
+} from "./index.js";
 import { describe, expect, it, test } from "vitest";
 
 describe("html", () => {
