@@ -19,7 +19,8 @@
 //-----------------------------------------------------------------------------
 
 const leadingAtxHeadingHashPattern = /^(#{1,6})(?:[^# \t]|$)/u;
-const trailingAtxHeadingHashPattern = /(?<![ \t])([ \t]*)(?<!\\)(#+)([ \t]*)$/u;
+const trailingAtxHeadingHashPattern =
+	/(?<![ \t])([ \t]*)(?<!(?<!\\)\\)(#+)([ \t]*)$/u;
 const newLinePattern = /\r?\n/u;
 
 /**

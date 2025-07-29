@@ -760,6 +760,21 @@ const invalidTests = [
 			},
 		],
 	},
+	{
+		code: "# Heading 1\\\\#",
+		output: "# Heading 1\\\\ #",
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				data: { position: "before" },
+				line: 1,
+				column: 13,
+				endLine: 1,
+				endColumn: 15,
+			},
+		],
+	},
 	// Note: Closing ATX patterns (e.g., missing space before trailing #) are reported in the next iteration and will be fixed. This behavior is consistent with Markdownlint.
 	{
 		code: "#Heading 1#",
