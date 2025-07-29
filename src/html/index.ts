@@ -1,7 +1,9 @@
 /**
- * Portions of this code were borrowed from `ultrahtml` - https://github.com/natemoo-re/ultrahtml
+ * @fileoverview A simple HTML parser and helper functions for handling HTML nodes in Markdown rules.
+ * @author Json Miller, Nate Moore, 루밀LuMir(lumirlumir)
+ * @license MIT
  *
- * @license
+ * Portions of this code were borrowed from `ultrahtml` - https://github.com/natemoo-re/ultrahtml
  *
  * MIT License Copyright (c) 2022 Nate Moore
  *
@@ -48,6 +50,10 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+//-----------------------------------------------------------------------------
+// Type Definitions
+//-----------------------------------------------------------------------------
 
 export type Node =
 	| DocumentNode
@@ -104,6 +110,10 @@ export interface DoctypeNode extends LiteralNode {
 	type: typeof DOCTYPE_NODE;
 }
 
+//-----------------------------------------------------------------------------
+// Helpers
+//-----------------------------------------------------------------------------
+
 export const DOCUMENT_NODE = 0;
 export const ELEMENT_NODE = 1;
 export const TEXT_NODE = 2;
@@ -132,8 +142,7 @@ const VOID_TAGS = new Set<string>([
 const RAW_TAGS = new Set<string>(["script", "style"]);
 const DOM_PARSER_RE =
 	/(?:<(\/?)([a-zA-Z][a-zA-Z0-9\:-]*)(?:\s([^>]*?))?((?:\s*\/)?)>|(<\!\-\-)([\s\S]*?)(\-\->)|(<\!)([\s\S]*?)(>))/gm;
-
-const ATTR_KEY_IDENTIFIER = /[\@\.a-z0-9_\:\-]/i;
+const ATTR_KEY_IDENTIFIER_RE = /[\@\.a-z0-9_\:\-]/i;
 
 function splitAttrs(str?: string) {
 	let obj: Record<string, string> = {};
@@ -147,7 +156,7 @@ function splitAttrs(str?: string) {
 			const currentChar = str[currentIndex];
 
 			if (state === "none") {
-				if (ATTR_KEY_IDENTIFIER.test(currentChar)) {
+				if (ATTR_KEY_IDENTIFIER_RE.test(currentChar)) {
 					// add attribute
 					if (currentKey) {
 						obj[currentKey] = currentValue;
@@ -161,7 +170,7 @@ function splitAttrs(str?: string) {
 					state = "value";
 				}
 			} else if (state === "key") {
-				if (!ATTR_KEY_IDENTIFIER.test(currentChar)) {
+				if (!ATTR_KEY_IDENTIFIER_RE.test(currentChar)) {
 					currentKey = str.substring(tokenStartIndex!, currentIndex);
 					if (currentChar === "=") {
 						state = "value";
