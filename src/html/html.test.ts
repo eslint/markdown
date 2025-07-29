@@ -65,7 +65,7 @@ import {
 	querySelector,
 	querySelectorAll,
 	ELEMENT_NODE,
-} from "./index.js";
+} from "./html.js";
 import { describe, it } from "vitest";
 
 //-----------------------------------------------------------------------------
