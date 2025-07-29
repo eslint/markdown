@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tests for no-reference-like-url rule.
+ * @fileoverview Tests for no-reference-like-urls rule.
  * @author TKDev7
  */
 
@@ -7,7 +7,7 @@
 // Imports
 //------------------------------------------------------------------------------
 
-import rule from "../../src/rules/no-reference-like-url.js";
+import rule from "../../src/rules/no-reference-like-urls.js";
 import markdown from "../../src/index.js";
 import { RuleTester } from "eslint";
 import dedent from "dedent";
@@ -23,7 +23,7 @@ const ruleTester = new RuleTester({
 	language: "markdown/commonmark",
 });
 
-ruleTester.run("no-reference-like-url", rule, {
+ruleTester.run("no-reference-like-urls", rule, {
 	valid: [
 		"[Mercury](https://example.com/mercury/)",
 		'[Mercury](https://example.com/mercury/ "Go to Mercury")',
@@ -714,6 +714,50 @@ ruleTester.run("no-reference-like-url", rule, {
 					column: 1,
 					endLine: 1,
 					endColumn: 30,
+				},
+			],
+		},
+		{
+			code: dedent`
+				\\[Mercury](mercury)
+
+				[mercury]: https://example.com/mercury/
+			`,
+			output: dedent`
+				\\[Mercury][mercury]
+
+				[mercury]: https://example.com/mercury/
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 3,
+					endLine: 1,
+					endColumn: 21,
+				},
+			],
+		},
+		{
+			code: dedent`
+				\\![Venus](venus)
+
+				[venus]: https://example.com/venus/
+			`,
+			output: dedent`
+				\\![Venus][venus]
+
+				[venus]: https://example.com/venus/
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 3,
+					endLine: 1,
+					endColumn: 18,
 				},
 			],
 		},

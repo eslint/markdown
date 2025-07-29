@@ -1,4 +1,4 @@
-# no-reference-like-url
+# no-reference-like-urls
 
 Disallow URLs that match defined reference identifiers.
 
@@ -22,7 +22,7 @@ This rule flags URLs that match defined reference identifiers.
 Examples of **incorrect** code for this rule:
 
 ```markdown
-<!-- eslint markdown/no-reference-like-url: "error" -->
+<!-- eslint markdown/no-reference-like-urls: "error" -->
 
 [**Mercury**](mercury) is the first planet from the sun.
 ![**Venus** is a planet](venus).
@@ -34,7 +34,7 @@ Examples of **incorrect** code for this rule:
 Examples of **correct** code for this rule:
 
 ```markdown
-<!-- eslint markdown/no-reference-like-url: "error" -->
+<!-- eslint markdown/no-reference-like-urls: "error" -->
 
 [**Mercury**][mercury] is the first planet from the sun.
 ![**Venus** is a planet][venus].

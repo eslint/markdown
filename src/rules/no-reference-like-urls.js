@@ -28,7 +28,7 @@ import { findOffsets } from "../util.js";
 
 /** Pattern to match both inline links: `[text](url)` and images: `![alt](url)`, with optional title */
 const linkOrImagePattern =
-	/(?<!\\)(?<imageBang>!)?\[(?<label>(?:\\.|[^()\\]|\([\s\S]*\))*?)\]\((?<destination>(?:<[^>]*>)|(?:[^ \t)]+))(?:[ \t]+(?<title>"[^"]*"|'[^']*'|\([^)]*\)))?\)(?!\()/gu;
+	/(?<!(?<!\\)\\)(?<imageBang>!)?\[(?<label>(?:\\.|[^()\\]|\([\s\S]*\))*?)\]\((?<destination>(?:<[^>]*>)|(?:[^ \t)]+))(?:[ \t]+(?<title>"[^"]*"|'[^']*'|\([^)]*\)))?\)(?!\()/gu;
 
 /**
  * Checks if a given index is within any skip range.
@@ -38,7 +38,7 @@ const linkOrImagePattern =
  */
 function isInSkipRange(index, skipRanges) {
 	return skipRanges.some(
-		range => index >= range.startOffset && index < range.endOffset,
+		range => range.startOffset <= index && index < range.endOffset,
 	);
 }
 
@@ -87,7 +87,7 @@ export default {
 			recommended: true,
 			description:
 				"Disallow URLs that match defined reference identifiers",
-			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-reference-like-url.md",
+			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-reference-like-urls.md",
 		},
 
 		fixable: "code",
