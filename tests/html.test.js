@@ -62,7 +62,6 @@ import {
 	parse,
 	walkSync,
 	renderSync,
-	querySelector,
 	querySelectorAll,
 } from "../dist/esm/html.js";
 
@@ -75,7 +74,6 @@ describe("html", () => {
 		assert.strictEqual(typeof parse, "function");
 		assert.strictEqual(typeof walkSync, "function");
 		assert.strictEqual(typeof renderSync, "function");
-		assert.strictEqual(typeof querySelector, "function");
 		assert.strictEqual(typeof querySelectorAll, "function");
 	});
 
@@ -271,7 +269,9 @@ more&quot;"></div>`);
 		describe("type selector", () => {
 			it("type", async () => {
 				const input = `<h1>Hello world!</h1>`;
-				const output = renderSync(querySelector(parse(input), "h1"));
+				const output = renderSync(
+					querySelectorAll(parse(input), "h1")[0],
+				);
 
 				assert.strictEqual(output, input);
 			});

@@ -253,19 +253,6 @@ function splitAttrs(str?: string) {
 	return obj;
 }
 
-function select(
-	node: Node,
-	opts: { single?: boolean } = { single: false },
-): Node[] {
-	let nodes: Node[] = [];
-	walkSync(node, (n): void => {
-		if (n && n.type !== "element") return;
-		if (opts.single) throw n;
-		nodes.push(n);
-	});
-	return nodes;
-}
-
 //-----------------------------------------------------------------------------
 // Exports
 //-----------------------------------------------------------------------------
@@ -526,17 +513,11 @@ export function renderSync(node: Node): string {
 	}
 }
 
-export function querySelector(node: Node, selector: string): Node {
-	try {
-		return select(node, { single: true })[0];
-	} catch (e) {
-		if (e instanceof Error) {
-			throw e;
-		}
-		return e as Node;
-	}
-}
-
 export function querySelectorAll(node: Node, selector: string): Node[] {
-	return select(node);
+	let nodes: Node[] = [];
+	walkSync(node, (n): void => {
+		if (n && n.type !== "element") return;
+		nodes.push(n);
+	});
+	return nodes;
 }
