@@ -122,7 +122,6 @@ export interface DoctypeNode extends LiteralNode {
 // Helpers: Constants
 //-----------------------------------------------------------------------------
 
-const Fragment = Symbol("Fragment");
 const HTMLString = Symbol("HTMLString");
 const AttrString = Symbol("AttrString");
 
@@ -188,7 +187,6 @@ function renderElementSync(node: Node): string {
 	const children = node.children
 		.map((child: Node) => renderSync(child))
 		.join("");
-	if (name === Fragment) return children;
 	const isSelfClosing = canSelfClose(node);
 	if (isSelfClosing || VOID_TAGS.has(name)) {
 		return `<${node.name}${attrs(attributes).value}${
