@@ -131,7 +131,7 @@ function canSelfClose(node) {
  *
  * const attrs = parseAttrs('id="my-id" class="my-class" data-custom="value"');
  * console.log(attrs);
- * // { class: "my-class", id: "my-id", data-custom: "value" }
+ * // { id: "my-id", class: "my-class", data-custom: "value" }
  * ```
  *
  */
@@ -165,13 +165,13 @@ export function parseAttrs(str) {
 
 					tokenStartIndex = currentIndex;
 					state = "key";
-				} else if (currentChar === "=" && currentKey) {
+				} else if (currentKey && currentChar === "=") {
 					state = "value";
 				}
 			} else if (state === "key") {
 				if (!ATTR_KEY_IDENTIFIER_RE.test(currentChar)) {
-					// eslint-disable-next-line unicorn/prefer-string-slice, no-restricted-properties -- TODO
-					currentKey = str.substring(tokenStartIndex, currentIndex);
+					currentKey = str.slice(tokenStartIndex, currentIndex);
+
 					if (currentChar === "=") {
 						state = "value";
 					} else {
@@ -180,36 +180,32 @@ export function parseAttrs(str) {
 				}
 			} else {
 				if (
-					currentChar === valueDelimiter &&
+					valueDelimiter &&
+					valueDelimiter === currentChar &&
 					currentIndex > 0 &&
-					str[currentIndex - 1] !== "\\"
+					str[currentIndex - 1] !== "\\" // if not escaped
 				) {
-					if (valueDelimiter) {
-						// eslint-disable-next-line unicorn/prefer-string-slice, no-restricted-properties -- TODO
-						currentValue = str.substring(
-							tokenStartIndex,
-							currentIndex,
-						);
-						valueDelimiter = undefined;
-						state = "none";
-					}
+					currentValue = str.slice(tokenStartIndex, currentIndex);
+					valueDelimiter = undefined;
+					state = "none";
 				} else if (
-					(currentChar === '"' || currentChar === "'") &&
-					!valueDelimiter
+					!valueDelimiter &&
+					(currentChar === '"' || currentChar === "'")
 				) {
 					tokenStartIndex = currentIndex + 1;
 					valueDelimiter = currentChar;
 				}
 			}
 		}
+
 		if (
 			state === "key" &&
 			tokenStartIndex !== undefined &&
 			tokenStartIndex < str.length
 		) {
-			// eslint-disable-next-line unicorn/prefer-string-slice, no-restricted-properties -- TODO
-			currentKey = str.substring(tokenStartIndex, str.length);
+			currentKey = str.slice(tokenStartIndex, str.length);
 		}
+
 		if (currentKey) {
 			obj[currentKey] = currentValue;
 		}

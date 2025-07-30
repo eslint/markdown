@@ -58,7 +58,13 @@
 //-----------------------------------------------------------------------------
 
 import assert from "node:assert";
-import { parse, walk, render, querySelectorAll } from "../src/html.js";
+import {
+	parseAttrs,
+	parse,
+	walk,
+	render,
+	querySelectorAll,
+} from "../src/html.js";
 
 //-----------------------------------------------------------------------------
 // Tests
@@ -66,10 +72,34 @@ import { parse, walk, render, querySelectorAll } from "../src/html.js";
 
 describe("html", () => {
 	it("sanity", () => {
+		assert.strictEqual(typeof parseAttrs, "function");
 		assert.strictEqual(typeof parse, "function");
 		assert.strictEqual(typeof walk, "function");
 		assert.strictEqual(typeof render, "function");
 		assert.strictEqual(typeof querySelectorAll, "function");
+	});
+
+	describe("parseAttrs()", () => {
+		it("works for empty string", () => {
+			const attrs = parseAttrs("");
+
+			assert.deepStrictEqual(attrs, {});
+		});
+		it('works for `key="value"`', () => {
+			const attrs = parseAttrs('key="value"');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+		it('works for `   key="value"`', () => {
+			const attrs = parseAttrs('   key="value"');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+		it('works for `key="value"   `', () => {
+			const attrs = parseAttrs('key="value"   ');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
 	});
 
 	describe("parse(), renderSync()", () => {
