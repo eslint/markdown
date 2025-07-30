@@ -278,21 +278,16 @@ export function parse(input: string): any {
 	let str = input;
 	let doc: Node,
 		parent: Node,
-		token: any,
+		token: RegExpExecArray | null,
 		text: string,
 		i: number,
 		bStart: string,
 		bText: string,
 		bEnd: string,
 		tag: Node;
-	const tags: Node[] = [];
-	DOM_PARSER_RE.lastIndex = 0;
-	parent = doc = {
-		type: "document",
-		children: [] as Node[],
-	} as any;
-
 	let lastIndex = 0;
+	const tags: Node[] = [];
+
 	function commitTextNode() {
 		text = str.substring(
 			lastIndex,
@@ -306,6 +301,13 @@ export function parse(input: string): any {
 			} as any);
 		}
 	}
+
+	DOM_PARSER_RE.lastIndex = 0;
+
+	parent = doc = {
+		type: "document",
+		children: [] as Node[],
+	} as any;
 
 	while ((token = DOM_PARSER_RE.exec(str))) {
 		bStart = token[5] || token[8];
