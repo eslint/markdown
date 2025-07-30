@@ -68,9 +68,6 @@
 // Helpers: Constants
 //-----------------------------------------------------------------------------
 
-const HTMLString = Symbol("HTMLString");
-const AttrString = Symbol("AttrString");
-
 /** @type {Set<string>} */
 const VOID_TAGS = new Set([
 	"area",
@@ -102,28 +99,8 @@ const ATTR_KEY_IDENTIFIER_RE = /[@.a-z0-9_:-]/iu;
 
 /**
  * TODO
- * @param {string} str TODO
- * @param {symbol[]} tags TODO
- * @returns {{ value: string }} TODO
- */
-function mark(str, tags = [HTMLString]) {
-	const v = { value: str };
-
-	for (const tag of tags) {
-		Object.defineProperty(v, tag, {
-			value: true,
-			enumerable: false,
-			writable: false,
-		});
-	}
-
-	return v;
-}
-
-/**
- * TODO
  * @param {Record<string, string>} attributes TODO
- * @returns {{value: string}} TODO
+ * @returns {string} TODO
  */
 function attrs(attributes) {
 	let attrStr = "";
@@ -132,7 +109,7 @@ function attrs(attributes) {
 		attrStr += ` ${key}="${value}"`;
 	}
 
-	return mark(attrStr, [HTMLString, AttrString]);
+	return attrStr;
 }
 
 /**
@@ -528,11 +505,11 @@ export function renderSync(node) {
 				.join("");
 			const isSelfClosing = canSelfClose(node);
 			if (isSelfClosing || VOID_TAGS.has(name)) {
-				return `<${node.name}${attrs(attributes).value}${
+				return `<${node.name}${attrs(attributes)}${
 					isSelfClosing ? " /" : ""
 				}>`;
 			}
-			return `<${node.name}${attrs(attributes).value}>${children}</${node.name}>`;
+			return `<${node.name}${attrs(attributes)}>${children}</${node.name}>`;
 		}
 		case "text":
 			return `${node.value}`;
