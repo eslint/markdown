@@ -182,20 +182,6 @@ function mark(str: string, tags: symbol[] = [HTMLString]): { value: string } {
 	return v;
 }
 
-function renderElementSync(node: Node): string {
-	const { name, attributes = {} } = node;
-	const children = node.children
-		.map((child: Node) => renderSync(child))
-		.join("");
-	const isSelfClosing = canSelfClose(node);
-	if (isSelfClosing || VOID_TAGS.has(name)) {
-		return `<${node.name}${attrs(attributes).value}${
-			isSelfClosing ? " /" : ""
-		}>`;
-	}
-	return `<${node.name}${attrs(attributes).value}>${children}</${node.name}>`;
-}
-
 function splitAttrs(str?: string) {
 	let obj: Record<string, string> = {};
 	if (str) {
@@ -518,8 +504,19 @@ export function renderSync(node: Node): string {
 			return node.children
 				.map((child: Node) => renderSync(child))
 				.join("");
-		case "element":
-			return renderElementSync(node);
+		case "element": {
+			const { name, attributes = {} } = node;
+			const children = node.children
+				.map((child: Node) => renderSync(child))
+				.join("");
+			const isSelfClosing = canSelfClose(node);
+			if (isSelfClosing || VOID_TAGS.has(name)) {
+				return `<${node.name}${attrs(attributes).value}${
+					isSelfClosing ? " /" : ""
+				}>`;
+			}
+			return `<${node.name}${attrs(attributes).value}>${children}</${node.name}>`;
+		}
 		case "text":
 			return `${node.value}`;
 		case "comment":
