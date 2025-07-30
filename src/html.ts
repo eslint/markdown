@@ -57,70 +57,10 @@
 // TODO: getElementByTagName, getElementById, getElementsByClassName, getElementByName
 
 //-----------------------------------------------------------------------------
-// Type Definitions
-//-----------------------------------------------------------------------------
-
-export type Node =
-	| DocumentNode
-	| ElementNode
-	| TextNode
-	| CommentNode
-	| DoctypeNode;
-
-export type NodeType =
-	| DocumentNode["type"]
-	| ElementNode["type"]
-	| TextNode["type"]
-	| CommentNode["type"]
-	| DoctypeNode["type"];
-
-export interface Location {
-	start: number;
-	end: number;
-}
-
-interface BaseNode {
-	type: NodeType;
-	loc: [Location, Location];
-	parent: Node;
-	[key: string]: any;
-}
-
-interface LiteralNode extends BaseNode {
-	value: string;
-}
-
-interface ParentNode extends BaseNode {
-	children: Node[];
-}
-
-export interface DocumentNode extends Omit<ParentNode, "parent"> {
-	type: "document";
-	attributes: Record<string, string>;
-	parent: undefined;
-}
-
-export interface ElementNode extends ParentNode {
-	type: "element";
-	name: string;
-	attributes: Record<string, string>;
-}
-
-export interface TextNode extends LiteralNode {
-	type: "text";
-}
-
-export interface CommentNode extends LiteralNode {
-	type: "comment";
-}
-
-export interface DoctypeNode extends LiteralNode {
-	type: "doctype";
-}
-
-//-----------------------------------------------------------------------------
 // Helpers: Constants
 //-----------------------------------------------------------------------------
+
+import type { HtmlNode, HtmlParentNode } from "./types.js";
 
 const HTMLString = Symbol("HTMLString");
 const AttrString = Symbol("AttrString");
@@ -160,9 +100,9 @@ function attrs(attributes: Record<string, string>) {
 	return mark(attrStr, [HTMLString, AttrString]);
 }
 
-function canSelfClose(node: Node): boolean {
+function canSelfClose(node: HtmlNode): boolean {
 	if (node.children.length === 0) {
-		let n: Node | undefined = node;
+		let n: HtmlNode | undefined = node;
 		while ((n = n.parent)) {
 			if (n.name === "svg") return true;
 		}
@@ -276,17 +216,17 @@ function splitAttrs(str?: string) {
  */
 export function parse(input: string): any {
 	let str = input;
-	let doc: Node,
-		parent: Node,
+	let doc: HtmlNode,
+		parent: HtmlNode,
 		token: RegExpExecArray | null,
 		text: string,
 		i: number,
 		bStart: string,
 		bText: string,
 		bEnd: string,
-		tag: Node;
+		tag: HtmlNode;
 	let lastIndex = 0;
-	const tags: Node[] = [];
+	const tags: HtmlNode[] = [];
 
 	function commitTextNode() {
 		text = str.substring(
@@ -294,7 +234,7 @@ export function parse(input: string): any {
 			DOM_PARSER_RE.lastIndex - token[0].length,
 		);
 		if (text) {
-			(parent as ParentNode).children.push({
+			(parent as HtmlParentNode).children.push({
 				type: "text",
 				value: text,
 				parent,
@@ -306,7 +246,7 @@ export function parse(input: string): any {
 
 	parent = doc = {
 		type: "document",
-		children: [] as Node[],
+		children: [] as HtmlNode[],
 	} as any;
 
 	while ((token = DOM_PARSER_RE.exec(str))) {
@@ -456,10 +396,10 @@ export function parse(input: string): any {
  * ```
  */
 export function walkSync(
-	node: Node,
-	callback: (node: Node, parent?: Node, index?: number) => void,
+	node: HtmlNode,
+	callback: (node: HtmlNode, parent?: HtmlNode, index?: number) => void,
 ): void {
-	function visit(node: Node, parent?: Node, index?: number): void {
+	function visit(node: HtmlNode, parent?: HtmlNode, index?: number): void {
 		callback(node, parent, index);
 		if (Array.isArray(node.children)) {
 			for (let i = 0; i < node.children.length; i++) {
@@ -487,16 +427,16 @@ export function walkSync(
  * console.log(renderSync(ast)); // <h1>Hello world!</h1>
  * ```
  */
-export function renderSync(node: Node): string {
+export function renderSync(node: HtmlNode): string {
 	switch (node.type) {
 		case "document":
 			return node.children
-				.map((child: Node) => renderSync(child))
+				.map((child: HtmlNode) => renderSync(child))
 				.join("");
 		case "element": {
 			const { name, attributes = {} } = node;
 			const children = node.children
-				.map((child: Node) => renderSync(child))
+				.map((child: HtmlNode) => renderSync(child))
 				.join("");
 			const isSelfClosing = canSelfClose(node);
 			if (isSelfClosing || VOID_TAGS.has(name)) {
@@ -515,8 +455,8 @@ export function renderSync(node: Node): string {
 	}
 }
 
-export function querySelectorAll(node: Node, selector: string): Node[] {
-	let nodes: Node[] = [];
+export function querySelectorAll(node: HtmlNode, selector: string): HtmlNode[] {
+	let nodes: HtmlNode[] = [];
 	walkSync(node, (n): void => {
 		if (n && n.type !== "element") return;
 		nodes.push(n);
