@@ -180,7 +180,6 @@ export function parseAttrs(str) {
 				}
 			} else {
 				if (
-					valueDelimiter &&
 					valueDelimiter === currentChar &&
 					currentIndex > 0 &&
 					str[currentIndex - 1] !== "\\" // if not escaped

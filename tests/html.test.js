@@ -80,6 +80,7 @@ describe("html", () => {
 	});
 
 	describe("parseAttrs()", () => {
+		// Basic
 		it("works for empty string", () => {
 			const attrs = parseAttrs("");
 
@@ -90,13 +91,106 @@ describe("html", () => {
 
 			assert.deepStrictEqual(attrs, { key: "value" });
 		});
+		it("works for `key='value'`", () => {
+			const attrs = parseAttrs("key='value'");
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+
+		// Leading whitespaces
 		it('works for `   key="value"`', () => {
 			const attrs = parseAttrs('   key="value"');
 
 			assert.deepStrictEqual(attrs, { key: "value" });
 		});
+		it('works for `\tkey="value"`', () => {
+			const attrs = parseAttrs('\tkey="value"');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+		it('works for `\nkey="value"`', () => {
+			const attrs = parseAttrs('\nkey="value"');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+		it('works for `\r\nkey="value"`', () => {
+			const attrs = parseAttrs('\r\nkey="value"');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+
+		// Trailing whitespaces
 		it('works for `key="value"   `', () => {
 			const attrs = parseAttrs('key="value"   ');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+		it('works for `key="value"\t`', () => {
+			const attrs = parseAttrs('key="value"\t');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+		it('works for `key="value"\n`', () => {
+			const attrs = parseAttrs('key="value"\n');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+		it('works for `key="value"\r\n`', () => {
+			const attrs = parseAttrs('key="value"\r\n');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+
+		// Leading whitespaces around the equal sign
+		it('works for `key ="value"`', () => {
+			const attrs = parseAttrs('key ="value"');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+		it('works for `key   ="value"`', () => {
+			const attrs = parseAttrs('key   ="value"');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+		it('works for `key\t="value"`', () => {
+			const attrs = parseAttrs('key\t="value"');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+		it('works for `key\n="value"`', () => {
+			const attrs = parseAttrs('key\n="value"');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+		it('works for `key\r\n="value"`', () => {
+			const attrs = parseAttrs('key\r\n="value"');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+
+		// Trailing whitespaces around the equal sign
+		it('works for `key= "value"`', () => {
+			const attrs = parseAttrs('key= "value"');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+		it('works for `key=   "value"`', () => {
+			const attrs = parseAttrs('key=   "value"');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+		it('works for `key=\t"value"`', () => {
+			const attrs = parseAttrs('key=\t"value"');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+		it('works for `key=\n"value"`', () => {
+			const attrs = parseAttrs('key=\n"value"');
+
+			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+		it('works for `key=\r\n"value"`', () => {
+			const attrs = parseAttrs('key=\r\n"value"');
 
 			assert.deepStrictEqual(attrs, { key: "value" });
 		});
