@@ -99,21 +99,6 @@ const ATTR_KEY_IDENTIFIER_RE = /[@.a-z0-9_:-]/iu;
 
 /**
  * TODO
- * @param {Record<string, string>} attributes TODO
- * @returns {string} TODO
- */
-function attrs(attributes) {
-	let attrStr = "";
-
-	for (const [key, value] of Object.entries(attributes)) {
-		attrStr += ` ${key}="${value}"`;
-	}
-
-	return attrStr;
-}
-
-/**
- * TODO
  * @param {HtmlNode} node TODO
  * @returns {boolean} TODO
  */
@@ -132,12 +117,25 @@ function canSelfClose(node) {
 	return false;
 }
 
+//-----------------------------------------------------------------------------
+// Exports
+//-----------------------------------------------------------------------------
+
 /**
- * TODO
- * @param {string} [str] TODO
- * @returns {Record<string, string>} TODO
+ * Parses a string of HTML attributes into an object.
+ * @param {string} str The string to parse.
+ * @returns {Record<string, string>} The parsed attributes as an object.
+ * @example
+ * ```js
+ * import { parseAttrs } from "path/to/html.js";
+ *
+ * const attrs = parseAttrs('id="my-id" class="my-class" data-custom="value"');
+ * console.log(attrs);
+ * // { class: "my-class", id: "my-id", data-custom: "value" }
+ * ```
+ *
  */
-function splitAttrs(str) {
+export function parseAttrs(str) {
 	/** @type {Record<string, string>} */
 	const obj = {};
 
@@ -220,9 +218,20 @@ function splitAttrs(str) {
 	return obj;
 }
 
-//-----------------------------------------------------------------------------
-// Exports
-//-----------------------------------------------------------------------------
+/**
+ * Stringifies an object of HTML attributes into a string.
+ * @param {Record<string, string>} attributes The attributes to stringify.
+ * @returns {string} The stringified attributes.
+ */
+export function stringifyAttrs(attributes) {
+	let attrStr = "";
+
+	for (const [key, value] of Object.entries(attributes)) {
+		attrStr += ` ${key}="${value}"`;
+	}
+
+	return attrStr;
+}
 
 /**
  * The `parse` function takes a string of HTML and returns an AST (Abstract Syntax Tree).
@@ -362,7 +371,7 @@ export function parse(input) {
 				tag = {
 					type: "element",
 					name: `${token[2]}`,
-					attributes: splitAttrs(token[3]),
+					attributes: parseAttrs(token[3]),
 					parent,
 					children: [],
 					loc: /** @type {any} */ ([
@@ -433,21 +442,21 @@ export function parse(input) {
 }
 
 /**
- * The `walkSync` function provides full control over the AST.
+ * The `walk` function provides full control over the AST.
  * It can be used to scan for text, elements, components,
  * or any other validation you might want to do.
  *
- * `walkSync` is **synchronous**. This should only be used
+ * `walk` is **synchronous**. This should only be used
  * when it is guaranteed there are no `async` components in the tree.
  * @param {HtmlNode} node TODO
  * @param {(node: HtmlNode, parent?: HtmlNode, index?: number) => void} callback TODO
  * @returns {void}
  * @example
  * ```js
- * import { parse, walkSync } from "path/to/html.js";
+ * import { parse, walk } from "path/to/html.js";
  *
  * const ast = parse(`<h1>Hello world!</h1>`);
- * walkSync(ast, (node) => {
+ * walk(ast, (node) => {
  *   if (node.type === "element" && node.name === "script") {
  *     throw new Error("Found a script!");
  *   }
@@ -455,7 +464,7 @@ export function parse(input) {
  * ```
  *
  */
-export function walkSync(node, callback) {
+export function walk(node, callback) {
 	/**
 	 * TODO
 	 * @param {HtmlNode} n TODO
@@ -479,37 +488,37 @@ export function walkSync(node, callback) {
 }
 
 /**
- * The `renderSync` function allows you to serialize an AST back into a string.
+ * The `render` function allows you to serialize an AST back into a string.
  * @param {HtmlNode} node TODO
  * @returns {string} TODO
  * @throws {Error} TODO
  * @example
  * ```js
- * import { parse, renderSync } from "path/to/html.js";
+ * import { parse, render } from "path/to/html.js";
  *
  * const ast = parse(`<h1>Hello world!</h1>`);
- * console.log(renderSync(ast)); // <h1>Hello world!</h1>
+ * console.log(render(ast)); // <h1>Hello world!</h1>
  * ```
  *
  */
-export function renderSync(node) {
+export function render(node) {
 	switch (node.type) {
 		case "document":
 			return node.children
-				.map((/** @type {HtmlNode} */ child) => renderSync(child))
+				.map((/** @type {HtmlNode} */ child) => render(child))
 				.join("");
 		case "element": {
 			const { name, attributes = {} } = node;
 			const children = node.children
-				.map((/** @type {HtmlNode} */ child) => renderSync(child))
+				.map((/** @type {HtmlNode} */ child) => render(child))
 				.join("");
 			const isSelfClosing = canSelfClose(node);
 			if (isSelfClosing || VOID_TAGS.has(name)) {
-				return `<${node.name}${attrs(attributes)}${
+				return `<${node.name}${stringifyAttrs(attributes)}${
 					isSelfClosing ? " /" : ""
 				}>`;
 			}
-			return `<${node.name}${attrs(attributes)}>${children}</${node.name}>`;
+			return `<${node.name}${stringifyAttrs(attributes)}>${children}</${node.name}>`;
 		}
 		case "text":
 			return `${node.value}`;
@@ -532,7 +541,7 @@ export function querySelectorAll(node, selector) {
 	/** @type {HtmlNode[]} */
 	const nodes = [];
 
-	walkSync(node, n => {
+	walk(node, n => {
 		if (n && n.type !== "element") {
 			return;
 		}

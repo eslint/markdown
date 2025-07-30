@@ -58,7 +58,7 @@
 //-----------------------------------------------------------------------------
 
 import assert from "node:assert";
-import { parse, walkSync, renderSync, querySelectorAll } from "../src/html.js";
+import { parse, walk, render, querySelectorAll } from "../src/html.js";
 
 //-----------------------------------------------------------------------------
 // Tests
@@ -67,8 +67,8 @@ import { parse, walkSync, renderSync, querySelectorAll } from "../src/html.js";
 describe("html", () => {
 	it("sanity", () => {
 		assert.strictEqual(typeof parse, "function");
-		assert.strictEqual(typeof walkSync, "function");
-		assert.strictEqual(typeof renderSync, "function");
+		assert.strictEqual(typeof walk, "function");
+		assert.strictEqual(typeof render, "function");
 		assert.strictEqual(typeof querySelectorAll, "function");
 	});
 
@@ -77,7 +77,7 @@ describe("html", () => {
 			it("works for elements", async () => {
 				const input = `<h1>Hello world!</h1>`;
 				const ast = parse(input);
-				const output = renderSync(ast);
+				const output = render(ast);
 
 				assert.strictEqual(ast.type, "document");
 				assert.strictEqual(output, input);
@@ -85,7 +85,7 @@ describe("html", () => {
 			it("works for custom elements", async () => {
 				const input = `<custom-element>Hello world!</custom-element>`;
 				const ast = parse(input);
-				const output = renderSync(ast);
+				const output = render(ast);
 
 				assert.strictEqual(ast.type, "document");
 				assert.strictEqual(output, input);
@@ -93,7 +93,7 @@ describe("html", () => {
 			it("works for comments", async () => {
 				const input = `<!--foobar-->`;
 				const ast = parse(input);
-				const output = renderSync(ast);
+				const output = render(ast);
 
 				assert.strictEqual(ast.type, "document");
 				assert.strictEqual(output, input);
@@ -101,7 +101,7 @@ describe("html", () => {
 			it("works for text", async () => {
 				const input = `Hmm...`;
 				const ast = parse(input);
-				const output = renderSync(ast);
+				const output = render(ast);
 
 				assert.strictEqual(ast.type, "document");
 				assert.strictEqual(output, input);
@@ -109,7 +109,7 @@ describe("html", () => {
 			it("works for doctype", async () => {
 				const input = `<!DOCTYPE html>`;
 				const ast = parse(input);
-				const output = renderSync(ast);
+				const output = render(ast);
 
 				assert.strictEqual(ast.type, "document");
 				assert.strictEqual(output, input);
@@ -117,7 +117,7 @@ describe("html", () => {
 			it("works for html:5", async () => {
 				const input = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Document</title></head><body></body></html>`;
 				const ast = parse(input);
-				const output = renderSync(ast);
+				const output = render(ast);
 
 				assert.strictEqual(ast.type, "document");
 				assert.strictEqual(output, input);
@@ -126,7 +126,7 @@ describe("html", () => {
 				const input =
 					'<p>Token CSS is a new tool that seamlessly integrates <a href="https://design-tokens.github.io/community-group/format/#design-token">Design Tokens</a> into your development workflow. Conceptually, it is similar to tools <a href="https://tailwindcss.com">Tailwind</a>, <a href="https://styled-system.com/">Styled System</a>, and many CSS-in-JS libraries that provide tokenized <em>constraints</em> for your styles—but there\'s one big difference.</p>\t<h1>Hello world!</h1><p><strong>Token CSS embraces <code>.css</code> files and <code>&lt;style&gt;</code> blocks.</strong></p>';
 				const ast = parse(input);
-				const output = renderSync(ast);
+				const output = render(ast);
 
 				assert.strictEqual(ast.type, "document");
 				assert.strictEqual(output, input);
@@ -204,20 +204,20 @@ more&quot;"></div>`);
 		describe("script", () => {
 			it("works for elements", async () => {
 				const input = `<script>console.log("Hello <name>!")</script>`;
-				const output = renderSync(parse(input));
+				const output = render(parse(input));
 
 				assert.strictEqual(output, input);
 			});
 			it("works without quotes", async () => {
 				const input = `<script>0<1>0</name></script>`;
-				const output = renderSync(parse(input));
+				const output = render(parse(input));
 
 				assert.strictEqual(output, input);
 			});
 			it("works with <script> in string", async () => {
 				const input = `<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="icon" href="/favicon-48x48.cbbd161b.png"/><link rel="apple-touch-icon" href="/apple-touch-icon.6803c6f0.png"/><meta name="theme-color" content="#ffffff"/><link rel="manifest" href="/manifest.56b1cedc.json"/><link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="MDN Web Docs"/><script>Array.prototype.flat&&Array.prototype.includes||document.write('<script src="https://polyfill.io/v3/polyfill.min.js?features=Array.prototype.flat%2Ces6"></script>')</script><title>HTML Sanitizer API - Web APIs | MDN</title><link rel="alternate" title="HTML Sanitizer API" href="https://developer.mozilla.org/ja/docs/Web/API/HTML_Sanitizer_API" hreflang="ja"/><link rel="alternate" title="HTML Sanitizer API" href="https://developer.mozilla.org/en-US/docs/Web/API/HTML_Sanitizer_API" hreflang="en"/><meta name="robots" content="index, follow"><meta name="description" content="The HTML Sanitizer API allow developers to take untrusted strings of HTML and Document or DocumentFragment objects, and sanitize them for safe insertion into a document&apos;s DOM."/><meta property="og:url" content="https://developer.mozilla.org/en-US/docs/Web/API/HTML_Sanitizer_API"/><meta property="og:title" content="HTML Sanitizer API - Web APIs | MDN"/><meta property="og:locale" content="en-US"/><meta property="og:description" content="The HTML Sanitizer API allow developers to take untrusted strings of HTML and Document or DocumentFragment objects, and sanitize them for safe insertion into a document&apos;s DOM."/><meta property="og:image" content="https://developer.mozilla.org/mdn-social-share.cd6c4a5a.png"/><meta property="twitter:card" content="summary_large_image"/><link rel="canonical" href="https://developer.mozilla.org/en-US/docs/Web/API/HTML_Sanitizer_API"/><style media="print">.breadcrumbs-container,.document-toc-container,.language-menu,.on-github,.page-footer,.top-navigation-main,nav.sidebar,ul.prev-next{display:none!important}.main-page-content,.main-page-content pre{padding:2px}.main-page-content pre{border-left-width:2px}</style><script src="/static/js/ga.js" defer=""></script><script defer="defer" src="/static/js/main.bfba1cdc.js"></script><link href="/static/css/main.7fcd0907.css" rel="stylesheet">`;
 				let meta = 0;
-				walkSync(parse(input), async (node, parent) => {
+				walk(parse(input), async (node, parent) => {
 					if (
 						node.type === "element" &&
 						node.name === "meta" &&
@@ -231,19 +231,19 @@ more&quot;"></div>`);
 			});
 			it("works with <script> inside script", async () => {
 				const input = `<script>const a = "<script>"</script>`;
-				const output = renderSync(parse(input));
+				const output = render(parse(input));
 
 				assert.strictEqual(output, input);
 			});
 			it("works with <any> inside script", async () => {
 				const input = `<script>const a = "<any>"</script>`;
-				const output = renderSync(parse(input));
+				const output = render(parse(input));
 
 				assert.strictEqual(output, input);
 			});
 			it("works with <\\/script> inside script", async () => {
 				const input = `<script>const a = "<\\/script>"</script>`;
-				const output = renderSync(parse(input));
+				const output = render(parse(input));
 
 				assert.strictEqual(output, input);
 			});
@@ -252,13 +252,13 @@ more&quot;"></div>`);
 		describe("style", () => {
 			it("works for elements", async () => {
 				const input = `<style><name></name><foo></style>`;
-				const output = renderSync(parse(input));
+				const output = render(parse(input));
 
 				assert.strictEqual(output, input);
 			});
 			it("works without quotes", async () => {
 				const input = `<style>0>1</name></style>`;
-				const output = renderSync(parse(input));
+				const output = render(parse(input));
 
 				assert.strictEqual(output, input);
 			});
@@ -267,7 +267,7 @@ more&quot;"></div>`);
 		describe("svg", () => {
 			it("renderSync as self-closing", async () => {
 				const input = `<svg><path d="0 0 0" /></svg>`;
-				const output = renderSync(parse(input));
+				const output = render(parse(input));
 
 				assert.strictEqual(output, input);
 			});
@@ -278,9 +278,7 @@ more&quot;"></div>`);
 		describe("type selector", () => {
 			it("type", async () => {
 				const input = `<h1>Hello world!</h1>`;
-				const output = renderSync(
-					querySelectorAll(parse(input), "h1")[0],
-				);
+				const output = render(querySelectorAll(parse(input), "h1")[0]);
 
 				assert.strictEqual(output, input);
 			});
