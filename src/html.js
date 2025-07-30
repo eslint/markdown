@@ -57,15 +57,22 @@
 // TODO: getElementByTagName, getElementById, getElementsByClassName, getElementByName
 
 //-----------------------------------------------------------------------------
-// Helpers: Constants
+// Type Definitions
 //-----------------------------------------------------------------------------
 
-import type { HtmlNode, HtmlParentNode } from "./types.js";
+/**
+ * @import { HtmlNode, HtmlParentNode, HtmlCommentNode, HtmlDoctypeNode, HtmlDocumentNode } from "./types.js";
+ */
+
+//-----------------------------------------------------------------------------
+// Helpers: Constants
+//-----------------------------------------------------------------------------
 
 const HTMLString = Symbol("HTMLString");
 const AttrString = Symbol("AttrString");
 
-const VOID_TAGS = new Set<string>([
+/** @type {Set<string>} */
+const VOID_TAGS = new Set([
 	"area",
 	"base",
 	"br",
@@ -82,35 +89,26 @@ const VOID_TAGS = new Set<string>([
 	"track",
 	"wbr",
 ]);
-const RAW_TAGS = new Set<string>(["script", "style"]);
+/** @type {Set<string>} */
+const RAW_TAGS = new Set(["script", "style"]);
 
 const DOM_PARSER_RE =
+	// eslint-disable-next-line require-unicode-regexp, no-useless-escape -- TODO
 	/(?:<(\/?)([a-zA-Z][a-zA-Z0-9\:-]*)(?:\s([^>]*?))?((?:\s*\/)?)>|(<\!\-\-)([\s\S]*?)(\-\->)|(<\!)([\s\S]*?)(>))/gm;
+// eslint-disable-next-line require-unicode-regexp, no-useless-escape -- TODO
 const ATTR_KEY_IDENTIFIER_RE = /[\@\.a-z0-9_\:\-]/i;
 
 //-----------------------------------------------------------------------------
 // Helpers: Functions
 //-----------------------------------------------------------------------------
 
-function attrs(attributes: Record<string, string>) {
-	let attrStr = "";
-	for (const [key, value] of Object.entries(attributes)) {
-		attrStr += ` ${key}="${value}"`;
-	}
-	return mark(attrStr, [HTMLString, AttrString]);
-}
-
-function canSelfClose(node: HtmlNode): boolean {
-	if (node.children.length === 0) {
-		let n: HtmlNode | undefined = node;
-		while ((n = n.parent)) {
-			if (n.name === "svg") return true;
-		}
-	}
-	return false;
-}
-
-function mark(str: string, tags: symbol[] = [HTMLString]): { value: string } {
+/**
+ * TODO
+ * @param {string} str TODO
+ * @param {symbol[]} tags TODO
+ * @returns {{ value: string }} TODO
+ */
+function mark(str, tags = [HTMLString]) {
 	const v = { value: str };
 	for (const tag of tags) {
 		Object.defineProperty(v, tag, {
@@ -122,14 +120,58 @@ function mark(str: string, tags: symbol[] = [HTMLString]): { value: string } {
 	return v;
 }
 
-function splitAttrs(str?: string) {
-	let obj: Record<string, string> = {};
+/**
+ * TODO
+ * @param {Record<string, string>} attributes TODO
+ * @returns {{value: string}} TODO
+ */
+function attrs(attributes) {
+	let attrStr = "";
+	for (const [key, value] of Object.entries(attributes)) {
+		attrStr += ` ${key}="${value}"`;
+	}
+	return mark(attrStr, [HTMLString, AttrString]);
+}
+
+/**
+ * TODO
+ * @param {HtmlNode} node TODO
+ * @returns {boolean} TODO
+ */
+function canSelfClose(node) {
+	if (node.children.length === 0) {
+		/** @type {HtmlNode | undefined} */
+		let n = node;
+
+		while ((n = n.parent)) {
+			if (n.name === "svg") {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+/**
+ * TODO
+ * @param {string} [str] TODO
+ * @returns {Record<string, string>} TODO
+ */
+function splitAttrs(str) {
+	/** @type {Record<string, string>} */
+	const obj = {};
 	if (str) {
-		let state: "none" | "key" | "value" = "none";
-		let currentKey: string | undefined;
-		let currentValue: string = "";
-		let tokenStartIndex: number | undefined;
-		let valueDelimiter: '"' | "'" | undefined;
+		/** @type {'none' | 'key' | 'value'} */
+		let state = "none";
+		/** @type {string | undefined} */
+		let currentKey;
+		/** @type {string} */
+		let currentValue = "";
+		/** @type {number | undefined} */
+		let tokenStartIndex;
+		/** @type {'"' | "'" | undefined} */
+		let valueDelimiter;
+
 		for (let currentIndex = 0; currentIndex < str.length; currentIndex++) {
 			const currentChar = str[currentIndex];
 
@@ -149,7 +191,8 @@ function splitAttrs(str?: string) {
 				}
 			} else if (state === "key") {
 				if (!ATTR_KEY_IDENTIFIER_RE.test(currentChar)) {
-					currentKey = str.substring(tokenStartIndex!, currentIndex);
+					// eslint-disable-next-line unicorn/prefer-string-slice, no-restricted-properties -- TODO
+					currentKey = str.substring(tokenStartIndex, currentIndex);
 					if (currentChar === "=") {
 						state = "value";
 					} else {
@@ -163,8 +206,9 @@ function splitAttrs(str?: string) {
 					str[currentIndex - 1] !== "\\"
 				) {
 					if (valueDelimiter) {
+						// eslint-disable-next-line unicorn/prefer-string-slice, no-restricted-properties -- TODO
 						currentValue = str.substring(
-							tokenStartIndex!,
+							tokenStartIndex,
 							currentIndex,
 						);
 						valueDelimiter = undefined;
@@ -181,9 +225,10 @@ function splitAttrs(str?: string) {
 		}
 		if (
 			state === "key" &&
-			tokenStartIndex != undefined &&
+			tokenStartIndex !== undefined &&
 			tokenStartIndex < str.length
 		) {
+			// eslint-disable-next-line unicorn/prefer-string-slice, no-restricted-properties -- TODO
 			currentKey = str.substring(tokenStartIndex, str.length);
 		}
 		if (currentKey) {
@@ -199,7 +244,8 @@ function splitAttrs(str?: string) {
 
 /**
  * The `parse` function takes a string of HTML and returns an AST (Abstract Syntax Tree).
- *
+ * @param {string} input TODO
+ * @returns {HtmlNode} TODO
  * @example
  * ```js
  * import { parse } from "path/to/html.js";
@@ -213,47 +259,70 @@ function splitAttrs(str?: string) {
  * //   ],
  * // }
  * ```
+ *
  */
-export function parse(input: string): any {
-	let str = input;
-	let doc: HtmlNode,
-		parent: HtmlNode,
-		token: RegExpExecArray | null,
-		text: string,
-		i: number,
-		bStart: string,
-		bText: string,
-		bEnd: string,
-		tag: HtmlNode;
-	let lastIndex = 0;
-	const tags: HtmlNode[] = [];
+export function parse(input) {
+	/** @type {HtmlNode} */
+	let doc;
+	/** @type {HtmlNode} */
+	let parent;
+	/** @type {RegExpExecArray | null} */
+	let token;
+	/** @type {string} */
+	let text;
+	/** @type {number} */
+	let i;
+	/** @type {string} */
+	let bStart;
+	/** @type {string} */
+	let bText;
+	/** @type {string} */
+	let bEnd;
+	/** @type {HtmlNode} */
+	let tag;
 
+	/** @type {string} */
+	const str = input;
+	/** @type {number} */
+	let lastIndex = 0;
+
+	/** @type {HtmlNode[]} */
+	const tags = [];
+
+	/**
+	 * TODO
+	 * @returns {void}
+	 */
 	function commitTextNode() {
+		// eslint-disable-next-line unicorn/prefer-string-slice, no-restricted-properties -- TODO
 		text = str.substring(
 			lastIndex,
 			DOM_PARSER_RE.lastIndex - token[0].length,
 		);
 		if (text) {
-			(parent as HtmlParentNode).children.push({
-				type: "text",
-				value: text,
-				parent,
-			} as any);
+			parent.children.push(
+				/** @type {any} */ ({
+					type: "text",
+					value: text,
+					parent,
+				}),
+			);
 		}
 	}
 
 	DOM_PARSER_RE.lastIndex = 0;
 
-	parent = doc = {
+	parent = doc = /** @type {any} */ ({
 		type: "document",
-		children: [] as HtmlNode[],
-	} as any;
+		children: [],
+	});
 
 	while ((token = DOM_PARSER_RE.exec(str))) {
 		bStart = token[5] || token[8];
 		bText = token[6] || token[9];
 		bEnd = token[7] || token[10];
 		if (RAW_TAGS.has(parent.name) && token[2] !== parent.name) {
+			// eslint-disable-next-line no-useless-assignment -- TODO
 			i = DOM_PARSER_RE.lastIndex - token[0].length;
 			if (parent.children.length > 0) {
 				parent.children[0].value += token[0];
@@ -264,10 +333,10 @@ export function parse(input: string): any {
 			if (RAW_TAGS.has(parent.name)) {
 				continue;
 			}
-			tag = /** @type {CommentNode} */ {
+			tag = /** @type {HtmlCommentNode} */ {
 				type: "comment",
 				value: bText,
-				parent: parent,
+				parent,
 				loc: [
 					{
 						start: i,
@@ -283,10 +352,10 @@ export function parse(input: string): any {
 			tag.parent.children.push(tag);
 		} else if (bStart === "<!") {
 			i = DOM_PARSER_RE.lastIndex - token[0].length;
-			tag = /** @type {DoctypeNode} */ {
+			tag = /** @type {HtmlDoctypeNode} */ {
 				type: "doctype",
 				value: bText,
-				parent: parent,
+				parent,
 				loc: [
 					{
 						start: i,
@@ -310,21 +379,22 @@ export function parse(input: string): any {
 			} else {
 				tag = {
 					type: "element",
-					name: token[2] + "",
+					name: `${token[2]}`,
 					attributes: splitAttrs(token[3]),
 					parent,
 					children: [],
-					loc: [
+					loc: /** @type {any} */ ([
 						{
 							start: DOM_PARSER_RE.lastIndex - token[0].length,
 							end: DOM_PARSER_RE.lastIndex,
 						},
-					] as any,
+					]),
 				};
 				tags.push(tag);
 				tag.parent.children.push(tag);
 				if (
-					(token[4] && token[4].indexOf("/") > -1) ||
+					// @ts-expect-error -- TODO
+					(token[4] && token[4].includes("/") > -1) ||
 					VOID_TAGS.has(tag.name)
 				) {
 					tag.loc[1] = tag.loc[0];
@@ -336,13 +406,14 @@ export function parse(input: string): any {
 		} else {
 			commitTextNode();
 			// Close parent node if end-tag matches
-			if (token[2] + "" === parent.name) {
+			if (`${token[2]}` === parent.name) {
 				tag = parent;
-				parent = tag.parent!;
+				parent = tag.parent;
 				tag.loc.push({
 					start: DOM_PARSER_RE.lastIndex - token[0].length,
 					end: DOM_PARSER_RE.lastIndex,
 				});
+				// eslint-disable-next-line unicorn/prefer-string-slice, no-restricted-properties -- TODO
 				text = str.substring(tag.loc[0].end, tag.loc[1].start);
 				if (tag.children.length === 0) {
 					tag.children.push({
@@ -354,10 +425,10 @@ export function parse(input: string): any {
 			}
 			// account for abuse of self-closing tags when an end-tag is also provided:
 			else if (
-				token[2] + "" === tags[tags.length - 1].name &&
-				tags[tags.length - 1].isSelfClosingTag === true
+				`${token[2]}` === tags.at(-1).name &&
+				tags.at(-1).isSelfClosingTag === true
 			) {
-				tag = tags[tags.length - 1];
+				tag = tags.at(-1);
 				tag.loc.push({
 					start: DOM_PARSER_RE.lastIndex - token[0].length,
 					end: DOM_PARSER_RE.lastIndex,
@@ -382,7 +453,9 @@ export function parse(input: string): any {
  *
  * `walkSync` is **synchronous**. This should only be used
  * when it is guaranteed there are no `async` components in the tree.
- *
+ * @param {HtmlNode} node TODO
+ * @param {(node: HtmlNode, parent?: HtmlNode, index?: number) => void} callback TODO
+ * @returns {void}
  * @example
  * ```js
  * import { parse, walkSync } from "path/to/html.js";
@@ -394,17 +467,23 @@ export function parse(input: string): any {
  *   }
  * });
  * ```
+ *
  */
-export function walkSync(
-	node: HtmlNode,
-	callback: (node: HtmlNode, parent?: HtmlNode, index?: number) => void,
-): void {
-	function visit(node: HtmlNode, parent?: HtmlNode, index?: number): void {
-		callback(node, parent, index);
-		if (Array.isArray(node.children)) {
-			for (let i = 0; i < node.children.length; i++) {
-				const child = node.children[i];
-				visit(child, node, i);
+export function walkSync(node, callback) {
+	/**
+	 * TODO
+	 * @param {HtmlNode} n TODO
+	 * @param {HtmlNode} [parent] TODO
+	 * @param {number} [index] TODO
+	 * @returns {void}
+	 */
+	function visit(n, parent, index) {
+		// eslint-disable-next-line n/callback-return -- TODO
+		callback(n, parent, index);
+		if (Array.isArray(n.children)) {
+			for (let i = 0; i < n.children.length; i++) {
+				const child = n.children[i];
+				visit(child, n, i);
 			}
 		}
 	}
@@ -416,8 +495,10 @@ export function walkSync(
  * The `renderSync` function allows you to serialize an AST back into a string.
  *
  * - **Note**: By default, `renderSync` will sanitize your markup,
- *   removing any `script` tags. Pass `{ sanitize: false }` to disable this behavior.
- *
+ * removing any `script` tags. Pass `{ sanitize: false }` to disable this behavior.
+ * @param {HtmlNode} node TODO
+ * @returns {string} TODO
+ * @throws {Error} TODO
  * @example
  *
  * ```js
@@ -426,17 +507,18 @@ export function walkSync(
  * const ast = parse(`<h1>Hello world!</h1>`);
  * console.log(renderSync(ast)); // <h1>Hello world!</h1>
  * ```
+ *
  */
-export function renderSync(node: HtmlNode): string {
+export function renderSync(node) {
 	switch (node.type) {
 		case "document":
 			return node.children
-				.map((child: HtmlNode) => renderSync(child))
+				.map((/** @type {HtmlNode} */ child) => renderSync(child))
 				.join("");
 		case "element": {
 			const { name, attributes = {} } = node;
 			const children = node.children
-				.map((child: HtmlNode) => renderSync(child))
+				.map((/** @type {HtmlNode} */ child) => renderSync(child))
 				.join("");
 			const isSelfClosing = canSelfClose(node);
 			if (isSelfClosing || VOID_TAGS.has(name)) {
@@ -452,13 +534,25 @@ export function renderSync(node: HtmlNode): string {
 			return `<!--${node.value}-->`;
 		case "doctype":
 			return `<!${node.value}>`;
+		default:
+			throw new Error(`Unknown node type: ${node}`); // TODO
 	}
 }
 
-export function querySelectorAll(node: HtmlNode, selector: string): HtmlNode[] {
-	let nodes: HtmlNode[] = [];
-	walkSync(node, (n): void => {
-		if (n && n.type !== "element") return;
+/**
+ * TODO
+ * @param {HtmlNode} node TODO
+ * @param {string} selector TODO
+ * @returns {HtmlNode[]} TODO
+ */ // eslint-disable-next-line no-unused-vars -- TODO
+export function querySelectorAll(node, selector) {
+	/** @type {HtmlNode[]} */
+	const nodes = [];
+
+	walkSync(node, n => {
+		if (n && n.type !== "element") {
+			return;
+		}
 		nodes.push(n);
 	});
 	return nodes;

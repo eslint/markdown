@@ -58,12 +58,7 @@
 //-----------------------------------------------------------------------------
 
 import assert from "node:assert";
-import {
-	parse,
-	walkSync,
-	renderSync,
-	querySelectorAll,
-} from "../dist/esm/html.js";
+import { parse, walkSync, renderSync, querySelectorAll } from "../src/html.js";
 
 //-----------------------------------------------------------------------------
 // Tests
