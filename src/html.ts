@@ -324,7 +324,7 @@ export function parse(input: string): any {
 			if (RAW_TAGS.has(parent.name)) {
 				continue;
 			}
-			tag = {
+			tag = /** @type {CommentNode} */ {
 				type: "comment",
 				value: bText,
 				parent: parent,
@@ -338,12 +338,12 @@ export function parse(input: string): any {
 						end: DOM_PARSER_RE.lastIndex,
 					},
 				],
-			} as any;
+			};
 			tags.push(tag);
-			(tag.parent as any).children.push(tag);
+			tag.parent.children.push(tag);
 		} else if (bStart === "<!") {
 			i = DOM_PARSER_RE.lastIndex - token[0].length;
-			tag = {
+			tag = /** @type {DoctypeNode} */ {
 				type: "doctype",
 				value: bText,
 				parent: parent,
