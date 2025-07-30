@@ -125,7 +125,6 @@ export interface DoctypeNode extends LiteralNode {
 const Fragment = Symbol("Fragment");
 const HTMLString = Symbol("HTMLString");
 const AttrString = Symbol("AttrString");
-const RenderFn = Symbol("RenderFn");
 
 const VOID_TAGS = new Set<string>([
 	"area",
@@ -145,11 +144,6 @@ const VOID_TAGS = new Set<string>([
 	"wbr",
 ]);
 const RAW_TAGS = new Set<string>(["script", "style"]);
-const ESCAPE_CHARS: Record<string, string> = {
-	"&": "&amp;",
-	"<": "&lt;",
-	">": "&gt;",
-};
 
 const DOM_PARSER_RE =
 	/(?:<(\/?)([a-zA-Z][a-zA-Z0-9\:-]*)(?:\s([^>]*?))?((?:\s*\/)?)>|(<\!\-\-)([\s\S]*?)(\-\->)|(<\!)([\s\S]*?)(>))/gm;
@@ -177,10 +171,6 @@ function canSelfClose(node: Node): boolean {
 	return false;
 }
 
-function escapeHTML(str: string): string {
-	return str.replace(/[&<>]/g, c => ESCAPE_CHARS[c] || c);
-}
-
 function mark(str: string, tags: symbol[] = [HTMLString]): { value: string } {
 	const v = { value: str };
 	for (const tag of tags) {
@@ -198,11 +188,6 @@ function renderElementSync(node: Node): string {
 	const children = node.children
 		.map((child: Node) => renderSync(child))
 		.join("");
-	if (RenderFn in node) {
-		const value = (node as any)[RenderFn](attributes, mark(children));
-		if (value && (value as any)[HTMLString]) return value.value;
-		return escapeHTML(String(value));
-	}
 	if (name === Fragment) return children;
 	const isSelfClosing = canSelfClose(node);
 	if (isSelfClosing || VOID_TAGS.has(name)) {
