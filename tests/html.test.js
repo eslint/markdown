@@ -64,7 +64,6 @@ import {
 	renderSync,
 	querySelector,
 	querySelectorAll,
-	ELEMENT_NODE,
 } from "../dist/esm/html.js";
 
 //-----------------------------------------------------------------------------
@@ -213,7 +212,7 @@ more&quot;"></div>`);
 				let meta = 0;
 				walkSync(parse(input), async (node, parent) => {
 					if (
-						node.type === ELEMENT_NODE &&
+						node.type === "element" &&
 						node.name === "meta" &&
 						parent?.name === "head"
 					) {

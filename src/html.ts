@@ -68,11 +68,11 @@ export type Node =
 	| DoctypeNode;
 
 export type NodeType =
-	| typeof DOCUMENT_NODE
-	| typeof ELEMENT_NODE
-	| typeof TEXT_NODE
-	| typeof COMMENT_NODE
-	| typeof DOCTYPE_NODE;
+	| DocumentNode["type"]
+	| ElementNode["type"]
+	| TextNode["type"]
+	| CommentNode["type"]
+	| DoctypeNode["type"];
 
 export interface Location {
 	start: number;
@@ -95,38 +95,32 @@ interface ParentNode extends BaseNode {
 }
 
 export interface DocumentNode extends Omit<ParentNode, "parent"> {
-	type: typeof DOCUMENT_NODE;
+	type: "document";
 	attributes: Record<string, string>;
 	parent: undefined;
 }
 
 export interface ElementNode extends ParentNode {
-	type: typeof ELEMENT_NODE;
+	type: "element";
 	name: string;
 	attributes: Record<string, string>;
 }
 
 export interface TextNode extends LiteralNode {
-	type: typeof TEXT_NODE;
+	type: "text";
 }
 
 export interface CommentNode extends LiteralNode {
-	type: typeof COMMENT_NODE;
+	type: "comment";
 }
 
 export interface DoctypeNode extends LiteralNode {
-	type: typeof DOCTYPE_NODE;
+	type: "doctype";
 }
 
 //-----------------------------------------------------------------------------
 // Helpers: Constants
 //-----------------------------------------------------------------------------
-
-export const DOCUMENT_NODE = 0;
-export const ELEMENT_NODE = 1;
-export const TEXT_NODE = 2;
-export const COMMENT_NODE = 3;
-export const DOCTYPE_NODE = 4;
 
 const Fragment = Symbol("Fragment");
 const HTMLString = Symbol("HTMLString");
@@ -296,7 +290,7 @@ function select(
 ): Node[] {
 	let nodes: Node[] = [];
 	walkSync(node, (n): void => {
-		if (n && n.type !== ELEMENT_NODE) return;
+		if (n && n.type !== "element") return;
 		if (opts.single) throw n;
 		nodes.push(n);
 	});
@@ -317,10 +311,10 @@ function select(
  * const ast = parse(`<h1>Hello world!</h1>`);
  * console.log(ast);
  * // {
- * //   type: 0, // DOCUMENT_NODE
+ * //   type: "document",
  * //   children: [
  * //     ...
- * //   ]
+ * //   ],
  * // }
  * ```
  */
@@ -338,7 +332,7 @@ export function parse(input: string): any {
 	const tags: Node[] = [];
 	DOM_PARSER_RE.lastIndex = 0;
 	parent = doc = {
-		type: DOCUMENT_NODE,
+		type: "document",
 		children: [] as Node[],
 	} as any;
 
@@ -350,7 +344,7 @@ export function parse(input: string): any {
 		);
 		if (text) {
 			(parent as ParentNode).children.push({
-				type: TEXT_NODE,
+				type: "text",
 				value: text,
 				parent,
 			} as any);
@@ -373,7 +367,7 @@ export function parse(input: string): any {
 				continue;
 			}
 			tag = {
-				type: COMMENT_NODE,
+				type: "comment",
 				value: bText,
 				parent: parent,
 				loc: [
@@ -392,7 +386,7 @@ export function parse(input: string): any {
 		} else if (bStart === "<!") {
 			i = DOM_PARSER_RE.lastIndex - token[0].length;
 			tag = {
-				type: DOCTYPE_NODE,
+				type: "doctype",
 				value: bText,
 				parent: parent,
 				loc: [
@@ -417,7 +411,7 @@ export function parse(input: string): any {
 				continue;
 			} else {
 				tag = {
-					type: ELEMENT_NODE,
+					type: "element",
 					name: token[2] + "",
 					attributes: splitAttrs(token[3]),
 					parent,
@@ -454,7 +448,7 @@ export function parse(input: string): any {
 				text = str.substring(tag.loc[0].end, tag.loc[1].start);
 				if (tag.children.length === 0) {
 					tag.children.push({
-						type: TEXT_NODE,
+						type: "text",
 						value: text,
 						parent,
 					});
@@ -476,7 +470,7 @@ export function parse(input: string): any {
 	}
 	text = str.slice(lastIndex);
 	parent.children.push({
-		type: TEXT_NODE,
+		type: "text",
 		value: text,
 		parent,
 	});
@@ -493,11 +487,11 @@ export function parse(input: string): any {
  *
  * @example
  * ```js
- * import { parse, walkSync, ELEMENT_NODE } from "path/to/html.js";
+ * import { parse, walkSync } from "path/to/html.js";
  *
  * const ast = parse(`<h1>Hello world!</h1>`);
  * walkSync(ast, (node) => {
- *   if (node.type === ELEMENT_NODE && node.name === "script") {
+ *   if (node.type === "element" && node.name === "script") {
  *     throw new Error("Found a script!");
  *   }
  * });
@@ -537,17 +531,17 @@ export function walkSync(
  */
 export function renderSync(node: Node): string {
 	switch (node.type) {
-		case DOCUMENT_NODE:
+		case "document":
 			return node.children
 				.map((child: Node) => renderSync(child))
 				.join("");
-		case ELEMENT_NODE:
+		case "element":
 			return renderElementSync(node);
-		case TEXT_NODE:
+		case "text":
 			return `${node.value}`;
-		case COMMENT_NODE:
+		case "comment":
 			return `<!--${node.value}-->`;
-		case DOCTYPE_NODE:
+		case "doctype":
 			return `<!${node.value}>`;
 	}
 }
