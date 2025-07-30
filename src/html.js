@@ -61,7 +61,7 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @import { HtmlNode, HtmlParentNode, HtmlCommentNode, HtmlDoctypeNode, HtmlDocumentNode } from "./types.js";
+ * @import { HtmlNode, HtmlParentNode, HtmlTextNode, HtmlCommentNode, HtmlDoctypeNode, HtmlDocumentNode } from "./types.js";
  */
 
 //-----------------------------------------------------------------------------
@@ -108,6 +108,7 @@ const ATTR_KEY_IDENTIFIER_RE = /[@.a-z0-9_:-]/iu;
  */
 function mark(str, tags = [HTMLString]) {
 	const v = { value: str };
+
 	for (const tag of tags) {
 		Object.defineProperty(v, tag, {
 			value: true,
@@ -115,6 +116,7 @@ function mark(str, tags = [HTMLString]) {
 			writable: false,
 		});
 	}
+
 	return v;
 }
 
@@ -125,9 +127,11 @@ function mark(str, tags = [HTMLString]) {
  */
 function attrs(attributes) {
 	let attrStr = "";
+
 	for (const [key, value] of Object.entries(attributes)) {
 		attrStr += ` ${key}="${value}"`;
 	}
+
 	return mark(attrStr, [HTMLString, AttrString]);
 }
 
@@ -147,6 +151,7 @@ function canSelfClose(node) {
 			}
 		}
 	}
+
 	return false;
 }
 
@@ -158,6 +163,7 @@ function canSelfClose(node) {
 function splitAttrs(str) {
 	/** @type {Record<string, string>} */
 	const obj = {};
+
 	if (str) {
 		/** @type {'none' | 'key' | 'value'} */
 		let state = "none";
@@ -233,6 +239,7 @@ function splitAttrs(str) {
 			obj[currentKey] = currentValue;
 		}
 	}
+
 	return obj;
 }
 
@@ -278,12 +285,11 @@ export function parse(input) {
 	let bEnd;
 	/** @type {HtmlNode} */
 	let tag;
-
-	/** @type {string} */
-	const str = input;
 	/** @type {number} */
 	let lastIndex = 0;
 
+	/** @type {string} */
+	const str = input;
 	/** @type {HtmlNode[]} */
 	const tags = [];
 
@@ -297,9 +303,10 @@ export function parse(input) {
 			lastIndex,
 			DOM_PARSER_RE.lastIndex - token[0].length,
 		);
+
 		if (text) {
 			parent.children.push(
-				/** @type {any} */ ({
+				/** @type {HtmlTextNode} */ ({
 					type: "text",
 					value: text,
 					parent,
@@ -319,6 +326,7 @@ export function parse(input) {
 		bStart = token[5] || token[8];
 		bText = token[6] || token[9];
 		bEnd = token[7] || token[10];
+
 		if (RAW_TAGS.has(parent.name) && token[2] !== parent.name) {
 			// eslint-disable-next-line no-useless-assignment -- TODO
 			i = DOM_PARSER_RE.lastIndex - token[0].length;
@@ -365,7 +373,6 @@ export function parse(input) {
 					},
 				],
 			};
-			// commitTextNode();
 			tags.push(tag);
 			tag.parent.children.push(tag);
 		} else if (token[1] !== "/") {
@@ -433,14 +440,18 @@ export function parse(input) {
 				});
 			}
 		}
+
 		lastIndex = DOM_PARSER_RE.lastIndex;
 	}
+
 	text = str.slice(lastIndex);
+
 	parent.children.push({
 		type: "text",
 		value: text,
 		parent,
 	});
+
 	return doc;
 }
 
@@ -478,6 +489,7 @@ export function walkSync(node, callback) {
 	function visit(n, parent, index) {
 		// eslint-disable-next-line n/callback-return -- TODO
 		callback(n, parent, index);
+
 		if (Array.isArray(n.children)) {
 			for (let i = 0; i < n.children.length; i++) {
 				const child = n.children[i];
@@ -491,14 +503,10 @@ export function walkSync(node, callback) {
 
 /**
  * The `renderSync` function allows you to serialize an AST back into a string.
- *
- * - **Note**: By default, `renderSync` will sanitize your markup,
- * removing any `script` tags. Pass `{ sanitize: false }` to disable this behavior.
  * @param {HtmlNode} node TODO
  * @returns {string} TODO
  * @throws {Error} TODO
  * @example
- *
  * ```js
  * import { parse, renderSync } from "path/to/html.js";
  *
@@ -553,5 +561,6 @@ export function querySelectorAll(node, selector) {
 		}
 		nodes.push(n);
 	});
+
 	return nodes;
 }
