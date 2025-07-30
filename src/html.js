@@ -93,10 +93,8 @@ const VOID_TAGS = new Set([
 const RAW_TAGS = new Set(["script", "style"]);
 
 const DOM_PARSER_RE =
-	// eslint-disable-next-line require-unicode-regexp, no-useless-escape -- TODO
-	/(?:<(\/?)([a-zA-Z][a-zA-Z0-9\:-]*)(?:\s([^>]*?))?((?:\s*\/)?)>|(<\!\-\-)([\s\S]*?)(\-\->)|(<\!)([\s\S]*?)(>))/gm;
-// eslint-disable-next-line require-unicode-regexp, no-useless-escape -- TODO
-const ATTR_KEY_IDENTIFIER_RE = /[\@\.a-z0-9_\:\-]/i;
+	/(?:<(\/?)([a-zA-Z][a-zA-Z0-9:-]*)(?:\s([^>]*?))?((?:\s*\/)?)>|(<!--)([\s\S]*?)(-->)|(<!)([\s\S]*?)(>))/gmu;
+const ATTR_KEY_IDENTIFIER_RE = /[@.a-z0-9_:-]/iu;
 
 //-----------------------------------------------------------------------------
 // Helpers: Functions
