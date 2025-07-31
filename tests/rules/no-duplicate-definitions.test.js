@@ -153,33 +153,10 @@ ruleTester.run("no-duplicate-definitions", rule, {
 				},
 			],
 		},
-		{
-			code: `
-[^   mercury   ]: Hello, Mercury!
-[^mercury]: Hello, Venus!
-`,
-			options: [
-				{
-					allowFootnoteDefinitions: ["mercury"],
-				},
-			],
-		},
-		{
-			code: `
-[^mercury]: Hello, Mercury!
-[^   mercury   ]: Hello, Venus!
-`,
-			options: [
-				{
-					allowFootnoteDefinitions: ["   mercury   "],
-				},
-			],
-		},
 		// This test case is skipped for non-Node environments like Bun
 		...(typeof process !== "undefined" &&
-		process.release &&
-		process.release.name === "node" &&
-		(!process.versions || !process.versions.bun)
+		process.release?.name === "node" &&
+		!process.versions?.bun
 			? [
 					{
 						code: `

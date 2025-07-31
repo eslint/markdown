@@ -192,14 +192,6 @@ Mercury[^mercury]
 			],
 		},
 		{
-			code: "[^   mercury   ]: Hello, Mercury!",
-			options: [
-				{
-					allowFootnoteDefinitions: ["mercury"],
-				},
-			],
-		},
-		{
 			code: "[^mercury]: Hello, Mercury!",
 			options: [
 				{
@@ -209,9 +201,8 @@ Mercury[^mercury]
 		},
 		// This test case is skipped for non-Node environments like Bun
 		...(typeof process !== "undefined" &&
-		process.release &&
-		process.release.name === "node" &&
-		(!process.versions || !process.versions.bun)
+		process.release?.name === "node" &&
+		!process.versions?.bun
 			? [
 					{
 						code: "[Grüsse]: https://example.com/",

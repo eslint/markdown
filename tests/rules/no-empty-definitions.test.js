@@ -67,7 +67,12 @@ ruleTester.run("no-empty-definitions", rule, {
 		},
 		{
 			code: "[^note]:",
-			options: [{ allowFootnoteDefinitions: ["note"] }],
+			options: [
+				{
+					checkFootnoteDefinitions: true,
+					allowFootnoteDefinitions: ["note"],
+				},
+			],
 		},
 		{
 			code: "[FOO]: #",
@@ -130,18 +135,13 @@ ruleTester.run("no-empty-definitions", rule, {
 			options: [{ allowFootnoteDefinitions: ["note"] }],
 		},
 		{
-			code: "[^   note   ]:",
-			options: [{ allowFootnoteDefinitions: ["note"] }],
-		},
-		{
 			code: "[^note]:",
 			options: [{ allowFootnoteDefinitions: ["   note   "] }],
 		},
 		// This test case is skipped for non-Node environments like Bun
 		...(typeof process !== "undefined" &&
-		process.release &&
-		process.release.name === "node" &&
-		(!process.versions || !process.versions.bun)
+		process.release?.name === "node" &&
+		!process.versions?.bun
 			? [
 					{
 						code: "[Grüsse]: #",

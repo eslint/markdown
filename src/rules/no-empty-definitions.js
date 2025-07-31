@@ -95,13 +95,13 @@ export default {
 
 	create(context) {
 		const allowDefinitions = new Set(
-			context.options[0].allowDefinitions.map(id =>
-				normalizeIdentifier(id).toLowerCase(),
+			context.options[0].allowDefinitions.map(identifier =>
+				normalizeIdentifier(identifier).toLowerCase(),
 			),
 		);
 		const allowFootnoteDefinitions = new Set(
-			context.options[0].allowFootnoteDefinitions.map(id =>
-				normalizeIdentifier(id).toLowerCase(),
+			context.options[0].allowFootnoteDefinitions.map(identifier =>
+				normalizeIdentifier(identifier).toLowerCase(),
 			),
 		);
 		const [{ checkFootnoteDefinitions }] = context.options;
