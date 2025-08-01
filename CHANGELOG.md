@@ -1,5 +1,21 @@
 # Changelog
 
+## [7.2.0](https://github.com/eslint/markdown/compare/v7.1.0...v7.2.0) (2025-08-01)
+
+
+### Features
+
+* add checkClosedHeadings option to no-missing-atx-heading-space ([#452](https://github.com/eslint/markdown/issues/452)) ([a9675aa](https://github.com/eslint/markdown/commit/a9675aa81e8bf79f2e865f433b961a201f82eac1))
+* add frontmatterTitle option to heading-increment ([#454](https://github.com/eslint/markdown/issues/454)) ([614ef3e](https://github.com/eslint/markdown/commit/614ef3e0bf539655170f202467119fbbbf8963f6))
+
+
+### Bug Fixes
+
+* false negatives and positives in `no-reversed-media-syntax` ([#473](https://github.com/eslint/markdown/issues/473)) ([c7a4d64](https://github.com/eslint/markdown/commit/c7a4d648a0ae810a55acd4f0b78bd57e8145a513))
+* fenced-code-language highlights only relevant parts ([#487](https://github.com/eslint/markdown/issues/487)) ([bb48ae2](https://github.com/eslint/markdown/commit/bb48ae2592240e53a35cd705691636b2ceeefd12))
+* improve HTML id/name regex for unquoted values and spaces ([#480](https://github.com/eslint/markdown/issues/480)) ([6c35261](https://github.com/eslint/markdown/commit/6c35261bb1ed925b43537a40909b04225668d5cf))
+* make `meta` property optional in `Block` type ([#461](https://github.com/eslint/markdown/issues/461)) ([15c93a6](https://github.com/eslint/markdown/commit/15c93a69b970db3bac145ad0be80d32dfd9f4285))
+
 ## [7.1.0](https://github.com/eslint/markdown/compare/v7.0.0...v7.1.0) (2025-07-22)
 
 
