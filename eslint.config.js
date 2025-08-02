@@ -7,6 +7,7 @@ import eslintConfigESLint from "eslint-config-eslint";
 import eslintPlugin from "eslint-plugin-eslint-plugin";
 import markdown from "./src/index.js";
 import { defineConfig } from "eslint/config";
+import json from "@eslint/json";
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -22,7 +23,10 @@ const eslintPluginTestsRecommendedConfig =
 //-----------------------------------------------------------------------------
 
 export default defineConfig([
-	eslintConfigESLint,
+	...eslintConfigESLint.map(config => ({
+		files: ["**/*.js"],
+		...config,
+	})),
 	{
 		name: "markdown/js",
 		files: ["**/*.js"],
@@ -132,5 +136,11 @@ export default defineConfig([
 			],
 			"eslint-plugin/test-case-shorthand-strings": "error",
 		},
+	},
+	{
+		plugins: { json },
+		files: ["**/*.json", ".c8rc"],
+		language: "json/json",
+		extends: ["json/recommended"],
 	},
 ]);
