@@ -81,7 +81,13 @@ ruleTester.run("no-missing-label-refs", rule, {
 		`[escaped${"\\".repeat(5)}]${"\\".repeat(5)}[escaped${"\\".repeat(5)}]`,
 		`[escaped${"\\".repeat(7)}]${"\\".repeat(7)}[escaped${"\\".repeat(7)}]`,
 		"\\[escaped]\\[escaped]",
+		`${"\\".repeat(3)}[escaped]${"\\".repeat(3)}[escaped]`,
+		`${"\\".repeat(5)}[escaped]${"\\".repeat(5)}[escaped]`,
+		`${"\\".repeat(7)}[escaped]${"\\".repeat(7)}[escaped]`,
 		"[escaped\\][escaped\\]",
+		`[escaped${"\\".repeat(3)}][escaped${"\\".repeat(3)}]`,
+		`[escaped${"\\".repeat(5)}][escaped${"\\".repeat(5)}]`,
+		`[escaped${"\\".repeat(7)}][escaped${"\\".repeat(7)}]`,
 	],
 	invalid: [
 		{
@@ -369,6 +375,46 @@ ruleTester.run("no-missing-label-refs", rule, {
 				},
 			],
 		},
+		// Backslash escaping
+		{
+			code: `${"\\".repeat(2)}[foo${"\\".repeat(2)}][bar${"\\".repeat(2)}]`,
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: `bar${"\\".repeat(2)}` },
+					line: 1,
+					column: 11,
+					endLine: 1,
+					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: `${"\\".repeat(4)}[foo${"\\".repeat(4)}][bar${"\\".repeat(4)}]`,
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: `bar${"\\".repeat(4)}` },
+					line: 1,
+					column: 15,
+					endLine: 1,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: `${"\\".repeat(6)}[foo${"\\".repeat(6)}][bar${"\\".repeat(6)}]`,
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: `bar${"\\".repeat(6)}` },
+					line: 1,
+					column: 19,
+					endLine: 1,
+					endColumn: 28,
+				},
+			],
+		},
 		{
 			code: "\\[[foo]\\]",
 			errors: [
@@ -383,6 +429,45 @@ ruleTester.run("no-missing-label-refs", rule, {
 			],
 		},
 		{
+			code: `${"\\".repeat(3)}[[foo]${"\\".repeat(3)}]`,
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "foo" },
+					line: 1,
+					column: 6,
+					endLine: 1,
+					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: `${"\\".repeat(5)}[[foo]${"\\".repeat(5)}]`,
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "foo" },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 11,
+				},
+			],
+		},
+		{
+			code: `${"\\".repeat(7)}[[foo]${"\\".repeat(7)}]`,
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "foo" },
+					line: 1,
+					column: 10,
+					endLine: 1,
+					endColumn: 13,
+				},
+			],
+		},
+		{
 			code: "[\\[foo\\]]",
 			errors: [
 				{
@@ -392,6 +477,45 @@ ruleTester.run("no-missing-label-refs", rule, {
 					column: 2,
 					endLine: 1,
 					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: `[${"\\".repeat(3)}[foo${"\\".repeat(3)}]]`,
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: `${"\\".repeat(3)}[foo${"\\".repeat(3)}]` },
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: `[${"\\".repeat(5)}[foo${"\\".repeat(5)}]]`,
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: `${"\\".repeat(5)}[foo${"\\".repeat(5)}]` },
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 17,
+				},
+			],
+		},
+		{
+			code: `[${"\\".repeat(7)}[foo${"\\".repeat(7)}]]`,
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: `${"\\".repeat(7)}[foo${"\\".repeat(7)}]` },
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 21,
 				},
 			],
 		},
