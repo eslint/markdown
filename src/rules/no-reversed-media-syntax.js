@@ -27,7 +27,7 @@ import { findOffsets } from "../util.js";
 
 /** Matches reversed link/image syntax like `(text)[url]`, ignoring escaped characters like `\(text\)[url]`. */
 const reversedPattern =
-	/(?<=(?<!\\)(?:\\\\)*)\(((?:\\.|[^()\\]|\([\s\S]*\))*)\)\[((?:\\.|[^\]\\\n])*)\](?!\()/gu;
+	/(?<=(?<!\\)(?:\\{2})*)\(((?:\\.|[^()\\]|\([\s\S]*\))*)\)\[((?:\\.|[^\]\\\n])*)\](?!\()/gu;
 
 /**
  * Checks if a match is within any skip range
