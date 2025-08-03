@@ -86,15 +86,35 @@ describe("html", () => {
 
 			assert.deepStrictEqual(attrs, {});
 		});
+		it('works for `key=""`', () => {
+			const attrs = parseAttrs('key=""');
+			assert.deepStrictEqual(attrs, { key: "" });
+		});
 		it('works for `key="value"`', () => {
 			const attrs = parseAttrs('key="value"');
 
 			assert.deepStrictEqual(attrs, { key: "value" });
 		});
+		it("works for `key=''`", () => {
+			const attrs = parseAttrs("key=''");
+			assert.deepStrictEqual(attrs, { key: "" });
+		});
 		it("works for `key='value'`", () => {
 			const attrs = parseAttrs("key='value'");
 
 			assert.deepStrictEqual(attrs, { key: "value" });
+		});
+
+		// Empty value
+		it("works for `key`", () => {
+			const attrs = parseAttrs("key");
+
+			assert.deepStrictEqual(attrs, { key: "" });
+		});
+		it("works for `key1 key2`", () => {
+			const attrs = parseAttrs("key1 key2");
+
+			assert.deepStrictEqual(attrs, { key1: "", key2: "" });
 		});
 
 		// Leading whitespaces
