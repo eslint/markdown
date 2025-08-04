@@ -81,10 +81,12 @@ ruleTester.run("no-reference-like-urls", rule, {
 		`,
 		dedent`
 		    [link](<uri>)
+
    		    [uri]: https://example.com/uri
 		`,
 		dedent`
 			![image](<uri>)
+
 			[uri]: https://example.com/uri
 		`,
 		{
@@ -948,9 +950,8 @@ ruleTester.run("no-reference-like-urls", rule, {
 		},
 		// This test case is skipped for non-Node environments like Bun
 		...(typeof process !== "undefined" &&
-		process.release &&
-		process.release.name === "node" &&
-		(!process.versions || !process.versions.bun)
+		process.release?.name === "node" &&
+		!process.versions?.bun
 			? [
 					{
 						code: dedent`
