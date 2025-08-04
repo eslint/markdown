@@ -75,6 +75,8 @@ ruleTester.run("no-space-in-emphasis", rule, {
 		"Mixed `code*span` scenarios are *also* okay.",
 		"Mixed `code*span` scenarios are _also_ okay.",
 		"Mixed `code_span` scenarios are *also* okay.",
+		"Text ~ strikethrough ~ with spaces",
+		"Text ~~ strikethrough ~~ with spaces",
 		"[Link](under_score) followed by _underscore_",
 		"[Link](un_der_score) followed by _underscore_",
 		"[Link](un_der_sco_re) followed by _underscore_",
@@ -364,46 +366,6 @@ ruleTester.run("no-space-in-emphasis", rule, {
 			],
 		},
 		{
-			code: "Broken ~ strikethrough ~ with spaces",
-			output: "Broken ~strikethrough~ with spaces",
-			errors: [
-				{
-					messageId: "spaceInEmphasis",
-					line: 1,
-					column: 8,
-					endLine: 1,
-					endColumn: 11,
-				},
-				{
-					messageId: "spaceInEmphasis",
-					line: 1,
-					column: 22,
-					endLine: 1,
-					endColumn: 25,
-				},
-			],
-		},
-		{
-			code: "Broken ~~ strikethrough ~~ with spaces",
-			output: "Broken ~~strikethrough~~ with spaces",
-			errors: [
-				{
-					messageId: "spaceInEmphasis",
-					line: 1,
-					column: 8,
-					endLine: 1,
-					endColumn: 12,
-				},
-				{
-					messageId: "spaceInEmphasis",
-					line: 1,
-					column: 23,
-					endLine: 1,
-					endColumn: 27,
-				},
-			],
-		},
-		{
 			code: "Broken ___ strong and emphasis ___ with spaces",
 			output: "Broken ___strong and emphasis___ with spaces",
 			errors: [
@@ -520,46 +482,6 @@ ruleTester.run("no-space-in-emphasis", rule, {
 					column: 40,
 					endLine: 1,
 					endColumn: 44,
-				},
-			],
-		},
-		{
-			code: "Mixed ~ok strikethrough~ and ~ broken strikethrough ~",
-			output: "Mixed ~ok strikethrough~ and ~broken strikethrough~",
-			errors: [
-				{
-					messageId: "spaceInEmphasis",
-					line: 1,
-					column: 30,
-					endLine: 1,
-					endColumn: 33,
-				},
-				{
-					messageId: "spaceInEmphasis",
-					line: 1,
-					column: 51,
-					endLine: 1,
-					endColumn: 54,
-				},
-			],
-		},
-		{
-			code: "Mixed ~~ok strikethrough~~ and ~~ broken strikethrough ~~",
-			output: "Mixed ~~ok strikethrough~~ and ~~broken strikethrough~~",
-			errors: [
-				{
-					messageId: "spaceInEmphasis",
-					line: 1,
-					column: 32,
-					endLine: 1,
-					endColumn: 36,
-				},
-				{
-					messageId: "spaceInEmphasis",
-					line: 1,
-					column: 54,
-					endLine: 1,
-					endColumn: 58,
 				},
 			],
 		},
@@ -1248,6 +1170,271 @@ ruleTester.run("no-space-in-emphasis", rule, {
 					column: 20,
 					endLine: 1,
 					endColumn: 23,
+				},
+			],
+		},
+		{
+			code: "# Broken * emphasis * with spaces",
+			output: "# Broken *emphasis* with spaces",
+			errors: [
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 10,
+					endLine: 1,
+					endColumn: 13,
+				},
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 19,
+					endLine: 1,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: dedent`
+				Broken * emphasis * with spaces
+				===============
+			`,
+			output: dedent`
+				Broken *emphasis* with spaces
+				===============
+			`,
+			errors: [
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 11,
+				},
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 17,
+					endLine: 1,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: dedent`
+			| Table | Table                     |
+			| ----- | ------------------------- |
+			| star  | text * text* text          |
+			| star  | text *text * text          |
+			| under | text _ text_ text          |
+			| under | text _text _ text          |
+			`,
+			output: dedent`
+			| Table | Table                     |
+			| ----- | ------------------------- |
+			| star  | text *text* text          |
+			| star  | text *text* text          |
+			| under | text _text_ text          |
+			| under | text _text_ text          |
+			`,
+			errors: [
+				{
+					messageId: "spaceInEmphasis",
+					line: 3,
+					column: 16,
+					endLine: 3,
+					endColumn: 19,
+				},
+				{
+					messageId: "spaceInEmphasis",
+					line: 4,
+					column: 20,
+					endLine: 4,
+					endColumn: 23,
+				},
+				{
+					messageId: "spaceInEmphasis",
+					line: 5,
+					column: 16,
+					endLine: 5,
+					endColumn: 19,
+				},
+				{
+					messageId: "spaceInEmphasis",
+					line: 6,
+					column: 20,
+					endLine: 6,
+					endColumn: 23,
+				},
+			],
+		},
+		{
+			code: "Broken ~ strikethrough ~ with spaces",
+			output: "Broken ~strikethrough~ with spaces",
+			options: [{ includeStrikethrough: true }],
+			errors: [
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 11,
+				},
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 22,
+					endLine: 1,
+					endColumn: 25,
+				},
+			],
+		},
+		{
+			code: "Broken ~~ strikethrough ~~ with spaces",
+			output: "Broken ~~strikethrough~~ with spaces",
+			options: [{ includeStrikethrough: true }],
+			errors: [
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 12,
+				},
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 23,
+					endLine: 1,
+					endColumn: 27,
+				},
+			],
+		},
+		{
+			code: "Mixed ~~ok strikethrough~~ and ~~ broken strikethrough ~~",
+			output: "Mixed ~~ok strikethrough~~ and ~~broken strikethrough~~",
+			options: [{ includeStrikethrough: true }],
+			errors: [
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 32,
+					endLine: 1,
+					endColumn: 36,
+				},
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 54,
+					endLine: 1,
+					endColumn: 58,
+				},
+			],
+		},
+		{
+			code: "Mixed ~ strikethrough ~ and * emphasis * with spaces",
+			output: "Mixed ~strikethrough~ and *emphasis* with spaces",
+			options: [{ includeStrikethrough: true }],
+			errors: [
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 7,
+					endLine: 1,
+					endColumn: 10,
+				},
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 21,
+					endLine: 1,
+					endColumn: 24,
+				},
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 29,
+					endLine: 1,
+					endColumn: 32,
+				},
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 38,
+					endLine: 1,
+					endColumn: 41,
+				},
+			],
+		},
+		{
+			code: "Mixed ~ok strikethrough~ and ~ broken strikethrough ~",
+			output: "Mixed ~ok strikethrough~ and ~broken strikethrough~",
+			options: [{ includeStrikethrough: true }],
+			errors: [
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 30,
+					endLine: 1,
+					endColumn: 33,
+				},
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 51,
+					endLine: 1,
+					endColumn: 54,
+				},
+			],
+		},
+		{
+			code: "# Broken ~ strikethrough ~ with spaces",
+			output: "# Broken ~strikethrough~ with spaces",
+			options: [{ includeStrikethrough: true }],
+			errors: [
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 10,
+					endLine: 1,
+					endColumn: 13,
+				},
+				{
+					messageId: "spaceInEmphasis",
+					line: 1,
+					column: 24,
+					endLine: 1,
+					endColumn: 27,
+				},
+			],
+		},
+		{
+			code: dedent`
+			| Table | Table                     |
+			| ----- | ------------------------- |
+			| strike | text ~ text~ text          |
+			| strike | text ~text ~ text          |
+			`,
+			output: dedent`
+			| Table | Table                     |
+			| ----- | ------------------------- |
+			| strike | text ~text~ text          |
+			| strike | text ~text~ text          |
+			`,
+			options: [{ includeStrikethrough: true }],
+			errors: [
+				{
+					messageId: "spaceInEmphasis",
+					line: 3,
+					column: 17,
+					endLine: 3,
+					endColumn: 20,
+				},
+				{
+					messageId: "spaceInEmphasis",
+					line: 4,
+					column: 21,
+					endLine: 4,
+					endColumn: 24,
 				},
 			],
 		},

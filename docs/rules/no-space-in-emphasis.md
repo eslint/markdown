@@ -22,8 +22,6 @@ Here is some * italic * text.
 Here is some __ bold __ text.
 Here is some _ italic _ text.
 Here is some *** bold italic *** text.
-Here is some ~ strikethrough ~ text.
-Here is some ~~ strikethrough ~~ text.
 ```
 
 Examples of **correct** code for this rule:
@@ -38,6 +36,28 @@ Here is some _italic_ text.
 Here is some ***bold italic*** text.
 Here is some **_ bold _** text.
 Here is some _** italic **_ text.
+```
+
+## Options
+
+The following options are available on this rule:
+
+* `includeStrikethrough: boolean` - when `true`, also check for spaces around strikethrough markers (`~` and `~~`). (default: `false`)
+
+Examples of **incorrect** code when configured as `"no-space-in-emphasis": ["error", { includeStrikethrough: true }]`:
+
+```markdown
+<!-- eslint markdown/no-space-in-emphasis: ["error", { includeStrikethrough: true }] -->
+
+Here is some ~ strikethrough ~ text.
+Here is some ~~ strikethrough ~~ text.
+```
+
+Examples of **correct** code when configured as `"no-space-in-emphasis": ["error", { includeStrikethrough: true }]`:
+
+```markdown
+<!-- eslint markdown/no-space-in-emphasis: ["error", { includeStrikethrough: true }] -->
+
 Here is some ~strikethrough~ text.
 Here is some ~~strikethrough~~ text.
 ```
