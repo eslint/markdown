@@ -4,12 +4,6 @@
  */
 
 //-----------------------------------------------------------------------------
-// Imports
-//-----------------------------------------------------------------------------
-
-import { toString } from "mdast-util-to-string";
-
-//-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
@@ -69,7 +63,8 @@ export default {
 			: new Map([[1, new Set()]]);
 		let lastLevel = 1;
 		let currentLevelHeadings = headingsByLevel.get(lastLevel);
-		let currentLevelHeadingSequence = "";
+		let headingTextSequence = "";
+		let headingText = "";
 
 		return {
 			heading(node) {
@@ -92,27 +87,31 @@ export default {
 			},
 
 			"heading *"(child) {
-				currentLevelHeadingSequence += JSON.stringify({
+				if (child.value) {
+					headingText += child.value;
+				}
+
+				headingTextSequence += JSON.stringify({
 					type: child.type,
 					value: child.value,
 				});
 			},
 
 			"heading:exit"(node) {
-				if (currentLevelHeadings.has(currentLevelHeadingSequence)) {
+				if (currentLevelHeadings.has(headingTextSequence)) {
 					context.report({
 						loc: node.position,
 						messageId: "duplicateHeading",
 						data: {
-							text: toString(node),
+							text: headingText,
 						},
 					});
 				} else {
-					// Add a copy of the sequence to prevent mutation issues.
-					currentLevelHeadings.add(currentLevelHeadingSequence);
+					currentLevelHeadings.add(headingTextSequence);
 				}
 
-				currentLevelHeadingSequence = "";
+				headingTextSequence = "";
+				headingText = "";
 			},
 		};
 	},
