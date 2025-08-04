@@ -88,13 +88,16 @@ export default {
 
 			"heading *"(child) {
 				if (child.value) {
+					headingTextSequence += JSON.stringify({
+						type: child.type,
+						value: child.value,
+					});
 					headingText += child.value;
+				} else {
+					headingTextSequence += JSON.stringify({
+						type: child.type,
+					});
 				}
-
-				headingTextSequence += JSON.stringify({
-					type: child.type,
-					value: child.value,
-				});
 			},
 
 			"heading:exit"(node) {
