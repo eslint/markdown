@@ -15,39 +15,12 @@ import { toString } from "mdast-util-to-string";
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Node } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"duplicateHeading"} NoDuplicateHeadingsMessageIds
  * @typedef {[{ checkSiblingsOnly?: boolean }]} NoDuplicateHeadingsOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoDuplicateHeadingsOptions, MessageIds: NoDuplicateHeadingsMessageIds }>} NoDuplicateHeadingsRuleDefinition
- * @typedef {Omit<Node, 'position' | 'data'>} NodeWithoutPositionAndData
+ * @typedef {{ type: string, value?: string }} HeadingChild
  */
-
-//-----------------------------------------------------------------------------
-// Helpers
-//-----------------------------------------------------------------------------
-
-/**
- * Removes `position` and `data` properties from a node, recursively for all children.
- * @param {Node} node The node to process.
- * @returns {NodeWithoutPositionAndData} A new node without `position` and `data` properties.
- */
-function removePositionAndDataFromNode(node) {
-	// eslint-disable-next-line no-unused-vars -- Needed to remove `position` and `data` properties.
-	const { position, data, ...nodeWithoutPositionAndData } = node;
-
-	if (
-		"children" in nodeWithoutPositionAndData &&
-		Array.isArray(nodeWithoutPositionAndData.children)
-	) {
-		nodeWithoutPositionAndData.children =
-			nodeWithoutPositionAndData.children.map(
-				removePositionAndDataFromNode,
-			);
-	}
-
-	return nodeWithoutPositionAndData;
-}
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -85,8 +58,8 @@ export default {
 	create(context) {
 		const [{ checkSiblingsOnly }] = context.options;
 
-		/** @type {Map<number, Set<NodeWithoutPositionAndData[]>>} */
-		const headingsByLevel = checkSiblingsOnly
+		/** @type {Map<number, Set<HeadingChild[]>>} */
+		const headingChildrenByLevel = checkSiblingsOnly
 			? new Map([
 					[1, new Set()],
 					[2, new Set()],
@@ -96,15 +69,13 @@ export default {
 					[6, new Set()],
 				])
 			: new Map([[1, new Set()]]);
+		/** @type {HeadingChild[]} */
+		const currentHeadingChildren = [];
 		let lastLevel = 1;
-		let currentLevelHeadings = headingsByLevel.get(lastLevel);
+		let currentLevelHeadingChildren = headingChildrenByLevel.get(lastLevel);
 
 		return {
 			heading(node) {
-				const headingChildren = node.children.map(
-					removePositionAndDataFromNode,
-				);
-
 				if (checkSiblingsOnly) {
 					const currentLevel = node.depth;
 
@@ -114,17 +85,27 @@ export default {
 							level > currentLevel;
 							level--
 						) {
-							headingsByLevel.get(level).clear();
+							headingChildrenByLevel.get(level).clear();
 						}
 					}
 
 					lastLevel = currentLevel;
-					currentLevelHeadings = headingsByLevel.get(currentLevel);
+					currentLevelHeadingChildren =
+						headingChildrenByLevel.get(currentLevel);
 				}
+			},
 
+			"heading *"(child) {
+				currentHeadingChildren.push({
+					type: child.type,
+					value: child.value,
+				});
+			},
+
+			"heading:exit"(node) {
 				if (
-					[...currentLevelHeadings].some(item =>
-						equal(item, headingChildren),
+					[...currentLevelHeadingChildren].some(typeValue =>
+						equal(typeValue, currentHeadingChildren),
 					)
 				) {
 					context.report({
@@ -135,8 +116,13 @@ export default {
 						},
 					});
 				} else {
-					currentLevelHeadings.add(headingChildren);
+					// Add a copy of the sequence to prevent mutation issues.
+					currentLevelHeadingChildren.add([
+						...currentHeadingChildren,
+					]);
 				}
+
+				currentHeadingChildren.length = 0;
 			},
 		};
 	},
