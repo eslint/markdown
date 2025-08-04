@@ -90,7 +90,6 @@
   "dependencies": {
     "@eslint/core": "^0.15.0",
     "@eslint/plugin-kit": "^0.3.1",
-    "fast-deep-equal": "^3.1.3",
     "github-slugger": "^2.0.0",
     "mdast-util-from-markdown": "^2.0.2",
     "mdast-util-frontmatter": "^2.0.1",

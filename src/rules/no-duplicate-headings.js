@@ -7,7 +7,6 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import equal from "fast-deep-equal";
 import { toString } from "mdast-util-to-string";
 
 //-----------------------------------------------------------------------------
@@ -19,7 +18,6 @@ import { toString } from "mdast-util-to-string";
  * @typedef {"duplicateHeading"} NoDuplicateHeadingsMessageIds
  * @typedef {[{ checkSiblingsOnly?: boolean }]} NoDuplicateHeadingsOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoDuplicateHeadingsOptions, MessageIds: NoDuplicateHeadingsMessageIds }>} NoDuplicateHeadingsRuleDefinition
- * @typedef {{ type: string, value?: string }} HeadingChild
  */
 
 //-----------------------------------------------------------------------------
@@ -58,7 +56,7 @@ export default {
 	create(context) {
 		const [{ checkSiblingsOnly }] = context.options;
 
-		/** @type {Map<number, Set<HeadingChild[]>>} */
+		/** @type {Map<number, Set<string>>} */
 		const headingChildrenByLevel = checkSiblingsOnly
 			? new Map([
 					[1, new Set()],
@@ -69,10 +67,9 @@ export default {
 					[6, new Set()],
 				])
 			: new Map([[1, new Set()]]);
-		/** @type {HeadingChild[]} */
-		const currentHeadingChildren = [];
 		let lastLevel = 1;
 		let currentLevelHeadingChildren = headingChildrenByLevel.get(lastLevel);
+		let currentLevelHeadingChildrenString = "";
 
 		return {
 			heading(node) {
@@ -96,7 +93,7 @@ export default {
 			},
 
 			"heading *"(child) {
-				currentHeadingChildren.push({
+				currentLevelHeadingChildrenString += JSON.stringify({
 					type: child.type,
 					value: child.value,
 				});
@@ -104,8 +101,8 @@ export default {
 
 			"heading:exit"(node) {
 				if (
-					[...currentLevelHeadingChildren].some(typeValue =>
-						equal(typeValue, currentHeadingChildren),
+					currentLevelHeadingChildren.has(
+						currentLevelHeadingChildrenString,
 					)
 				) {
 					context.report({
@@ -117,12 +114,12 @@ export default {
 					});
 				} else {
 					// Add a copy of the sequence to prevent mutation issues.
-					currentLevelHeadingChildren.add([
-						...currentHeadingChildren,
-					]);
+					currentLevelHeadingChildren.add(
+						currentLevelHeadingChildrenString,
+					);
 				}
 
-				currentHeadingChildren.length = 0;
+				currentLevelHeadingChildrenString = "";
 			},
 		};
 	},
