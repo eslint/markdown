@@ -57,7 +57,7 @@ export default {
 		const [{ checkSiblingsOnly }] = context.options;
 
 		/** @type {Map<number, Set<string>>} */
-		const headingChildrenByLevel = checkSiblingsOnly
+		const headingsByLevel = checkSiblingsOnly
 			? new Map([
 					[1, new Set()],
 					[2, new Set()],
@@ -68,8 +68,8 @@ export default {
 				])
 			: new Map([[1, new Set()]]);
 		let lastLevel = 1;
-		let currentLevelHeadingChildren = headingChildrenByLevel.get(lastLevel);
-		let currentLevelHeadingChildrenString = "";
+		let currentLevelHeadings = headingsByLevel.get(lastLevel);
+		let currentLevelHeadingSequence = "";
 
 		return {
 			heading(node) {
@@ -82,29 +82,24 @@ export default {
 							level > currentLevel;
 							level--
 						) {
-							headingChildrenByLevel.get(level).clear();
+							headingsByLevel.get(level).clear();
 						}
 					}
 
 					lastLevel = currentLevel;
-					currentLevelHeadingChildren =
-						headingChildrenByLevel.get(currentLevel);
+					currentLevelHeadings = headingsByLevel.get(currentLevel);
 				}
 			},
 
 			"heading *"(child) {
-				currentLevelHeadingChildrenString += JSON.stringify({
+				currentLevelHeadingSequence += JSON.stringify({
 					type: child.type,
 					value: child.value,
 				});
 			},
 
 			"heading:exit"(node) {
-				if (
-					currentLevelHeadingChildren.has(
-						currentLevelHeadingChildrenString,
-					)
-				) {
+				if (currentLevelHeadings.has(currentLevelHeadingSequence)) {
 					context.report({
 						loc: node.position,
 						messageId: "duplicateHeading",
@@ -114,12 +109,10 @@ export default {
 					});
 				} else {
 					// Add a copy of the sequence to prevent mutation issues.
-					currentLevelHeadingChildren.add(
-						currentLevelHeadingChildrenString,
-					);
+					currentLevelHeadings.add(currentLevelHeadingSequence);
 				}
 
-				currentLevelHeadingChildrenString = "";
+				currentLevelHeadingSequence = "";
 			},
 		};
 	},
