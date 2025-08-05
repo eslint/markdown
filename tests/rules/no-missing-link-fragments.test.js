@@ -101,6 +101,59 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		[Link](#old-style-6)
 		`,
 
+		// HTML id/name attributes using unquoted values and spaces around equals sign
+		dedent`
+		<h1 id=bookmark>Bookmark</h1>
+		<h1 name=old-style>Old Style</h1>
+		<h2 id = bookmark-2>Bookmark 2</h2>
+		<h2 name = old-style-2>Old Style 2</h2>
+		<h3 id= bookmark-3>Bookmark 3</h3>
+		<h3 name= old-style-3>Old Style 3</h3>
+		<h4 id =bookmark-4>Bookmark 4</h4>
+		<h4 name =old-style-4>Old Style 4</h4>
+		<h5 id='bookmark-5'>Bookmark 5</h5>
+		<h5 name='old-style-5'>Old Style 5</h5>
+		<h6 id = 'bookmark-6'>Bookmark 6</h6>
+		<h6 name = 'old-style-6'>Old Style 6</h6>
+		<h6 id= 'bookmark-7'>Bookmark 7</h6>
+		<h6 name= 'old-style-7'>Old Style 7</h6>
+		<h6 id ='bookmark-8'>Bookmark 8</h6>
+		<h6 name ='old-style-8'>Old Style 8</h6>
+		<h6 id="bookmark-9">Bookmark 9</h6>
+		<h6 name="old-style-9">Old Style 9</h6>
+		<h6 id = "bookmark-10">Bookmark 10</h6>
+		<h6 name = "old-style-10">Old Style 10</h6>
+		<h6 id= "bookmark-11">Bookmark 11</h6>
+		<h6 name= "old-style-11">Old Style 11</h6>
+		<h6 id ="bookmark-12">Bookmark 12</h6>
+		<h6 name ="old-style-12">Old Style 12</h6>
+		
+		[Link](#bookmark)
+		[Link](#old-style)
+		[Link](#bookmark-2)
+		[Link](#old-style-2)
+		[Link](#bookmark-3)
+		[Link](#old-style-3)
+		[Link](#bookmark-4)
+		[Link](#old-style-4)
+		[Link](#bookmark-5)
+		[Link](#old-style-5)
+		[Link](#bookmark-6)
+		[Link](#old-style-6)
+		[Link](#bookmark-7)
+		[Link](#old-style-7)
+		[Link](#bookmark-8)
+		[Link](#old-style-8)
+		[Link](#bookmark-9)
+		[Link](#old-style-9)
+		[Link](#bookmark-10)
+		[Link](#old-style-10)
+		[Link](#bookmark-11)
+		[Link](#old-style-11)
+		[Link](#bookmark-12)
+		[Link](#old-style-12)
+		`,
+
 		// Special #top link
 		"[Link](#top)",
 
@@ -494,6 +547,101 @@ ruleTester.run("no-missing-link-fragments", rule, {
 					column: 1,
 					endLine: 2,
 					endColumn: 25,
+				},
+			],
+		},
+
+		// Invalid: Link to non-existent ID with unquoted attributes
+		{
+			code: dedent`
+			<h1 id=bookmark>Bookmark</h1>
+
+			[Link](#notfound)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "notfound" },
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 18,
+				},
+			],
+		},
+
+		// Invalid: Link to non-existent ID with spaced attributes
+		{
+			code: dedent`
+			<h2 id = bookmark-2>Bookmark 2</h2>
+
+			[Link](#notfound)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "notfound" },
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 18,
+				},
+			],
+		},
+
+		// Invalid: Link to non-existent name attribute
+		{
+			code: dedent`
+			<h3 name=old-style-3>Old Style 3</h3>
+
+			[Link](#notfound)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "notfound" },
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 18,
+				},
+			],
+		},
+
+		// Invalid: Link to non-existent ID with quoted attributes
+		{
+			code: dedent`
+			<h4 id="bookmark-4">Bookmark 4</h4>
+
+			[Link](#notfound)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "notfound" },
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 18,
+				},
+			],
+		},
+
+		// Invalid: Link to non-existent ID with spaced quoted attributes
+		{
+			code: dedent`
+			<h5 id = "bookmark-5">Bookmark 5</h5>
+
+			[Link](#notfound)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "notfound" },
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 18,
 				},
 			],
 		},

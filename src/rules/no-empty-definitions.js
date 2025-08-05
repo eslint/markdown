@@ -8,6 +8,7 @@
 //-----------------------------------------------------------------------------
 
 import { normalizeIdentifier } from "micromark-util-normalize-identifier";
+import { htmlCommentPattern } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -23,8 +24,6 @@ import { normalizeIdentifier } from "micromark-util-normalize-identifier";
 //-----------------------------------------------------------------------------
 // Helpers
 //-----------------------------------------------------------------------------
-
-const htmlCommentPattern = /<!--[\s\S]*?-->/gu;
 
 /**
  * Checks if a string contains only HTML comments.
