@@ -97,7 +97,10 @@ export default {
 						type: child.type,
 						value: child.value,
 					});
-					headingText += child.value;
+
+					if (child.type === "text") {
+						headingText += child.value;
+					}
 				} else {
 					headingChildrenSequence += JSON.stringify({
 						type: child.type,
