@@ -40,24 +40,6 @@ function isGitHubLineReference(fragment) {
 	return githubLineReferencePattern.test(fragment);
 }
 
-/**
- * Extracts the text recursively from a node
- * @param {Node} node The node from which to recursively extract text
- * @returns {string} The extracted text
- */
-function extractText(node) {
-	if (node.type === "html") {
-		return "";
-	}
-	if ("value" in node) {
-		return /** @type {string} */ (node.value);
-	}
-	if ("children" in node) {
-		return /** @type {Node[]} */ (node.children).map(extractText).join("");
-	}
-	return "";
-}
-
 //-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
@@ -103,8 +85,8 @@ export default {
 	},
 
 	create(context) {
-		const { allowPattern: allowPatternString, ignoreCase } =
-			context.options[0];
+		const [{ allowPattern: allowPatternString, ignoreCase }] =
+			context.options;
 		const allowPattern = allowPatternString
 			? new RegExp(allowPatternString, "u")
 			: null;
@@ -115,19 +97,31 @@ export default {
 		/** @type {Array<{node: Link, fragment: string}>} */
 		const linkNodes = [];
 
+		/** @type {string} */
+		let headingText;
+
 		return {
-			heading(node) {
-				const rawHeadingText = extractText(node);
+			heading() {
+				headingText = "";
+			},
+
+			"heading *:not(html)"({ value }) {
+				if (!value) {
+					return;
+				}
+
+				headingText += value;
+			},
+
+			"heading:exit"() {
 				let baseId;
-				const customIdMatch = rawHeadingText.match(
-					customHeadingIdPattern,
-				);
+				const customIdMatch = headingText.match(customHeadingIdPattern);
 
 				if (customIdMatch) {
 					baseId = customIdMatch[1];
 				} else {
 					const tempSlugger = new GithubSlugger();
-					baseId = tempSlugger.slug(rawHeadingText);
+					baseId = tempSlugger.slug(headingText);
 				}
 
 				const finalId = slugger.slug(baseId);
