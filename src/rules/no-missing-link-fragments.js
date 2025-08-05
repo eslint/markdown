@@ -31,15 +31,6 @@ const customHeadingIdPattern = /\{#([^}\s]+)\}\s*$/u;
 const htmlIdNamePattern =
 	/(?<!<)<(?:[^>]+)\s(?:id|name)\s*=\s*["']?([^"'\s>]+)["']?/giu;
 
-/**
- * Checks if the fragment is a valid GitHub line reference
- * @param {string} fragment The fragment to check
- * @returns {boolean} Whether the fragment is a valid GitHub line reference
- */
-function isGitHubLineReference(fragment) {
-	return githubLineReferencePattern.test(fragment);
-}
-
 //-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
@@ -177,7 +168,7 @@ export default {
 						continue;
 					}
 
-					if (isGitHubLineReference(decodedFragment)) {
+					if (githubLineReferencePattern.test(decodedFragment)) {
 						continue;
 					}
 
