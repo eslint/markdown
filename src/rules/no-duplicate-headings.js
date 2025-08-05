@@ -63,11 +63,16 @@ export default {
 			: new Map([[1, new Set()]]);
 		let lastLevel = 1;
 		let currentLevelHeadings = headingsByLevel.get(lastLevel);
-		let headingTextSequence = "";
-		let headingText = "";
+		/** @type {string} */
+		let headingChildrenSequence;
+		/** @type {string} */
+		let headingText;
 
 		return {
 			heading(node) {
+				headingChildrenSequence = "";
+				headingText = "";
+
 				if (checkSiblingsOnly) {
 					const currentLevel = node.depth;
 
@@ -88,20 +93,20 @@ export default {
 
 			"heading *"(child) {
 				if (child.value) {
-					headingTextSequence += JSON.stringify({
+					headingChildrenSequence += JSON.stringify({
 						type: child.type,
 						value: child.value,
 					});
 					headingText += child.value;
 				} else {
-					headingTextSequence += JSON.stringify({
+					headingChildrenSequence += JSON.stringify({
 						type: child.type,
 					});
 				}
 			},
 
 			"heading:exit"(node) {
-				if (currentLevelHeadings.has(headingTextSequence)) {
+				if (currentLevelHeadings.has(headingChildrenSequence)) {
 					context.report({
 						loc: node.position,
 						messageId: "duplicateHeading",
@@ -110,11 +115,8 @@ export default {
 						},
 					});
 				} else {
-					currentLevelHeadings.add(headingTextSequence);
+					currentLevelHeadings.add(headingChildrenSequence);
 				}
-
-				headingTextSequence = "";
-				headingText = "";
 			},
 		};
 	},
