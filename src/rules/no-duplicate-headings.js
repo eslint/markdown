@@ -91,19 +91,19 @@ export default {
 				}
 			},
 
-			"heading *"(child) {
-				if (child.value) {
+			"heading *"({ type, value }) {
+				if (value) {
 					headingChildrenSequence += JSON.stringify({
-						type: child.type,
-						value: child.value,
+						type,
+						value,
 					});
 
-					if (child.type === "text") {
-						headingText += child.value;
+					if (type === "text") {
+						headingText += value;
 					}
 				} else {
 					headingChildrenSequence += JSON.stringify({
-						type: child.type,
+						type,
 					});
 				}
 			},
