@@ -97,11 +97,7 @@ export default {
 			},
 
 			"heading *:not(html)"({ value }) {
-				if (!value) {
-					return;
-				}
-
-				headingText += value;
+				headingText += value ?? "";
 			},
 
 			"heading:exit"() {
