@@ -15,7 +15,7 @@ import { htmlCommentPattern } from "../util.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Node, Link } from "mdast";
+ * @import { Link } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"invalidFragment"} NoMissingLinkFragmentsMessageIds
  * @typedef {[{ ignoreCase?: boolean; allowPattern?: string }]} NoMissingLinkFragmentsOptions
@@ -91,6 +91,15 @@ export default {
 		/** @type {string} */
 		let headingText;
 
+		/**
+		 * Normalizes a text string based on the `ignoreCase` option.
+		 * @param {string} text The text to normalize.
+		 * @returns {string} The normalized text.
+		 */
+		function normalize(text) {
+			return ignoreCase ? text.toLowerCase() : text;
+		}
+
 		return {
 			heading() {
 				headingText = "";
@@ -112,7 +121,7 @@ export default {
 				}
 
 				const finalId = slugger.slug(baseId);
-				fragmentIds.add(ignoreCase ? finalId.toLowerCase() : finalId);
+				fragmentIds.add(normalize(finalId));
 			},
 
 			html(node) {
@@ -130,9 +139,7 @@ export default {
 				)) {
 					const extractedId = match[1];
 					const finalId = slugger.slug(extractedId);
-					fragmentIds.add(
-						ignoreCase ? finalId.toLowerCase() : finalId,
-					);
+					fragmentIds.add(normalize(finalId));
 				}
 			},
 
@@ -152,7 +159,9 @@ export default {
 
 			"root:exit"() {
 				for (const { node, fragment } of linkNodes) {
+					/** @type {string} */
 					let decodedFragment;
+
 					try {
 						decodedFragment = decodeURIComponent(fragment);
 					} catch {
@@ -160,17 +169,14 @@ export default {
 						decodedFragment = fragment;
 					}
 
-					if (allowPattern?.test(decodedFragment)) {
+					if (
+						allowPattern?.test(decodedFragment) ||
+						githubLineReferencePattern.test(decodedFragment)
+					) {
 						continue;
 					}
 
-					if (githubLineReferencePattern.test(decodedFragment)) {
-						continue;
-					}
-
-					const normalizedFragment = ignoreCase
-						? decodedFragment.toLowerCase()
-						: decodedFragment;
+					const normalizedFragment = normalize(decodedFragment);
 
 					if (!fragmentIds.has(normalizedFragment)) {
 						context.report({
