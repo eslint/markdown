@@ -25,6 +25,7 @@ import { findOffsets } from "../util.js";
 //-----------------------------------------------------------------------------
 
 const htmlTagPattern = /<([a-z0-9]+(?:-[a-z0-9]+)*)[^>]*>/giu;
+const nextLinesPattern = /[\r\n][\s\S]*$/u;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -68,7 +69,7 @@ export default {
 	},
 
 	create(context) {
-		const allowed = new Set(context.options[0]?.allowed);
+		const allowed = new Set(context.options[0].allowed);
 
 		return {
 			html(node) {
@@ -86,11 +87,12 @@ export default {
 						column: node.position.start.column + columnOffset,
 					};
 
-					const firstLineEnd = fullMatch.indexOf("\n");
+					const firstNewlineIndex =
+						fullMatch.search(nextLinesPattern);
 					const endColumn =
-						firstLineEnd === -1
+						firstNewlineIndex === -1
 							? start.column + fullMatch.length
-							: start.column + firstLineEnd;
+							: start.column + firstNewlineIndex;
 
 					const end = {
 						line: start.line,

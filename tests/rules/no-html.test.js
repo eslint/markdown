@@ -189,6 +189,36 @@ ruleTester.run("no-html", rule, {
 			],
 		},
 		{
+			code: '<span\rclass="highlight"\rdata-id="123">Text</span>',
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+					data: {
+						name: "span",
+					},
+				},
+			],
+		},
+		{
+			code: '<span\r\nclass="highlight"\r\ndata-id="123">Text</span>',
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+					data: {
+						name: "span",
+					},
+				},
+			],
+		},
+		{
 			code: '<div   class="test"   >Content</div>',
 			errors: [
 				{
