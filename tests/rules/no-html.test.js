@@ -267,5 +267,50 @@ ruleTester.run("no-html", rule, {
 				},
 			],
 		},
+		{
+			code: '<input placeholder=">" />',
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 26,
+					data: {
+						name: "input",
+					},
+				},
+			],
+		},
+		{
+			code: "<input placeholder='>'></input>",
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 24,
+					data: {
+						name: "input",
+					},
+				},
+			],
+		},
+		{
+			code: '<input\nplaceholder=">" />',
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 7,
+					data: {
+						name: "input",
+					},
+				},
+			],
+		},
 	],
 });
