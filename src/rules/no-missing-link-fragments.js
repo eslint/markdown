@@ -27,9 +27,9 @@ import { htmlCommentPattern } from "../util.js";
 //-----------------------------------------------------------------------------
 
 const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
-const customHeadingIdPattern = /\{#(?<customId>[^}\s]+)\}\s*$/u;
+const customHeadingIdPattern = /\{#(?<id>[^}\s]+)\}\s*$/u;
 const htmlIdNamePattern =
-	/(?<!<)<(?:[^>]+)\s(?:id|name)\s*=\s*["']?([^"'\s>]+)["']?/giu;
+	/(?<!<)<(?:[^>]+)\s(?:id|name)\s*=\s*["']?(?<id>[^"'\s>]+)["']?/giu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -108,35 +108,28 @@ export default {
 			},
 
 			"heading:exit"() {
-				let baseId;
 				const customIdMatch = headingText.match(customHeadingIdPattern);
-
-				if (customIdMatch) {
-					baseId = customIdMatch.groups.customId;
-				} else {
-					const tempSlugger = new GithubSlugger();
-					baseId = tempSlugger.slug(headingText);
-				}
-
+				const baseId = customIdMatch
+					? customIdMatch.groups.id
+					: headingText;
 				const finalId = slugger.slug(baseId);
+
 				fragmentIds.add(normalize(finalId));
 			},
 
 			html(node) {
-				const htmlText = node.value.trim();
+				// 1. Remove all comments
+				const htmlTextWithoutComments = node.value
+					.trim()
+					.replace(htmlCommentPattern, "");
 
-				// First remove all comments
-				const textWithoutComments = htmlText.replace(
-					htmlCommentPattern,
-					"",
-				);
-
-				// Then look for IDs in the remaining text
-				for (const match of textWithoutComments.matchAll(
+				// 2. Then look for IDs in the remaining text
+				for (const match of htmlTextWithoutComments.matchAll(
 					htmlIdNamePattern,
 				)) {
-					const extractedId = match[1];
+					const extractedId = match.groups.id;
 					const finalId = slugger.slug(extractedId);
+
 					fragmentIds.add(normalize(finalId));
 				}
 			},
