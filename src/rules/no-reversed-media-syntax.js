@@ -42,38 +42,6 @@ function isInSkipRange(matchIndex, skipRanges) {
 	);
 }
 
-/**
- * Finds ranges of inline code and HTML nodes within a given node
- * @param {Heading | Paragraph | TableCell} node The node to search
- * @returns {Array<{startOffset: number, endOffset: number}>} Array of objects containing start and end offsets
- */
-function findSkipRanges(node) {
-	/** @type {Array<{startOffset: number, endOffset: number}>} */
-	const skipRanges = [];
-
-	/**
-	 * Recursively traverses the AST to find inline code and HTML nodes
-	 * @param {Node} currentNode The current node being traversed
-	 * @returns {void}
-	 */
-	function traverse(currentNode) {
-		if (currentNode.type === "inlineCode" || currentNode.type === "html") {
-			skipRanges.push({
-				startOffset: currentNode.position.start.offset,
-				endOffset: currentNode.position.end.offset,
-			});
-			return;
-		}
-
-		if ("children" in currentNode && Array.isArray(currentNode.children)) {
-			currentNode.children.forEach(traverse);
-		}
-	}
-
-	traverse(node);
-	return skipRanges;
-}
-
 //-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
@@ -98,6 +66,9 @@ export default {
 	},
 
 	create(context) {
+		/** @type {Array<{startOffset: number, endOffset: number}>} */
+		let skipRanges = [];
+
 		/**
 		 * Finds reversed link/image syntax in a node.
 		 * @param {Heading | Paragraph | TableCell} node The node to check.
@@ -105,7 +76,6 @@ export default {
 		 */
 		function findReversedMediaSyntax(node) {
 			const text = context.sourceCode.getText(node);
-			const skipRanges = findSkipRanges(node);
 			let match;
 
 			while ((match = reversedPattern.exec(text)) !== null) {
@@ -171,16 +141,40 @@ export default {
 		}
 
 		return {
-			heading(node) {
-				findReversedMediaSyntax(node);
+			"heading html,inlineCode"(node) {
+				skipRanges.push({
+					startOffset: node.position.start.offset,
+					endOffset: node.position.end.offset,
+				});
 			},
 
-			paragraph(node) {
+			"heading:exit"(node) {
 				findReversedMediaSyntax(node);
+				skipRanges = [];
 			},
 
-			tableCell(node) {
+			"paragraph html,inlineCode"(node) {
+				skipRanges.push({
+					startOffset: node.position.start.offset,
+					endOffset: node.position.end.offset,
+				});
+			},
+
+			"paragraph:exit"(node) {
 				findReversedMediaSyntax(node);
+				skipRanges = [];
+			},
+
+			"tableCell html,inlineCode"(node) {
+				skipRanges.push({
+					startOffset: node.position.start.offset,
+					endOffset: node.position.end.offset,
+				});
+			},
+
+			"tableCell:exit"(node) {
+				findReversedMediaSyntax(node);
+				skipRanges = [];
 			},
 		};
 	},
