@@ -46,6 +46,30 @@ Examples of **correct** code when configured as `"no-html": ["error", { allowed:
 Hello <b>world!</b>
 ```
 
+* `allowedIgnoreCase: boolean` - when `true`, enables case-insensitive matching for HTML tag names against the `allowed` array. (default: `false`)
+
+Examples of **incorrect** code when configured as `"no-html": ["error", { allowed: ["DIV"], allowedIgnoreCase: false }]`:
+
+```markdown
+<!-- eslint markdown/no-html: ["error", { allowed: ["DIV"], allowedIgnoreCase: false }] -->
+
+# Heading 1
+
+<div>Hello world!</div>
+```
+
+Examples of **correct** code when configured as `"no-html": ["error", { allowed: ["DIV"], allowedIgnoreCase: true }]`:
+
+```markdown
+<!-- eslint markdown/no-html: ["error", { allowed: ["DIV"], allowedIgnoreCase: true }] -->
+
+# Heading 1
+
+<div>Hello world!</div>
+<DIV>Hello world!</DIV>
+<DiV>Hello world!</DiV>
+```
+
 ## When Not to Use It
 
 If you aren't concerned with HTML tags, you can safely disable this rule.
