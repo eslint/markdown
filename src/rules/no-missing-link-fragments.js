@@ -81,6 +81,7 @@ export default {
 		const allowPattern = allowPatternString
 			? new RegExp(allowPatternString, "u")
 			: null;
+
 		const fragmentIds = new Set(["top"]);
 		const slugger = new GithubSlugger();
 
