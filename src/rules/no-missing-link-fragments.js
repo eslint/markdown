@@ -104,7 +104,6 @@ export default {
 					? customIdMatch.groups.id
 					: headingText;
 				const finalId = slugger.slug(baseId);
-
 				fragmentIds.add(ignoreCase ? finalId.toLowerCase() : finalId);
 			},
 
@@ -120,7 +119,6 @@ export default {
 				)) {
 					const extractedId = match.groups.id;
 					const finalId = slugger.slug(extractedId);
-
 					fragmentIds.add(
 						ignoreCase ? finalId.toLowerCase() : finalId,
 					);
@@ -145,7 +143,6 @@ export default {
 				for (const { node, fragment } of linkNodes) {
 					/** @type {string} */
 					let decodedFragment;
-
 					try {
 						decodedFragment = decodeURIComponent(fragment);
 					} catch {
