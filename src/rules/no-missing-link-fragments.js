@@ -27,7 +27,7 @@ import { htmlCommentPattern } from "../util.js";
 //-----------------------------------------------------------------------------
 
 const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
-const customHeadingIdPattern = /\{#([^}\s]+)\}\s*$/u;
+const customHeadingIdPattern = /\{#(?<customId>[^}\s]+)\}\s*$/u;
 const htmlIdNamePattern =
 	/(?<!<)<(?:[^>]+)\s(?:id|name)\s*=\s*["']?([^"'\s>]+)["']?/giu;
 
@@ -81,13 +81,11 @@ export default {
 		const allowPattern = allowPatternString
 			? new RegExp(allowPatternString, "u")
 			: null;
-
 		const fragmentIds = new Set(["top"]);
 		const slugger = new GithubSlugger();
 
 		/** @type {Array<{node: Link, fragment: string}>} */
 		const linkNodes = [];
-
 		/** @type {string} */
 		let headingText;
 
@@ -114,7 +112,7 @@ export default {
 				const customIdMatch = headingText.match(customHeadingIdPattern);
 
 				if (customIdMatch) {
-					baseId = customIdMatch[1];
+					baseId = customIdMatch.groups.customId;
 				} else {
 					const tempSlugger = new GithubSlugger();
 					baseId = tempSlugger.slug(headingText);
