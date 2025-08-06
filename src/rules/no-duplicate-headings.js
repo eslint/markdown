@@ -98,7 +98,7 @@ export default {
 						value,
 					});
 
-					if (type === "text") {
+					if (type !== "html") {
 						headingText += value;
 					}
 				} else {

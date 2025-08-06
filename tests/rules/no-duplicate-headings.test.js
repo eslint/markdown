@@ -394,6 +394,25 @@ Heading 1
 		},
 		{
 			code: dedent`
+				# Heading \`1\`
+
+				# Heading \`1\`
+            `,
+			errors: [
+				{
+					messageId: "duplicateHeading",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 14,
+					data: {
+						text: "Heading 1",
+					},
+				},
+			],
+		},
+		{
+			code: dedent`
 				# Heading 1
 
 				# Heading 1
