@@ -289,3 +289,18 @@ typeof processorPlugins satisfies {};
 		return {};
 	},
 });
+
+// `meta.docs.recommended` can be any type
+(): MarkdownRuleDefinition => ({
+	create() {
+		return {};
+	},
+	meta: {
+		docs: {
+			recommended: {
+				severity: "warn",
+				options: ["never"],
+			},
+		},
+	},
+});
