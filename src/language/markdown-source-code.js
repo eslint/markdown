@@ -167,7 +167,7 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 	 * @param {Root} options.ast The root AST node.
 	 */
 	constructor({ text, ast }) {
-		super({ ast, text });
+		super({ ast, text, lineEndingPattern: /\n|\r|\r\n/u });
 		this.ast = ast;
 
 		// need to traverse the source code to get the inline config nodes
