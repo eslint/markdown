@@ -312,5 +312,25 @@ ruleTester.run("no-html", rule, {
 				},
 			],
 		},
+		{
+			code: dedent`
+			<!-- comment -->
+			<input
+				placeholder="Enter name"
+         		name="First Name"
+		 	/>`,
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 7,
+					data: {
+						name: "input",
+					},
+				},
+			],
+		},
 	],
 });
