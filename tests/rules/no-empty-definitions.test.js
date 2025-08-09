@@ -74,6 +74,89 @@ ruleTester.run("no-empty-definitions", rule, {
 				},
 			],
 		},
+		{
+			code: "[FOO]: #",
+			options: [{ allowDefinitions: ["FOO"] }],
+		},
+		{
+			code: "[foo]: #",
+			options: [{ allowDefinitions: ["FOO"] }],
+		},
+		{
+			code: "[FOO]: #",
+			options: [{ allowDefinitions: ["foo"] }],
+		},
+		{
+			code: "[   foo   ]: #",
+			options: [{ allowDefinitions: ["foo"] }],
+		},
+		{
+			code: "[foo]: #",
+			options: [{ allowDefinitions: ["   foo   "] }],
+		},
+		{
+			code: "[foo bar]: #",
+			options: [{ allowDefinitions: ["foo\t\r\nbar"] }],
+		},
+		{
+			code: "[FOO]: <>",
+			options: [{ allowDefinitions: ["FOO"] }],
+		},
+		{
+			code: "[foo]: <>",
+			options: [{ allowDefinitions: ["FOO"] }],
+		},
+		{
+			code: "[FOO]: <>",
+			options: [{ allowDefinitions: ["foo"] }],
+		},
+		{
+			code: "[   foo   ]: <>",
+			options: [{ allowDefinitions: ["foo"] }],
+		},
+		{
+			code: "[foo]: <>",
+			options: [{ allowDefinitions: ["   foo   "] }],
+		},
+		{
+			code: "[foo bar]: <>",
+			options: [{ allowDefinitions: ["foo\t\r\nbar"] }],
+		},
+		{
+			code: "[^NOTE]:",
+			options: [{ allowFootnoteDefinitions: ["NOTE"] }],
+		},
+		{
+			code: "[^note]:",
+			options: [{ allowFootnoteDefinitions: ["NOTE"] }],
+		},
+		{
+			code: "[^NOTE]:",
+			options: [{ allowFootnoteDefinitions: ["note"] }],
+		},
+		{
+			code: "[^note]:",
+			options: [{ allowFootnoteDefinitions: ["   note   "] }],
+		},
+		// This test case is skipped for non-Node environments like Bun
+		...(typeof process !== "undefined" &&
+		process.release?.name === "node" &&
+		!process.versions?.bun
+			? [
+					{
+						code: "[Grüsse]: #",
+						options: [{ allowDefinitions: ["GRÜẞE"] }],
+					},
+					{
+						code: "[Grüsse]: <>",
+						options: [{ allowDefinitions: ["GRÜẞE"] }],
+					},
+					{
+						code: "[^Grüsse]:",
+						options: [{ allowFootnoteDefinitions: ["GRÜẞE"] }],
+					},
+				]
+			: []),
 	],
 	invalid: [
 		{
