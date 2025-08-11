@@ -36,9 +36,10 @@ export default {
 		},
 
 		messages: {
-			duplicateDefinition: "Unexpected duplicate definition found.",
+			duplicateDefinition:
+				"Unexpected duplicate definition `{{ identifier }}` found.",
 			duplicateFootnoteDefinition:
-				"Unexpected duplicate footnote definition found.",
+				"Unexpected duplicate footnote definition `{{ identifier }}` found.",
 		},
 
 		schema: [
@@ -100,6 +101,7 @@ export default {
 					context.report({
 						node,
 						messageId: "duplicateDefinition",
+						data: { identifier: node.identifier },
 					});
 				} else {
 					definitions.add(node.identifier);
@@ -115,6 +117,7 @@ export default {
 					context.report({
 						node,
 						messageId: "duplicateFootnoteDefinition",
+						data: { identifier: node.identifier },
 					});
 				} else {
 					footnoteDefinitions.add(node.identifier);
