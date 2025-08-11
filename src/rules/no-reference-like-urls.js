@@ -15,6 +15,7 @@ import { findOffsets } from "../util.js";
 //-----------------------------------------------------------------------------
 
 /**
+ * @import { SourceRange } from "@eslint/core"
  * @import { Heading, Node, Paragraph, TableCell } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"referenceLikeUrl"} NoReferenceLikeUrlMessageIds
@@ -28,50 +29,16 @@ import { findOffsets } from "../util.js";
 
 /** Pattern to match both inline links: `[text](url)` and images: `![alt](url)`, with optional title */
 const linkOrImagePattern =
-	/(?<!(?<!\\)\\)(?<imageBang>!)?\[(?<label>(?:\\.|[^()\\]|\([\s\S]*\))*?)\]\((?<destination>(?:<[^>]*>)|(?:[^ \t)]+))(?:[ \t]+(?<title>"[^"]*"|'[^']*'|\([^)]*\)))?\)(?!\()/gu;
+	/(?<!(?<!\\)\\)(?<imageBang>!)?\[(?<label>(?:\\.|[^()\\]|\([\s\S]*\))*?)\]\((?<destination>[ \t]*(?:\r\n|\n|\r)?[ \t]*(?:<[^>]*>|[^ \t)]+))(?:[ \t]*(?:\r\n|\n|\r)?[ \t]*(?<title>"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*(?:\r\n|\n|\r)?[ \t]*\)(?!\()/gu;
 
 /**
  * Checks if a given index is within any skip range.
  * @param {number} index The index to check
- * @param {Array<{startOffset: number, endOffset: number}>} skipRanges The skip ranges
+ * @param {Array<SourceRange>} skipRanges The skip ranges
  * @returns {boolean} True if index is in a skip range
  */
 function isInSkipRange(index, skipRanges) {
-	return skipRanges.some(
-		range => range.startOffset <= index && index < range.endOffset,
-	);
-}
-
-/**
- * Finds ranges of inline code and HTML nodes within a given node
- * @param {Heading | Paragraph | TableCell} node The node to search
- * @returns {Array<{startOffset: number, endOffset: number}>} Array of skip ranges
- */
-function findSkipRanges(node) {
-	/** @type {Array<{startOffset: number, endOffset: number}>} */
-	const skipRanges = [];
-
-	/**
-	 * Recursively traverses the AST to find inline code and HTML nodes.
-	 * @param {Node} currentNode The current node being traversed
-	 * @returns {void}
-	 */
-	function traverse(currentNode) {
-		if (currentNode.type === "inlineCode" || currentNode.type === "html") {
-			skipRanges.push({
-				startOffset: currentNode.position.start.offset,
-				endOffset: currentNode.position.end.offset,
-			});
-			return;
-		}
-
-		if ("children" in currentNode && Array.isArray(currentNode.children)) {
-			currentNode.children.forEach(traverse);
-		}
-	}
-
-	traverse(node);
-	return skipRanges;
+	return skipRanges.some(range => range[0] <= index && index < range[1]);
 }
 
 //-----------------------------------------------------------------------------
@@ -100,6 +67,8 @@ export default {
 
 	create(context) {
 		const { sourceCode } = context;
+		/** @type {Array<SourceRange>} */
+		const skipRanges = [];
 		/** @type {Set<string>} */
 		const definitionIdentifiers = new Set();
 		/** @type {Array<Heading | Paragraph | TableCell>} */
@@ -122,10 +91,15 @@ export default {
 				relevantNodes.push(node);
 			},
 
+			":matches(heading, paragraph, tableCell) :matches(html, inlineCode)"(
+				node,
+			) {
+				skipRanges.push(sourceCode.getRange(node));
+			},
+
 			"root:exit"() {
 				for (const node of relevantNodes) {
 					const text = sourceCode.getText(node);
-					const skipRanges = findSkipRanges(node);
 
 					let match;
 					while ((match = linkOrImagePattern.exec(text)) !== null) {

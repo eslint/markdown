@@ -159,6 +159,226 @@ ruleTester.run("no-reference-like-urls", rule, {
 	invalid: [
 		{
 			code: dedent`
+				[Mercury](  mercury)
+
+				[mercury]: https://example.com/mercury
+			`,
+			output: dedent`
+				[Mercury][  mercury]
+
+				[mercury]: https://example.com/mercury
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 21,
+				},
+			],
+		},
+		{
+			code: dedent`
+				[Mercury](\tmercury)
+
+				[mercury]: https://example.com/mercury
+			`.replace(/\\t/gu, "\t"),
+			output: dedent`
+				[Mercury][\tmercury]
+
+				[mercury]: https://example.com/mercury
+			`.replace(/\\t/gu, "\t"),
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: dedent`
+				[Mercury](\nmercury)
+
+				[mercury]: https://example.com/mercury
+			`,
+			output: dedent`
+				[Mercury][\nmercury]
+
+				[mercury]: https://example.com/mercury
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 2,
+					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: dedent`
+				[Mercury](\r\nmercury)
+
+				[mercury]: https://example.com/mercury
+			`.replace(/\\r/gu, "\r"),
+			output: dedent`
+				[Mercury][\r\nmercury]
+
+				[mercury]: https://example.com/mercury
+			`.replace(/\\r/gu, "\r"),
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 2,
+					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: dedent`
+				[Mercury](\rmercury)
+
+				[mercury]: https://example.com/mercury
+			`.replace(/\\r/gu, "\r"),
+			output: dedent`
+				[Mercury][\rmercury]
+
+				[mercury]: https://example.com/mercury
+			`.replace(/\\r/gu, "\r"),
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: dedent`
+				![Mercury](\nmercury)
+
+				[mercury]: https://example.com/mercury.jpg
+			`,
+			output: dedent`
+				![Mercury][\nmercury]
+
+				[mercury]: https://example.com/mercury.jpg
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 1,
+					endLine: 2,
+					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: dedent`
+				![Mercury](\r\nmercury)
+
+				[mercury]: https://example.com/mercury.jpg
+			`.replace(/\\r/gu, "\r"),
+			output: dedent`
+				![Mercury][\r\nmercury]
+
+				[mercury]: https://example.com/mercury.jpg
+			`.replace(/\\r/gu, "\r"),
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 1,
+					endLine: 2,
+					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: dedent`
+				![Mercury](\rmercury)
+
+				[mercury]: https://example.com/mercury.jpg
+			`.replace(/\\r/gu, "\r"),
+			output: dedent`
+				![Mercury][\rmercury]
+
+				[mercury]: https://example.com/mercury.jpg
+			`.replace(/\\r/gu, "\r"),
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 21,
+				},
+			],
+		},
+		{
+			code: dedent`
+				![Mercury](  mercury)
+
+				[mercury]: https://example.com/mercury.jpg
+			`,
+			output: dedent`
+				![Mercury][  mercury]
+
+				[mercury]: https://example.com/mercury.jpg
+			`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: dedent`
+				![Mercury](\tmercury)
+
+				[mercury]: https://example.com/mercury.jpg
+			`.replace(/\\t/gu, "\t"),
+			output: dedent`
+				![Mercury][\tmercury]
+
+				[mercury]: https://example.com/mercury.jpg
+			`.replace(/\\t/gu, "\t"),
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 21,
+				},
+			],
+		},
+		{
+			code: dedent`
 				[Mercury](mercury)
 
 				[mercury]: https://example.com/mercury
