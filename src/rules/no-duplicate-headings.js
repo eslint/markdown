@@ -93,18 +93,13 @@ export default {
 
 			"heading *"({ type, value }) {
 				if (value) {
-					headingChildrenSequence += JSON.stringify({
-						type,
-						value,
-					});
+					headingChildrenSequence += `[${type},${value}]`; // We use a custom sequence representation to keep track of heading children.
 
 					if (type !== "html") {
 						headingText += value;
 					}
 				} else {
-					headingChildrenSequence += JSON.stringify({
-						type,
-					});
+					headingChildrenSequence += `[${type}]`;
 				}
 			},
 
