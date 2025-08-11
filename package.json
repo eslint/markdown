@@ -68,7 +68,7 @@
     "build": "npm run build:rules && tsc && npm run build:update-rules-docs",
     "build:readme": "node tools/update-readme.js",
     "prepare": "npm run build",
-    "test": "c8 mocha \"tests/**/*.test.js\" --timeout 30000",
+    "test": "mocha \"tests/**/*.test.js\" --timeout 30000",
     "test:coverage": "c8 npm test",
     "test:jsr": "npx jsr@latest publish --dry-run",
     "test:types": "tsc -p tests/types/tsconfig.json"
