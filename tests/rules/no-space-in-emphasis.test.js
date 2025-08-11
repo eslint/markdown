@@ -1270,7 +1270,7 @@ ruleTester.run("no-space-in-emphasis", rule, {
 		{
 			code: "Broken ~ strikethrough ~ with spaces",
 			output: "Broken ~strikethrough~ with spaces",
-			options: [{ includeStrikethrough: true }],
+			options: [{ checkStrikethrough: true }],
 			errors: [
 				{
 					messageId: "spaceInEmphasis",
@@ -1291,7 +1291,7 @@ ruleTester.run("no-space-in-emphasis", rule, {
 		{
 			code: "Broken ~~ strikethrough ~~ with spaces",
 			output: "Broken ~~strikethrough~~ with spaces",
-			options: [{ includeStrikethrough: true }],
+			options: [{ checkStrikethrough: true }],
 			errors: [
 				{
 					messageId: "spaceInEmphasis",
@@ -1312,7 +1312,7 @@ ruleTester.run("no-space-in-emphasis", rule, {
 		{
 			code: "Mixed ~~ok strikethrough~~ and ~~ broken strikethrough ~~",
 			output: "Mixed ~~ok strikethrough~~ and ~~broken strikethrough~~",
-			options: [{ includeStrikethrough: true }],
+			options: [{ checkStrikethrough: true }],
 			errors: [
 				{
 					messageId: "spaceInEmphasis",
@@ -1333,7 +1333,7 @@ ruleTester.run("no-space-in-emphasis", rule, {
 		{
 			code: "Mixed ~ strikethrough ~ and * emphasis * with spaces",
 			output: "Mixed ~strikethrough~ and *emphasis* with spaces",
-			options: [{ includeStrikethrough: true }],
+			options: [{ checkStrikethrough: true }],
 			errors: [
 				{
 					messageId: "spaceInEmphasis",
@@ -1368,7 +1368,7 @@ ruleTester.run("no-space-in-emphasis", rule, {
 		{
 			code: "Mixed ~ok strikethrough~ and ~ broken strikethrough ~",
 			output: "Mixed ~ok strikethrough~ and ~broken strikethrough~",
-			options: [{ includeStrikethrough: true }],
+			options: [{ checkStrikethrough: true }],
 			errors: [
 				{
 					messageId: "spaceInEmphasis",
@@ -1389,7 +1389,7 @@ ruleTester.run("no-space-in-emphasis", rule, {
 		{
 			code: "# Broken ~ strikethrough ~ with spaces",
 			output: "# Broken ~strikethrough~ with spaces",
-			options: [{ includeStrikethrough: true }],
+			options: [{ checkStrikethrough: true }],
 			errors: [
 				{
 					messageId: "spaceInEmphasis",
@@ -1420,7 +1420,7 @@ ruleTester.run("no-space-in-emphasis", rule, {
 			| strike | text ~text~ text          |
 			| strike | text ~text~ text          |
 			`,
-			options: [{ includeStrikethrough: true }],
+			options: [{ checkStrikethrough: true }],
 			errors: [
 				{
 					messageId: "spaceInEmphasis",

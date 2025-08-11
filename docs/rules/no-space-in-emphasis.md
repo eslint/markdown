@@ -42,21 +42,25 @@ Here is some _** italic **_ text.
 
 The following options are available on this rule:
 
-* `includeStrikethrough: boolean` - when `true`, also check for spaces around strikethrough markers (`~` and `~~`). (default: `false`)
+* `checkStrikethrough: boolean` - when `true`, also check for spaces around strikethrough markers (`~` and `~~`). (default: `false`)
 
-Examples of **incorrect** code when configured as `"no-space-in-emphasis": ["error", { includeStrikethrough: true }]`:
+> [!IMPORTANT] <!-- eslint-disable-line -- This should be fixed in https://github.com/eslint/markdown/issues/294 -->
+>
+> Use `checkStrikethrough` with `language: "markdown/gfm"`; in CommonMark, `~`/`~~` aren’t strikethrough (they’ll still be linted if enabled).
+
+Examples of **incorrect** code when configured as `"no-space-in-emphasis": ["error", { checkStrikethrough: true }]`:
 
 ```markdown
-<!-- eslint markdown/no-space-in-emphasis: ["error", { includeStrikethrough: true }] -->
+<!-- eslint markdown/no-space-in-emphasis: ["error", { checkStrikethrough: true }] -->
 
 Here is some ~ strikethrough ~ text.
 Here is some ~~ strikethrough ~~ text.
 ```
 
-Examples of **correct** code when configured as `"no-space-in-emphasis": ["error", { includeStrikethrough: true }]`:
+Examples of **correct** code when configured as `"no-space-in-emphasis": ["error", { checkStrikethrough: true }]`:
 
 ```markdown
-<!-- eslint markdown/no-space-in-emphasis: ["error", { includeStrikethrough: true }] -->
+<!-- eslint markdown/no-space-in-emphasis: ["error", { checkStrikethrough: true }] -->
 
 Here is some ~strikethrough~ text.
 Here is some ~~strikethrough~~ text.
