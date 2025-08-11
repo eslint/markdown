@@ -7,7 +7,11 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { findOffsets } from "../util.js";
+import {
+	findOffsets,
+	frontmatterHasTitle,
+	stripHtmlComments,
+} from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -24,26 +28,7 @@ import { findOffsets } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-const h1TagPattern = /(?<!<!--[\s\S]*?)<h1[^>]*>[\s\S]*?<\/h1>/giu;
-
-/**
- * Checks if a frontmatter block contains a title matching the given pattern
- * @param {string} value The frontmatter content
- * @param {RegExp|null} pattern The pattern to match against
- * @returns {boolean} Whether a title was found
- */
-function frontmatterHasTitle(value, pattern) {
-	if (!pattern) {
-		return false;
-	}
-	const lines = value.split("\n");
-	for (const line of lines) {
-		if (pattern.test(line)) {
-			return true;
-		}
-	}
-	return false;
-}
+const h1TagPattern = /<h1[^>]*>[\s\S]*?<\/h1>/giu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -110,8 +95,10 @@ export default {
 			},
 
 			html(node) {
+				const text = stripHtmlComments(node.value);
+
 				let match;
-				while ((match = h1TagPattern.exec(node.value)) !== null) {
+				while ((match = h1TagPattern.exec(text)) !== null) {
 					h1Count++;
 					if (h1Count > 1) {
 						const {

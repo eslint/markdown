@@ -11,6 +11,11 @@
 export const illegalShorthandTailPattern = /\]\[\s+\]$/u;
 
 /**
+ * Regular expression to match HTML comments, including multiline comments.
+ */
+export const htmlCommentPattern = /<!--[\s\S]*?-->/gu;
+
+/**
  * Finds the line and column offsets for a given offset in a string.
  * @param {string} text The text to search.
  * @param {number} offset The offset to find.
@@ -36,4 +41,34 @@ export function findOffsets(text, offset) {
 		lineOffset,
 		columnOffset,
 	};
+}
+
+/**
+ * Checks if a frontmatter block contains a title matching the given pattern
+ * @param {string} value The frontmatter content
+ * @param {RegExp|null} pattern The pattern to match against
+ * @returns {boolean} Whether a title was found
+ */
+export function frontmatterHasTitle(value, pattern) {
+	if (!pattern) {
+		return false;
+	}
+	const lines = value.split("\n");
+	for (const line of lines) {
+		if (pattern.test(line)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Remove all HTML comments from a string.
+ * @param {string} value The string to remove HTML comments from.
+ * @returns {string} The string with HTML comments removed.
+ */
+export function stripHtmlComments(value) {
+	return value.replace(htmlCommentPattern, match =>
+		match.replace(/[^\n]/gu, " "),
+	);
 }
