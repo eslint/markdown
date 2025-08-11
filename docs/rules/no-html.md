@@ -26,49 +26,49 @@ The following options are available on this rule:
 
 * `allowed: Array<string>` - when specified, HTML tags are allowed only if they match one of the tags in this array. (default: `[]`)
 
-Examples of **incorrect** code when configured as `"no-html": ["error", { allowed: ["b"] }]`:
+    Examples of **incorrect** code when configured as `"no-html": ["error", { allowed: ["b"] }]`:
 
-```markdown
-<!-- eslint markdown/no-html: ["error", { allowed: ["b"] }] -->
+    ```markdown
+    <!-- eslint markdown/no-html: ["error", { allowed: ["b"] }] -->
 
-# Heading 1
+    # Heading 1
 
-Hello <em>world!</em>
-```
+    Hello <em>world!</em>
+    ```
 
-Examples of **correct** code when configured as `"no-html": ["error", { allowed: ["b"] }]`:
+    Examples of **correct** code when configured as `"no-html": ["error", { allowed: ["b"] }]`:
 
-```markdown
-<!-- eslint markdown/no-html: ["error", { allowed: ["b"] }] -->
+    ```markdown
+    <!-- eslint markdown/no-html: ["error", { allowed: ["b"] }] -->
 
-# Heading 1
+    # Heading 1
 
-Hello <b>world!</b>
-```
+    Hello <b>world!</b>
+    ```
 
-* `allowedIgnoreCase: boolean` - when `true`, enables case-insensitive matching for HTML tag names against the `allowed` array. (default: `false`)
+* `allowedIgnoreCase: boolean` - when `true`, enables case-insensitive matching of HTML tag names against the `allowed` array described above. (default: `false`)
 
-Examples of **incorrect** code when configured as `"no-html": ["error", { allowed: ["DIV"], allowedIgnoreCase: false }]`:
+    Examples of **incorrect** code when configured as `"no-html": ["error", { allowed: ["DIV"], allowedIgnoreCase: false }]`:
 
-```markdown
-<!-- eslint markdown/no-html: ["error", { allowed: ["DIV"], allowedIgnoreCase: false }] -->
+    ```markdown
+    <!-- eslint markdown/no-html: ["error", { allowed: ["DIV"], allowedIgnoreCase: false }] -->
 
-# Heading 1
+    # Heading 1
 
-<div>Hello world!</div>
-```
+    <div>Hello world!</div>
+    ```
 
-Examples of **correct** code when configured as `"no-html": ["error", { allowed: ["DIV"], allowedIgnoreCase: true }]`:
+    Examples of **correct** code when configured as `"no-html": ["error", { allowed: ["DIV"], allowedIgnoreCase: true }]`:
 
-```markdown
-<!-- eslint markdown/no-html: ["error", { allowed: ["DIV"], allowedIgnoreCase: true }] -->
+    ```markdown
+    <!-- eslint markdown/no-html: ["error", { allowed: ["DIV"], allowedIgnoreCase: true }] -->
 
-# Heading 1
+    # Heading 1
 
-<div>Hello world!</div>
-<DIV>Hello world!</DIV>
-<DiV>Hello world!</DiV>
-```
+    <div>Hello world!</div>
+    <DIV>Hello world!</DIV>
+    <DiV>Hello world!</DiV>
+    ```
 
 ## When Not to Use It
 
