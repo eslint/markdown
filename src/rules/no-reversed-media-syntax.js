@@ -143,9 +143,7 @@ export default {
 		}
 
 		return {
-			":matches(heading, paragraph, tableCell) :matches(html, inlineCode)"(
-				node,
-			) {
+			"heading :matches(html, inlineCode)"(node) {
 				skipRanges.push(sourceCode.getRange(node));
 			},
 
@@ -154,9 +152,17 @@ export default {
 				skipRanges = [];
 			},
 
+			"paragraph :matches(html, inlineCode)"(node) {
+				skipRanges.push(sourceCode.getRange(node));
+			},
+
 			"paragraph:exit"(node) {
 				findReversedMediaSyntax(node);
 				skipRanges = [];
+			},
+
+			"tableCell :matches(html, inlineCode)"(node) {
+				skipRanges.push(sourceCode.getRange(node));
 			},
 
 			"tableCell:exit"(node) {
