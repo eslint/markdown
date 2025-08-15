@@ -5,12 +5,16 @@ import type {
 	MarkdownRuleVisitor,
 	Toml,
 	Json,
+	RangeMap,
+	Block,
 } from "@eslint/markdown/types";
 import { ESLint, Linter } from "eslint";
+import { Position } from "unist";
 import type {
 	// Nodes (abstract)
 	Node,
 	Parent,
+	CodeData,
 	// Nodes
 	Blockquote,
 	Break,
@@ -41,6 +45,48 @@ import type {
 	// Extensions (front matter)
 	Yaml,
 } from "mdast";
+
+// Test that `Block` extends `Code` and `BlockBase` correctly
+// `meta` property is optional and not required in `Block`
+const validBlock: Block = {
+	// `Code` properties
+	type: "code",
+	value: "const foo = 'bar';",
+
+	// `BlockBase` properties
+	baseIndentText: "  ",
+	comments: ["// A comment"],
+	rangeMap: [{ indent: 2, js: 0, md: 4 }],
+};
+
+// Verify `Block` has `Code` properties
+validBlock.type satisfies "code";
+validBlock.position satisfies Position | undefined;
+validBlock.value satisfies string;
+validBlock.lang satisfies string | null | undefined;
+validBlock.meta satisfies string | null | undefined;
+validBlock.data satisfies CodeData | undefined;
+
+// Verify `Block` has `BlockBase` properties
+validBlock.baseIndentText satisfies string;
+validBlock.comments satisfies string[];
+validBlock.rangeMap satisfies RangeMap[];
+
+// Verify `RangeMap` structure
+validBlock.rangeMap[0].indent satisfies number;
+validBlock.rangeMap[0].js satisfies number;
+validBlock.rangeMap[0].md satisfies number;
+
+// Test that `Block` can be used where `Code` is expected
+const codeNode: Code = validBlock;
+codeNode.type satisfies "code";
+
+// Test that `BlockBase` properties are required
+// @ts-expect-error Missing BlockBase properties
+const invalidBlock: Block = {
+	type: "code",
+	value: "code",
+};
 
 markdown satisfies ESLint.Plugin;
 markdown.meta.name satisfies string;
@@ -241,5 +287,20 @@ typeof processorPlugins satisfies {};
 	},
 	create() {
 		return {};
+	},
+});
+
+// `meta.docs.recommended` can be any type
+(): MarkdownRuleDefinition => ({
+	create() {
+		return {};
+	},
+	meta: {
+		docs: {
+			recommended: {
+				severity: "warn",
+				options: ["never"],
+			},
+		},
 	},
 });

@@ -4,6 +4,13 @@
  */
 
 //-----------------------------------------------------------------------------
+// Imports
+//-----------------------------------------------------------------------------
+
+import { normalizeIdentifier } from "micromark-util-normalize-identifier";
+import { htmlCommentPattern } from "../util.js";
+
+//-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
@@ -17,8 +24,6 @@
 //-----------------------------------------------------------------------------
 // Helpers
 //-----------------------------------------------------------------------------
-
-const htmlCommentPattern = /<!--[\s\S]*?-->/gu;
 
 /**
  * Checks if a string contains only HTML comments.
@@ -88,9 +93,15 @@ export default {
 	},
 
 	create(context) {
-		const allowDefinitions = new Set(context.options[0].allowDefinitions);
+		const allowDefinitions = new Set(
+			context.options[0].allowDefinitions.map(identifier =>
+				normalizeIdentifier(identifier).toLowerCase(),
+			),
+		);
 		const allowFootnoteDefinitions = new Set(
-			context.options[0].allowFootnoteDefinitions,
+			context.options[0].allowFootnoteDefinitions.map(identifier =>
+				normalizeIdentifier(identifier).toLowerCase(),
+			),
 		);
 		const [{ checkFootnoteDefinitions }] = context.options;
 

@@ -9,7 +9,7 @@
 
 import rule from "../../src/rules/no-missing-label-refs.js";
 import markdown from "../../src/index.js";
-import { RuleTester } from "eslint";
+import { Linter, RuleTester } from "eslint";
 
 //------------------------------------------------------------------------------
 // Tests
@@ -382,4 +382,14 @@ ruleTester.run("no-missing-label-refs", rule, {
 			],
 		},
 	],
+});
+
+// https://github.com/eslint/markdown/pull/463
+it("`no-missing-label-refs` should not timeout for large inputs", () => {
+	const linter = new Linter();
+	linter.verify("[abcd".repeat(100_000), {
+		language: "markdown/commonmark",
+		plugins: { markdown },
+		rules: { "markdown/no-missing-label-refs": "error" },
+	});
 });

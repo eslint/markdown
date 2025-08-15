@@ -351,6 +351,33 @@ ruleTester.run("no-multiple-h1", rule, {
 			<!-- <h1>Commented Heading</h1> -->
 			<!-- <h1>Commented Heading</h1> -->
 		`,
+		dedent`
+			# Heading 1
+
+			<!--
+			<h1>Commented Heading</h1>
+			<p>Some text</p>
+			-->
+		`,
+		dedent`
+			# Heading 1
+			Some text <!-- <h1>Commented</h1> --> more text.
+		`,
+		dedent`
+			# Heading 1
+			<!-- <h1>Comment with --- extra dashes</h1> -->
+		`,
+		dedent`
+			# Heading 1
+			<!--<h1>No spaces</h1>-->
+			<!--    <h1>Extra spaces</h1>    -->
+		`,
+		dedent`
+			# Heading 1
+			\`\`\`html
+			<!-- <h1>Commented in code</h1> -->
+			\`\`\`
+		`,
 	],
 	invalid: [
 		{
@@ -1094,6 +1121,84 @@ ruleTester.run("no-multiple-h1", rule, {
 					column: 1,
 					endLine: 8,
 					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: dedent`
+				<!-- <h1>Commented</h1> -->
+				<h1>Heading 1</h1>
+				<h1>Another H1</h1>
+			`,
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: dedent`
+				# Heading 1
+				<!-- <h1>Commented</h1> -->
+				<h1>Another H1</h1>
+			`,
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: dedent`
+				# Heading 1
+				<!- Not a valid comment ->
+				<h1>Another H1</h1>
+			`,
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: dedent`
+				# Heading 1
+				<!-- comment --> <h1>Another H1</h1>
+			`,
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 2,
+					column: 18,
+					endLine: 2,
+					endColumn: 37,
+				},
+			],
+		},
+		{
+			code: dedent`
+				<h1>Heading 1</h1>
+				<!-- comment --> <h1>Another H1</h1>
+			`,
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 2,
+					column: 18,
+					endLine: 2,
+					endColumn: 37,
 				},
 			],
 		},
