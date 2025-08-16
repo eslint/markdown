@@ -26,7 +26,7 @@ import { findOffsets } from "../util.js";
 
 const htmlTagPattern =
 	/<([a-z0-9]+(?:-[a-z0-9]+)*)(?:\s+(?:[^>"']|"[^"]*"|'[^']*')*)?>/giu;
-const nextLinesPattern = /[\r\n][\s\S]*$/u;
+const lineEndingPattern = /\r\n?|\n/u;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -89,7 +89,7 @@ export default {
 					};
 
 					const firstNewlineIndex =
-						fullMatch.search(nextLinesPattern);
+						fullMatch.search(lineEndingPattern);
 					const endColumn =
 						firstNewlineIndex === -1
 							? start.column + fullMatch.length
