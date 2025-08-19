@@ -22,6 +22,7 @@ Here is some * italic * text.
 Here is some __ bold __ text.
 Here is some _ italic _ text.
 Here is some *** bold italic *** text.
+Here is some ___ bold italic ___ text.
 ```
 
 Examples of **correct** code for this rule:
@@ -34,6 +35,7 @@ Here is some *italic* text.
 Here is some __bold__ text.
 Here is some _italic_ text.
 Here is some ***bold italic*** text.
+Here is some ___bold italic___ text.
 Here is some **_ bold _** text.
 Here is some _** italic **_ text.
 ```
