@@ -16,7 +16,7 @@ import { findOffsets } from "../util.js";
 /**
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"disallowedElement"} NoHtmlMessageIds
- * @typedef {[{ allowed?: string[] }]} NoHtmlOptions
+ * @typedef {[{ allowed?: string[], allowedIgnoreCase?: boolean }]} NoHtmlOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoHtmlOptions, MessageIds: NoHtmlMessageIds }>} NoHtmlRuleDefinition
  */
 
@@ -55,6 +55,9 @@ export default {
 						},
 						uniqueItems: true,
 					},
+					allowedIgnoreCase: {
+						type: "boolean",
+					},
 				},
 				additionalProperties: false,
 			},
@@ -63,12 +66,16 @@ export default {
 		defaultOptions: [
 			{
 				allowed: [],
+				allowedIgnoreCase: false,
 			},
 		],
 	},
 
 	create(context) {
-		const allowed = new Set(context.options[0]?.allowed);
+		const [{ allowed, allowedIgnoreCase }] = context.options;
+		const allowedElements = new Set(
+			allowedIgnoreCase ? allowed.map(tag => tag.toLowerCase()) : allowed,
+		);
 
 		return {
 			html(node) {
@@ -89,7 +96,13 @@ export default {
 						column: start.column + match[0].length + 1,
 					};
 
-					if (allowed.size === 0 || !allowed.has(tagName)) {
+					const tagToCheck = allowedIgnoreCase
+						? tagName.toLowerCase()
+						: tagName;
+					if (
+						allowedElements.size === 0 ||
+						!allowedElements.has(tagToCheck)
+					) {
 						context.report({
 							loc: { start, end },
 							messageId: "disallowedElement",

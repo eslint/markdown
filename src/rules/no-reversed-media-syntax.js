@@ -14,7 +14,8 @@ import { findOffsets } from "../util.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Node, Heading, Paragraph, TableCell } from "mdast";
+ * @import { SourceRange } from "@eslint/core"
+ * @import { Heading, Paragraph, TableCell } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"reversedSyntax"} NoReversedMediaSyntaxMessageIds
  * @typedef {[]} NoReversedMediaSyntaxOptions
@@ -32,46 +33,13 @@ const reversedPattern =
 /**
  * Checks if a match is within any skip range
  * @param {number} matchIndex The index of the match
- * @param {Array<{startOffset: number, endOffset: number}>} skipRanges The skip ranges
+ * @param {Array<SourceRange>} skipRanges The skip ranges
  * @returns {boolean} True if the match is within a skip range
  */
 function isInSkipRange(matchIndex, skipRanges) {
 	return skipRanges.some(
-		range =>
-			range.startOffset <= matchIndex && matchIndex < range.endOffset,
+		range => range[0] <= matchIndex && matchIndex < range[1],
 	);
-}
-
-/**
- * Finds ranges of inline code and HTML nodes within a given node
- * @param {Heading | Paragraph | TableCell} node The node to search
- * @returns {Array<{startOffset: number, endOffset: number}>} Array of objects containing start and end offsets
- */
-function findSkipRanges(node) {
-	/** @type {Array<{startOffset: number, endOffset: number}>} */
-	const skipRanges = [];
-
-	/**
-	 * Recursively traverses the AST to find inline code and HTML nodes
-	 * @param {Node} currentNode The current node being traversed
-	 * @returns {void}
-	 */
-	function traverse(currentNode) {
-		if (currentNode.type === "inlineCode" || currentNode.type === "html") {
-			skipRanges.push({
-				startOffset: currentNode.position.start.offset,
-				endOffset: currentNode.position.end.offset,
-			});
-			return;
-		}
-
-		if ("children" in currentNode && Array.isArray(currentNode.children)) {
-			currentNode.children.forEach(traverse);
-		}
-	}
-
-	traverse(node);
-	return skipRanges;
 }
 
 //-----------------------------------------------------------------------------
@@ -98,14 +66,18 @@ export default {
 	},
 
 	create(context) {
+		const { sourceCode } = context;
+
+		/** @type {Array<SourceRange>} */
+		let skipRanges = [];
+
 		/**
 		 * Finds reversed link/image syntax in a node.
 		 * @param {Heading | Paragraph | TableCell} node The node to check.
 		 * @returns {void} Reports any reversed syntax found.
 		 */
 		function findReversedMediaSyntax(node) {
-			const text = context.sourceCode.getText(node);
-			const skipRanges = findSkipRanges(node);
+			const text = sourceCode.getText(node);
 			let match;
 
 			while ((match = reversedPattern.exec(text)) !== null) {
@@ -171,16 +143,31 @@ export default {
 		}
 
 		return {
-			heading(node) {
-				findReversedMediaSyntax(node);
+			"heading :matches(html, inlineCode)"(node) {
+				skipRanges.push(sourceCode.getRange(node));
 			},
 
-			paragraph(node) {
+			"heading:exit"(node) {
 				findReversedMediaSyntax(node);
+				skipRanges = [];
 			},
 
-			tableCell(node) {
+			"paragraph :matches(html, inlineCode)"(node) {
+				skipRanges.push(sourceCode.getRange(node));
+			},
+
+			"paragraph:exit"(node) {
 				findReversedMediaSyntax(node);
+				skipRanges = [];
+			},
+
+			"tableCell :matches(html, inlineCode)"(node) {
+				skipRanges.push(sourceCode.getRange(node));
+			},
+
+			"tableCell:exit"(node) {
+				findReversedMediaSyntax(node);
+				skipRanges = [];
 			},
 		};
 	},
