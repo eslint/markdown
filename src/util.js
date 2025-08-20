@@ -30,6 +30,7 @@ export function findOffsets(text, offset) {
 
 	for (let i = 0; i < offset; i++) {
 		if (text[i] === "\n") {
+			// TODO
 			lineOffset++;
 			columnOffset = 0;
 		} else {
@@ -53,7 +54,7 @@ export function frontmatterHasTitle(value, pattern) {
 	if (!pattern) {
 		return false;
 	}
-	const lines = value.split("\n");
+	const lines = value.split("\n"); // TODO
 	for (const line of lines) {
 		if (pattern.test(line)) {
 			return true;
@@ -68,7 +69,8 @@ export function frontmatterHasTitle(value, pattern) {
  * @returns {string} The string with HTML comments removed.
  */
 export function stripHtmlComments(value) {
-	return value.replace(htmlCommentPattern, match =>
-		match.replace(/[^\n]/gu, " "),
+	return value.replace(
+		htmlCommentPattern,
+		match => match.replace(/[^\n]/gu, " "), // TODO
 	);
 }
