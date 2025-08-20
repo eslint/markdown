@@ -66,6 +66,22 @@ describe("MarkdownSourceCode", () => {
 		sourceCode = new MarkdownSourceCode({ text: markdownText, ast });
 	});
 
+	describe("constructor", () => {
+		it("should create a MarkdownSourceCode instance", () => {
+			const mdSourceCode = new MarkdownSourceCode({
+				text: markdownText,
+				ast,
+			});
+
+			assert.strictEqual(
+				mdSourceCode.constructor.name,
+				"MarkdownSourceCode",
+			);
+			assert.strictEqual(mdSourceCode.ast, ast);
+			assert.strictEqual(mdSourceCode.text, markdownText);
+		});
+	});
+
 	describe("getText()", () => {
 		it("should return the text of the Markdown source code", () => {
 			assert.strictEqual(sourceCode.getText(), markdownText);
