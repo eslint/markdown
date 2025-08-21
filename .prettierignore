@@ -2,3 +2,4 @@ dist
 CHANGELOG.md
 jsr.json
 **/*.md
+!README.md
