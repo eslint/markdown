@@ -4,6 +4,13 @@
  */
 
 //-----------------------------------------------------------------------------
+// Imports
+//-----------------------------------------------------------------------------
+
+import { normalizeIdentifier } from "micromark-util-normalize-identifier";
+import { htmlCommentPattern } from "../util.js";
+
+//-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
@@ -17,8 +24,6 @@
 //-----------------------------------------------------------------------------
 // Helpers
 //-----------------------------------------------------------------------------
-
-const htmlCommentPattern = /<!--[\s\S]*?-->/gu;
 
 /**
  * Checks if a string contains only HTML comments.
@@ -47,9 +52,10 @@ export default {
 		},
 
 		messages: {
-			emptyDefinition: "Unexpected empty definition found.",
+			emptyDefinition:
+				"Unexpected empty definition `{{ identifier }}` found.",
 			emptyFootnoteDefinition:
-				"Unexpected empty footnote definition found.",
+				"Unexpected empty footnote definition `{{ identifier }}` found.",
 		},
 
 		schema: [
@@ -88,9 +94,15 @@ export default {
 	},
 
 	create(context) {
-		const allowDefinitions = new Set(context.options[0].allowDefinitions);
+		const allowDefinitions = new Set(
+			context.options[0].allowDefinitions.map(identifier =>
+				normalizeIdentifier(identifier).toLowerCase(),
+			),
+		);
 		const allowFootnoteDefinitions = new Set(
-			context.options[0].allowFootnoteDefinitions,
+			context.options[0].allowFootnoteDefinitions.map(identifier =>
+				normalizeIdentifier(identifier).toLowerCase(),
+			),
 		);
 		const [{ checkFootnoteDefinitions }] = context.options;
 
@@ -103,6 +115,7 @@ export default {
 					context.report({
 						loc: node.position,
 						messageId: "emptyDefinition",
+						data: { identifier: node.identifier },
 					});
 				}
 			},
@@ -121,6 +134,7 @@ export default {
 					context.report({
 						loc: node.position,
 						messageId: "emptyFootnoteDefinition",
+						data: { identifier: node.identifier },
 					});
 				}
 			},

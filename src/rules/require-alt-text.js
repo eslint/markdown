@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { findOffsets } from "../util.js";
+import { findOffsets, stripHtmlComments } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -24,7 +24,7 @@ import { findOffsets } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-const imgTagPattern = /(?<!<!--[\s\S]*?)<img[^>]*>/giu;
+const imgTagPattern = /<img[^>]*>/giu;
 
 /**
  * Creates a regex to match HTML attributes
@@ -76,9 +76,10 @@ export default {
 			},
 
 			html(node) {
-				let match;
+				const text = stripHtmlComments(node.value);
 
-				while ((match = imgTagPattern.exec(node.value)) !== null) {
+				let match;
+				while ((match = imgTagPattern.exec(text)) !== null) {
 					const imgTag = match[0];
 					const ariaHiddenMatch = imgTag.match(
 						getHtmlAttributeRe("aria-hidden"),

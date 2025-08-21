@@ -39,6 +39,34 @@ ruleTester.run("no-html", rule, {
 			code: "<custom-element>Hello world!</custom-element>",
 			options: [{ allowed: ["custom-element"] }],
 		},
+		{
+			code: "<div>Hello world!</div>",
+			options: [{ allowed: ["div"] }],
+		},
+		{
+			code: "<DIV>Hello world!</DIV>",
+			options: [{ allowed: ["DIV"] }],
+		},
+		{
+			code: "<div>Hello world!</div>",
+			options: [{ allowed: ["DIV"], allowedIgnoreCase: true }],
+		},
+		{
+			code: "<DIV>Hello world!</DIV>",
+			options: [{ allowed: ["div"], allowedIgnoreCase: true }],
+		},
+		{
+			code: "<DiV>Hello world!</DiV>",
+			options: [{ allowed: ["div"], allowedIgnoreCase: true }],
+		},
+		{
+			code: "<custom-element>Hello world!</custom-element>",
+			options: [{ allowed: ["CUSTOM-ELEMENT"], allowedIgnoreCase: true }],
+		},
+		{
+			code: "<CUSTOM-ELEMENT>Hello world!</CUSTOM-ELEMENT>",
+			options: [{ allowed: ["custom-element"], allowedIgnoreCase: true }],
+		},
 	],
 	invalid: [
 		{
@@ -126,6 +154,70 @@ ruleTester.run("no-html", rule, {
 					endColumn: 17,
 					data: {
 						name: "custom-element",
+					},
+				},
+			],
+		},
+		{
+			code: "<div>Hello world!</div>",
+			options: [{ allowed: ["DIV"] }],
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+					data: {
+						name: "div",
+					},
+				},
+			],
+		},
+		{
+			code: "<DIV>Hello world!</DIV>",
+			options: [{ allowed: ["div"] }],
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+					data: {
+						name: "DIV",
+					},
+				},
+			],
+		},
+		{
+			code: "<div>Hello world!</div>",
+			options: [{ allowed: ["span"], allowedIgnoreCase: true }],
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+					data: {
+						name: "div",
+					},
+				},
+			],
+		},
+		{
+			code: "<DIV>Hello world!</DIV>",
+			options: [{ allowed: ["span"], allowedIgnoreCase: true }],
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+					data: {
+						name: "DIV",
 					},
 				},
 			],
