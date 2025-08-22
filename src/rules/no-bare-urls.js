@@ -90,8 +90,8 @@ export default {
 		let startOffset = null;
 
 		/**
-		 * TODO
-		 * @param {Html} node TODO
+		 * Finds HTML skip range
+		 * @param {Html} node The HTML node to analyze
 		 * @returns {void}
 		 */
 		function findHtmlSkipRange(node) {
@@ -111,7 +111,7 @@ export default {
 		}
 
 		/**
-		 * TODO
+		 * Reports any bare URLs found in link nodes.
 		 * @returns {void}
 		 */
 		function report() {
@@ -140,6 +140,8 @@ export default {
 
 			skipRanges.length = 0;
 			linkNodes.length = 0;
+			lastTagName = null;
+			startOffset = null;
 		}
 
 		return {

@@ -3,6 +3,10 @@
  * @author Nicholas C. Zakas
  */
 
+//-----------------------------------------------------------------------------
+// Regex Patterns
+//-----------------------------------------------------------------------------
+
 /**
  * CommonMark does not allow any white space between the brackets in a reference link.
  * If that pattern is detected, then it's treated as text and not as a link. This pattern
@@ -14,6 +18,10 @@ export const illegalShorthandTailPattern = /\]\[\s+\]$/u;
  * Regular expression to match HTML comments, including multiline comments.
  */
 export const htmlCommentPattern = /<!--[\s\S]*?-->/gu;
+
+//-----------------------------------------------------------------------------
+// Helpers
+//-----------------------------------------------------------------------------
 
 /**
  * Finds the line and column offsets for a given offset in a string.
