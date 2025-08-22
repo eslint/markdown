@@ -98,14 +98,12 @@ export default {
 			const tagInfo = parseHtmlTag(node.value);
 
 			if (!tagInfo?.isClosing && startOffset === null) {
-				startOffset = node.position.start.offset;
 				lastTagName = tagInfo.name;
+				startOffset = node.position.start.offset;
 			}
 
 			if (tagInfo?.isClosing && tagInfo?.name === lastTagName) {
-				const endOffset = node.position.end.offset;
-
-				skipRanges.push([startOffset, endOffset]);
+				skipRanges.push([startOffset, node.position.end.offset]);
 
 				lastTagName = "";
 				startOffset = null;
