@@ -114,6 +114,35 @@ export default {
 			}
 		}
 
+		/**
+		 * TODO
+		 * @returns {void}
+		 */
+		function report() {
+			for (const node of linkNodes) {
+				const text = sourceCode.getText(node);
+				const { url } = node;
+
+				if (isInSkipRange(node.position.start.offset, skipRanges)) {
+					continue;
+				}
+
+				if (
+					text === url ||
+					url === `http://${text}` ||
+					url === `mailto:${text}`
+				) {
+					context.report({
+						node,
+						messageId: "bareUrl",
+						fix(fixer) {
+							return fixer.replaceText(node, `<${text}>`);
+						},
+					});
+				}
+			}
+		}
+
 		return {
 			"paragraph html"(/** @type {Html} */ node) {
 				findHtmlSkipRange(node);
@@ -124,28 +153,7 @@ export default {
 			},
 
 			"paragraph:exit"() {
-				for (const node of linkNodes) {
-					const text = sourceCode.getText(node);
-					const { url } = node;
-
-					if (isInSkipRange(node.position.start.offset, skipRanges)) {
-						continue;
-					}
-
-					if (
-						text === url ||
-						url === `http://${text}` ||
-						url === `mailto:${text}`
-					) {
-						context.report({
-							node,
-							messageId: "bareUrl",
-							fix(fixer) {
-								return fixer.replaceText(node, `<${text}>`);
-							},
-						});
-					}
-				}
+				report();
 
 				linkNodes.length = 0;
 			},
@@ -159,28 +167,7 @@ export default {
 			},
 
 			"heading:exit"() {
-				for (const node of linkNodes) {
-					const text = sourceCode.getText(node);
-					const { url } = node;
-
-					if (isInSkipRange(node.position.start.offset, skipRanges)) {
-						continue;
-					}
-
-					if (
-						text === url ||
-						url === `http://${text}` ||
-						url === `mailto:${text}`
-					) {
-						context.report({
-							node,
-							messageId: "bareUrl",
-							fix(fixer) {
-								return fixer.replaceText(node, `<${text}>`);
-							},
-						});
-					}
-				}
+				report();
 
 				linkNodes.length = 0;
 			},
@@ -194,28 +181,7 @@ export default {
 			},
 
 			"tableCell:exit"() {
-				for (const node of linkNodes) {
-					const text = sourceCode.getText(node);
-					const { url } = node;
-
-					if (isInSkipRange(node.position.start.offset, skipRanges)) {
-						continue;
-					}
-
-					if (
-						text === url ||
-						url === `http://${text}` ||
-						url === `mailto:${text}`
-					) {
-						context.report({
-							node,
-							messageId: "bareUrl",
-							fix(fixer) {
-								return fixer.replaceText(node, `<${text}>`);
-							},
-						});
-					}
-				}
+				report();
 
 				linkNodes.length = 0;
 			},
