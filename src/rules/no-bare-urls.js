@@ -91,23 +91,32 @@ export default {
 		/** @type {Array<Link>} */
 		const linkNodes = [];
 
+		/**
+		 * TODO
+		 * @param {Html} node TODO
+		 * @returns {void}
+		 */
+		function findHtmlSkipRange(node) {
+			const tagInfo = parseHtmlTag(sourceCode.getText(node));
+
+			if (!tagInfo?.isClosing) {
+				sourceRange[0] = node.position.start.offset;
+				lastTagname = tagInfo.name;
+			}
+
+			if (tagInfo?.name === lastTagname && tagInfo?.isClosing) {
+				sourceRange[1] = node.position.end.offset;
+				skipRanges.push([...sourceRange]);
+
+				lastTagname = "";
+				sourceRange[0] = null;
+				sourceRange[1] = null;
+			}
+		}
+
 		return {
 			"paragraph html"(/** @type {Html} */ node) {
-				const tagInfo = parseHtmlTag(sourceCode.getText(node));
-
-				if (!tagInfo?.isClosing) {
-					sourceRange[0] = node.position.start.offset;
-					lastTagname = tagInfo.name;
-				}
-
-				if (tagInfo?.name === lastTagname && tagInfo?.isClosing) {
-					sourceRange[1] = node.position.end.offset;
-					skipRanges.push([...sourceRange]);
-
-					lastTagname = "";
-					sourceRange[0] = null;
-					sourceRange[1] = null;
-				}
+				findHtmlSkipRange(node);
 			},
 
 			"paragraph link"(/** @type {Link} */ node) {
@@ -137,24 +146,12 @@ export default {
 						});
 					}
 				}
+
+				linkNodes.length = 0;
 			},
 
 			"heading html"(/** @type {Html} */ node) {
-				const tagInfo = parseHtmlTag(sourceCode.getText(node));
-
-				if (!tagInfo?.isClosing) {
-					sourceRange[0] = node.position.start.offset;
-					lastTagname = tagInfo.name;
-				}
-
-				if (tagInfo?.name === lastTagname && tagInfo?.isClosing) {
-					sourceRange[1] = node.position.end.offset;
-					skipRanges.push([...sourceRange]);
-
-					lastTagname = "";
-					sourceRange[0] = null;
-					sourceRange[1] = null;
-				}
+				findHtmlSkipRange(node);
 			},
 
 			"heading link"(/** @type {Link} */ node) {
@@ -184,24 +181,12 @@ export default {
 						});
 					}
 				}
+
+				linkNodes.length = 0;
 			},
 
 			"tableCell html"(/** @type {Html} */ node) {
-				const tagInfo = parseHtmlTag(sourceCode.getText(node));
-
-				if (!tagInfo?.isClosing) {
-					sourceRange[0] = node.position.start.offset;
-					lastTagname = tagInfo.name;
-				}
-
-				if (tagInfo?.name === lastTagname && tagInfo?.isClosing) {
-					sourceRange[1] = node.position.end.offset;
-					skipRanges.push([...sourceRange]);
-
-					lastTagname = "";
-					sourceRange[0] = null;
-					sourceRange[1] = null;
-				}
+				findHtmlSkipRange(node);
 			},
 
 			"tableCell link"(/** @type {Link} */ node) {
@@ -231,6 +216,8 @@ export default {
 						});
 					}
 				}
+
+				linkNodes.length = 0;
 			},
 		};
 	},
