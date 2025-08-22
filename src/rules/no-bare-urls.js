@@ -88,8 +88,6 @@ export default {
 		let lastTagName = "";
 		/** @type {number | null} */
 		let startOffset = null;
-		/** @type {number | null} */
-		let endOffset = null;
 
 		/**
 		 * TODO
@@ -105,13 +103,12 @@ export default {
 			}
 
 			if (tagInfo?.isClosing && tagInfo?.name === lastTagName) {
-				endOffset = node.position.end.offset;
+				const endOffset = node.position.end.offset;
 
 				skipRanges.push([startOffset, endOffset]);
 
 				lastTagName = "";
 				startOffset = null;
-				endOffset = null;
 			}
 		}
 
