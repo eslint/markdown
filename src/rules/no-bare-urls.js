@@ -20,7 +20,7 @@
 // Helpers
 //-----------------------------------------------------------------------------
 
-const htmlTagNamePattern = /^<([^!>][^/\s>]*)/u;
+const htmlTagNamePattern = /^<(?<tagName>[^!>][^/\s>]*)/u;
 
 /**
  * Parses an HTML tag to extract its name and closing status
@@ -30,7 +30,7 @@ const htmlTagNamePattern = /^<([^!>][^/\s>]*)/u;
 function parseHtmlTag(tagText) {
 	const match = tagText.match(htmlTagNamePattern);
 	if (match) {
-		const tagName = match[1].toLowerCase();
+		const tagName = match.groups.tagName.toLowerCase();
 		const isClosing = tagName.startsWith("/");
 
 		return {
