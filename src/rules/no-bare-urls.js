@@ -141,23 +141,11 @@ export default {
 					});
 				}
 			}
+
+			linkNodes.length = 0;
 		}
 
 		return {
-			"paragraph html"(/** @type {Html} */ node) {
-				findHtmlSkipRange(node);
-			},
-
-			"paragraph link"(/** @type {Link} */ node) {
-				linkNodes.push(node);
-			},
-
-			"paragraph:exit"() {
-				report();
-
-				linkNodes.length = 0;
-			},
-
 			"heading html"(/** @type {Html} */ node) {
 				findHtmlSkipRange(node);
 			},
@@ -168,8 +156,18 @@ export default {
 
 			"heading:exit"() {
 				report();
+			},
 
-				linkNodes.length = 0;
+			"paragraph html"(/** @type {Html} */ node) {
+				findHtmlSkipRange(node);
+			},
+
+			"paragraph link"(/** @type {Link} */ node) {
+				linkNodes.push(node);
+			},
+
+			"paragraph:exit"() {
+				report();
 			},
 
 			"tableCell html"(/** @type {Html} */ node) {
@@ -182,8 +180,6 @@ export default {
 
 			"tableCell:exit"() {
 				report();
-
-				linkNodes.length = 0;
 			},
 		};
 	},
