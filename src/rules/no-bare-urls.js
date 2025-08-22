@@ -84,8 +84,8 @@ export default {
 		/** @type {Array<Link>} */
 		const linkNodes = [];
 
-		/** @type {string} */
-		let lastTagName = "";
+		/** @type {string | null} */
+		let lastTagName = null;
 		/** @type {number | null} */
 		let startOffset = null;
 
@@ -105,7 +105,7 @@ export default {
 			if (tagInfo?.isClosing && tagInfo?.name === lastTagName) {
 				skipRanges.push([startOffset, node.position.end.offset]);
 
-				lastTagName = "";
+				lastTagName = null;
 				startOffset = null;
 			}
 		}
