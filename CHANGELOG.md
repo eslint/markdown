@@ -1,5 +1,31 @@
 # Changelog
 
+## [7.2.0](https://github.com/eslint/markdown/compare/v7.1.0...v7.2.0) (2025-08-22)
+
+
+### Features
+
+* add allowedIgnoreCase option to no-html ([#500](https://github.com/eslint/markdown/issues/500)) ([06ac53d](https://github.com/eslint/markdown/commit/06ac53d050f0b4e0a407d427790d85db4a1f0462))
+* add checkClosedHeadings option to no-missing-atx-heading-space ([#452](https://github.com/eslint/markdown/issues/452)) ([a9675aa](https://github.com/eslint/markdown/commit/a9675aa81e8bf79f2e865f433b961a201f82eac1))
+* add frontmatterTitle option to heading-increment ([#454](https://github.com/eslint/markdown/issues/454)) ([614ef3e](https://github.com/eslint/markdown/commit/614ef3e0bf539655170f202467119fbbbf8963f6))
+* add no-space-in-emphasis rule ([#403](https://github.com/eslint/markdown/issues/403)) ([e4b8de4](https://github.com/eslint/markdown/commit/e4b8de4494820b5a61beec6564cb4c5f9d72cede))
+* Expose identifiers in messages for no-duplicate-definitions ([#506](https://github.com/eslint/markdown/issues/506)) ([9f54c1b](https://github.com/eslint/markdown/commit/9f54c1b65549b584cbad686f5d488d803a4e3540))
+* expose identifiers in messages for no-empty-definitions ([#507](https://github.com/eslint/markdown/issues/507)) ([738f366](https://github.com/eslint/markdown/commit/738f3660e8f3df250028963547aad840a3145e20))
+* verify identifier data in no-empty-definitions ([#499](https://github.com/eslint/markdown/issues/499)) ([738f366](https://github.com/eslint/markdown/commit/738f3660e8f3df250028963547aad840a3145e20))
+
+
+### Bug Fixes
+
+* allow any type for `meta.docs.recommended` in custom rules ([#502](https://github.com/eslint/markdown/issues/502)) ([604a4b9](https://github.com/eslint/markdown/commit/604a4b97771c3c1c4b45b9999c18dc52bcd8b332))
+* detect errors after comments in no-multiple-h1 and require-alt-text ([#468](https://github.com/eslint/markdown/issues/468)) ([c9de444](https://github.com/eslint/markdown/commit/c9de44424f38d01ecc5a71e95558d2512f8a58ca))
+* false negatives and positives in `no-reversed-media-syntax` ([#473](https://github.com/eslint/markdown/issues/473)) ([c7a4d64](https://github.com/eslint/markdown/commit/c7a4d648a0ae810a55acd4f0b78bd57e8145a513))
+* fenced-code-language highlights only relevant parts ([#487](https://github.com/eslint/markdown/issues/487)) ([bb48ae2](https://github.com/eslint/markdown/commit/bb48ae2592240e53a35cd705691636b2ceeefd12))
+* handle multiline setext headings in `no-duplicate-headings` ([#469](https://github.com/eslint/markdown/issues/469)) ([99beea6](https://github.com/eslint/markdown/commit/99beea674271a5a98ba889fd00d96c3ad282f7e3))
+* improve HTML id/name regex for unquoted values and spaces ([#480](https://github.com/eslint/markdown/issues/480)) ([6c35261](https://github.com/eslint/markdown/commit/6c35261bb1ed925b43537a40909b04225668d5cf))
+* improve no-html rule's tag location reporting ([#491](https://github.com/eslint/markdown/issues/491)) ([5e6e94e](https://github.com/eslint/markdown/commit/5e6e94e0fc030ca4987f0f8067e78a3ec93f65a9))
+* make `meta` property optional in `Block` type ([#461](https://github.com/eslint/markdown/issues/461)) ([15c93a6](https://github.com/eslint/markdown/commit/15c93a69b970db3bac145ad0be80d32dfd9f4285))
+* normalize definition identifiers in no-*-definitions rules ([#488](https://github.com/eslint/markdown/issues/488)) ([b248383](https://github.com/eslint/markdown/commit/b24838360407dd32ceacc9fa8af8a926ce9f7144))
+
 ## [7.1.0](https://github.com/eslint/markdown/compare/v7.0.0...v7.1.0) (2025-07-22)
 
 
