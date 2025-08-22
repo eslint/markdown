@@ -99,13 +99,14 @@ export default {
 		function findHtmlSkipRange(node) {
 			const tagInfo = parseHtmlTag(node.value);
 
-			if (!tagInfo?.isClosing) {
+			if (!tagInfo?.isClosing && startOffset === null) {
 				startOffset = node.position.start.offset;
 				lastTagName = tagInfo.name;
 			}
 
-			if (tagInfo?.name === lastTagName && tagInfo?.isClosing) {
+			if (tagInfo?.isClosing && tagInfo?.name === lastTagName) {
 				endOffset = node.position.end.offset;
+
 				skipRanges.push([startOffset, endOffset]);
 
 				lastTagName = "";
@@ -119,11 +120,11 @@ export default {
 		 * @returns {void}
 		 */
 		function report() {
-			for (const node of linkNodes) {
-				const text = sourceCode.getText(node);
-				const { url } = node;
+			for (const linkNode of linkNodes) {
+				const text = sourceCode.getText(linkNode);
+				const { url } = linkNode;
 
-				if (isInSkipRange(node.position.start.offset, skipRanges)) {
+				if (isInSkipRange(linkNode.position.start.offset, skipRanges)) {
 					continue;
 				}
 
@@ -133,15 +134,16 @@ export default {
 					url === `mailto:${text}`
 				) {
 					context.report({
-						node,
+						node: linkNode,
 						messageId: "bareUrl",
 						fix(fixer) {
-							return fixer.replaceText(node, `<${text}>`);
+							return fixer.replaceText(linkNode, `<${text}>`);
 						},
 					});
 				}
 			}
 
+			skipRanges.length = 0;
 			linkNodes.length = 0;
 		}
 

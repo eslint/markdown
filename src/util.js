@@ -3,7 +3,7 @@
  * @author Nicholas C. Zakas
  */
 
-/*
+/**
  * CommonMark does not allow any white space between the brackets in a reference link.
  * If that pattern is detected, then it's treated as text and not as a link. This pattern
  * is used to detect that situation.
