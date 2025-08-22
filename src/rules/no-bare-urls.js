@@ -79,17 +79,17 @@ export default {
 	create(context) {
 		const { sourceCode } = context;
 
-		/** @type {string} */
-		let lastTagname = "";
-
 		/** @type {Array<SourceRange>} */
 		const skipRanges = [];
-
-		/** @type {[number|null,number|null]} */
-		const sourceRange = [null, null];
-
 		/** @type {Array<Link>} */
 		const linkNodes = [];
+
+		/** @type {string} */
+		let lastTagName = "";
+		/** @type {number | null} */
+		let startOffset = null;
+		/** @type {number | null} */
+		let endOffset = null;
 
 		/**
 		 * TODO
@@ -97,20 +97,20 @@ export default {
 		 * @returns {void}
 		 */
 		function findHtmlSkipRange(node) {
-			const tagInfo = parseHtmlTag(sourceCode.getText(node));
+			const tagInfo = parseHtmlTag(node.value);
 
 			if (!tagInfo?.isClosing) {
-				sourceRange[0] = node.position.start.offset;
-				lastTagname = tagInfo.name;
+				startOffset = node.position.start.offset;
+				lastTagName = tagInfo.name;
 			}
 
-			if (tagInfo?.name === lastTagname && tagInfo?.isClosing) {
-				sourceRange[1] = node.position.end.offset;
-				skipRanges.push([...sourceRange]);
+			if (tagInfo?.name === lastTagName && tagInfo?.isClosing) {
+				endOffset = node.position.end.offset;
+				skipRanges.push([startOffset, endOffset]);
 
-				lastTagname = "";
-				sourceRange[0] = null;
-				sourceRange[1] = null;
+				lastTagName = "";
+				startOffset = null;
+				endOffset = null;
 			}
 		}
 
