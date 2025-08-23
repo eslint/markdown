@@ -135,19 +135,18 @@ export default defineConfig([
 
 You can individually disable rules in Markdown using HTML comments, such as:
 
+<!-- prettier-ignore-start -->
 ```markdown
 <!-- eslint-disable-next-line markdown/no-html -- I want to allow HTML here -->
-
 <custom-element>Hello world!</custom-element>
 
 <!-- eslint-disable markdown/no-html -- here too -->
-
 <another-element>Goodbye world!</another-element>
-
 <!-- eslint-enable markdown/no-html -- safe to re-enable now -->
 
 [Object] <!-- eslint-disable-line markdown/no-missing-label-refs -- not meant to be a link ref -->
 ```
+<!-- prettier-ignore-end -->
 
 ### Languages
 
