@@ -24,7 +24,9 @@ import { findOffsets } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-const htmlTagPattern = /<([a-z0-9]+(?:-[a-z0-9]+)*)/giu;
+const htmlTagPattern =
+	/<([a-z0-9]+(?:-[a-z0-9]+)*)(?:\s+(?:[^>"']|"[^"]*"|'[^']*')*)?>/giu;
+const lineEndingPattern = /\r\n?|\n/u;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -82,6 +84,7 @@ export default {
 				let match;
 
 				while ((match = htmlTagPattern.exec(node.value)) !== null) {
+					const fullMatch = match[0];
 					const tagName = match[1];
 					const { lineOffset, columnOffset } = findOffsets(
 						node.value,
@@ -91,9 +94,17 @@ export default {
 						line: node.position.start.line + lineOffset,
 						column: node.position.start.column + columnOffset,
 					};
+
+					const firstNewlineIndex =
+						fullMatch.search(lineEndingPattern);
+					const endColumn =
+						firstNewlineIndex === -1
+							? start.column + fullMatch.length
+							: start.column + firstNewlineIndex;
+
 					const end = {
 						line: start.line,
-						column: start.column + match[0].length + 1,
+						column: endColumn,
 					};
 
 					const tagToCheck = allowedIgnoreCase
