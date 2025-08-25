@@ -8,7 +8,6 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @import { SourceRange } from "@eslint/core"
  * @import { Link, Html } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"bareUrl"} NoBareUrlsMessageIds
@@ -42,18 +41,6 @@ function parseHtmlTag(tagText) {
 	return null;
 }
 
-/**
- * Checks if a match is within any skip range
- * @param {number} matchIndex The index of the match
- * @param {Array<SourceRange>} skipRanges The skip ranges
- * @returns {boolean} True if the match is within a skip range
- */
-function isInSkipRange(matchIndex, skipRanges) {
-	return skipRanges.some(
-		range => range[0] <= matchIndex && matchIndex < range[1],
-	);
-}
-
 //-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
@@ -79,34 +66,29 @@ export default {
 	create(context) {
 		const { sourceCode } = context;
 
-		/** @type {Array<SourceRange>} */
-		const skipRanges = [];
 		/** @type {Array<Link>} */
 		const linkNodes = [];
+		/** @type {Array<Link>} */
+		const tempNodes = [];
 
 		/** @type {string | null} */
 		let lastTagName = null;
-		/** @type {number | null} */
-		let startOffset = null;
 
 		/**
-		 * Finds HTML skip range
+		 * Checks HTML skip range
 		 * @param {Html} node The HTML node to analyze
 		 * @returns {void}
 		 */
-		function findHtmlSkipRange(node) {
+		function checkHtmlSkipRange(node) {
 			const tagInfo = parseHtmlTag(node.value);
 
-			if (!tagInfo?.isClosing && startOffset === null) {
+			if (!tagInfo?.isClosing && lastTagName === null) {
 				lastTagName = tagInfo.name;
-				startOffset = node.position.start.offset;
 			}
 
 			if (tagInfo?.isClosing && tagInfo?.name === lastTagName) {
-				skipRanges.push([startOffset, node.position.end.offset]);
-
+				tempNodes.length = 0;
 				lastTagName = null;
-				startOffset = null;
 			}
 		}
 
@@ -115,13 +97,11 @@ export default {
 		 * @returns {void}
 		 */
 		function report() {
+			linkNodes.push(...tempNodes);
+
 			for (const linkNode of linkNodes) {
 				const text = sourceCode.getText(linkNode);
 				const { url } = linkNode;
-
-				if (isInSkipRange(linkNode.position.start.offset, skipRanges)) {
-					continue;
-				}
 
 				if (
 					text === url ||
@@ -138,19 +118,22 @@ export default {
 				}
 			}
 
-			skipRanges.length = 0;
 			linkNodes.length = 0;
+			tempNodes.length = 0;
 			lastTagName = null;
-			startOffset = null;
 		}
 
 		return {
 			"heading html"(/** @type {Html} */ node) {
-				findHtmlSkipRange(node);
+				checkHtmlSkipRange(node);
 			},
 
 			"heading link"(/** @type {Link} */ node) {
-				linkNodes.push(node);
+				if (lastTagName !== null) {
+					tempNodes.push(node);
+				} else {
+					linkNodes.push(node);
+				}
 			},
 
 			"heading:exit"() {
@@ -158,11 +141,15 @@ export default {
 			},
 
 			"paragraph html"(/** @type {Html} */ node) {
-				findHtmlSkipRange(node);
+				checkHtmlSkipRange(node);
 			},
 
 			"paragraph link"(/** @type {Link} */ node) {
-				linkNodes.push(node);
+				if (lastTagName !== null) {
+					tempNodes.push(node);
+				} else {
+					linkNodes.push(node);
+				}
 			},
 
 			"paragraph:exit"() {
@@ -170,11 +157,15 @@ export default {
 			},
 
 			"tableCell html"(/** @type {Html} */ node) {
-				findHtmlSkipRange(node);
+				checkHtmlSkipRange(node);
 			},
 
 			"tableCell link"(/** @type {Link} */ node) {
-				linkNodes.push(node);
+				if (lastTagName !== null) {
+					tempNodes.push(node);
+				} else {
+					linkNodes.push(node);
+				}
 			},
 
 			"tableCell:exit"() {
