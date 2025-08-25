@@ -101,7 +101,9 @@ export default {
 		}
 
 		return {
-			"heading html"(/** @type {Html} */ node) {
+			":matches(heading, paragraph, tableCell) html"(
+				/** @type {Html} */ node,
+			) {
 				trackHtmlTagState(node);
 			},
 
@@ -118,10 +120,6 @@ export default {
 				resetState();
 			},
 
-			"paragraph html"(/** @type {Html} */ node) {
-				trackHtmlTagState(node);
-			},
-
 			"paragraph link"(/** @type {Link} */ node) {
 				if (lastTagName !== null) {
 					tempLinkNodes.push(node);
@@ -133,10 +131,6 @@ export default {
 			"paragraph:exit"() {
 				linkNodes.push(...tempLinkNodes);
 				resetState();
-			},
-
-			"tableCell html"(/** @type {Html} */ node) {
-				trackHtmlTagState(node);
 			},
 
 			"tableCell link"(/** @type {Link} */ node) {
