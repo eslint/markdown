@@ -75,8 +75,17 @@ export default {
 		let lastTagName = null;
 
 		/**
-		 * Checks HTML skip range
-		 * @param {Html} node The HTML node to analyze
+		 * Resets the temporary state.
+		 * @returns {void}
+		 */
+		function reset() {
+			tempLinkNodes.length = 0;
+			lastTagName = null;
+		}
+
+		/**
+		 * Checks HTML skip range.
+		 * @param {Html} node The HTML node to analyze.
 		 * @returns {void}
 		 */
 		function checkHtmlSkipRange(node) {
@@ -87,8 +96,7 @@ export default {
 			}
 
 			if (tagInfo?.isClosing && tagInfo?.name === lastTagName) {
-				tempLinkNodes.length = 0;
-				lastTagName = null;
+				reset();
 			}
 		}
 
@@ -107,9 +115,7 @@ export default {
 
 			"heading:exit"() {
 				linkNodes.push(...tempLinkNodes);
-
-				tempLinkNodes.length = 0;
-				lastTagName = null;
+				reset();
 			},
 
 			"paragraph html"(/** @type {Html} */ node) {
@@ -126,9 +132,7 @@ export default {
 
 			"paragraph:exit"() {
 				linkNodes.push(...tempLinkNodes);
-
-				tempLinkNodes.length = 0;
-				lastTagName = null;
+				reset();
 			},
 
 			"tableCell html"(/** @type {Html} */ node) {
@@ -145,9 +149,7 @@ export default {
 
 			"tableCell:exit"() {
 				linkNodes.push(...tempLinkNodes);
-
-				tempLinkNodes.length = 0;
-				lastTagName = null;
+				reset();
 			},
 
 			"root:exit"() {
