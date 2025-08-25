@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Node, Heading, Paragraph, TableCell, Link } from "mdast";
+ * @import { Link, Html } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"bareUrl"} NoBareUrlsMessageIds
  * @typedef {[]} NoBareUrlsOptions
@@ -19,17 +19,17 @@
 // Helpers
 //-----------------------------------------------------------------------------
 
-const htmlTagNamePattern = /^<([^!>][^/\s>]*)/u;
+const htmlTagNamePattern = /^<(?<tagName>[^!>][^/\s>]*)/u;
 
 /**
  * Parses an HTML tag to extract its name and closing status
  * @param {string} tagText The HTML tag text to parse
- * @returns {{ name: string; isClosing: boolean; } | null} Object containing tag name and closing status, or null if not a valid tag
+ * @returns {{ name: string, isClosing: boolean } | null} Object containing tag name and closing status, or null if not a valid tag
  */
 function parseHtmlTag(tagText) {
 	const match = tagText.match(htmlTagNamePattern);
 	if (match) {
-		const tagName = match[1].toLowerCase();
+		const tagName = match.groups.tagName.toLowerCase();
 		const isClosing = tagName.startsWith("/");
 
 		return {
@@ -65,105 +65,87 @@ export default {
 
 	create(context) {
 		const { sourceCode } = context;
+
 		/** @type {Array<Link>} */
-		const bareUrls = [];
+		const linkNodes = [];
+		/** @type {Array<Link>} */
+		const tempLinkNodes = [];
+
+		/** @type {string | null} */
+		let lastTagName = null;
 
 		/**
-		 * Finds bare URLs in markdown nodes while handling HTML tags.
-		 * When an HTML tag is found, it looks for its closing tag and skips all nodes
-		 * between them to prevent checking for bare URLs inside HTML content.
-		 * @param {Paragraph|Heading|TableCell} node The node to process
+		 * Resets `tempLinkNodes` and `lastTagName`
 		 * @returns {void}
 		 */
-		function findBareUrls(node) {
-			/**
-			 * Recursively traverses the AST to find bare URLs, skipping over HTML blocks.
-			 * @param {Node} currentNode The current AST node being traversed.
-			 * @returns {void}
-			 */
-			function traverse(currentNode) {
-				if (
-					"children" in currentNode &&
-					Array.isArray(currentNode.children)
-				) {
-					for (let i = 0; i < currentNode.children.length; i++) {
-						const child = currentNode.children[i];
-
-						if (child.type === "html") {
-							const tagInfo = parseHtmlTag(
-								sourceCode.getText(child),
-							);
-
-							if (tagInfo && !tagInfo.isClosing) {
-								for (
-									let j = i + 1;
-									j < currentNode.children.length;
-									j++
-								) {
-									const nextChild = currentNode.children[j];
-									if (nextChild.type === "html") {
-										const closingTagInfo = parseHtmlTag(
-											sourceCode.getText(nextChild),
-										);
-										if (
-											closingTagInfo?.name ===
-												tagInfo.name &&
-											closingTagInfo?.isClosing
-										) {
-											i = j;
-											break;
-										}
-									}
-								}
-								continue;
-							}
-						}
-
-						if (child.type === "link") {
-							const text = sourceCode.getText(child);
-							const { url } = child;
-
-							if (
-								text === url ||
-								url === `http://${text}` ||
-								url === `mailto:${text}`
-							) {
-								bareUrls.push(child);
-							}
-						}
-
-						traverse(child);
-					}
-				}
-			}
-
-			traverse(node);
+		function reset() {
+			tempLinkNodes.length = 0;
+			lastTagName = null;
 		}
 
 		return {
-			"root:exit"() {
-				for (const bareUrl of bareUrls) {
-					context.report({
-						node: bareUrl,
-						messageId: "bareUrl",
-						fix(fixer) {
-							const text = sourceCode.getText(bareUrl);
-							return fixer.replaceText(bareUrl, `<${text}>`);
-						},
-					});
+			":matches(heading, paragraph, tableCell) html"(
+				/** @type {Html} */ node,
+			) {
+				const tagInfo = parseHtmlTag(node.value);
+
+				if (!tagInfo) {
+					return;
+				}
+
+				if (!tagInfo.isClosing && lastTagName === null) {
+					lastTagName = tagInfo.name;
+				}
+
+				if (tagInfo.isClosing && lastTagName === tagInfo.name) {
+					reset();
 				}
 			},
 
-			paragraph(node) {
-				findBareUrls(node);
+			":matches(heading, paragraph, tableCell) link"(
+				/** @type {Link} */ node,
+			) {
+				if (lastTagName !== null) {
+					tempLinkNodes.push(node);
+				} else {
+					linkNodes.push(node);
+				}
 			},
 
-			heading(node) {
-				findBareUrls(node);
+			"heading:exit"() {
+				linkNodes.push(...tempLinkNodes);
+				reset();
 			},
 
-			tableCell(node) {
-				findBareUrls(node);
+			"paragraph:exit"() {
+				linkNodes.push(...tempLinkNodes);
+				reset();
+			},
+
+			"tableCell:exit"() {
+				linkNodes.push(...tempLinkNodes);
+				reset();
+			},
+
+			"root:exit"() {
+				for (const linkNode of linkNodes) {
+					const text = sourceCode.getText(linkNode);
+					const { url } = linkNode;
+
+					if (
+						url === text ||
+						url === `http://${text}` ||
+						url === `mailto:${text}`
+					) {
+						context.report({
+							node: linkNode,
+							messageId: "bareUrl",
+							fix(fixer) {
+								return fixer.replaceText(linkNode, `<${text}>`);
+							},
+						});
+					}
+				}
 			},
 		};
 	},
