@@ -143,7 +143,7 @@ export default {
 		}
 
 		return {
-			"heading html,inlineCode"(node) {
+			"heading :matches(html, inlineCode)"(node) {
 				skipRanges.push(sourceCode.getRange(node));
 			},
 
@@ -152,7 +152,7 @@ export default {
 				skipRanges = [];
 			},
 
-			"paragraph html,inlineCode"(node) {
+			"paragraph :matches(html, inlineCode)"(node) {
 				skipRanges.push(sourceCode.getRange(node));
 			},
 
@@ -161,7 +161,7 @@ export default {
 				skipRanges = [];
 			},
 
-			"tableCell html,inlineCode"(node) {
+			"tableCell :matches(html, inlineCode)"(node) {
 				skipRanges.push(sourceCode.getRange(node));
 			},
 
