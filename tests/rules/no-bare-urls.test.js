@@ -288,6 +288,32 @@ ruleTester.run("no-bare-urls", rule, {
 			],
 		},
 		{
+			code: "<br> Another violation: https://example.com. <br />",
+			output: "<br> Another violation: <https://example.com>. <br />",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 25,
+					endLine: 1,
+					endColumn: 44,
+				},
+			],
+		},
+		{
+			code: "<br /> Another violation: https://example.com. <br />",
+			output: "<br /> Another violation: <https://example.com>. <br />",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 27,
+					endLine: 1,
+					endColumn: 46,
+				},
+			],
+		},
+		{
 			code: dedent`
             <div>
             
