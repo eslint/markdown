@@ -69,7 +69,7 @@ export default {
 		/** @type {Array<Link>} */
 		const linkNodes = [];
 		/** @type {Array<Link>} */
-		const tempNodes = [];
+		const tempLinkNodes = [];
 
 		/** @type {string | null} */
 		let lastTagName = null;
@@ -87,7 +87,7 @@ export default {
 			}
 
 			if (tagInfo?.isClosing && tagInfo?.name === lastTagName) {
-				tempNodes.length = 0;
+				tempLinkNodes.length = 0;
 				lastTagName = null;
 			}
 		}
@@ -99,16 +99,16 @@ export default {
 
 			"heading link"(/** @type {Link} */ node) {
 				if (lastTagName !== null) {
-					tempNodes.push(node);
+					tempLinkNodes.push(node);
 				} else {
 					linkNodes.push(node);
 				}
 			},
 
 			"heading:exit"() {
-				linkNodes.push(...tempNodes);
+				linkNodes.push(...tempLinkNodes);
 
-				tempNodes.length = 0;
+				tempLinkNodes.length = 0;
 				lastTagName = null;
 			},
 
@@ -118,16 +118,16 @@ export default {
 
 			"paragraph link"(/** @type {Link} */ node) {
 				if (lastTagName !== null) {
-					tempNodes.push(node);
+					tempLinkNodes.push(node);
 				} else {
 					linkNodes.push(node);
 				}
 			},
 
 			"paragraph:exit"() {
-				linkNodes.push(...tempNodes);
+				linkNodes.push(...tempLinkNodes);
 
-				tempNodes.length = 0;
+				tempLinkNodes.length = 0;
 				lastTagName = null;
 			},
 
@@ -137,16 +137,16 @@ export default {
 
 			"tableCell link"(/** @type {Link} */ node) {
 				if (lastTagName !== null) {
-					tempNodes.push(node);
+					tempLinkNodes.push(node);
 				} else {
 					linkNodes.push(node);
 				}
 			},
 
 			"tableCell:exit"() {
-				linkNodes.push(...tempNodes);
+				linkNodes.push(...tempLinkNodes);
 
-				tempNodes.length = 0;
+				tempLinkNodes.length = 0;
 				lastTagName = null;
 			},
 
