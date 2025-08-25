@@ -89,11 +89,15 @@ export default {
 			) {
 				const tagInfo = parseHtmlTag(node.value);
 
-				if (!tagInfo?.isClosing && lastTagName === null) {
-					lastTagName = tagInfo?.name;
+				if (!tagInfo) {
+					return;
 				}
 
-				if (tagInfo?.isClosing && lastTagName === tagInfo?.name) {
+				if (!tagInfo.isClosing && lastTagName === null) {
+					lastTagName = tagInfo.name;
+				}
+
+				if (tagInfo.isClosing && lastTagName === tagInfo.name) {
 					reset();
 				}
 			},
