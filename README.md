@@ -89,6 +89,7 @@ export default defineConfig([
 | **Rule Name**                                                                  | **Description**                                                                                   | **Recommended** |
 | :----------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ | :-------------: |
 | [`fenced-code-language`](./docs/rules/fenced-code-language.md)                 | Require languages for fenced code blocks                                                          |       yes       |
+| [`fenced-code-meta`](./docs/rules/fenced-code-meta.md)                         | Require or disallow metadata for fenced code blocks                                               |       no        |
 | [`heading-increment`](./docs/rules/heading-increment.md)                       | Enforce heading levels increment by one                                                           |       yes       |
 | [`no-bare-urls`](./docs/rules/no-bare-urls.md)                                 | Disallow bare URLs                                                                                |       no        |
 | [`no-duplicate-definitions`](./docs/rules/no-duplicate-definitions.md)         | Disallow duplicate definitions                                                                    |       yes       |
@@ -135,18 +136,19 @@ export default defineConfig([
 
 You can individually disable rules in Markdown using HTML comments, such as:
 
-<!-- prettier-ignore-start -->
 ```markdown
 <!-- eslint-disable-next-line markdown/no-html -- I want to allow HTML here -->
+
 <custom-element>Hello world!</custom-element>
 
 <!-- eslint-disable markdown/no-html -- here too -->
+
 <another-element>Goodbye world!</another-element>
+
 <!-- eslint-enable markdown/no-html -- safe to re-enable now -->
 
 [Object] <!-- eslint-disable-line markdown/no-missing-label-refs -- not meant to be a link ref -->
 ```
-<!-- prettier-ignore-end -->
 
 ### Languages
 
