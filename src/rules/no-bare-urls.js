@@ -107,7 +107,9 @@ export default {
 				trackHtmlTagState(node);
 			},
 
-			"heading link"(/** @type {Link} */ node) {
+			":matches(heading, paragraph, tableCell) link"(
+				/** @type {Link} */ node,
+			) {
 				if (lastTagName !== null) {
 					tempLinkNodes.push(node);
 				} else {
@@ -120,25 +122,9 @@ export default {
 				resetState();
 			},
 
-			"paragraph link"(/** @type {Link} */ node) {
-				if (lastTagName !== null) {
-					tempLinkNodes.push(node);
-				} else {
-					linkNodes.push(node);
-				}
-			},
-
 			"paragraph:exit"() {
 				linkNodes.push(...tempLinkNodes);
 				resetState();
-			},
-
-			"tableCell link"(/** @type {Link} */ node) {
-				if (lastTagName !== null) {
-					tempLinkNodes.push(node);
-				} else {
-					linkNodes.push(node);
-				}
 			},
 
 			"tableCell:exit"() {
