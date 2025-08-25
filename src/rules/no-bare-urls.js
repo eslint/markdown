@@ -90,10 +90,10 @@ export default {
 				const tagInfo = parseHtmlTag(node.value);
 
 				if (!tagInfo?.isClosing && lastTagName === null) {
-					lastTagName = tagInfo.name;
+					lastTagName = tagInfo?.name;
 				}
 
-				if (tagInfo?.isClosing && tagInfo?.name === lastTagName) {
+				if (tagInfo?.isClosing && lastTagName === tagInfo?.name) {
 					reset();
 				}
 			},
@@ -129,7 +129,7 @@ export default {
 					const { url } = linkNode;
 
 					if (
-						text === url ||
+						url === text ||
 						url === `http://${text}` ||
 						url === `mailto:${text}`
 					) {
