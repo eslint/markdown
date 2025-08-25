@@ -75,20 +75,20 @@ export default {
 		let lastTagName = null;
 
 		/**
-		 * Resets the temporary state.
+		 * Resets `tempLinkNodes` and `lastTagName` to their initial states.
 		 * @returns {void}
 		 */
-		function reset() {
+		function resetState() {
 			tempLinkNodes.length = 0;
 			lastTagName = null;
 		}
 
 		/**
-		 * Checks HTML skip range.
-		 * @param {Html} node The HTML node to analyze.
+		 * Tracks the state of HTML tags to determine if we are inside a tag.
+		 * @param {Html} node The HTML node to track.
 		 * @returns {void}
 		 */
-		function checkHtmlSkipRange(node) {
+		function trackHtmlTagState(node) {
 			const tagInfo = parseHtmlTag(node.value);
 
 			if (!tagInfo?.isClosing && lastTagName === null) {
@@ -96,13 +96,13 @@ export default {
 			}
 
 			if (tagInfo?.isClosing && tagInfo?.name === lastTagName) {
-				reset();
+				resetState();
 			}
 		}
 
 		return {
 			"heading html"(/** @type {Html} */ node) {
-				checkHtmlSkipRange(node);
+				trackHtmlTagState(node);
 			},
 
 			"heading link"(/** @type {Link} */ node) {
@@ -115,11 +115,11 @@ export default {
 
 			"heading:exit"() {
 				linkNodes.push(...tempLinkNodes);
-				reset();
+				resetState();
 			},
 
 			"paragraph html"(/** @type {Html} */ node) {
-				checkHtmlSkipRange(node);
+				trackHtmlTagState(node);
 			},
 
 			"paragraph link"(/** @type {Link} */ node) {
@@ -132,11 +132,11 @@ export default {
 
 			"paragraph:exit"() {
 				linkNodes.push(...tempLinkNodes);
-				reset();
+				resetState();
 			},
 
 			"tableCell html"(/** @type {Html} */ node) {
-				checkHtmlSkipRange(node);
+				trackHtmlTagState(node);
 			},
 
 			"tableCell link"(/** @type {Link} */ node) {
@@ -149,7 +149,7 @@ export default {
 
 			"tableCell:exit"() {
 				linkNodes.push(...tempLinkNodes);
-				reset();
+				resetState();
 			},
 
 			"root:exit"() {
