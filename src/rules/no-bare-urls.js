@@ -92,37 +92,6 @@ export default {
 			}
 		}
 
-		/**
-		 * Reports any bare URLs found in link nodes.
-		 * @returns {void}
-		 */
-		function report() {
-			linkNodes.push(...tempNodes);
-
-			for (const linkNode of linkNodes) {
-				const text = sourceCode.getText(linkNode);
-				const { url } = linkNode;
-
-				if (
-					text === url ||
-					url === `http://${text}` ||
-					url === `mailto:${text}`
-				) {
-					context.report({
-						node: linkNode,
-						messageId: "bareUrl",
-						fix(fixer) {
-							return fixer.replaceText(linkNode, `<${text}>`);
-						},
-					});
-				}
-			}
-
-			linkNodes.length = 0;
-			tempNodes.length = 0;
-			lastTagName = null;
-		}
-
 		return {
 			"heading html"(/** @type {Html} */ node) {
 				checkHtmlSkipRange(node);
@@ -137,7 +106,10 @@ export default {
 			},
 
 			"heading:exit"() {
-				report();
+				linkNodes.push(...tempNodes);
+
+				tempNodes.length = 0;
+				lastTagName = null;
 			},
 
 			"paragraph html"(/** @type {Html} */ node) {
@@ -153,7 +125,10 @@ export default {
 			},
 
 			"paragraph:exit"() {
-				report();
+				linkNodes.push(...tempNodes);
+
+				tempNodes.length = 0;
+				lastTagName = null;
 			},
 
 			"tableCell html"(/** @type {Html} */ node) {
@@ -169,7 +144,31 @@ export default {
 			},
 
 			"tableCell:exit"() {
-				report();
+				linkNodes.push(...tempNodes);
+
+				tempNodes.length = 0;
+				lastTagName = null;
+			},
+
+			"root:exit"() {
+				for (const linkNode of linkNodes) {
+					const text = sourceCode.getText(linkNode);
+					const { url } = linkNode;
+
+					if (
+						text === url ||
+						url === `http://${text}` ||
+						url === `mailto:${text}`
+					) {
+						context.report({
+							node: linkNode,
+							messageId: "bareUrl",
+							fix(fixer) {
+								return fixer.replaceText(linkNode, `<${text}>`);
+							},
+						});
+					}
+				}
 			},
 		};
 	},
