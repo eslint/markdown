@@ -70,7 +70,7 @@ function traverse(node, callbacks) {
 function getComment(html) {
 	const commentStart = "<!--";
 	const commentEnd = "-->";
-	const regex = /^(eslint\b|global\s)/u;
+	const regex = /^(?:eslint\b|global\s)/u;
 
 	if (
 		html.slice(0, commentStart.length) !== commentStart ||
