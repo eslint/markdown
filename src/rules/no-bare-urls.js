@@ -75,36 +75,27 @@ export default {
 		let lastTagName = null;
 
 		/**
-		 * Resets `tempLinkNodes` and `lastTagName` to their initial states.
+		 * Resets `tempLinkNodes` and `lastTagName`
 		 * @returns {void}
 		 */
-		function resetState() {
+		function reset() {
 			tempLinkNodes.length = 0;
 			lastTagName = null;
-		}
-
-		/**
-		 * Tracks the state of HTML tags to determine if we are inside a tag.
-		 * @param {Html} node The HTML node to track.
-		 * @returns {void}
-		 */
-		function trackHtmlTagState(node) {
-			const tagInfo = parseHtmlTag(node.value);
-
-			if (!tagInfo?.isClosing && lastTagName === null) {
-				lastTagName = tagInfo.name;
-			}
-
-			if (tagInfo?.isClosing && tagInfo?.name === lastTagName) {
-				resetState();
-			}
 		}
 
 		return {
 			":matches(heading, paragraph, tableCell) html"(
 				/** @type {Html} */ node,
 			) {
-				trackHtmlTagState(node);
+				const tagInfo = parseHtmlTag(node.value);
+
+				if (!tagInfo?.isClosing && lastTagName === null) {
+					lastTagName = tagInfo.name;
+				}
+
+				if (tagInfo?.isClosing && tagInfo?.name === lastTagName) {
+					reset();
+				}
 			},
 
 			":matches(heading, paragraph, tableCell) link"(
@@ -119,17 +110,17 @@ export default {
 
 			"heading:exit"() {
 				linkNodes.push(...tempLinkNodes);
-				resetState();
+				reset();
 			},
 
 			"paragraph:exit"() {
 				linkNodes.push(...tempLinkNodes);
-				resetState();
+				reset();
 			},
 
 			"tableCell:exit"() {
 				linkNodes.push(...tempLinkNodes);
-				resetState();
+				reset();
 			},
 
 			"root:exit"() {
