@@ -97,13 +97,13 @@ function extractInlineConfigCommentsFromHTML(node) {
 			start.column += startColumnOffset;
 			start.offset += match.index;
 
-			const commentLineCount = comment.split("\n").length - 1;
+			const commentLineCount = comment.split("\n").length - 1; // TODO
 
 			end.line = start.line + commentLineCount;
 			end.column =
 				commentLineCount === 0
 					? start.column + comment.length
-					: comment.length - comment.lastIndexOf("\n");
+					: comment.length - comment.lastIndexOf("\n"); // TODO
 			end.offset = start.offset + comment.length;
 
 			comments.push(
@@ -167,7 +167,7 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 	 * @param {Root} options.ast The root AST node.
 	 */
 	constructor({ text, ast }) {
-		super({ ast, text });
+		super({ ast, text, lineEndingPattern: /\n|\r|\r\n/u });
 		this.ast = ast;
 
 		// need to traverse the source code to get the inline config nodes
