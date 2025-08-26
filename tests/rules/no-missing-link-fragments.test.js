@@ -154,6 +154,14 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		[Link](#old-style-12)
 		`,
 
+		dedent`
+		# foo bar baz
+		# foo-bar-baz
+
+		[Link](#foo-bar-baz)
+		[Link](#foo-bar-baz-1)
+		`,
+
 		// Special #top link
 		"[Link](#top)",
 

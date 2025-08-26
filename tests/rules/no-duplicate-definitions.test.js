@@ -76,6 +76,104 @@ ruleTester.run("no-duplicate-definitions", rule, {
 				},
 			],
 		},
+		{
+			code: `
+[MERCURY]: https://example.com/mercury/
+[mercury]: https://example.com/venus/
+`,
+			options: [
+				{
+					allowDefinitions: ["MERCURY"],
+				},
+			],
+		},
+		{
+			code: `
+[mercury]: https://example.com/mercury/
+[MERCURY]: https://example.com/venus/
+`,
+			options: [
+				{
+					allowDefinitions: ["mercury"],
+				},
+			],
+		},
+		{
+			code: `
+[   mercury   ]: https://example.com/mercury/
+[mercury]: https://example.com/venus/
+`,
+			options: [
+				{
+					allowDefinitions: ["mercury"],
+				},
+			],
+		},
+		{
+			code: `
+[mercury]: https://example.com/mercury/
+[   mercury   ]: https://example.com/venus/
+`,
+			options: [
+				{
+					allowDefinitions: ["   mercury   "],
+				},
+			],
+		},
+		{
+			code: `
+[foo bar]: https://example.com/foo-bar/
+[foo bar]: https://example.com/foo-bar/
+`,
+			options: [
+				{
+					allowDefinitions: ["foo\t\r\nbar"],
+				},
+			],
+		},
+		{
+			code: `
+[^MERCURY]: Hello, Mercury!
+[^mercury]: Hello, Venus!
+`,
+			options: [
+				{
+					allowFootnoteDefinitions: ["MERCURY"],
+				},
+			],
+		},
+		{
+			code: `
+[^mercury]: Hello, Mercury!
+[^MERCURY]: Hello, Venus!
+`,
+			options: [
+				{
+					allowFootnoteDefinitions: ["mercury"],
+				},
+			],
+		},
+		// This test case is skipped for non-Node environments like Bun
+		...(typeof process !== "undefined" &&
+		process.release?.name === "node" &&
+		!process.versions?.bun
+			? [
+					{
+						code: `
+						[Grüsse]: https://example.com/
+						[Grüsse]: https://example.com/
+						`,
+						options: [{ allowDefinitions: ["GRÜẞE"] }],
+					},
+					{
+						code: `
+						[^Grüsse]: Grüsse
+						[^Grüsse]: Grüsse
+						`,
+						options: [{ allowFootnoteDefinitions: ["GRÜẞE"] }],
+					},
+				]
+			: []),
 	],
 
 	invalid: [
@@ -87,6 +185,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateDefinition",
+					data: { identifier: "mercury" },
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -105,6 +204,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateDefinition",
+					data: { identifier: "mercury" },
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -112,6 +212,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 				},
 				{
 					messageId: "duplicateDefinition",
+					data: { identifier: "mercury" },
 					line: 4,
 					column: 1,
 					endLine: 4,
@@ -119,6 +220,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 				},
 				{
 					messageId: "duplicateDefinition",
+					data: { identifier: "mercury" },
 					line: 5,
 					column: 1,
 					endLine: 5,
@@ -135,6 +237,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateDefinition",
+					data: { identifier: "mercury" },
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -151,6 +254,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateDefinition",
+					data: { identifier: "mercury" },
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -174,6 +278,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateDefinition",
+					data: { identifier: "mercury" },
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -190,6 +295,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateFootnoteDefinition",
+					data: { identifier: "mercury" },
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -208,6 +314,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateFootnoteDefinition",
+					data: { identifier: "mercury" },
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -215,6 +322,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 				},
 				{
 					messageId: "duplicateFootnoteDefinition",
+					data: { identifier: "mercury" },
 					line: 4,
 					column: 1,
 					endLine: 4,
@@ -222,6 +330,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 				},
 				{
 					messageId: "duplicateFootnoteDefinition",
+					data: { identifier: "mercury" },
 					line: 5,
 					column: 1,
 					endLine: 5,
@@ -238,6 +347,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateFootnoteDefinition",
+					data: { identifier: "mercury" },
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -261,6 +371,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateFootnoteDefinition",
+					data: { identifier: "mercury" },
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -286,6 +397,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateDefinition",
+					data: { identifier: "mercury" },
 					line: 12,
 					column: 1,
 					endLine: 12,

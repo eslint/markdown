@@ -4,6 +4,12 @@
  */
 
 //-----------------------------------------------------------------------------
+// Imports
+//-----------------------------------------------------------------------------
+
+import { normalizeIdentifier } from "micromark-util-normalize-identifier";
+
+//-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
@@ -30,9 +36,10 @@ export default {
 		},
 
 		messages: {
-			duplicateDefinition: "Unexpected duplicate definition found.",
+			duplicateDefinition:
+				"Unexpected duplicate definition `{{ identifier }}` found.",
 			duplicateFootnoteDefinition:
-				"Unexpected duplicate footnote definition found.",
+				"Unexpected duplicate footnote definition `{{ identifier }}` found.",
 		},
 
 		schema: [
@@ -67,9 +74,15 @@ export default {
 	},
 
 	create(context) {
-		const allowDefinitions = new Set(context.options[0]?.allowDefinitions);
+		const allowDefinitions = new Set(
+			context.options[0].allowDefinitions.map(identifier =>
+				normalizeIdentifier(identifier).toLowerCase(),
+			),
+		);
 		const allowFootnoteDefinitions = new Set(
-			context.options[0]?.allowFootnoteDefinitions,
+			context.options[0].allowFootnoteDefinitions.map(identifier =>
+				normalizeIdentifier(identifier).toLowerCase(),
+			),
 		);
 
 		/** @type {Set<string>} */
@@ -88,6 +101,7 @@ export default {
 					context.report({
 						node,
 						messageId: "duplicateDefinition",
+						data: { identifier: node.identifier },
 					});
 				} else {
 					definitions.add(node.identifier);
@@ -103,6 +117,7 @@ export default {
 					context.report({
 						node,
 						messageId: "duplicateFootnoteDefinition",
+						data: { identifier: node.identifier },
 					});
 				} else {
 					footnoteDefinitions.add(node.identifier);

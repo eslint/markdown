@@ -44,7 +44,7 @@ const allSponsors = await fetchSponsorsMarkdown();
 const readme = readFileSync(README_FILE_PATH, "utf8");
 
 let newReadme = readme.replace(
-	/<!--sponsorsstart-->[\w\W]*?<!--sponsorsend-->/u,
+	/<!--sponsorsstart-->[\s\S]*?<!--sponsorsend-->/u,
 	`<!--sponsorsstart-->\n\n${allSponsors}\n<!--sponsorsend-->`,
 );
 

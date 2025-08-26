@@ -8,13 +8,14 @@
 //-----------------------------------------------------------------------------
 
 import GithubSlugger from "github-slugger";
+import { htmlCommentPattern } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Node, Link } from "mdast";
+ * @import { Link } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"invalidFragment"} NoMissingLinkFragmentsMessageIds
  * @typedef {[{ ignoreCase?: boolean; allowPattern?: string }]} NoMissingLinkFragmentsOptions
@@ -26,37 +27,9 @@ import GithubSlugger from "github-slugger";
 //-----------------------------------------------------------------------------
 
 const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
-const customHeadingIdPattern = /\{#([^}\s]+)\}\s*$/u;
-const htmlCommentPattern = /<!--[\s\S]*?-->/gu;
+const customHeadingIdPattern = /\{#(?<id>[^}\s]+)\}\s*$/u;
 const htmlIdNamePattern =
-	/(?<!<)<(?:[^>]+)\s(?:id|name)\s*=\s*["']?([^"'\s>]+)["']?/giu;
-
-/**
- * Checks if the fragment is a valid GitHub line reference
- * @param {string} fragment The fragment to check
- * @returns {boolean} Whether the fragment is a valid GitHub line reference
- */
-function isGitHubLineReference(fragment) {
-	return githubLineReferencePattern.test(fragment);
-}
-
-/**
- * Extracts the text recursively from a node
- * @param {Node} node The node from which to recursively extract text
- * @returns {string} The extracted text
- */
-function extractText(node) {
-	if (node.type === "html") {
-		return "";
-	}
-	if ("value" in node) {
-		return /** @type {string} */ (node.value);
-	}
-	if ("children" in node) {
-		return /** @type {Node[]} */ (node.children).map(extractText).join("");
-	}
-	return "";
-}
+	/(?<!<)<[^>]+\s(?:id|name)\s*=\s*["']?(?<id>[^"'\s>]+)["']?/giu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -103,8 +76,8 @@ export default {
 	},
 
 	create(context) {
-		const { allowPattern: allowPatternString, ignoreCase } =
-			context.options[0];
+		const [{ allowPattern: allowPatternString, ignoreCase }] =
+			context.options;
 		const allowPattern = allowPatternString
 			? new RegExp(allowPatternString, "u")
 			: null;
@@ -114,40 +87,38 @@ export default {
 
 		/** @type {Array<{node: Link, fragment: string}>} */
 		const linkNodes = [];
+		/** @type {string} */
+		let headingText;
 
 		return {
-			heading(node) {
-				const rawHeadingText = extractText(node);
-				let baseId;
-				const customIdMatch = rawHeadingText.match(
-					customHeadingIdPattern,
-				);
+			heading() {
+				headingText = "";
+			},
 
-				if (customIdMatch) {
-					baseId = customIdMatch[1];
-				} else {
-					const tempSlugger = new GithubSlugger();
-					baseId = tempSlugger.slug(rawHeadingText);
-				}
+			"heading *:not(html)"({ value }) {
+				headingText += value ?? "";
+			},
 
+			"heading:exit"() {
+				const customIdMatch = headingText.match(customHeadingIdPattern);
+				const baseId = customIdMatch
+					? customIdMatch.groups.id
+					: headingText;
 				const finalId = slugger.slug(baseId);
 				fragmentIds.add(ignoreCase ? finalId.toLowerCase() : finalId);
 			},
 
 			html(node) {
-				const htmlText = node.value.trim();
+				// 1. Remove all comments
+				const htmlTextWithoutComments = node.value
+					.trim()
+					.replace(htmlCommentPattern, "");
 
-				// First remove all comments
-				const textWithoutComments = htmlText.replace(
-					htmlCommentPattern,
-					"",
-				);
-
-				// Then look for IDs in the remaining text
-				for (const match of textWithoutComments.matchAll(
+				// 2. Then look for IDs in the remaining text
+				for (const match of htmlTextWithoutComments.matchAll(
 					htmlIdNamePattern,
 				)) {
-					const extractedId = match[1];
+					const extractedId = match.groups.id;
 					const finalId = slugger.slug(extractedId);
 					fragmentIds.add(
 						ignoreCase ? finalId.toLowerCase() : finalId,
@@ -171,6 +142,7 @@ export default {
 
 			"root:exit"() {
 				for (const { node, fragment } of linkNodes) {
+					/** @type {string} */
 					let decodedFragment;
 					try {
 						decodedFragment = decodeURIComponent(fragment);
@@ -179,11 +151,10 @@ export default {
 						decodedFragment = fragment;
 					}
 
-					if (allowPattern?.test(decodedFragment)) {
-						continue;
-					}
-
-					if (isGitHubLineReference(decodedFragment)) {
+					if (
+						allowPattern?.test(decodedFragment) ||
+						githubLineReferencePattern.test(decodedFragment)
+					) {
 						continue;
 					}
 

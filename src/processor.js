@@ -70,7 +70,7 @@ function traverse(node, callbacks) {
 function getComment(html) {
 	const commentStart = "<!--";
 	const commentEnd = "-->";
-	const regex = /^(eslint\b|global\s)/u;
+	const regex = /^(?:eslint\b|global\s)/u;
 
 	if (
 		html.slice(0, commentStart.length) !== commentStart ||
@@ -469,7 +469,7 @@ function postprocess(messages, filename) {
 export const processor = {
 	meta: {
 		name: "@eslint/markdown/markdown",
-		version: "7.1.0", // x-release-please-version
+		version: "7.2.0", // x-release-please-version
 	},
 	preprocess,
 	postprocess,
