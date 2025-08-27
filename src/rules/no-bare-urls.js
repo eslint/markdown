@@ -3,6 +3,27 @@
  * @author xbinaryx
  */
 
+/*
+ * Here's a note on how the approach (algorithm) works:
+ *
+ * - When entering an `Html` node that is a child of a `Heading`, `Paragraph` or `TableCell`,
+ *   we check whether it is an opening or closing tag.
+ *   If we encounter an opening tag, we store the tag name and set `lastTagName`.
+ *   (`lastTagName` serves as a state to represent whether we're between opening and closing HTML tags.)
+ *   If we encounter a closing tag, we reset the stored tag name and `tempLinkNodes`.
+ *
+ * - When entering a `Link` node that is a child of a `Heading`, `Paragraph` or `TableCell`,
+ *   we check whether it is between opening and closing HTML tags.
+ *   If it's between opening and closing HTML tags, we add it to `tempLinkNodes`.
+ *   If it's not between opening and closing HTML tags, we add it to `linkNodes`.
+ *
+ * - When exiting a `Heading`, `Paragraph` or `TableCell`, we add all `tempLinkNodes` to `linkNodes`.
+ *   If there are any remaining `tempLinkNodes`, it means they are not between opening and closing HTML tags. (ex. `<br> ... <br>`)
+ *   If there are no remaining `tempLinkNodes`, it means they are between opening and closing HTML tags.
+ *
+ * - When exiting a `root` node, we report all `Link` nodes for bare URLs.
+ */
+
 //-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
@@ -66,9 +87,9 @@ export default {
 	create(context) {
 		const { sourceCode } = context;
 
-		/** @type {Array<Link>} */
+		/** This array is used to store all `Link` nodes for the final report. @type {Array<Link>} */
 		const linkNodes = [];
-		/** @type {Array<Link>} */
+		/** This array is used to store `Link` nodes that are estimated to be between opening and closing HTML tags. @type {Array<Link>} */
 		const tempLinkNodes = [];
 
 		/** @type {string | null} */
