@@ -15,11 +15,13 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("unist").Position} Position */
-/** @typedef {import("mdast").Text} TextNode */
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoMissingLabelRuleDefinition
+ * @import { Position } from "unist";
+ * @import { Text } from "mdast";
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"notFound"} NoMissingLabelRefsMessageIds
+ * @typedef {[]} NoMissingLabelRefsOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoMissingLabelRefsOptions, MessageIds: NoMissingLabelRefsMessageIds }>} NoMissingLabelRefsRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
@@ -28,7 +30,7 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
 
 /**
  * Finds missing references in a node.
- * @param {TextNode} node The node to check.
+ * @param {Text} node The node to check.
  * @param {string} nodeText The text of the node.
  * @returns {Array<{label:string,position:Position}>} The missing references.
  */
@@ -43,7 +45,7 @@ function findMissingReferences(node, nodeText) {
 	 * `right` is the content between the second brackets. It can be empty, and it can be undefined.
 	 */
 	const labelPattern =
-		/(?<!\\)\[(?<left>(?:\\.|[^\]])*)(?<!\\)\](?<!\\)(?:\[(?<right>(?:\\.|[^\]])*)(?<!\\)\])?/dgu;
+		/(?<!\\)\[(?<left>(?:\\.|[^[\]])*)(?<!\\)\](?:\[(?<right>(?:\\.|[^\]])*)(?<!\\)\])?/dgu;
 
 	let match;
 
@@ -107,7 +109,7 @@ function findMissingReferences(node, nodeText) {
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoMissingLabelRuleDefinition} */
+/** @type {NoMissingLabelRefsRuleDefinition} */
 export default {
 	meta: {
 		type: "problem",
@@ -125,6 +127,8 @@ export default {
 
 	create(context) {
 		const { sourceCode } = context;
+
+		/** @type {Array<{label:string,position:Position}>} */
 		let allMissingReferences = [];
 
 		return {

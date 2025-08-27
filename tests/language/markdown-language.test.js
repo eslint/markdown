@@ -16,7 +16,7 @@ import assert from "node:assert";
 
 describe("MarkdownLanguage", () => {
 	describe("validateLanguageOptions()", () => {
-		it("should throw an error if `frontmatter` is not `false`, `'yaml'`, or `'toml'`", () => {
+		it("should throw an error if `frontmatter` is not `false`, `'yaml'`, `'toml'`, or `'json'`", () => {
 			const language = new MarkdownLanguage();
 
 			assert.throws(() => {
@@ -57,6 +57,9 @@ describe("MarkdownLanguage", () => {
 			assert.doesNotThrow(() => {
 				language.validateLanguageOptions({ frontmatter: "toml" });
 			});
+			assert.doesNotThrow(() => {
+				language.validateLanguageOptions({ frontmatter: "json" });
+			});
 		});
 
 		it("should not throw an error when `frontmatter` has a correct value in gfm mode", () => {
@@ -70,6 +73,9 @@ describe("MarkdownLanguage", () => {
 			});
 			assert.doesNotThrow(() => {
 				language.validateLanguageOptions({ frontmatter: "toml" });
+			});
+			assert.doesNotThrow(() => {
+				language.validateLanguageOptions({ frontmatter: "json" });
 			});
 		});
 	});
@@ -211,6 +217,56 @@ describe("MarkdownLanguage", () => {
 			assert.strictEqual(result.ast.type, "root");
 			assert.strictEqual(result.ast.children[0].type, "toml");
 			assert.strictEqual(result.ast.children[0].value, "title = 'Hello'");
+			assert.strictEqual(result.ast.children[1].type, "heading");
+			assert.strictEqual(result.ast.children[2].type, "paragraph");
+		});
+
+		it("should parse JSON frontmatter in commonmark mode when `frontmatter: 'json'` is set", () => {
+			const language = new MarkdownLanguage({ mode: "commonmark" });
+			const result = language.parse(
+				{
+					body: '---\n{\n"title": "Hello"\n}\n---\n\n# Hello, World!\n\nHello, World!',
+					path: "test.md",
+				},
+				{
+					languageOptions: {
+						frontmatter: "json",
+					},
+				},
+			);
+
+			assert.strictEqual(result.ok, true);
+			assert.strictEqual(result.ast.type, "root");
+			assert.strictEqual(result.ast.children[0].type, "json");
+			assert.strictEqual(
+				result.ast.children[0].value,
+				'{\n"title": "Hello"\n}',
+			);
+			assert.strictEqual(result.ast.children[1].type, "heading");
+			assert.strictEqual(result.ast.children[2].type, "paragraph");
+		});
+
+		it("should parse JSON frontmatter in gfm mode when `frontmatter: 'json'` is set", () => {
+			const language = new MarkdownLanguage({ mode: "gfm" });
+			const result = language.parse(
+				{
+					body: '---\n{\n"title": "Hello"\n}\n---\n\n# Hello, World!\n\nHello, World!',
+					path: "test.md",
+				},
+				{
+					languageOptions: {
+						frontmatter: "json",
+					},
+				},
+			);
+
+			assert.strictEqual(result.ok, true);
+			assert.strictEqual(result.ast.type, "root");
+			assert.strictEqual(result.ast.children[0].type, "json");
+			assert.strictEqual(
+				result.ast.children[0].value,
+				'{\n"title": "Hello"\n}',
+			);
 			assert.strictEqual(result.ast.children[1].type, "heading");
 			assert.strictEqual(result.ast.children[2].type, "paragraph");
 		});

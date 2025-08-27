@@ -17,7 +17,7 @@ Please note that this rule does not report definition-style comments. For exampl
 
 > [!IMPORTANT] <!-- eslint-disable-line -- This should be fixed in https://github.com/eslint/markdown/issues/294 -->
 >
-> The `FootnoteDefinition` node is detected only when using `language` mode [`markdown/gfm`](/README.md#languages).
+> The footnotes are only supported when using `language` mode [`markdown/gfm`](/README.md#languages).
 
 This rule warns when `Definition` and `FootnoteDefinition` type identifiers are defined multiple times. Please note that this rule is **case-insensitive**, meaning `earth` and `Earth` are treated as the same identifier.
 
@@ -68,7 +68,7 @@ The following options are available on this rule:
 
 - `allowDefinitions: Array<string>` - when specified, duplicate definitions are allowed if they match one of the identifiers in this array. This is useful for ignoring definitions that are intentionally duplicated. (default: `["//"]`)
 
-    Examples of **correct** code when configured as `"no-duplicate-definitions: ["error", { allowDefinitions: ["mercury"] }]`:
+    Examples of **correct** code when configured as `"no-duplicate-definitions": ["error", { allowDefinitions: ["mercury"] }]`:
 
     ```markdown
     <!-- eslint markdown/no-duplicate-definitions: ["error", { allowDefinitions: ["mercury"] }] -->
@@ -78,7 +78,7 @@ The following options are available on this rule:
 
 - `allowFootnoteDefinitions: Array<string>` - when specified, duplicate footnote definitions are allowed if they match one of the identifiers in this array. This is useful for ignoring footnote definitions that are intentionally duplicated. (default: `[]`)
 
-    Examples of **correct** code when configured as `"no-duplicate-definitions: ["error", { allowFootnoteDefinitions: ["mercury"] }]`:
+    Examples of **correct** code when configured as `"no-duplicate-definitions": ["error", { allowFootnoteDefinitions: ["mercury"] }]`:
 
     ```markdown
     <!-- eslint markdown/no-duplicate-definitions: ["error", { allowFootnoteDefinitions: ["mercury"] }] -->

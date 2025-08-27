@@ -8,8 +8,10 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoDuplicateHeadingsRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"duplicateHeading"} NoDuplicateHeadingsMessageIds
+ * @typedef {[{ checkSiblingsOnly?: boolean }]} NoDuplicateHeadingsOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoDuplicateHeadingsOptions, MessageIds: NoDuplicateHeadingsMessageIds }>} NoDuplicateHeadingsRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
@@ -29,46 +31,90 @@ export default {
 		messages: {
 			duplicateHeading: 'Duplicate heading "{{text}}" found.',
 		},
+
+		schema: [
+			{
+				type: "object",
+				properties: {
+					checkSiblingsOnly: {
+						type: "boolean",
+					},
+				},
+				additionalProperties: false,
+			},
+		],
+
+		defaultOptions: [{ checkSiblingsOnly: false }],
 	},
 
 	create(context) {
-		const headings = new Set();
-		const { sourceCode } = context;
+		const [{ checkSiblingsOnly }] = context.options;
+
+		/** @type {Map<number, Set<string>>} */
+		const headingsByLevel = checkSiblingsOnly
+			? new Map([
+					[1, new Set()],
+					[2, new Set()],
+					[3, new Set()],
+					[4, new Set()],
+					[5, new Set()],
+					[6, new Set()],
+				])
+			: new Map([[1, new Set()]]);
+		let lastLevel = 1;
+		let currentLevelHeadings = headingsByLevel.get(lastLevel);
+		/** @type {string} */
+		let headingChildrenSequence;
+		/** @type {string} */
+		let headingText;
 
 		return {
 			heading(node) {
-				/*
-				 * There are two types of headings in markdown:
-				 * - ATX headings, which start with one or more # characters
-				 * - Setext headings, which are underlined with = or -
-				 * Setext headings are identified by being on two lines instead of one,
-				 * with the second line containing only = or - characters. In order to
-				 * get the correct heading text, we need to determine which type of
-				 * heading we're dealing with.
-				 */
-				const isSetext =
-					node.position.start.line !== node.position.end.line;
+				headingChildrenSequence = "";
+				headingText = "";
 
-				const text = isSetext
-					? // get only the text from the first line
-						sourceCode.lines[node.position.start.line - 1].trim()
-					: // get the text without the leading # characters
-						sourceCode
-							.getText(node)
-							.slice(node.depth + 1)
-							.trim();
+				if (checkSiblingsOnly) {
+					const currentLevel = node.depth;
 
-				if (headings.has(text)) {
+					if (currentLevel < lastLevel) {
+						for (
+							let level = lastLevel;
+							level > currentLevel;
+							level--
+						) {
+							headingsByLevel.get(level).clear();
+						}
+					}
+
+					lastLevel = currentLevel;
+					currentLevelHeadings = headingsByLevel.get(currentLevel);
+				}
+			},
+
+			"heading *"({ type, value }) {
+				if (value) {
+					headingChildrenSequence += `[${type},${value}]`; // We use a custom sequence representation to keep track of heading children.
+
+					if (type !== "html") {
+						headingText += value;
+					}
+				} else {
+					headingChildrenSequence += `[${type}]`;
+				}
+			},
+
+			"heading:exit"(node) {
+				if (currentLevelHeadings.has(headingChildrenSequence)) {
 					context.report({
 						loc: node.position,
 						messageId: "duplicateHeading",
 						data: {
-							text,
+							text: headingText,
 						},
 					});
+				} else {
+					currentLevelHeadings.add(headingChildrenSequence);
 				}
-
-				headings.add(text);
 			},
 		};
 	},

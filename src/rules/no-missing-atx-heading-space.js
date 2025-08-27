@@ -8,16 +8,48 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoMissingAtxHeadingSpaceRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"missingSpace"} NoMissingAtxHeadingSpaceMessageIds
+ * @typedef {[{ checkClosedHeadings?: boolean }]} NoMissingAtxHeadingSpaceOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoMissingAtxHeadingSpaceOptions, MessageIds: NoMissingAtxHeadingSpaceMessageIds }>} NoMissingAtxHeadingSpaceRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
 // Helpers
 //-----------------------------------------------------------------------------
 
-const headingPattern = /^(#{1,6})(?:[^#\s]|$)/u;
+const leadingAtxHeadingHashPattern = /^(#{1,6})(?:[^# \t]|$)/u;
+const trailingAtxHeadingHashPattern =
+	/(?<![ \t])([ \t]*)(?<!(?<!\\)\\)(#+)([ \t]*)$/u;
 const newLinePattern = /\r?\n/u;
+
+/**
+ * Finds missing space before the closing hashes in an ATX heading.
+ * @param {string} text The input text to check.
+ * @returns {{ closingHashIdx: number, beforeHashIdx: number, endIdx: number } | null} The positions of the closing hashes in the heading, or null if no missing space is found.
+ */
+function findMissingSpaceBeforeClosingHash(text) {
+	const match = trailingAtxHeadingHashPattern.exec(text);
+
+	if (match) {
+		const [, closingSequenceSpaces, closingSequence, trailingSpaces] =
+			match;
+
+		if (closingSequenceSpaces.length === 0) {
+			const closingHashIdx =
+				text.length - (trailingSpaces.length + closingSequence.length);
+			const beforeHashIdx = closingHashIdx - 1;
+			const endIdx = closingHashIdx + closingSequence.length;
+			return {
+				closingHashIdx,
+				beforeHashIdx,
+				endIdx,
+			};
+		}
+	}
+
+	return null;
+}
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -38,37 +70,82 @@ export default {
 		fixable: "whitespace",
 
 		messages: {
-			missingSpace: "Missing space after hash(es) on ATX style heading.",
+			missingSpace:
+				"Missing space {{position}} hash(es) on ATX style heading.",
 		},
+
+		schema: [
+			{
+				type: "object",
+				properties: {
+					checkClosedHeadings: {
+						type: "boolean",
+					},
+				},
+				additionalProperties: false,
+			},
+		],
+
+		defaultOptions: [{ checkClosedHeadings: false }],
 	},
 
 	create(context) {
+		const [{ checkClosedHeadings }] = context.options;
+
 		return {
+			heading(node) {
+				if (!checkClosedHeadings) {
+					return;
+				}
+
+				const text = context.sourceCode.getText(node);
+				const lineNum = node.position.start.line;
+				const startColumn = node.position.start.column;
+
+				const missingSpace = findMissingSpaceBeforeClosingHash(text);
+				if (missingSpace) {
+					context.report({
+						loc: {
+							start: {
+								line: lineNum,
+								column:
+									startColumn + missingSpace.beforeHashIdx,
+							},
+							end: {
+								line: lineNum,
+								column: startColumn + missingSpace.endIdx,
+							},
+						},
+						messageId: "missingSpace",
+						data: { position: "before" },
+						fix(fixer) {
+							return fixer.insertTextBeforeRange(
+								[
+									node.position.start.offset +
+										missingSpace.closingHashIdx,
+									node.position.start.offset +
+										missingSpace.closingHashIdx +
+										1,
+								],
+								" ",
+							);
+						},
+					});
+				}
+			},
+
 			paragraph(node) {
-				if (node.children && node.children.length > 0) {
-					const firstTextChild = node.children.find(
-						child => child.type === "text",
-					);
-					if (!firstTextChild) {
-						return;
-					}
+				const text = context.sourceCode.getText(node);
+				const lines = text.split(newLinePattern);
+				const startColumn = node.position.start.column;
+				let offset = node.position.start.offset;
 
-					const text = context.sourceCode.getText(firstTextChild);
-					const lines = text.split(newLinePattern);
+				lines.forEach((line, idx) => {
+					const match = leadingAtxHeadingHashPattern.exec(line);
+					const lineNum = node.position.start.line + idx;
 
-					lines.forEach((line, idx) => {
-						const lineNum =
-							firstTextChild.position.start.line + idx;
-
-						const match = headingPattern.exec(line);
-						if (!match) {
-							return;
-						}
-
+					if (match) {
 						const hashes = match[1];
-
-						const startColumn =
-							firstTextChild.position.start.column;
 
 						context.report({
 							loc: {
@@ -79,12 +156,8 @@ export default {
 								},
 							},
 							messageId: "missingSpace",
+							data: { position: "after" },
 							fix(fixer) {
-								const offset =
-									firstTextChild.position.start.offset +
-									lines.slice(0, idx).join("\n").length +
-									(idx > 0 ? 1 : 0);
-
 								return fixer.insertTextAfterRange(
 									[
 										offset + hashes.length - 1,
@@ -94,8 +167,10 @@ export default {
 								);
 							},
 						});
-					});
-				}
+					}
+
+					offset += line.length + 1;
+				});
 			},
 		};
 	},

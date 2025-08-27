@@ -34,7 +34,7 @@ console.log(message);
 
 The following options are available on this rule:
 
-* `required: Array<string>` - when specified, fenced code blocks must use one of the languages specified in this array. 
+* `required: Array<string>` - when specified, fenced code blocks must use one of the languages specified in this array. (default: `[]`)
 
 Examples of **incorrect** code when configured as `"fenced-code-language": ["error", { required: ["js"] }]`:
 

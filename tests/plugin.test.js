@@ -13,12 +13,13 @@ import unsupportedAPI from "eslint/use-at-your-own-risk";
 import path from "node:path";
 import plugin from "../src/index.js";
 import fs from "node:fs";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const ESLint = api.ESLint;
 const LegacyESLint = unsupportedAPI.LegacyESLint;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const rulesDir = path.resolve(__dirname, "../src/rules");
 
 //-----------------------------------------------------------------------------
 // Data
@@ -1225,6 +1226,16 @@ describe("FlatESLint", () => {
 			assert.strictEqual(results[0].messages.length, 1);
 			assert.strictEqual(results[0].messages[0].ruleId, "no-console");
 		});
+
+		it("should configure recommended rules", () => {
+			const actualRuleIds = Object.keys(
+				plugin.configs.recommended[0].rules,
+			);
+			const expectedRuleIds = Object.entries(plugin.rules)
+				.filter(([, rule]) => rule.meta.docs.recommended)
+				.map(([name]) => `markdown/${name}`);
+			assert.deepStrictEqual(actualRuleIds, expectedRuleIds);
+		});
 	});
 
 	describe("plugin", () => {
@@ -2277,6 +2288,34 @@ describe("FlatESLint", () => {
 
 				assert.strictEqual(actual, expected);
 			});
+		});
+
+		it("has all available rules exported", async () => {
+			const allRules = (await fs.promises.readdir(rulesDir))
+				.filter(name => name.endsWith(".js"))
+				.map(name => path.basename(name, ".js"))
+				.sort();
+			const exportedRules = plugin.rules;
+
+			assert.deepStrictEqual(
+				Object.keys(exportedRules).sort(),
+				allRules,
+				"Expected all rules to be exported in the ESLint plugin (`plugin.rules` in `src/index.js`)",
+			);
+
+			for (const [ruleName, rule] of Object.entries(exportedRules)) {
+				assert.strictEqual(
+					rule,
+					(
+						await import(
+							pathToFileURL(
+								path.resolve(rulesDir, `${ruleName}.js`),
+							)
+						)
+					).default,
+					`Expected ${ruleName}.js to be exported under key "${ruleName}" in the ESLint plugin (\`plugin.rules\` in \`src/index.js\`)`,
+				);
+			}
 		});
 	});
 
