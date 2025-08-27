@@ -381,6 +381,60 @@ ruleTester.run("no-missing-label-refs", rule, {
 				},
 			],
 		},
+		// Heading
+		{
+			code: "# [foo]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "foo" },
+					line: 1,
+					column: 4,
+					endLine: 1,
+					endColumn: 7,
+				},
+			],
+		},
+		{
+			code: "# ![foo]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "foo" },
+					line: 1,
+					column: 5,
+					endLine: 1,
+					endColumn: 8,
+				},
+			],
+		},
+		// TabelCell
+		{
+			code: `
+| foo   | bar    |
+| ----- | ------ |
+| [foo] | ![bar] |
+`,
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "foo" },
+					line: 4,
+					column: 4,
+					endLine: 4,
+					endColumn: 7,
+				},
+				{
+					messageId: "notFound",
+					data: { label: "bar" },
+					line: 4,
+					column: 13,
+					endLine: 4,
+					endColumn: 16,
+				},
+			],
+		},
 	],
 });
 
