@@ -30,6 +30,24 @@ Examples of **incorrect** code for this rule:
 [eslint]
 ```
 
+## Options
+
+The following options are available on this rule:
+
+* `ignoreLabels: Array<string>` - labels to ignore when checking for missing references. (default: `[]`)
+
+Examples of **correct** code when configured as `"no-missing-label-refs": ["error", { ignoreLabels: ["eslint"] }]`:
+
+```markdown
+<!-- eslint markdown/no-missing-label-refs: ["error", { ignoreLabels: ["eslint"] }] -->
+
+[ESLint][eslint]
+
+[eslint][]
+
+[eslint]
+```
+
 ## When Not to Use It
 
 If you aren't concerned with missing label references, you can safely disable this rule.

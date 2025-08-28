@@ -18,7 +18,7 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
  * @import { Text } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"notFound"} NoMissingLabelRefsMessageIds
- * @typedef {[]} NoMissingLabelRefsOptions
+ * @typedef {[{ ignoreLabels?: string[] }]} NoMissingLabelRefsOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoMissingLabelRefsOptions, MessageIds: NoMissingLabelRefsMessageIds }>} NoMissingLabelRefsRuleDefinition
  */
 
@@ -118,6 +118,28 @@ export default {
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-missing-label-refs.md",
 		},
 
+		schema: [
+			{
+				type: "object",
+				properties: {
+					ignoreLabels: {
+						type: "array",
+						items: {
+							type: "string",
+						},
+						uniqueItems: true,
+					},
+				},
+				additionalProperties: false,
+			},
+		],
+
+		defaultOptions: [
+			{
+				ignoreLabels: [],
+			},
+		],
+
 		messages: {
 			notFound: "Label reference '{{label}}' not found.",
 		},
@@ -125,6 +147,7 @@ export default {
 
 	create(context) {
 		const { sourceCode } = context;
+		const ignoreLabels = new Set(context.options[0].ignoreLabels);
 
 		/** @type {Array<{label:string,position:Position}>} */
 		let allMissingReferences = [];
@@ -143,9 +166,16 @@ export default {
 			},
 
 			text(node) {
-				allMissingReferences.push(
-					...findMissingReferences(node, sourceCode.getText(node)),
+				const missingReferences = findMissingReferences(
+					node,
+					sourceCode.getText(node),
 				);
+
+				for (const missingReference of missingReferences) {
+					if (!ignoreLabels.has(missingReference.label)) {
+						allMissingReferences.push(missingReference);
+					}
+				}
 			},
 
 			definition(node) {
