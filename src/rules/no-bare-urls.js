@@ -87,9 +87,16 @@ export default {
 	create(context) {
 		const { sourceCode } = context;
 
-		/** This array is used to store all `Link` nodes for the final report. @type {Array<Link>} */
+		/**
+		 * This array is used to store all `Link` nodes for the final report.
+		 * @type {Array<Link>}
+		 */
 		const linkNodes = [];
-		/** This array is used to store `Link` nodes that are estimated to be between opening and closing HTML tags. @type {Array<Link>} */
+
+		/**
+		 * This array is used to store `Link` nodes that are estimated to be between opening and closing HTML tags.
+		 * @type {Array<Link>}
+		 */
 		const tempLinkNodes = [];
 
 		/** @type {string | null} */
