@@ -57,35 +57,35 @@ ruleTester.run("no-missing-label-refs", rule, {
 		"[escaped\\][escaped\\]",
 		{
 			code: "[foo][bar]",
-			options: [{ ignoreLabels: ["bar"] }],
+			options: [{ allowLabels: ["bar"] }],
 		},
 		{
 			code: "![foo][bar]",
-			options: [{ ignoreLabels: ["bar"] }],
+			options: [{ allowLabels: ["bar"] }],
 		},
 		{
 			code: "[foo][]",
-			options: [{ ignoreLabels: ["foo"] }],
+			options: [{ allowLabels: ["foo"] }],
 		},
 		{
 			code: "![foo][]",
-			options: [{ ignoreLabels: ["foo"] }],
+			options: [{ allowLabels: ["foo"] }],
 		},
 		{
 			code: "[foo]",
-			options: [{ ignoreLabels: ["foo"] }],
+			options: [{ allowLabels: ["foo"] }],
 		},
 		{
 			code: "![foo]",
-			options: [{ ignoreLabels: ["foo"] }],
+			options: [{ allowLabels: ["foo"] }],
 		},
 		{
 			code: "[foo]\n[bar]",
-			options: [{ ignoreLabels: ["foo", "bar"] }],
+			options: [{ allowLabels: ["foo", "bar"] }],
 		},
 		{
 			code: "[Foo][]\n[Bar][]",
-			options: [{ ignoreLabels: ["Foo", "Bar"] }],
+			options: [{ allowLabels: ["Foo", "Bar"] }],
 		},
 	],
 	invalid: [
@@ -415,7 +415,7 @@ ruleTester.run("no-missing-label-refs", rule, {
 		},
 		{
 			code: "[foo][bar]",
-			options: [{ ignoreLabels: ["baz"] }],
+			options: [{ allowLabels: ["baz"] }],
 			errors: [
 				{
 					messageId: "notFound",
@@ -429,7 +429,7 @@ ruleTester.run("no-missing-label-refs", rule, {
 		},
 		{
 			code: "![foo][bar]",
-			options: [{ ignoreLabels: ["foo"] }],
+			options: [{ allowLabels: ["foo"] }],
 			errors: [
 				{
 					messageId: "notFound",
@@ -443,7 +443,7 @@ ruleTester.run("no-missing-label-refs", rule, {
 		},
 		{
 			code: "[foo][]",
-			options: [{ ignoreLabels: ["bar"] }],
+			options: [{ allowLabels: ["bar"] }],
 			errors: [
 				{
 					messageId: "notFound",
@@ -457,7 +457,7 @@ ruleTester.run("no-missing-label-refs", rule, {
 		},
 		{
 			code: "[foo]\n[bar]",
-			options: [{ ignoreLabels: ["foo"] }],
+			options: [{ allowLabels: ["foo"] }],
 			errors: [
 				{
 					messageId: "notFound",
@@ -471,7 +471,7 @@ ruleTester.run("no-missing-label-refs", rule, {
 		},
 		{
 			code: "[Foo][]",
-			options: [{ ignoreLabels: ["foo"] }],
+			options: [{ allowLabels: ["foo"] }],
 			errors: [
 				{
 					messageId: "notFound",
@@ -485,7 +485,7 @@ ruleTester.run("no-missing-label-refs", rule, {
 		},
 		{
 			code: "[Foo][foo]\n[Bar][]",
-			options: [{ ignoreLabels: ["Bar"] }],
+			options: [{ allowLabels: ["Bar"] }],
 			errors: [
 				{
 					messageId: "notFound",

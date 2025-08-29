@@ -34,12 +34,12 @@ Examples of **incorrect** code for this rule:
 
 The following options are available on this rule:
 
-* `ignoreLabels: Array<string>` - labels to ignore when checking for missing references. (default: `[]`)
+* `allowLabels: Array<string>` - labels to allow when checking for missing label references. (default: `[]`)
 
-Examples of **correct** code when configured as `"no-missing-label-refs": ["error", { ignoreLabels: ["eslint"] }]`:
+Examples of **correct** code when configured as `"no-missing-label-refs": ["error", { allowLabels: ["eslint"] }]`:
 
 ```markdown
-<!-- eslint markdown/no-missing-label-refs: ["error", { ignoreLabels: ["eslint"] }] -->
+<!-- eslint markdown/no-missing-label-refs: ["error", { allowLabels: ["eslint"] }] -->
 
 [ESLint][eslint]
 

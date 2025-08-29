@@ -18,7 +18,7 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
  * @import { Text } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"notFound"} NoMissingLabelRefsMessageIds
- * @typedef {[{ ignoreLabels?: string[] }]} NoMissingLabelRefsOptions
+ * @typedef {[{ allowLabels?: string[] }]} NoMissingLabelRefsOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoMissingLabelRefsOptions, MessageIds: NoMissingLabelRefsMessageIds }>} NoMissingLabelRefsRuleDefinition
  */
 
@@ -122,7 +122,7 @@ export default {
 			{
 				type: "object",
 				properties: {
-					ignoreLabels: {
+					allowLabels: {
 						type: "array",
 						items: {
 							type: "string",
@@ -136,7 +136,7 @@ export default {
 
 		defaultOptions: [
 			{
-				ignoreLabels: [],
+				allowLabels: [],
 			},
 		],
 
@@ -147,7 +147,7 @@ export default {
 
 	create(context) {
 		const { sourceCode } = context;
-		const ignoreLabels = new Set(context.options[0].ignoreLabels);
+		const allowLabels = new Set(context.options[0].allowLabels);
 
 		/** @type {Array<{label:string,position:Position}>} */
 		let allMissingReferences = [];
@@ -172,7 +172,7 @@ export default {
 				);
 
 				for (const missingReference of missingReferences) {
-					if (!ignoreLabels.has(missingReference.label)) {
+					if (!allowLabels.has(missingReference.label)) {
 						allMissingReferences.push(missingReference);
 					}
 				}
