@@ -243,6 +243,38 @@ Mercury[^mercury]
 
 		{
 			code: `
+[Mercury]: https://example.com/mercury/
+`,
+			errors: [
+				{
+					messageId: "unusedDefinition",
+					data: { identifier: "Mercury" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 40,
+				},
+			],
+		},
+
+		{
+			code: `
+[  Mercury  ]: https://example.com/mercury/
+`,
+			errors: [
+				{
+					messageId: "unusedDefinition",
+					data: { identifier: "Mercury" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 44,
+				},
+			],
+		},
+
+		{
+			code: `
 [mercury]: https://example.com/mercury/
 [mercury]: https://example.com/venus/
 [mercury]: https://example.com/earth/
@@ -306,6 +338,22 @@ Mercury[^mercury]
 				{
 					messageId: "unusedFootnoteDefinition",
 					data: { identifier: "mercury" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 28,
+				},
+			],
+		},
+
+		{
+			code: `
+[^Mercury]: Hello, Mercury!
+`,
+			errors: [
+				{
+					messageId: "unusedFootnoteDefinition",
+					data: { identifier: "Mercury" },
 					line: 2,
 					column: 1,
 					endLine: 2,

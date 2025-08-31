@@ -115,7 +115,7 @@ export default {
 					context.report({
 						loc: node.position,
 						messageId: "emptyDefinition",
-						data: { identifier: node.identifier },
+						data: { identifier: node.label.trim() },
 					});
 				}
 			},
@@ -134,7 +134,7 @@ export default {
 					context.report({
 						loc: node.position,
 						messageId: "emptyFootnoteDefinition",
-						data: { identifier: node.identifier },
+						data: { identifier: node.label },
 					});
 				}
 			},

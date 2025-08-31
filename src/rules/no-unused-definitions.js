@@ -130,7 +130,7 @@ export default {
 						context.report({
 							node: definition,
 							messageId: "unusedDefinition",
-							data: { identifier: definition.identifier },
+							data: { identifier: definition.label.trim() },
 						});
 					}
 				}
@@ -144,7 +144,9 @@ export default {
 						context.report({
 							node: footnoteDefinition,
 							messageId: "unusedFootnoteDefinition",
-							data: { identifier: footnoteDefinition.identifier },
+							data: {
+								identifier: footnoteDefinition.label,
+							},
 						});
 					}
 				}

@@ -237,7 +237,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "Mercury" },
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -347,7 +347,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateFootnoteDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "Mercury" },
 					line: 3,
 					column: 1,
 					endLine: 3,

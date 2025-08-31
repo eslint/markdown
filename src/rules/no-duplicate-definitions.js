@@ -101,7 +101,7 @@ export default {
 					context.report({
 						node,
 						messageId: "duplicateDefinition",
-						data: { identifier: node.identifier },
+						data: { identifier: node.label.trim() },
 					});
 				} else {
 					definitions.add(node.identifier);
@@ -117,7 +117,7 @@ export default {
 					context.report({
 						node,
 						messageId: "duplicateFootnoteDefinition",
-						data: { identifier: node.identifier },
+						data: { identifier: node.label },
 					});
 				} else {
 					footnoteDefinitions.add(node.identifier);
