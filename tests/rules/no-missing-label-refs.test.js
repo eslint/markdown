@@ -10,6 +10,7 @@
 import rule from "../../src/rules/no-missing-label-refs.js";
 import markdown from "../../src/index.js";
 import { Linter, RuleTester } from "eslint";
+import dedent from "dedent";
 
 //------------------------------------------------------------------------------
 // Tests
@@ -86,6 +87,14 @@ ruleTester.run("no-missing-label-refs", rule, {
 		{
 			code: "[Foo][]\n[Bar][]",
 			options: [{ allowLabels: ["Foo", "Bar"] }],
+		},
+		{
+			code: dedent`
+			- [x] Checked
+			- [-] In progress
+			`,
+			language: "markdown/gfm",
+			options: [{ allowLabels: ["-"] }],
 		},
 	],
 	invalid: [
