@@ -24,8 +24,8 @@ console.log("Hello, world!");
 
 This rule accepts a single string option:
 
-- "always" (default): Require metadata when a language is specified.
-- "never": Disallow metadata in the info string.
+- `"always"` (default): Require metadata when a language is specified.
+- `"never"`: Disallow metadata in the info string.
 
 Examples of **incorrect** code when configured as `"fenced-code-meta": ["error", "always"]`:
 
@@ -49,23 +49,23 @@ console.log("Hello, world!");
 
 Examples of **incorrect** code when configured as `"fenced-code-meta": ["error", "never"]`:
 
-```markdown
+````markdown
 <!-- eslint markdown/fenced-code-meta: ["error", "never"] -->
 
-~~~js title="example.js"
+```js title="example.js"
 console.log("Hello, world!");
-~~~
 ```
+````
 
 Examples of **correct** code when configured as `"fenced-code-meta": ["error", "never"]`:
 
-```markdown
+````markdown
 <!-- eslint markdown/fenced-code-meta: ["error", "never"] -->
 
-~~~js
+```js
 console.log("Hello, world!");
-~~~
 ```
+````
 
 ## When Not to Use It
 

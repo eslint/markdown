@@ -10,6 +10,7 @@
 import rule from "../../src/rules/fenced-code-meta.js";
 import markdown from "../../src/index.js";
 import { RuleTester } from "eslint";
+import dedent from "dedent";
 
 //------------------------------------------------------------------------------
 // Tests
@@ -24,56 +25,56 @@ const ruleTester = new RuleTester({
 
 ruleTester.run("fenced-code-meta", rule, {
 	valid: [
-		`\`\`\`
+		dedent`\`\`\`
 		console.log("Hello, world!");
 		\`\`\``,
-		`\`\`\`js foo
+		dedent`\`\`\`js foo
 		console.log("Hello, world!");
 		\`\`\``,
-		`\`\`\` js   foo
+		dedent`\`\`\` js   foo
 		console.log("Hello, world!");
 		\`\`\``,
 		{
-			code: `\`\`\`
+			code: dedent`\`\`\`
 			console.log("Hello, world!");
 			\`\`\``,
 			options: ["never"],
 		},
 		{
-			code: `\`\`\`js
+			code: dedent`\`\`\`js
 			console.log("Hello, world!");
 			\`\`\``,
 			options: ["never"],
 		},
 		{
-			code: `\`\`\` js
+			code: dedent`\`\`\` js
 			console.log("Hello, world!");
 			\`\`\``,
 			options: ["never"],
 		},
-		`~~~
+		dedent`~~~
 		console.log("Hello, world!");
 		~~~`,
-		`~~~js foo
+		dedent`~~~js foo
 		console.log("Hello, world!");
 		~~~`,
-		`~~~ js   foo
+		dedent`~~~ js   foo
 		console.log("Hello, world!");
 		~~~`,
 		{
-			code: `~~~
+			code: dedent`~~~
 			console.log("Hello, world!");
 			~~~`,
 			options: ["never"],
 		},
 		{
-			code: `~~~js
+			code: dedent`~~~js
 			console.log("Hello, world!");
 			~~~`,
 			options: ["never"],
 		},
 		{
-			code: `~~~ js
+			code: dedent`~~~ js
 			console.log("Hello, world!");
 			~~~`,
 			options: ["never"],
@@ -86,7 +87,7 @@ ruleTester.run("fenced-code-meta", rule, {
 	],
 	invalid: [
 		{
-			code: `\`\`\`javascript
+			code: dedent`\`\`\`javascript
 			console.log("Hello, world!");
 			\`\`\``,
 			errors: [
@@ -100,7 +101,7 @@ ruleTester.run("fenced-code-meta", rule, {
 			],
 		},
 		{
-			code: `~~~javascript
+			code: dedent`~~~javascript
 			console.log("Hello, world!");
 			~~~`,
 			errors: [
@@ -114,7 +115,7 @@ ruleTester.run("fenced-code-meta", rule, {
 			],
 		},
 		{
-			code: `\`\`\` js  
+			code: dedent`\`\`\` js  
 			console.log("Hello, world!");
 			\`\`\``,
 			errors: [
@@ -128,7 +129,7 @@ ruleTester.run("fenced-code-meta", rule, {
 			],
 		},
 		{
-			code: `~~~ js  
+			code: dedent`~~~ js  
 			console.log("Hello, world!");
 			~~~`,
 			errors: [
@@ -142,7 +143,7 @@ ruleTester.run("fenced-code-meta", rule, {
 			],
 		},
 		{
-			code: `\`\`\`js title="example.js"
+			code: dedent`\`\`\`js title="example.js"
 			console.log("Hello, world!");
 			\`\`\``,
 			options: ["never"],
@@ -157,7 +158,7 @@ ruleTester.run("fenced-code-meta", rule, {
 			],
 		},
 		{
-			code: `~~~js title="example.js"
+			code: dedent`~~~js title="example.js"
 			console.log("Hello, world!");
 			~~~`,
 			options: ["never"],
@@ -172,7 +173,7 @@ ruleTester.run("fenced-code-meta", rule, {
 			],
 		},
 		{
-			code: `\`\`\`js foo bar
+			code: dedent`\`\`\`js foo bar
 			console.log("Hello, world!");
 			\`\`\``,
 			options: ["never"],
@@ -187,7 +188,7 @@ ruleTester.run("fenced-code-meta", rule, {
 			],
 		},
 		{
-			code: `~~~js foo bar
+			code: dedent`~~~js foo bar
 			console.log("Hello, world!");
 			~~~`,
 			options: ["never"],
@@ -202,7 +203,7 @@ ruleTester.run("fenced-code-meta", rule, {
 			],
 		},
 		{
-			code: `\`\`\` js foo
+			code: dedent`\`\`\` js foo
 			console.log("Hello, world!");
 			\`\`\``,
 			options: ["never"],
@@ -217,7 +218,7 @@ ruleTester.run("fenced-code-meta", rule, {
 			],
 		},
 		{
-			code: `~~~ js foo
+			code: dedent`~~~ js foo
 			console.log("Hello, world!");
 			~~~`,
 			options: ["never"],
@@ -232,7 +233,7 @@ ruleTester.run("fenced-code-meta", rule, {
 			],
 		},
 		{
-			code: `\`\`\`js js
+			code: dedent`\`\`\`js js
 			console.log("Hello, world!");
 			\`\`\``,
 			options: ["never"],
@@ -247,7 +248,7 @@ ruleTester.run("fenced-code-meta", rule, {
 			],
 		},
 		{
-			code: `~~~js js
+			code: dedent`~~~js js
 			console.log("Hello, world!");
 			~~~`,
 			options: ["never"],
@@ -262,7 +263,7 @@ ruleTester.run("fenced-code-meta", rule, {
 			],
 		},
 		{
-			code: `\`\`\` js   foo   
+			code: dedent`\`\`\` js   foo   
 			console.log("Hello, world!");
 			\`\`\``,
 			options: ["never"],
@@ -277,7 +278,7 @@ ruleTester.run("fenced-code-meta", rule, {
 			],
 		},
 		{
-			code: `~~~ js   foo   
+			code: dedent`~~~ js   foo   
 			console.log("Hello, world!");
 			~~~`,
 			options: ["never"],
