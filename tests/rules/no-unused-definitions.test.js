@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tests for no-duplicate-definitions rule.
+ * @fileoverview Tests for no-unused-definitions rule.
  * @author 루밀LuMir(lumirlumir)
  */
 
@@ -7,7 +7,7 @@
 // Imports
 //------------------------------------------------------------------------------
 
-import rule from "../../src/rules/no-duplicate-definitions.js";
+import rule from "../../src/rules/no-unused-definitions.js";
 import markdown from "../../src/index.js";
 import { RuleTester } from "eslint";
 
@@ -22,37 +22,80 @@ const ruleTester = new RuleTester({
 	language: "markdown/gfm",
 });
 
-ruleTester.run("no-duplicate-definitions", rule, {
+ruleTester.run("no-unused-definitions", rule, {
 	valid: [
+		"",
+		"   ",
 		`
-[mercury]: https://example.com/mercury/
-`,
+[Mercury][mercury]
 
-		`
 [mercury]: https://example.com/mercury/
-[venus]: https://example.com/venus/
-`,
-
+`, // Link - full
 		`
+[mercury][]
+
+[mercury]: https://example.com/mercury/
+`, // Link - collapsed
+		`
+[mercury]
+
+[mercury]: https://example.com/mercury/
+`, // Link - shortcut
+		`
+[Mercury][mercury]
+
+[mercury]: https://example.com/mercury/
+[Mercury]: https://example.com/venus/
+`, // case insensitive
+		`
+[Mercury][mercury]        
+
+[mercury]: https://example.com/mercury/
+[   mercury       ]: https://example.com/venus/
+`, // with extra spaces
+		`
+![Venus Image][venus]
+
+[venus]: https://example.com/venus.jpg        
+`, // Image - full
+		`
+![venus][]
+
+[venus]: https://example.com/venus.jpg
+`, // Image - collapsed
+		`
+![venus]
+
+[venus]: https://example.com/venus.jpg
+`, // Image - shortcut
+		`
+Mercury[^mercury]
+
 [^mercury]: Hello, Mercury!
 `,
-
 		`
+Mercury[^mercury]
+
 [^mercury]: Hello, Mercury!
-[^venus]: Hello, Venus!
-`,
-
+[^Mercury]: Hello, Venus!
+`, // case insensitive
 		`
-[alpha]: bravo
+Mercury[^mercury]
 
-[^alpha]: bravo
-`,
-
+[^mercury]: https://example.com/mercury/
+[    ^mercury       ]: https://example.com/venus/
+`, // with extra spaces
 		`
 [//]: # (This is a comment 1)
 [//]: <> (This is a comment 2)
 `,
+		`
+[Alpha][alpha] and [Alpha][^alpha]
 
+[alpha]: bravo
+
+[^alpha]: bravo
+`,
 		{
 			code: `
 [mercury]: https://example.com/mercury/
@@ -77,10 +120,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			],
 		},
 		{
-			code: `
-[MERCURY]: https://example.com/mercury/
-[mercury]: https://example.com/venus/
-`,
+			code: "[MERCURY]: https://example.com/mercury/",
 			options: [
 				{
 					allowDefinitions: ["MERCURY"],
@@ -88,10 +128,15 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			],
 		},
 		{
-			code: `
-[mercury]: https://example.com/mercury/
-[MERCURY]: https://example.com/venus/
-`,
+			code: "[mercury]: https://example.com/mercury/",
+			options: [
+				{
+					allowDefinitions: ["MERCURY"],
+				},
+			],
+		},
+		{
+			code: "[MERCURY]: https://example.com/mercury/",
 			options: [
 				{
 					allowDefinitions: ["mercury"],
@@ -99,10 +144,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			],
 		},
 		{
-			code: `
-[   mercury   ]: https://example.com/mercury/
-[mercury]: https://example.com/venus/
-`,
+			code: "[   mercury   ]: https://example.com/mercury/",
 			options: [
 				{
 					allowDefinitions: ["mercury"],
@@ -110,10 +152,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			],
 		},
 		{
-			code: `
-[mercury]: https://example.com/mercury/
-[   mercury   ]: https://example.com/venus/
-`,
+			code: "[mercury]: https://example.com/mercury/",
 			options: [
 				{
 					allowDefinitions: ["   mercury   "],
@@ -121,10 +160,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			],
 		},
 		{
-			code: `
-[foo bar]: https://example.com/foo-bar/
-[foo bar]: https://example.com/foo-bar/
-`,
+			code: "[foo bar]: https://example.com/foo-bar/",
 			options: [
 				{
 					allowDefinitions: ["foo\t\r\nbar"],
@@ -132,10 +168,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			],
 		},
 		{
-			code: `
-[^MERCURY]: Hello, Mercury!
-[^mercury]: Hello, Venus!
-`,
+			code: "[^MERCURY]: Hello, Mercury!",
 			options: [
 				{
 					allowFootnoteDefinitions: ["MERCURY"],
@@ -143,13 +176,26 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			],
 		},
 		{
-			code: `
-[^mercury]: Hello, Mercury!
-[^MERCURY]: Hello, Venus!
-`,
+			code: "[^mercury]: Hello, Mercury!",
+			options: [
+				{
+					allowFootnoteDefinitions: ["MERCURY"],
+				},
+			],
+		},
+		{
+			code: "[^MERCURY]: Hello, Mercury!",
 			options: [
 				{
 					allowFootnoteDefinitions: ["mercury"],
+				},
+			],
+		},
+		{
+			code: "[^mercury]: Hello, Mercury!",
+			options: [
+				{
+					allowFootnoteDefinitions: ["   mercury   "],
 				},
 			],
 		},
@@ -159,18 +205,20 @@ ruleTester.run("no-duplicate-definitions", rule, {
 		!process.versions?.bun
 			? [
 					{
-						code: `
-						[Grüsse]: https://example.com/
-						[Grüsse]: https://example.com/
-						`,
-						options: [{ allowDefinitions: ["GRÜẞE"] }],
+						code: "[Grüsse]: https://example.com/",
+						options: [
+							{
+								allowDefinitions: ["GRÜẞE"],
+							},
+						],
 					},
 					{
-						code: `
-						[^Grüsse]: Grüsse
-						[^Grüsse]: Grüsse
-						`,
-						options: [{ allowFootnoteDefinitions: ["GRÜẞE"] }],
+						code: "[^Grüsse]: Grüsse",
+						options: [
+							{
+								allowFootnoteDefinitions: ["GRÜẞE"],
+							},
+						],
 					},
 				]
 			: []),
@@ -180,16 +228,15 @@ ruleTester.run("no-duplicate-definitions", rule, {
 		{
 			code: `
 [mercury]: https://example.com/mercury/
-[mercury]: https://example.com/venus/
 `,
 			errors: [
 				{
-					messageId: "duplicateDefinition",
+					messageId: "unusedDefinition",
 					data: { identifier: "mercury" },
-					line: 3,
+					line: 2,
 					column: 1,
-					endLine: 3,
-					endColumn: 38,
+					endLine: 2,
+					endColumn: 40,
 				},
 			],
 		},
@@ -199,11 +246,18 @@ ruleTester.run("no-duplicate-definitions", rule, {
 [mercury]: https://example.com/mercury/
 [mercury]: https://example.com/venus/
 [mercury]: https://example.com/earth/
-[mercury]: https://example.com/mars/
 `,
 			errors: [
 				{
-					messageId: "duplicateDefinition",
+					messageId: "unusedDefinition",
+					data: { identifier: "mercury" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 40,
+				},
+				{
+					messageId: "unusedDefinition",
 					data: { identifier: "mercury" },
 					line: 3,
 					column: 1,
@@ -211,62 +265,19 @@ ruleTester.run("no-duplicate-definitions", rule, {
 					endColumn: 38,
 				},
 				{
-					messageId: "duplicateDefinition",
+					messageId: "unusedDefinition",
 					data: { identifier: "mercury" },
 					line: 4,
 					column: 1,
 					endLine: 4,
 					endColumn: 38,
 				},
-				{
-					messageId: "duplicateDefinition",
-					data: { identifier: "mercury" },
-					line: 5,
-					column: 1,
-					endLine: 5,
-					endColumn: 37,
-				},
 			],
 		},
 
 		{
 			code: `
 [mercury]: https://example.com/mercury/
-[Mercury]: https://example.com/venus/
-`, // case insensitive
-			errors: [
-				{
-					messageId: "duplicateDefinition",
-					data: { identifier: "mercury" },
-					line: 3,
-					column: 1,
-					endLine: 3,
-					endColumn: 38,
-				},
-			],
-		},
-
-		{
-			code: `
-[mercury]: https://example.com/mercury/
-[mercury    ]: https://example.com/venus/
-`,
-			errors: [
-				{
-					messageId: "duplicateDefinition",
-					data: { identifier: "mercury" },
-					line: 3,
-					column: 1,
-					endLine: 3,
-					endColumn: 42,
-				},
-			],
-		},
-
-		{
-			code: `
-[mercury]: https://example.com/mercury/
-[mercury]: https://example.com/venus/
 `,
 			options: [
 				{
@@ -277,12 +288,12 @@ ruleTester.run("no-duplicate-definitions", rule, {
 
 			errors: [
 				{
-					messageId: "duplicateDefinition",
+					messageId: "unusedDefinition",
 					data: { identifier: "mercury" },
-					line: 3,
+					line: 2,
 					column: 1,
-					endLine: 3,
-					endColumn: 38,
+					endLine: 2,
+					endColumn: 40,
 				},
 			],
 		},
@@ -290,16 +301,15 @@ ruleTester.run("no-duplicate-definitions", rule, {
 		{
 			code: `
 [^mercury]: Hello, Mercury!
-[^mercury]: Hello, Venus!
 `,
 			errors: [
 				{
-					messageId: "duplicateFootnoteDefinition",
+					messageId: "unusedFootnoteDefinition",
 					data: { identifier: "mercury" },
-					line: 3,
+					line: 2,
 					column: 1,
-					endLine: 3,
-					endColumn: 26,
+					endLine: 2,
+					endColumn: 28,
 				},
 			],
 		},
@@ -309,11 +319,18 @@ ruleTester.run("no-duplicate-definitions", rule, {
 [^mercury]: Hello, Mercury!
 [^mercury]: Hello, Venus!
 [^mercury]: Hello, Earth!
-[^mercury]: Hello, Mars!
 `,
 			errors: [
 				{
-					messageId: "duplicateFootnoteDefinition",
+					messageId: "unusedFootnoteDefinition",
+					data: { identifier: "mercury" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 28,
+				},
+				{
+					messageId: "unusedFootnoteDefinition",
 					data: { identifier: "mercury" },
 					line: 3,
 					column: 1,
@@ -321,45 +338,19 @@ ruleTester.run("no-duplicate-definitions", rule, {
 					endColumn: 26,
 				},
 				{
-					messageId: "duplicateFootnoteDefinition",
+					messageId: "unusedFootnoteDefinition",
 					data: { identifier: "mercury" },
 					line: 4,
 					column: 1,
 					endLine: 4,
 					endColumn: 26,
 				},
-				{
-					messageId: "duplicateFootnoteDefinition",
-					data: { identifier: "mercury" },
-					line: 5,
-					column: 1,
-					endLine: 5,
-					endColumn: 25,
-				},
 			],
 		},
 
 		{
 			code: `
 [^mercury]: Hello, Mercury!
-[^Mercury]: Hello, Venus!
-`, // case insensitive
-			errors: [
-				{
-					messageId: "duplicateFootnoteDefinition",
-					data: { identifier: "mercury" },
-					line: 3,
-					column: 1,
-					endLine: 3,
-					endColumn: 26,
-				},
-			],
-		},
-
-		{
-			code: `
-[^mercury]: Hello, Mercury!
-[^mercury]: Hello, Venus!
 `,
 			options: [
 				{
@@ -370,18 +361,21 @@ ruleTester.run("no-duplicate-definitions", rule, {
 
 			errors: [
 				{
-					messageId: "duplicateFootnoteDefinition",
+					messageId: "unusedFootnoteDefinition",
 					data: { identifier: "mercury" },
-					line: 3,
+					line: 2,
 					column: 1,
-					endLine: 3,
-					endColumn: 26,
+					endLine: 2,
+					endColumn: 28,
 				},
 			],
 		},
 
 		{
 			code: `
+Hello, [Mercury][mercury]! 
+I am living on [Earth][earth] and I am going to [Mars][mars].
+
 [mercury]: https://example.com/mercury/
 [earth]: https://example.com/earth/
 [mars]: https://example.com/mars/
@@ -396,12 +390,12 @@ ruleTester.run("no-duplicate-definitions", rule, {
 `,
 			errors: [
 				{
-					messageId: "duplicateDefinition",
-					data: { identifier: "mercury" },
-					line: 12,
+					messageId: "unusedDefinition",
+					data: { identifier: "jupiter" },
+					line: 11,
 					column: 1,
-					endLine: 12,
-					endColumn: 38,
+					endLine: 11,
+					endColumn: 40,
 				},
 			],
 		},

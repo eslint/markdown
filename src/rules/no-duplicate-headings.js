@@ -7,35 +7,12 @@
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("mdast").Heading} HeadingNode */
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ checkSiblingsOnly?: boolean; }]; }>}
- * NoDuplicateHeadingsRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"duplicateHeading"} NoDuplicateHeadingsMessageIds
+ * @typedef {[{ checkSiblingsOnly?: boolean }]} NoDuplicateHeadingsOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoDuplicateHeadingsOptions, MessageIds: NoDuplicateHeadingsMessageIds }>} NoDuplicateHeadingsRuleDefinition
  */
-
-//-----------------------------------------------------------------------------
-// Helpers
-//-----------------------------------------------------------------------------
-
-/**
- * This pattern does not match backslash-escaped `#` characters
- * @example
- * ```markdown
- * <!-- OK -->
- * ### foo ###
- * ## foo ###
- * # foo #
- *
- * <!-- NOT OK -->
- * ### foo \###
- * ## foo #\##
- * # foo \#
- * ```
- *
- * @see https://spec.commonmark.org/0.31.2/#example-76
- */
-const trailingAtxHeadingHashPattern = /[ \t]+#+[ \t]*$/u;
-const leadingAtxHeadingHashPattern = /^#{1,6}[ \t]+/u;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -72,7 +49,6 @@ export default {
 
 	create(context) {
 		const [{ checkSiblingsOnly }] = context.options;
-		const { sourceCode } = context;
 
 		/** @type {Map<number, Set<string>>} */
 		const headingsByLevel = checkSiblingsOnly
@@ -87,46 +63,15 @@ export default {
 			: new Map([[1, new Set()]]);
 		let lastLevel = 1;
 		let currentLevelHeadings = headingsByLevel.get(lastLevel);
-
-		/**
-		 * Gets the text of a heading node
-		 * @param {HeadingNode} node The heading node
-		 * @returns {string} The heading text
-		 */
-		function getHeadingText(node) {
-			/*
-			 * There are two types of headings in markdown:
-			 * - ATX headings, which consist of 1-6 # characters followed by content
-			 *   and optionally ending with any number of # characters
-			 * - Setext headings, which are underlined with = or -
-			 *   Setext headings are identified by being on two lines instead of one,
-			 *   with the second line containing only = or - characters. In order to
-			 *   get the correct heading text, we need to determine which type of
-			 *   heading we're dealing with.
-			 */
-			const isSetext =
-				node.position.start.line !== node.position.end.line;
-
-			if (isSetext) {
-				// get only the text from the first line
-				return sourceCode.lines[node.position.start.line - 1].trim();
-			}
-
-			// For ATX headings, get the text between the # characters
-			const text = sourceCode.getText(node);
-
-			/*
-			 * Please avoid using `String.prototype.trim()` here,
-			 * as it would remove intentional non-breaking space (NBSP) characters.
-			 */
-			return text
-				.replace(leadingAtxHeadingHashPattern, "") // Remove leading # characters
-				.replace(trailingAtxHeadingHashPattern, ""); // Remove trailing # characters
-		}
+		/** @type {string} */
+		let headingChildrenSequence;
+		/** @type {string} */
+		let headingText;
 
 		return {
 			heading(node) {
-				const headingText = getHeadingText(node);
+				headingChildrenSequence = "";
+				headingText = "";
 
 				if (checkSiblingsOnly) {
 					const currentLevel = node.depth;
@@ -144,8 +89,22 @@ export default {
 					lastLevel = currentLevel;
 					currentLevelHeadings = headingsByLevel.get(currentLevel);
 				}
+			},
 
-				if (currentLevelHeadings.has(headingText)) {
+			"heading *"({ type, value }) {
+				if (value) {
+					headingChildrenSequence += `[${type},${value}]`; // We use a custom sequence representation to keep track of heading children.
+
+					if (type !== "html") {
+						headingText += value;
+					}
+				} else {
+					headingChildrenSequence += `[${type}]`;
+				}
+			},
+
+			"heading:exit"(node) {
+				if (currentLevelHeadings.has(headingChildrenSequence)) {
 					context.report({
 						loc: node.position,
 						messageId: "duplicateHeading",
@@ -154,7 +113,7 @@ export default {
 						},
 					});
 				} else {
-					currentLevelHeadings.add(headingText);
+					currentLevelHeadings.add(headingChildrenSequence);
 				}
 			},
 		};

@@ -39,6 +39,11 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 		\`\`\`
 		`,
 		"`myobj.getFiles(test)[0]`",
+		dedent`
+		Some long text about foo
+		# Split,
+		\`myobj.getFiles(test)[0]\`
+		`,
 		"&lpar;reversed&rpar;[link]",
 		"a &rpar; a &lpar; a &rpar;[a]~",
 		"a<pre>&rpar; a &lpar; a &rpar;[a]~</pre>",
@@ -50,6 +55,19 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 		"text [foo](bar)[foo](bar) text",
 		"text [foo](bar)[foo](bar)[foo](bar) text",
 		"text (text `func()[index]`) text",
+		'hi <span class="foo(bar)[baz]">hi</span>',
+		// Heading
+		"# [ESLint](https://eslint.org/)",
+		"# ![A beautiful sunset](sunset.png)",
+		// TableCell
+		{
+			code: dedent`
+			| ESLint                        | Sunset                            |
+			| ----------------------------- | --------------------------------- |
+			| [ESLint](https://eslint.org/) | ![A beautiful sunset](sunset.png) |
+			`,
+			language: "markdown/gfm",
+		},
 	],
 	invalid: [
 		{
@@ -411,6 +429,84 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 					column: 20,
 					endLine: 1,
 					endColumn: 24,
+				},
+			],
+		},
+		// Heading
+		{
+			code: "# (ESLint)[https://eslint.org/]",
+			output: "# [ESLint](https://eslint.org/)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 3,
+					endLine: 1,
+					endColumn: 32,
+				},
+			],
+		},
+		{
+			code: "# !(A beautiful sunset)[sunset.png]",
+			output: "# ![A beautiful sunset](sunset.png)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 4,
+					endLine: 1,
+					endColumn: 36,
+				},
+			],
+		},
+		{
+			code: dedent`
+			Setext Heading
+			  (ESLint)[https://eslint.org/]
+			===
+			`,
+			output: dedent`
+			Setext Heading
+			  [ESLint](https://eslint.org/)
+			===
+			`,
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 2,
+					column: 3,
+					endLine: 2,
+					endColumn: 32,
+				},
+			],
+		},
+		// TableCell
+		{
+			code: dedent`
+			| ESLint                        | Sunset                            |
+			| ----------------------------- | --------------------------------- |
+			| (ESLint)[https://eslint.org/] | !(A beautiful sunset)[sunset.png] |
+			`,
+			output: dedent`
+			| ESLint                        | Sunset                            |
+			| ----------------------------- | --------------------------------- |
+			| [ESLint](https://eslint.org/) | ![A beautiful sunset](sunset.png) |
+			`,
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 3,
+					column: 3,
+					endLine: 3,
+					endColumn: 32,
+				},
+				{
+					messageId: "reversedSyntax",
+					line: 3,
+					column: 36,
+					endLine: 3,
+					endColumn: 68,
 				},
 			],
 		},

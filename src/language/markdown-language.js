@@ -20,16 +20,15 @@ import { gfm } from "micromark-extension-gfm";
 // Types
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("mdast").Root} RootNode */
-/** @typedef {import("mdast-util-from-markdown").Options['extensions']} Extensions */
-/** @typedef {import("mdast-util-from-markdown").Options['mdastExtensions']} MdastExtensions */
-/** @typedef {import("@eslint/core").Language} Language */
-/** @typedef {import("@eslint/core").File} File */
-/** @typedef {import("@eslint/core").ParseResult<RootNode>} ParseResult */
-/** @typedef {import("@eslint/core").OkParseResult<RootNode>} OkParseResult */
-/** @typedef {import("../types.ts").MarkdownLanguageOptions} MarkdownLanguageOptions */
-/** @typedef {import("../types.ts").MarkdownLanguageContext} MarkdownLanguageContext */
-/** @typedef {"commonmark"|"gfm"} ParserMode */
+/**
+ * @import { Language, File, ParseResult, OkParseResult } from "@eslint/core";
+ * @import { Root } from "mdast";
+ * @import { Options } from "mdast-util-from-markdown";
+ * @import { MarkdownLanguageOptions, MarkdownLanguageContext } from "../types.js";
+ * @typedef {Options['extensions']} Extensions
+ * @typedef {Options['mdastExtensions']} MdastExtensions
+ * @typedef {"commonmark"|"gfm"} ParserMode
+ */
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -182,7 +181,7 @@ export class MarkdownLanguage {
 	 * Parses the given file into an AST.
 	 * @param {File} file The virtual file to parse.
 	 * @param {MarkdownLanguageContext} context The options to use for parsing.
-	 * @returns {ParseResult} The result of parsing.
+	 * @returns {ParseResult<Root>} The result of parsing.
 	 */
 	parse(file, context) {
 		// Note: BOM already removed
@@ -216,7 +215,7 @@ export class MarkdownLanguage {
 	/**
 	 * Creates a new `MarkdownSourceCode` object from the given information.
 	 * @param {File} file The virtual file to create a `MarkdownSourceCode` object from.
-	 * @param {OkParseResult} parseResult The result returned from `parse()`.
+	 * @param {OkParseResult<Root>} parseResult The result returned from `parse()`.
 	 * @returns {MarkdownSourceCode} The new `MarkdownSourceCode` object.
 	 */
 	createSourceCode(file, parseResult) {

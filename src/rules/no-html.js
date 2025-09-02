@@ -14,15 +14,19 @@ import { findOffsets } from "../util.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ allowed?: string[]; }]; }>}
- * NoHtmlRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"disallowedElement"} NoHtmlMessageIds
+ * @typedef {[{ allowed?: string[], allowedIgnoreCase?: boolean }]} NoHtmlOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoHtmlOptions, MessageIds: NoHtmlMessageIds }>} NoHtmlRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
 // Helpers
 //-----------------------------------------------------------------------------
 
-const htmlTagPattern = /<([a-z0-9]+(?:-[a-z0-9]+)*)/giu;
+const htmlTagPattern =
+	/<([a-z0-9]+(?:-[a-z0-9]+)*)(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?>/giu;
+const lineEndingPattern = /\r\n?|\n/u;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -53,6 +57,9 @@ export default {
 						},
 						uniqueItems: true,
 					},
+					allowedIgnoreCase: {
+						type: "boolean",
+					},
 				},
 				additionalProperties: false,
 			},
@@ -61,18 +68,23 @@ export default {
 		defaultOptions: [
 			{
 				allowed: [],
+				allowedIgnoreCase: false,
 			},
 		],
 	},
 
 	create(context) {
-		const allowed = new Set(context.options[0]?.allowed);
+		const [{ allowed, allowedIgnoreCase }] = context.options;
+		const allowedElements = new Set(
+			allowedIgnoreCase ? allowed.map(tag => tag.toLowerCase()) : allowed,
+		);
 
 		return {
 			html(node) {
 				let match;
 
 				while ((match = htmlTagPattern.exec(node.value)) !== null) {
+					const fullMatch = match[0];
 					const tagName = match[1];
 					const { lineOffset, columnOffset } = findOffsets(
 						node.value,
@@ -82,12 +94,26 @@ export default {
 						line: node.position.start.line + lineOffset,
 						column: node.position.start.column + columnOffset,
 					};
+
+					const firstNewlineIndex =
+						fullMatch.search(lineEndingPattern);
+					const endColumn =
+						firstNewlineIndex === -1
+							? start.column + fullMatch.length
+							: start.column + firstNewlineIndex;
+
 					const end = {
 						line: start.line,
-						column: start.column + match[0].length + 1,
+						column: endColumn,
 					};
 
-					if (allowed.size === 0 || !allowed.has(tagName)) {
+					const tagToCheck = allowedIgnoreCase
+						? tagName.toLowerCase()
+						: tagName;
+					if (
+						allowedElements.size === 0 ||
+						!allowedElements.has(tagToCheck)
+					) {
 						context.report({
 							loc: { start, end },
 							messageId: "disallowedElement",

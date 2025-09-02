@@ -29,7 +29,7 @@ import { findOffsets } from "../util.js";
 
 /** Pattern to match both inline links: `[text](url)` and images: `![alt](url)`, with optional title */
 const linkOrImagePattern =
-	/(?<!(?<!\\)\\)(?<imageBang>!)?\[(?<label>(?:\\.|[^()\\]|\([\s\S]*\))*?)\]\((?<destination>[ \t]*(?:\r\n|\n|\r)?[ \t]*(?:<[^>]*>|[^ \t)]+))(?:[ \t]*(?:\r\n|\n|\r)?[ \t]*(?<title>"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*(?:\r\n|\n|\r)?[ \t]*\)(?!\()/gu;
+	/(?<!(?<!\\)\\)(?<imageBang>!)?\[(?<label>(?:\\.|[^()\\]|\([\s\S]*\))*?)\]\((?<destination>[ \t]*(?:\r\n?|\n)?(?<![ \t])[ \t]*(?:<[^>]*>|[^ \t()]+))(?:[ \t]*(?:\r\n?|\n)?(?<![ \t])[ \t]*(?<title>"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*(?:\r\n?|\n)?(?<![ \t])[ \t]*\)(?!\()/gu;
 
 /**
  * Checks if a given index is within any skip range.
@@ -83,17 +83,23 @@ export default {
 				relevantNodes.push(node);
 			},
 
+			"heading :matches(html, inlineCode)"(node) {
+				skipRanges.push(sourceCode.getRange(node));
+			},
+
 			paragraph(node) {
 				relevantNodes.push(node);
+			},
+
+			"paragraph :matches(html, inlineCode)"(node) {
+				skipRanges.push(sourceCode.getRange(node));
 			},
 
 			tableCell(node) {
 				relevantNodes.push(node);
 			},
 
-			":matches(heading, paragraph, tableCell) :matches(html, inlineCode)"(
-				node,
-			) {
+			"tableCell :matches(html, inlineCode)"(node) {
 				skipRanges.push(sourceCode.getRange(node));
 			},
 

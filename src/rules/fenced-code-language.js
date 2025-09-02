@@ -8,8 +8,10 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ required?: string[]; }]; }>}
- * FencedCodeLanguageRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"missingLanguage" | "disallowedLanguage"} FencedCodeLanguageMessageIds
+ * @typedef {[{ required?: string[] }]} FencedCodeLanguageOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: FencedCodeLanguageOptions, MessageIds: FencedCodeLanguageMessageIds }>} FencedCodeLanguageRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
@@ -79,7 +81,16 @@ export default {
 					}
 
 					context.report({
-						loc: node.position,
+						loc: {
+							start: node.position.start,
+							end: {
+								line: node.position.start.line,
+								column:
+									sourceCode.lines[
+										node.position.start.line - 1
+									].length + 1,
+							},
+						},
 						messageId: "missingLanguage",
 					});
 
@@ -87,8 +98,21 @@ export default {
 				}
 
 				if (required.size && !required.has(node.lang)) {
+					const lineText =
+						sourceCode.lines[node.position.start.line - 1];
+					const langIndex = lineText.indexOf(node.lang);
+
 					context.report({
-						loc: node.position,
+						loc: {
+							start: node.position.start,
+							end: {
+								line: node.position.start.line,
+								column:
+									node.position.start.column +
+									langIndex +
+									node.lang.length,
+							},
+						},
 						messageId: "disallowedLanguage",
 						data: {
 							lang: node.lang,

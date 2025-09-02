@@ -3,35 +3,54 @@
  * @author xbinaryx
  */
 
+/*
+ * Here's a note on how the approach (algorithm) works:
+ *
+ * - When entering an `Html` node that is a child of a `Heading`, `Paragraph` or `TableCell`,
+ *   we check whether it is an opening or closing tag.
+ *   If we encounter an opening tag, we store the tag name and set `lastTagName`.
+ *   (`lastTagName` serves as a state to represent whether we're between opening and closing HTML tags.)
+ *   If we encounter a closing tag, we reset the stored tag name and `tempLinkNodes`.
+ *
+ * - When entering a `Link` node that is a child of a `Heading`, `Paragraph` or `TableCell`,
+ *   we check whether it is between opening and closing HTML tags.
+ *   If it's between opening and closing HTML tags, we add it to `tempLinkNodes`.
+ *   If it's not between opening and closing HTML tags, we add it to `linkNodes`.
+ *
+ * - When exiting a `Heading`, `Paragraph` or `TableCell`, we add all `tempLinkNodes` to `linkNodes`.
+ *   If there are any remaining `tempLinkNodes`, it means they are not between opening and closing HTML tags. (ex. `<br> ... <br>`)
+ *   If there are no remaining `tempLinkNodes`, it means they are between opening and closing HTML tags.
+ *
+ * - When exiting a `root` node, we report all `Link` nodes for bare URLs.
+ */
+
 //-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("mdast").Node} Node */
-/** @typedef {import("mdast").Paragraph} ParagraphNode */
-/** @typedef {import("mdast").Heading} HeadingNode */
-/** @typedef {import("mdast").TableCell} TableCellNode */
-/** @typedef {import("mdast").Link} LinkNode */
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoBareUrlsRuleDefinition
+ * @import { Link, Html } from "mdast";
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"bareUrl"} NoBareUrlsMessageIds
+ * @typedef {[]} NoBareUrlsOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoBareUrlsOptions, MessageIds: NoBareUrlsMessageIds }>} NoBareUrlsRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
 // Helpers
 //-----------------------------------------------------------------------------
 
-const htmlTagNamePattern = /^<([^!>][^/\s>]*)/u;
+const htmlTagNamePattern = /^<(?<tagName>[^!>][^/\s>]*)/u;
 
 /**
  * Parses an HTML tag to extract its name and closing status
  * @param {string} tagText The HTML tag text to parse
- * @returns {{ name: string; isClosing: boolean; } | null} Object containing tag name and closing status, or null if not a valid tag
+ * @returns {{ name: string, isClosing: boolean } | null} Object containing tag name and closing status, or null if not a valid tag
  */
 function parseHtmlTag(tagText) {
 	const match = tagText.match(htmlTagNamePattern);
 	if (match) {
-		const tagName = match[1].toLowerCase();
+		const tagName = match.groups.tagName.toLowerCase();
 		const isClosing = tagName.startsWith("/");
 
 		return {
@@ -67,105 +86,94 @@ export default {
 
 	create(context) {
 		const { sourceCode } = context;
-		/** @type {Array<LinkNode>} */
-		const bareUrls = [];
 
 		/**
-		 * Finds bare URLs in markdown nodes while handling HTML tags.
-		 * When an HTML tag is found, it looks for its closing tag and skips all nodes
-		 * between them to prevent checking for bare URLs inside HTML content.
-		 * @param {ParagraphNode|HeadingNode|TableCellNode} node The node to process
+		 * This array is used to store all `Link` nodes for the final report.
+		 * @type {Array<Link>}
+		 */
+		const linkNodes = [];
+
+		/**
+		 * This array is used to store `Link` nodes that are estimated to be between opening and closing HTML tags.
+		 * @type {Array<Link>}
+		 */
+		const tempLinkNodes = [];
+
+		/** @type {string | null} */
+		let lastTagName = null;
+
+		/**
+		 * Resets `tempLinkNodes` and `lastTagName`
 		 * @returns {void}
 		 */
-		function findBareUrls(node) {
-			/**
-			 * Recursively traverses the AST to find bare URLs, skipping over HTML blocks.
-			 * @param {Node} currentNode The current AST node being traversed.
-			 * @returns {void}
-			 */
-			function traverse(currentNode) {
-				if (
-					"children" in currentNode &&
-					Array.isArray(currentNode.children)
-				) {
-					for (let i = 0; i < currentNode.children.length; i++) {
-						const child = currentNode.children[i];
-
-						if (child.type === "html") {
-							const tagInfo = parseHtmlTag(
-								sourceCode.getText(child),
-							);
-
-							if (tagInfo && !tagInfo.isClosing) {
-								for (
-									let j = i + 1;
-									j < currentNode.children.length;
-									j++
-								) {
-									const nextChild = currentNode.children[j];
-									if (nextChild.type === "html") {
-										const closingTagInfo = parseHtmlTag(
-											sourceCode.getText(nextChild),
-										);
-										if (
-											closingTagInfo?.name ===
-												tagInfo.name &&
-											closingTagInfo?.isClosing
-										) {
-											i = j;
-											break;
-										}
-									}
-								}
-								continue;
-							}
-						}
-
-						if (child.type === "link") {
-							const text = sourceCode.getText(child);
-							const { url } = child;
-
-							if (
-								text === url ||
-								url === `http://${text}` ||
-								url === `mailto:${text}`
-							) {
-								bareUrls.push(child);
-							}
-						}
-
-						traverse(child);
-					}
-				}
-			}
-
-			traverse(node);
+		function reset() {
+			tempLinkNodes.length = 0;
+			lastTagName = null;
 		}
 
 		return {
-			"root:exit"() {
-				for (const bareUrl of bareUrls) {
-					context.report({
-						node: bareUrl,
-						messageId: "bareUrl",
-						fix(fixer) {
-							const text = sourceCode.getText(bareUrl);
-							return fixer.replaceText(bareUrl, `<${text}>`);
-						},
-					});
+			":matches(heading, paragraph, tableCell) html"(
+				/** @type {Html} */ node,
+			) {
+				const tagInfo = parseHtmlTag(node.value);
+
+				if (!tagInfo) {
+					return;
+				}
+
+				if (!tagInfo.isClosing && lastTagName === null) {
+					lastTagName = tagInfo.name;
+				}
+
+				if (tagInfo.isClosing && lastTagName === tagInfo.name) {
+					reset();
 				}
 			},
 
-			paragraph(node) {
-				findBareUrls(node);
+			":matches(heading, paragraph, tableCell) link"(
+				/** @type {Link} */ node,
+			) {
+				if (lastTagName !== null) {
+					tempLinkNodes.push(node);
+				} else {
+					linkNodes.push(node);
+				}
 			},
 
-			heading(node) {
-				findBareUrls(node);
+			"heading:exit"() {
+				linkNodes.push(...tempLinkNodes);
+				reset();
 			},
 
-			tableCell(node) {
-				findBareUrls(node);
+			"paragraph:exit"() {
+				linkNodes.push(...tempLinkNodes);
+				reset();
+			},
+
+			"tableCell:exit"() {
+				linkNodes.push(...tempLinkNodes);
+				reset();
+			},
+
+			"root:exit"() {
+				for (const linkNode of linkNodes) {
+					const text = sourceCode.getText(linkNode);
+					const { url } = linkNode;
+
+					if (
+						url === text ||
+						url === `http://${text}` ||
+						url === `mailto:${text}`
+					) {
+						context.report({
+							node: linkNode,
+							messageId: "bareUrl",
+							fix(fixer) {
+								return fixer.replaceText(linkNode, `<${text}>`);
+							},
+						});
+					}
+				}
 			},
 		};
 	},

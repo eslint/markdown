@@ -18,6 +18,14 @@ Examples of **incorrect** code for this rule:
 (ESLint)[https://eslint.org/]
 
 !(A beautiful sunset)[sunset.png]
+
+# (ESLint)[https://eslint.org/]
+
+# !(A beautiful sunset)[sunset.png]
+
+| ESLint                        | Sunset                            |
+| ----------------------------- | --------------------------------- |
+| (ESLint)[https://eslint.org/] | !(A beautiful sunset)[sunset.png] |
 ```
 
 Examples of **correct** code for this rule:
@@ -28,6 +36,14 @@ Examples of **correct** code for this rule:
 [ESLint](https://eslint.org/)
 
 ![A beautiful sunset](sunset.png)
+
+# [ESLint](https://eslint.org/)
+
+# ![A beautiful sunset](sunset.png)
+
+| ESLint                        | Sunset                            |
+| ----------------------------- | --------------------------------- |
+| [ESLint](https://eslint.org/) | ![A beautiful sunset](sunset.png) |
 ```
 
 ## When Not To Use It
