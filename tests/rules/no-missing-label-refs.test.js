@@ -44,6 +44,7 @@ ruleTester.run("no-missing-label-refs", rule, {
 		"foo][bar]\n\n[bar]: http://bar.com",
 		"foo][bar][baz]\n\n[baz]: http://baz.com",
 		"[][foo]\n\n[foo]: http://foo.com",
+		"[foo][bar\\]\n\n[foo]: http://foo.com",
 		"\\[\\]",
 		`${"\\".repeat(3)}[${"\\".repeat(3)}]`,
 		`${"\\".repeat(5)}[${"\\".repeat(5)}]`,
@@ -376,6 +377,19 @@ ruleTester.run("no-missing-label-refs", rule, {
 			],
 		},
 		// Backslash escaping
+		{
+			code: `${"\\".repeat(2)}[foo]`,
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "foo" },
+					line: 1,
+					column: 4,
+					endLine: 1,
+					endColumn: 7,
+				},
+			],
+		},
 		{
 			code: `${"\\".repeat(2)}[foo${"\\".repeat(2)}][bar${"\\".repeat(2)}]`,
 			errors: [
