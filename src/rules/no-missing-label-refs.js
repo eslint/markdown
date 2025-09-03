@@ -33,17 +33,18 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
  * @returns {Array<{label:string,position:Position}>} The missing references.
  */
 function findMissingReferences(node, nodeText) {
+	/** @type {Array<{label:string,position:Position}>} */
 	const missing = [];
 	const nodeStartLine = node.position.start.line;
 	const nodeStartColumn = node.position.start.column;
 
-	/*
-	 * Matches substrings like "[foo]", "[]", "[foo][bar]", "[foo][]", "[][bar]", or "[][]".
+	/**
+	 * Matches substrings like `"[foo]"`, `"[]"`, `"[foo][bar]"`, `"[foo][]"`, `"[][bar]"`, or `"[][]"`.
 	 * `left` is the content between the first brackets. It can be empty.
 	 * `right` is the content between the second brackets. It can be empty, and it can be undefined.
 	 */
 	const labelPattern =
-		/(?<!\\)\[(?<left>(?:\\.|[^[\]])*)(?<!\\)\](?:\[(?<right>(?:\\.|[^\]])*)(?<!\\)\])?/dgu;
+		/(?<=(?<!\\)(?:\\{2})*)\[(?<left>(?:\\.|[^[\]\\])*)\](?:\[(?<right>(?:\\.|[^\]\\])*)\])?/dgu;
 
 	let match;
 
