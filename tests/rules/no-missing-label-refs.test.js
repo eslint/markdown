@@ -105,6 +105,114 @@ ruleTester.run("no-missing-label-refs", rule, {
 			],
 		},
 		{
+			code: "[foo][*bar*]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "*bar*" },
+					line: 1,
+					column: 7,
+					endLine: 1,
+					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: "[foo][_bar_]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "_bar_" },
+					line: 1,
+					column: 7,
+					endLine: 1,
+					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: "[foo][~bar~]",
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "~bar~" },
+					line: 1,
+					column: 7,
+					endLine: 1,
+					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: "[foo][**bar**]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "**bar**" },
+					line: 1,
+					column: 7,
+					endLine: 1,
+					endColumn: 14,
+				},
+			],
+		},
+		{
+			code: "[foo][__bar__]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "__bar__" },
+					line: 1,
+					column: 7,
+					endLine: 1,
+					endColumn: 14,
+				},
+			],
+		},
+		{
+			code: "[foo][~~bar~~]",
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "~~bar~~" },
+					line: 1,
+					column: 7,
+					endLine: 1,
+					endColumn: 14,
+				},
+			],
+		},
+		{
+			code: "[foo][~~**bar**~~]",
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "~~**bar**~~" },
+					line: 1,
+					column: 7,
+					endLine: 1,
+					endColumn: 18,
+				},
+			],
+		},
+		{
+			code: "[foo][~~***bar***~~]",
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "~~***bar***~~" },
+					line: 1,
+					column: 7,
+					endLine: 1,
+					endColumn: 20,
+				},
+			],
+		},
+		{
 			code: "![foo][bar]",
 			errors: [
 				{
@@ -114,6 +222,114 @@ ruleTester.run("no-missing-label-refs", rule, {
 					column: 8,
 					endLine: 1,
 					endColumn: 11,
+				},
+			],
+		},
+		{
+			code: "![foo][*bar*]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "*bar*" },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: "![foo][_bar_]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "_bar_" },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: "![foo][~bar~]",
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "~bar~" },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: "![foo][**bar**]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "**bar**" },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: "![foo][__bar__]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "__bar__" },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: "![foo][~~bar~~]",
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "~~bar~~" },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: "![foo][~~**bar**~~]",
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "~~**bar**~~" },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 19,
+				},
+			],
+		},
+		{
+			code: "![foo][~~***bar***~~]",
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "~~***bar***~~" },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 21,
 				},
 			],
 		},
