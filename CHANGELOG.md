@@ -1,5 +1,13 @@
 # Changelog
 
+## [7.3.0](https://github.com/eslint/markdown/compare/v7.2.0...v7.3.0) (2025-09-03)
+
+
+### Features
+
+* add allowLabels option to no-missing-label-refs ([#513](https://github.com/eslint/markdown/issues/513)) ([f6d6b76](https://github.com/eslint/markdown/commit/f6d6b767a97f2b648164503b5de0f105a31935d6))
+* fix false positives and negatives for consecutive backslashes ([#490](https://github.com/eslint/markdown/issues/490)) ([3067607](https://github.com/eslint/markdown/commit/3067607753d4ed75b10ca394557c34e502dbacf9))
+
 ## [7.2.0](https://github.com/eslint/markdown/compare/v7.1.0...v7.2.0) (2025-08-22)
 
 
