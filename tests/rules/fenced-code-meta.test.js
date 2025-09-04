@@ -84,6 +84,11 @@ ruleTester.run("fenced-code-meta", rule, {
 			code: '\tconsole.log("Hello, world!");',
 			options: ["never"],
 		},
+		'\n    console.log("Hello, world!")\n',
+		{
+			code: '\n    console.log("Hello, world!")\n',
+			options: ["never"],
+		},
 	],
 	invalid: [
 		{
