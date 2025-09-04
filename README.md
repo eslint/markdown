@@ -102,6 +102,7 @@ export default defineConfig([
 | [`no-missing-label-refs`](./docs/rules/no-missing-label-refs.md)               | Disallow missing label references                                                                 |       yes       |
 | [`no-missing-link-fragments`](./docs/rules/no-missing-link-fragments.md)       | Disallow link fragments that do not reference valid headings                                      |       yes       |
 | [`no-multiple-h1`](./docs/rules/no-multiple-h1.md)                             | Disallow multiple H1 headings in the same document                                                |       yes       |
+| [`no-reference-like-urls`](./docs/rules/no-reference-like-urls.md)             | Disallow URLs that match defined reference identifiers                                            |       yes       |
 | [`no-reversed-media-syntax`](./docs/rules/no-reversed-media-syntax.md)         | Disallow reversed link and image syntax                                                           |       yes       |
 | [`no-space-in-emphasis`](./docs/rules/no-space-in-emphasis.md)                 | Disallow spaces around emphasis markers                                                           |       yes       |
 | [`no-unused-definitions`](./docs/rules/no-unused-definitions.md)               | Disallow unused definitions                                                                       |       yes       |
