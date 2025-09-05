@@ -38,9 +38,9 @@ export default {
 
 		messages: {
 			unusedDefinition:
-				"Unexpected unused definition `{{ identifier }}` found.",
+				"Unexpected unused definition `{{ identifier }}` (label: `{{ label }}`) found.",
 			unusedFootnoteDefinition:
-				"Unexpected unused footnote definition `{{ identifier }}` found.",
+				"Unexpected unused footnote definition `{{ identifier }}` (label: `{{ label }}`) found.",
 		},
 
 		schema: [
@@ -130,7 +130,10 @@ export default {
 						context.report({
 							node: definition,
 							messageId: "unusedDefinition",
-							data: { identifier: definition.label.trim() },
+							data: {
+								identifier: definition.identifier,
+								label: definition.label.trim(),
+							},
 						});
 					}
 				}
@@ -145,7 +148,8 @@ export default {
 							node: footnoteDefinition,
 							messageId: "unusedFootnoteDefinition",
 							data: {
-								identifier: footnoteDefinition.label,
+								identifier: footnoteDefinition.identifier,
+								label: footnoteDefinition.label,
 							},
 						});
 					}

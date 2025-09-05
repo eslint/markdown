@@ -232,7 +232,7 @@ Mercury[^mercury]
 			errors: [
 				{
 					messageId: "unusedDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -248,7 +248,7 @@ Mercury[^mercury]
 			errors: [
 				{
 					messageId: "unusedDefinition",
-					data: { identifier: "Mercury" },
+					data: { identifier: "mercury", label: "Mercury" },
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -264,7 +264,7 @@ Mercury[^mercury]
 			errors: [
 				{
 					messageId: "unusedDefinition",
-					data: { identifier: "Mercury" },
+					data: { identifier: "mercury", label: "Mercury" },
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -282,7 +282,7 @@ Mercury[^mercury]
 			errors: [
 				{
 					messageId: "unusedDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -290,7 +290,7 @@ Mercury[^mercury]
 				},
 				{
 					messageId: "unusedDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -298,7 +298,7 @@ Mercury[^mercury]
 				},
 				{
 					messageId: "unusedDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 4,
 					column: 1,
 					endLine: 4,
@@ -321,7 +321,7 @@ Mercury[^mercury]
 			errors: [
 				{
 					messageId: "unusedDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -337,7 +337,7 @@ Mercury[^mercury]
 			errors: [
 				{
 					messageId: "unusedFootnoteDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -353,7 +353,7 @@ Mercury[^mercury]
 			errors: [
 				{
 					messageId: "unusedFootnoteDefinition",
-					data: { identifier: "Mercury" },
+					data: { identifier: "mercury", label: "Mercury" },
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -371,7 +371,7 @@ Mercury[^mercury]
 			errors: [
 				{
 					messageId: "unusedFootnoteDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -379,7 +379,7 @@ Mercury[^mercury]
 				},
 				{
 					messageId: "unusedFootnoteDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -387,7 +387,7 @@ Mercury[^mercury]
 				},
 				{
 					messageId: "unusedFootnoteDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 4,
 					column: 1,
 					endLine: 4,
@@ -410,7 +410,7 @@ Mercury[^mercury]
 			errors: [
 				{
 					messageId: "unusedFootnoteDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -439,7 +439,7 @@ I am living on [Earth][earth] and I am going to [Mars][mars].
 			errors: [
 				{
 					messageId: "unusedDefinition",
-					data: { identifier: "jupiter" },
+					data: { identifier: "jupiter", label: "jupiter" },
 					line: 11,
 					column: 1,
 					endLine: 11,
