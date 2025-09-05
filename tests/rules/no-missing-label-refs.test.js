@@ -90,6 +90,21 @@ ruleTester.run("no-missing-label-refs", rule, {
 		`[escaped${"\\".repeat(5)}][escaped${"\\".repeat(5)}]`,
 		`[escaped${"\\".repeat(7)}][escaped${"\\".repeat(7)}]`,
 		{
+			code: `
+# [^hi] <div data-custom="[hi]"> ![hi]() ![hi] \`[hi]\` [hi]() [hi]
+
+hi [^hi] <div data-custom="[hi]"> ![hi]() ![hi] \`[hi]\` [hi]() [hi]
+
+| hi                                                                |
+| ----------------------------------------------------------------- |
+| [^hi] <div data-custom="[hi]"> ![hi]() ![hi] \`[hi]\` [hi]() [hi] |
+
+[hi]: https://www.hi.com
+[^hi]: hi
+`, // Please do not use `dedent` here, as it removes intentional whitespaces.
+			language: "markdown/gfm",
+		},
+		{
 			code: "[foo][bar]",
 			options: [{ allowLabels: ["bar"] }],
 		},
