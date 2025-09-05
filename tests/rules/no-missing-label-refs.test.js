@@ -94,24 +94,48 @@ ruleTester.run("no-missing-label-refs", rule, {
 			options: [{ allowLabels: ["bar"] }],
 		},
 		{
+			code: "[foo][*bar*]",
+			options: [{ allowLabels: ["*bar*"] }],
+		},
+		{
 			code: "![foo][bar]",
 			options: [{ allowLabels: ["bar"] }],
+		},
+		{
+			code: "![foo][*bar*]",
+			options: [{ allowLabels: ["*bar*"] }],
 		},
 		{
 			code: "[foo][]",
 			options: [{ allowLabels: ["foo"] }],
 		},
 		{
+			code: "[*foo*][]",
+			options: [{ allowLabels: ["*foo*"] }],
+		},
+		{
 			code: "![foo][]",
 			options: [{ allowLabels: ["foo"] }],
+		},
+		{
+			code: "![*foo*][]",
+			options: [{ allowLabels: ["*foo*"] }],
 		},
 		{
 			code: "[foo]",
 			options: [{ allowLabels: ["foo"] }],
 		},
 		{
+			code: "[*foo*]",
+			options: [{ allowLabels: ["*foo*"] }],
+		},
+		{
 			code: "![foo]",
 			options: [{ allowLabels: ["foo"] }],
+		},
+		{
+			code: "![*foo*]",
+			options: [{ allowLabels: ["*foo*"] }],
 		},
 		{
 			code: "[foo]\n[bar]",
