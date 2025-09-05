@@ -212,6 +212,19 @@ ruleTester.run("no-missing-label-refs", rule, {
 		},
 		{
 			code: "[foo][~~bar~~]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "~~bar~~" },
+					line: 1,
+					column: 7,
+					endLine: 1,
+					endColumn: 14,
+				},
+			],
+		},
+		{
+			code: "[foo][~~bar~~]",
 			language: "markdown/gfm",
 			errors: [
 				{
@@ -324,6 +337,19 @@ ruleTester.run("no-missing-label-refs", rule, {
 				{
 					messageId: "notFound",
 					data: { label: "__bar__" },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: "![foo][~~bar~~]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "~~bar~~" },
 					line: 1,
 					column: 8,
 					endLine: 1,
@@ -454,6 +480,19 @@ ruleTester.run("no-missing-label-refs", rule, {
 		},
 		{
 			code: "[~~foo~~][]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "~~foo~~" },
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: "[~~foo~~][]",
 			language: "markdown/gfm",
 			errors: [
 				{
@@ -566,6 +605,19 @@ ruleTester.run("no-missing-label-refs", rule, {
 				{
 					messageId: "notFound",
 					data: { label: "__foo__" },
+					line: 1,
+					column: 3,
+					endLine: 1,
+					endColumn: 10,
+				},
+			],
+		},
+		{
+			code: "![~~foo~~][]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "~~foo~~" },
 					line: 1,
 					column: 3,
 					endLine: 1,
@@ -696,6 +748,19 @@ ruleTester.run("no-missing-label-refs", rule, {
 		},
 		{
 			code: "[~~foo~~]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "~~foo~~" },
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: "[~~foo~~]",
 			language: "markdown/gfm",
 			errors: [
 				{
@@ -808,6 +873,19 @@ ruleTester.run("no-missing-label-refs", rule, {
 				{
 					messageId: "notFound",
 					data: { label: "__foo__" },
+					line: 1,
+					column: 3,
+					endLine: 1,
+					endColumn: 10,
+				},
+			],
+		},
+		{
+			code: "![~~foo~~]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "~~foo~~" },
 					line: 1,
 					column: 3,
 					endLine: 1,
