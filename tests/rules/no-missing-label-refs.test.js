@@ -10,6 +10,7 @@
 import rule from "../../src/rules/no-missing-label-refs.js";
 import markdown from "../../src/index.js";
 import { Linter, RuleTester } from "eslint";
+import dedent from "dedent";
 
 //------------------------------------------------------------------------------
 // Tests
@@ -89,6 +90,46 @@ ruleTester.run("no-missing-label-refs", rule, {
 		`[escaped${"\\".repeat(3)}][escaped${"\\".repeat(3)}]`,
 		`[escaped${"\\".repeat(5)}][escaped${"\\".repeat(5)}]`,
 		`[escaped${"\\".repeat(7)}][escaped${"\\".repeat(7)}]`,
+		{
+			code: "[foo][bar]",
+			options: [{ allowLabels: ["bar"] }],
+		},
+		{
+			code: "![foo][bar]",
+			options: [{ allowLabels: ["bar"] }],
+		},
+		{
+			code: "[foo][]",
+			options: [{ allowLabels: ["foo"] }],
+		},
+		{
+			code: "![foo][]",
+			options: [{ allowLabels: ["foo"] }],
+		},
+		{
+			code: "[foo]",
+			options: [{ allowLabels: ["foo"] }],
+		},
+		{
+			code: "![foo]",
+			options: [{ allowLabels: ["foo"] }],
+		},
+		{
+			code: "[foo]\n[bar]",
+			options: [{ allowLabels: ["foo", "bar"] }],
+		},
+		{
+			code: "[Foo][]\n[Bar][]",
+			options: [{ allowLabels: ["Foo", "Bar"] }],
+		},
+		{
+			code: dedent`
+			- [x] Checked
+			- [-] In progress
+			`,
+			language: "markdown/gfm",
+			options: [{ allowLabels: ["-"] }],
+		},
 	],
 	invalid: [
 		{
@@ -975,6 +1016,90 @@ ruleTester.run("no-missing-label-refs", rule, {
 					column: 2,
 					endLine: 1,
 					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: "[foo][bar]",
+			options: [{ allowLabels: ["baz"] }],
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "bar" },
+					line: 1,
+					column: 7,
+					endLine: 1,
+					endColumn: 10,
+				},
+			],
+		},
+		{
+			code: "![foo][bar]",
+			options: [{ allowLabels: ["foo"] }],
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "bar" },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 11,
+				},
+			],
+		},
+		{
+			code: "[foo][]",
+			options: [{ allowLabels: ["bar"] }],
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "foo" },
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 5,
+				},
+			],
+		},
+		{
+			code: "[foo]\n[bar]",
+			options: [{ allowLabels: ["foo"] }],
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "bar" },
+					line: 2,
+					column: 2,
+					endLine: 2,
+					endColumn: 5,
+				},
+			],
+		},
+		{
+			code: "[Foo][]",
+			options: [{ allowLabels: ["foo"] }],
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "Foo" },
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 5,
+				},
+			],
+		},
+		{
+			code: "[Foo][foo]\n[Bar][]",
+			options: [{ allowLabels: ["Bar"] }],
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "foo" },
+					line: 1,
+					column: 7,
+					endLine: 1,
+					endColumn: 10,
 				},
 			],
 		},
