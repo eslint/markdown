@@ -139,6 +139,38 @@ console.log("Hello, world!");
 			],
 		},
 		{
+			code: ` \`\`\`javascript
+console.log("Hello, world!");
+\`\`\``,
+			options: [{ required: ["js"] }],
+			errors: [
+				{
+					messageId: "disallowedLanguage",
+					data: { lang: "javascript" },
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: `  \`\`\`javascript
+console.log("Hello, world!");
+\`\`\``,
+			options: [{ required: ["js"] }],
+			errors: [
+				{
+					messageId: "disallowedLanguage",
+					data: { lang: "javascript" },
+					line: 1,
+					column: 3,
+					endLine: 1,
+					endColumn: 16,
+				},
+			],
+		},
+		{
 			code: `   \`\`\`javascript
 console.log("Hello, world!");
 \`\`\``,
@@ -167,6 +199,54 @@ console.log("Hello, world!");
 					column: 1,
 					endLine: 1,
 					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: ` \`\`\`\`javascript
+console.log("Hello, world!");
+\`\`\`\``,
+			options: [{ required: ["js"] }],
+			errors: [
+				{
+					messageId: "disallowedLanguage",
+					data: { lang: "javascript" },
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: `  \`\`\`\`javascript
+console.log("Hello, world!");
+\`\`\`\``,
+			options: [{ required: ["js"] }],
+			errors: [
+				{
+					messageId: "disallowedLanguage",
+					data: { lang: "javascript" },
+					line: 1,
+					column: 3,
+					endLine: 1,
+					endColumn: 17,
+				},
+			],
+		},
+		{
+			code: `   \`\`\`\`javascript
+console.log("Hello, world!");
+\`\`\`\``,
+			options: [{ required: ["js"] }],
+			errors: [
+				{
+					messageId: "disallowedLanguage",
+					data: { lang: "javascript" },
+					line: 1,
+					column: 4,
+					endLine: 1,
+					endColumn: 18,
 				},
 			],
 		},
