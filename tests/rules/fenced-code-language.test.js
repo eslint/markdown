@@ -139,6 +139,22 @@ console.log("Hello, world!");
 			],
 		},
 		{
+			code: `   \`\`\`javascript
+console.log("Hello, world!");
+\`\`\``,
+			options: [{ required: ["js"] }],
+			errors: [
+				{
+					messageId: "disallowedLanguage",
+					data: { lang: "javascript" },
+					line: 1,
+					column: 4,
+					endLine: 1,
+					endColumn: 17,
+				},
+			],
+		},
+		{
 			code: `\`\`\`\`javascript
 console.log("Hello, world!");
 \`\`\`\``,
