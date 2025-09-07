@@ -109,6 +109,60 @@ console.log("Hello, world!");
 			],
 		},
 		{
+			code: ` \`\`\`
+console.log("Hello, world!");
+\`\`\``,
+			errors: [
+				{
+					messageId: "missingLanguage",
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 5,
+				},
+			],
+		},
+		{
+			code: `  \`\`\`
+console.log("Hello, world!");
+\`\`\``,
+			errors: [
+				{
+					messageId: "missingLanguage",
+					line: 1,
+					column: 3,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
+			code: `   \`\`\`
+console.log("Hello, world!");
+\`\`\``,
+			errors: [
+				{
+					messageId: "missingLanguage",
+					line: 1,
+					column: 4,
+					endLine: 1,
+					endColumn: 7,
+				},
+			],
+		},
+		{
+			code: "```     \nconsole.log('Hello, world!');\n```",
+			errors: [
+				{
+					messageId: "missingLanguage",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 4,
+				},
+			],
+		},
+		{
 			code: `~~~
 console.log("Hello, world!");
 ~~~`,
