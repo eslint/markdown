@@ -177,6 +177,18 @@ console.log("Hello, world!");
 			],
 		},
 		{
+			code: "~~~     \nconsole.log('Hello, world!');\n~~~",
+			errors: [
+				{
+					messageId: "missingLanguage",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 4,
+				},
+			],
+		},
+		{
 			code: `\`\`\`javascript
 console.log("Hello, world!");
 \`\`\``,

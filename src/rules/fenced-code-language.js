@@ -70,8 +70,6 @@ export default {
 
 		return {
 			code(node) {
-				const lineText = sourceCode.lines[node.position.start.line - 1];
-
 				if (!node.lang) {
 					// only check fenced code blocks
 					if (
@@ -82,12 +80,25 @@ export default {
 						return;
 					}
 
+					/** @type {number} */
+					let offset;
+
+					for (
+						offset = node.position.start.offset;
+						fencedCodeCharacters.has(sourceCode.text[offset]);
+						offset++
+					) {
+						// Find the end offset of the opening fence.
+					}
+
 					context.report({
 						loc: {
 							start: node.position.start,
 							end: {
 								line: node.position.start.line,
-								column: lineText.length + 1,
+								column:
+									node.position.start.column +
+									(offset - node.position.start.offset),
 							},
 						},
 						messageId: "missingLanguage",
@@ -97,6 +108,8 @@ export default {
 				}
 
 				if (required.size && !required.has(node.lang)) {
+					const lineText =
+						sourceCode.lines[node.position.start.line - 1];
 					const langIndex = lineText.indexOf(node.lang);
 
 					context.report({
