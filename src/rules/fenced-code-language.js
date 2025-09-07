@@ -108,8 +108,9 @@ export default {
 				}
 
 				if (required.size && !required.has(node.lang)) {
-					const lineText =
-						sourceCode.lines[node.position.start.line - 1];
+					const lineText = sourceCode.lines[
+						node.position.start.line - 1
+					].replace(/^ */u, "");
 					const langIndex = lineText.indexOf(node.lang);
 
 					context.report({
