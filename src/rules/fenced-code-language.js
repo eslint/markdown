@@ -108,10 +108,9 @@ export default {
 				}
 
 				if (required.size && !required.has(node.lang)) {
-					const lineText = sourceCode.lines[
-						node.position.start.line - 1
-					].replace(/^ */u, "");
-					const langIndex = lineText.indexOf(node.lang);
+					const langOffset = sourceCode
+						.getText(node)
+						.indexOf(node.lang);
 
 					context.report({
 						loc: {
@@ -120,7 +119,7 @@ export default {
 								line: node.position.start.line,
 								column:
 									node.position.start.column +
-									langIndex +
+									langOffset +
 									node.lang.length,
 							},
 						},
