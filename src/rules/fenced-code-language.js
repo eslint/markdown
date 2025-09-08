@@ -90,7 +90,7 @@ export default {
 						);
 						openingCodeFenceEndOffset++
 					) {
-						// Find the end offset of the opening fence.
+						// Find the end offset of the opening code fence.
 					}
 
 					context.report({
@@ -111,7 +111,7 @@ export default {
 				}
 
 				if (required.size && !required.has(node.lang)) {
-					const langOffset = sourceCode
+					const langIndex = sourceCode
 						.getText(node)
 						.indexOf(node.lang);
 
@@ -122,7 +122,7 @@ export default {
 								line: node.position.start.line,
 								column:
 									node.position.start.column +
-									langOffset +
+									langIndex +
 									node.lang.length,
 							},
 						},
