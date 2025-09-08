@@ -163,6 +163,18 @@ console.log("Hello, world!");
 			],
 		},
 		{
+			code: "```\t\t\nconsole.log('Hello, world!');\n```",
+			errors: [
+				{
+					messageId: "missingLanguage",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 4,
+				},
+			],
+		},
+		{
 			code: `~~~
 console.log("Hello, world!");
 ~~~`,
@@ -220,6 +232,18 @@ console.log("Hello, world!");
 		},
 		{
 			code: "~~~     \nconsole.log('Hello, world!');\n~~~",
+			errors: [
+				{
+					messageId: "missingLanguage",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 4,
+				},
+			],
+		},
+		{
+			code: "~~~\t\t\nconsole.log('Hello, world!');\n~~~",
 			errors: [
 				{
 					messageId: "missingLanguage",
