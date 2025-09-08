@@ -100,8 +100,8 @@ export default {
 								line: node.position.start.line,
 								column:
 									node.position.start.column +
-									(openingCodeFenceEndOffset -
-										node.position.start.offset),
+									openingCodeFenceEndOffset -
+									node.position.start.offset,
 							},
 						},
 						messageId: "missingLanguage",
