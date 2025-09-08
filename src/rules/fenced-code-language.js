@@ -81,12 +81,14 @@ export default {
 					}
 
 					/** @type {number} */
-					let offset;
+					let openingCodeFenceEndOffset;
 
 					for (
-						offset = node.position.start.offset;
-						fencedCodeCharacters.has(sourceCode.text[offset]);
-						offset++
+						openingCodeFenceEndOffset = node.position.start.offset;
+						fencedCodeCharacters.has(
+							sourceCode.text[openingCodeFenceEndOffset],
+						);
+						openingCodeFenceEndOffset++
 					) {
 						// Find the end offset of the opening fence.
 					}
@@ -98,7 +100,8 @@ export default {
 								line: node.position.start.line,
 								column:
 									node.position.start.column +
-									(offset - node.position.start.offset),
+									(openingCodeFenceEndOffset -
+										node.position.start.offset),
 							},
 						},
 						messageId: "missingLanguage",
