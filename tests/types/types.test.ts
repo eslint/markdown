@@ -1,15 +1,16 @@
-import markdown, { MarkdownSourceCode } from "@eslint/markdown";
-import type { SourceLocation, SourceRange } from "@eslint/core";
+import markdown from "@eslint/markdown";
 import type {
 	MarkdownRuleDefinition,
 	MarkdownRuleVisitor,
+	MarkdownSourceCode,
 	Toml,
 	Json,
 	RangeMap,
 	Block,
-} from "@eslint/markdown/types";
-import { ESLint, Linter } from "eslint";
-import { Position } from "unist";
+} from "@eslint/markdown";
+import type { SourceLocation, SourceRange } from "@eslint/core";
+import type { ESLint, Linter } from "eslint";
+import type { Position } from "unist";
 import type {
 	// Nodes (abstract)
 	Node,
