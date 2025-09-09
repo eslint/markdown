@@ -14,6 +14,7 @@ import { normalizeIdentifier } from "micromark-util-normalize-identifier";
 //-----------------------------------------------------------------------------
 
 /**
+ * @import { Definition, FootnoteDefinition } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"duplicateDefinition" | "duplicateFootnoteDefinition"} NoDuplicateDefinitionsMessageIds
  * @typedef {[{ allowDefinitions?: string[], allowFootnoteDefinitions?: string[] }]} NoDuplicateDefinitionsOptions
@@ -85,10 +86,10 @@ export default {
 			),
 		);
 
-		/** @type {Map<string, { line: number, label: string }>} */
+		/** @type {Map<string, Definition>} */
 		const definitions = new Map();
 
-		/** @type {Map<string, { line: number, label: string }>} */
+		/** @type {Map<string, FootnoteDefinition>} */
 		const footnoteDefinitions = new Map();
 
 		return {
@@ -98,22 +99,22 @@ export default {
 				}
 
 				if (definitions.has(node.identifier)) {
-					const firstDefinition = definitions.get(node.identifier);
+					const firstDefinitionNode = definitions.get(
+						node.identifier,
+					);
 					context.report({
 						node,
 						messageId: "duplicateDefinition",
 						data: {
 							identifier: node.identifier,
 							label: node.label.trim(),
-							firstLine: firstDefinition.line.toString(),
-							firstLabel: firstDefinition.label.trim(),
+							firstLine:
+								firstDefinitionNode.position.start.line.toString(),
+							firstLabel: firstDefinitionNode.label.trim(),
 						},
 					});
 				} else {
-					definitions.set(node.identifier, {
-						line: node.position.start.line,
-						label: node.label,
-					});
+					definitions.set(node.identifier, node);
 				}
 			},
 
@@ -123,7 +124,7 @@ export default {
 				}
 
 				if (footnoteDefinitions.has(node.identifier)) {
-					const firstDefinition = footnoteDefinitions.get(
+					const firstFootnoteDefinitionNode = footnoteDefinitions.get(
 						node.identifier,
 					);
 					context.report({
@@ -132,15 +133,13 @@ export default {
 						data: {
 							identifier: node.identifier,
 							label: node.label,
-							firstLine: firstDefinition.line.toString(),
-							firstLabel: firstDefinition.label,
+							firstLine:
+								firstFootnoteDefinitionNode.position.start.line.toString(),
+							firstLabel: firstFootnoteDefinitionNode.label,
 						},
 					});
 				} else {
-					footnoteDefinitions.set(node.identifier, {
-						line: node.position.start.line,
-						label: node.label,
-					});
+					footnoteDefinitions.set(node.identifier, node);
 				}
 			},
 		};
