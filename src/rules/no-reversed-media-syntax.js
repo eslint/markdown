@@ -14,6 +14,7 @@ import { findOffsets } from "../util.js";
 //-----------------------------------------------------------------------------
 
 /**
+ * @import { Html, Image, InlineCode } from "mdast";
  * @import { SourceRange } from "@eslint/core"
  * @import { Heading, Paragraph, TableCell } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
@@ -143,7 +144,9 @@ export default {
 		}
 
 		return {
-			"heading :matches(html, inlineCode)"(node) {
+			"heading :matches(html, image, inlineCode)"(
+				/** @type {Html | Image | InlineCode} */ node,
+			) {
 				skipRanges.push(sourceCode.getRange(node));
 			},
 
@@ -152,7 +155,9 @@ export default {
 				skipRanges = [];
 			},
 
-			"paragraph :matches(html, inlineCode)"(node) {
+			"paragraph :matches(html, image, inlineCode)"(
+				/** @type {Html | Image | InlineCode} */ node,
+			) {
 				skipRanges.push(sourceCode.getRange(node));
 			},
 
@@ -161,7 +166,9 @@ export default {
 				skipRanges = [];
 			},
 
-			"tableCell :matches(html, inlineCode)"(node) {
+			"tableCell :matches(html, image, inlineCode)"(
+				/** @type {Html | Image | InlineCode} */ node,
+			) {
 				skipRanges.push(sourceCode.getRange(node));
 			},
 

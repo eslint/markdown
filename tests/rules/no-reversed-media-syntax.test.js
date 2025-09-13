@@ -71,6 +71,8 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 		// Heading
 		"# [ESLint](https://eslint.org/)",
 		"# ![A beautiful sunset](sunset.png)",
+		// Image
+		"![()[]](hi)",
 		// TableCell
 		{
 			code: dedent`
