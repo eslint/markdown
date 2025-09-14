@@ -16,7 +16,7 @@ import { findOffsets } from "../util.js";
 
 /**
  * @import { SourceRange } from "@eslint/core"
- * @import { Heading, Node, Paragraph, TableCell } from "mdast";
+ * @import { Heading, Paragraph, TableCell } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"referenceLikeUrl"} NoReferenceLikeUrlMessageIds
  * @typedef {[]} NoReferenceLikeUrlOptions
