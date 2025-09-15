@@ -16,7 +16,7 @@ import { findOffsets } from "../util.js";
 
 /**
  * @import { SourceRange } from "@eslint/core"
- * @import { Heading, Node, Paragraph, TableCell } from "mdast";
+ * @import { Heading, Paragraph, TableCell } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"referenceLikeUrl"} NoReferenceLikeUrlMessageIds
  * @typedef {[]} NoReferenceLikeUrlOptions
@@ -29,7 +29,7 @@ import { findOffsets } from "../util.js";
 
 /** Pattern to match both inline links: `[text](url)` and images: `![alt](url)`, with optional title */
 const linkOrImagePattern =
-	/(?<!(?<!\\)\\)(?<imageBang>!)?\[(?<label>(?:\\.|[^()\\]|\([\s\S]*\))*?)\]\((?<destination>[ \t]*(?:\r\n?|\n)?(?<![ \t])[ \t]*(?:<[^>]*>|[^ \t()]+))(?:[ \t]*(?:\r\n?|\n)?(?<![ \t])[ \t]*(?<title>"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*(?:\r\n?|\n)?(?<![ \t])[ \t]*\)(?!\()/gu;
+	/(?<=(?<!\\)(?:\\{2})*)(?<imageBang>!)?\[(?<label>(?:\\.|[^()\\]|\([\s\S]*\))*?)\]\((?<destination>[ \t]*(?:\r\n?|\n)?(?<![ \t])[ \t]*(?:<[^>]*>|[^ \t()]+))(?:[ \t]*(?:\r\n?|\n)?(?<![ \t])[ \t]*(?<title>"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*(?:\r\n?|\n)?(?<![ \t])[ \t]*\)(?!\()/gu;
 
 /**
  * Checks if a given index is within any skip range.
