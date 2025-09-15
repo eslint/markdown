@@ -27,7 +27,7 @@ import { normalizeIdentifier } from "micromark-util-normalize-identifier";
 
 /** Pattern to match both inline links: `[text](url)` and images: `![alt](url)`, with optional title */
 const linkOrImagePattern =
-	/(?<imageBang>!)?\[(?<label>(?:\\.|[^()\\]|\([\s\S]*\))*?)\]\((?<destination>[ \t]*(?:\r\n?|\n)?(?<![ \t])[ \t]*(?:<[^>]*>|[^ \t()]+))(?:[ \t]*(?:\r\n?|\n)?(?<![ \t])[ \t]*(?<title>"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*(?:\r\n?|\n)?(?<![ \t])[ \t]*\)(?!\()/u;
+	/(?<imageBang>!)?\[(?<label>(?:\\.|[^()\\]|\([\s\S]*\))*?)\]\((?<destination>[ \t]*(?:\r\n?|\n)?(?<![ \t])[ \t]*(?:<[^>]*>|[^ \t()]+))(?:[ \t]*(?:\r\n?|\n)?(?<![ \t])[ \t]*(?<title>"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*(?:\r\n?|\n)?(?<![ \t])[ \t]*\)$/u;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
