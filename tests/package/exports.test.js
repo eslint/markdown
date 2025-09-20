@@ -7,12 +7,12 @@
 // Imports
 //------------------------------------------------------------------------------
 
-import * as exports from "../../src/index.js";
 import assert from "node:assert";
-
 import path from "node:path";
 import fs from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import * as exports from "../../src/index.js";
+import { MarkdownLanguage } from "../../src/language/markdown-language.js";
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -61,6 +61,65 @@ describe("Package exports", () => {
 				`Expected ${ruleName}.js to be exported under key "${ruleName}" in the ESLint plugin (\`plugin.rules\` in \`src/index.js\`)`,
 			);
 		}
+	});
+
+	it("has a markdown processor with preprocess and postprocess methods", () => {
+		const processors = exports.default.processors;
+		assert.ok(processors);
+		assert.ok(
+			"markdown" in processors,
+			"Expected a 'markdown' processor to be exported",
+		);
+		const markdownProcessor = processors.markdown;
+		assert.strictEqual(
+			typeof markdownProcessor.preprocess,
+			"function",
+			"Expected markdown.preprocess to be a function",
+		);
+		assert.strictEqual(
+			typeof markdownProcessor.postprocess,
+			"function",
+			"Expected markdown.postprocess to be a function",
+		);
+	});
+
+	it("has languages that are instances of MarkdownLanguage", () => {
+		const languages = exports.default.languages;
+		assert.ok(languages);
+		assert.ok(
+			"commonmark" in languages,
+			"Expected 'commonmark' language to be exported",
+		);
+		assert.ok("gfm" in languages, "Expected 'gfm' language to be exported");
+		for (const [name, language] of Object.entries(languages)) {
+			assert.ok(
+				language instanceof MarkdownLanguage,
+				`Expected language '${name}' to be an instance of MarkdownLanguage`,
+			);
+		}
+	});
+
+	it("uses a language mode that matches the language name", () => {
+		const { commonmark, gfm } = exports.default.languages;
+		const file = { body: "~~Hello~~" };
+
+		// CommonMark should NOT parse GFM strikethrough
+		const cmResult = commonmark.parse(file);
+		assert.strictEqual(cmResult.ok, true);
+		assert.strictEqual(
+			cmResult.ast.children[0].children[0].type,
+			"text",
+			"Expected CommonMark to treat '~~Hello~~' as plain text",
+		);
+
+		// GFM should parse strikethrough
+		const gfmResult = gfm.parse(file);
+		assert.strictEqual(gfmResult.ok, true);
+		assert.strictEqual(
+			gfmResult.ast.children[0].children[0].type,
+			"delete",
+			"Expected GFM to parse '~~Hello~~' into a 'delete' node",
+		);
 	});
 
 	it("has a MarkdownSourceCode export", () => {
