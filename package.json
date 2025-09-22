@@ -90,8 +90,8 @@
     "yorkie": "^2.0.0"
   },
   "dependencies": {
-    "@eslint/core": "^0.15.2",
-    "@eslint/plugin-kit": "^0.3.5",
+    "@eslint/core": "^0.16.0",
+    "@eslint/plugin-kit": "^0.4.0",
     "github-slugger": "^2.0.0",
     "mdast-util-from-markdown": "^2.0.2",
     "mdast-util-frontmatter": "^2.0.1",
