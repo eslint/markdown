@@ -11,3 +11,6 @@ package-lock.json
 pnpm-lock.yaml
 dist
 src/build
+
+# Automatically generated files by GitHub Actions workflow
+tools/update-readme.js
