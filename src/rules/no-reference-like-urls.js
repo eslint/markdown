@@ -65,7 +65,7 @@ export default {
 				definitionIdentifiers.add(node.identifier);
 			},
 
-			"image, link"(node) {
+			"image, link"(/** @type {Image | Link} */ node) {
 				relevantNodes.push(node);
 			},
 
