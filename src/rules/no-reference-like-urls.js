@@ -16,9 +16,9 @@ import { normalizeIdentifier } from "micromark-util-normalize-identifier";
 /**
  * @import { Image, Link } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
- * @typedef {"referenceLikeUrl"} NoReferenceLikeUrlMessageIds
- * @typedef {[]} NoReferenceLikeUrlOptions
- * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoReferenceLikeUrlOptions, MessageIds: NoReferenceLikeUrlMessageIds }>} NoReferenceLikeUrlRuleDefinition
+ * @typedef {"referenceLikeUrl"} NoReferenceLikeUrlsMessageIds
+ * @typedef {[]} NoReferenceLikeUrlsOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoReferenceLikeUrlsOptions, MessageIds: NoReferenceLikeUrlsMessageIds }>} NoReferenceLikeUrlsRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
@@ -33,7 +33,7 @@ const linkOrImagePattern =
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoReferenceLikeUrlRuleDefinition} */
+/** @type {NoReferenceLikeUrlsRuleDefinition} */
 export default {
 	meta: {
 		type: "problem",
