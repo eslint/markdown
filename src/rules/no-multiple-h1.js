@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 
 import {
-	findOffsets,
+	findOffsets, // TODO
 	frontmatterHasTitle,
 	stripHtmlComments,
 } from "../util.js";
@@ -104,7 +104,7 @@ export default {
 						const {
 							lineOffset: startLineOffset,
 							columnOffset: startColumnOffset,
-						} = findOffsets(node.value, match.index);
+						} = findOffsets(node.value, match.index); // TODO
 
 						const {
 							lineOffset: endLineOffset,
@@ -112,7 +112,7 @@ export default {
 						} = findOffsets(
 							node.value,
 							match.index + match[0].length,
-						);
+						); // TODO
 
 						const nodeStartLine = node.position.start.line;
 						const nodeStartColumn = node.position.start.column;

@@ -31,7 +31,7 @@ export const htmlCommentPattern = /<!--[\s\S]*?-->/gu;
  *      Note that `columnOffset` should be used as an offset to the column number
  *      of the given text in the source code only when `lineOffset` is 0.
  *      Otherwise, it should be used as a 0-based column number in the source code.
- */
+ */ // TODO
 export function findOffsets(text, offset) {
 	let lineOffset = 0;
 	let columnOffset = 0;

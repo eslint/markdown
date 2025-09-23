@@ -13,7 +13,7 @@ import {
 	ConfigCommentParser,
 	Directive,
 } from "@eslint/plugin-kit";
-import { findOffsets } from "../util.js";
+import { findOffsets } from "../util.js"; // TODO
 
 //-----------------------------------------------------------------------------
 // Types
@@ -91,7 +91,7 @@ function extractInlineConfigCommentsFromHTML(node) {
 			const {
 				lineOffset: startLineOffset,
 				columnOffset: startColumnOffset,
-			} = findOffsets(node.value, match.index);
+			} = findOffsets(node.value, match.index); // TODO
 
 			start.line += startLineOffset;
 			start.column += startColumnOffset;

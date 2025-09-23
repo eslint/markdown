@@ -16,6 +16,7 @@ import { findOffsets, frontmatterHasTitle } from "../src/util.js";
 
 describe("util", () => {
 	describe("findOffsets()", () => {
+		// TODO
 		it("should return correct offsets for a simple string", () => {
 			const text = "Hello world!";
 			const offset = 6; // 'w' in "world"

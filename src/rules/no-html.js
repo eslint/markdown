@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { findOffsets } from "../util.js";
+import { findOffsets } from "../util.js"; // TODO
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -87,6 +87,7 @@ export default {
 					const fullMatch = match[0];
 					const tagName = match[1];
 					const { lineOffset, columnOffset } = findOffsets(
+						// TODO
 						node.value,
 						match.index,
 					);

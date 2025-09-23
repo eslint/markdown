@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { findOffsets, illegalShorthandTailPattern } from "../util.js";
+import { findOffsets, illegalShorthandTailPattern } from "../util.js"; // TODO
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -92,11 +92,11 @@ function findInvalidLabelReferences(node, sourceCode) {
 
 		// find location of [ in the document text
 		const { lineOffset: startLineOffset, columnOffset: startColumnOffset } =
-			findOffsets(nodeText, nodeMatchIndex + 1);
+			findOffsets(nodeText, nodeMatchIndex + 1); // TODO
 
 		// find location of [ in the document text
 		const { lineOffset: endLineOffset, columnOffset: endColumnOffset } =
-			findOffsets(nodeText, nodeMatchIndex + match[0].length);
+			findOffsets(nodeText, nodeMatchIndex + match[0].length); // TODO
 
 		const startLine = nodeStartLine + startLineOffset;
 		const startColumn = nodeStartColumn + startColumnOffset;

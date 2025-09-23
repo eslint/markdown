@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { findOffsets, illegalShorthandTailPattern } from "../util.js";
+import { findOffsets, illegalShorthandTailPattern } from "../util.js"; // TODO
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -76,9 +76,9 @@ function findMissingReferences(node, nodeText) {
 		}
 
 		const { lineOffset: startLineOffset, columnOffset: startColumnOffset } =
-			findOffsets(nodeText, labelIndices[0]);
+			findOffsets(nodeText, labelIndices[0]); // TODO
 		const { lineOffset: endLineOffset, columnOffset: endColumnOffset } =
-			findOffsets(nodeText, labelIndices[1]);
+			findOffsets(nodeText, labelIndices[1]); // TODO
 
 		missing.push({
 			label: label.trim(),
