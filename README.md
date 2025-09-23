@@ -17,7 +17,7 @@ Lint Markdown with ESLint, as well JS, JSX, TypeScript, and more inside Markdown
 
 ### Installing
 
-Install the plugin alongside ESLint v9.15 or greater.
+Install the plugin alongside ESLint v9.15.0 or greater.
 
 For Node.js and compatible runtimes:
 
