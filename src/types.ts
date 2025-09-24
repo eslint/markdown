@@ -38,11 +38,11 @@ import type {
 	// Extensions (front matter)
 	Yaml,
 } from "mdast";
-import type { Linter } from "eslint";
 import type {
-	LanguageOptions,
+	CustomRuleDefinitionType,
+	CustomRuleTypeDefinitions,
 	LanguageContext,
-	RuleDefinition,
+	LanguageOptions,
 	RuleVisitor,
 } from "@eslint/core";
 import type { MarkdownSourceCode } from "./index.js";
@@ -74,13 +74,7 @@ export interface BlockBase {
 	rangeMap: RangeMap[];
 }
 
-export interface Block extends Node, BlockBase {
-	meta: string | null;
-}
-
-export type Message = Linter.LintMessage;
-
-export type RuleType = "problem" | "suggestion" | "layout";
+export type Block = Code & BlockBase;
 
 /**
  * Markdown TOML.
@@ -102,13 +96,32 @@ export interface Toml extends Literal {
 export interface TomlData extends Data {}
 
 /**
+ * Markdown JSON.
+ */
+export interface Json extends Literal {
+	/**
+	 * Node type of mdast JSON.
+	 */
+	type: "json";
+	/**
+	 * Data associated with the mdast JSON.
+	 */
+	data?: JsonData | undefined;
+}
+
+/**
+ * Info associated with mdast JSON nodes by the ecosystem.
+ */
+export interface JsonData extends Data {}
+
+/**
  * Language options provided for Markdown files.
  */
 export interface MarkdownLanguageOptions extends LanguageOptions {
 	/**
 	 * The options for parsing frontmatter.
 	 */
-	frontmatter?: false | "yaml" | "toml";
+	frontmatter?: false | "yaml" | "toml" | "json";
 }
 
 /**
@@ -148,32 +161,24 @@ export interface MarkdownRuleVisitor
 					| TableCell
 					| TableRow
 					| Yaml // Extensions (front matter)
-					| Toml as NodeType["type"]]?: (
+					| Toml
+					| Json as NodeType["type"]]?: (
 					node: NodeType,
 					parent?: Parent,
 				) => void;
 			}
 		> {}
 
-export type MarkdownRuleDefinitionTypeOptions = {
-	RuleOptions: unknown[];
-	MessageIds: string;
-	ExtRuleDocs: Record<string, unknown>;
-};
+export type MarkdownRuleDefinitionTypeOptions = CustomRuleTypeDefinitions;
 
 export type MarkdownRuleDefinition<
 	Options extends Partial<MarkdownRuleDefinitionTypeOptions> = {},
-> = RuleDefinition<
-	// Language specific type options (non-configurable)
+> = CustomRuleDefinitionType<
 	{
 		LangOptions: MarkdownLanguageOptions;
 		Code: MarkdownSourceCode;
 		Visitor: MarkdownRuleVisitor;
 		Node: Node;
-	} & Required<
-		// Rule specific type options (custom)
-		Options &
-			// Rule specific type options (defaults)
-			Omit<MarkdownRuleDefinitionTypeOptions, keyof Options>
-	>
+	},
+	Options
 >;

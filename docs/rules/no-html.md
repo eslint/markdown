@@ -10,9 +10,11 @@ By default, Markdown allows you to use HTML tags mixed in with Markdown syntax. 
 
 This rule warns when it finds HTML tags inside Markdown content.
 
-Examples of incorrect code:
+Examples of **incorrect** code for this rule:
 
 ```markdown
+<!-- eslint markdown/no-html: "error" -->
+
 # Heading 1
 
 Hello <b>world!</b>
@@ -22,23 +24,51 @@ Hello <b>world!</b>
 
 The following options are available on this rule:
 
-* `allowed: Array<string>` - when specified, HTML tags are allowed only if they match one of the tags in this array.. 
+* `allowed: Array<string>` - when specified, HTML tags are allowed only if they match one of the tags in this array. (default: `[]`)
 
-Examples of incorrect code when configured as `"no-html: ["error", { allowed: ["b"]}]`:
+    Examples of **incorrect** code when configured as `"no-html": ["error", { allowed: ["b"] }]`:
 
-```markdown
-# Heading 1
+    ```markdown
+    <!-- eslint markdown/no-html: ["error", { allowed: ["b"] }] -->
 
-Hello <em>world!</em>
-```
+    # Heading 1
 
-Examples of correct code when configured as `"no-html: ["error", { allowed: ["b"]}]`:
+    Hello <em>world!</em>
+    ```
 
-```markdown
-# Heading 1
+    Examples of **correct** code when configured as `"no-html": ["error", { allowed: ["b"] }]`:
 
-Hello <b>world!</b>
-```
+    ```markdown
+    <!-- eslint markdown/no-html: ["error", { allowed: ["b"] }] -->
+
+    # Heading 1
+
+    Hello <b>world!</b>
+    ```
+
+* `allowedIgnoreCase: boolean` - when `true`, enables case-insensitive matching of HTML tag names against the `allowed` array described above. (default: `false`)
+
+    Examples of **incorrect** code when configured as `"no-html": ["error", { allowed: ["DIV"], allowedIgnoreCase: false }]`:
+
+    ```markdown
+    <!-- eslint markdown/no-html: ["error", { allowed: ["DIV"], allowedIgnoreCase: false }] -->
+
+    # Heading 1
+
+    <div>Hello world!</div>
+    ```
+
+    Examples of **correct** code when configured as `"no-html": ["error", { allowed: ["DIV"], allowedIgnoreCase: true }]`:
+
+    ```markdown
+    <!-- eslint markdown/no-html: ["error", { allowed: ["DIV"], allowedIgnoreCase: true }] -->
+
+    # Heading 1
+
+    <div>Hello world!</div>
+    <DIV>Hello world!</DIV>
+    <DiV>Hello world!</DiV>
+    ```
 
 ## When Not to Use It
 

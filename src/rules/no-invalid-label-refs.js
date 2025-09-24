@@ -13,11 +13,14 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("unist").Position} Position */
-/** @typedef {import("mdast").Text} TextNode */
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoInvalidLabelRuleDefinition
+ * @import { Position } from "unist";
+ * @import { Text } from "mdast";
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"invalidLabelRef"} NoInvalidLabelRefsMessageIds
+ * @typedef {[]} NoInvalidLabelRefsOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoInvalidLabelRefsOptions, MessageIds: NoInvalidLabelRefsMessageIds }>} NoInvalidLabelRefsRuleDefinition
+ * @typedef {Parameters<MarkdownRuleDefinition['create']>[0]['sourceCode']} SourceCode
  */
 
 //-----------------------------------------------------------------------------
@@ -29,11 +32,13 @@ const labelPattern = /\]\[([^\]]+)\]/u;
 
 /**
  * Finds missing references in a node.
- * @param {TextNode} node The node to check.
- * @param {string} docText The text of the node.
+ * @param {Text} node The node to check.
+ * @param {SourceCode} sourceCode The Markdown source code object.
  * @returns {Array<{label:string,position:Position}>} The missing references.
  */
-function findInvalidLabelReferences(node, docText) {
+function findInvalidLabelReferences(node, sourceCode) {
+	const nodeText = sourceCode.getText(node);
+	const docText = sourceCode.text;
 	const invalid = [];
 	let startIndex = 0;
 	const offset = node.position.start.offset;
@@ -47,8 +52,8 @@ function findInvalidLabelReferences(node, docText) {
 	 * It then moves the start index to the end of the label reference and
 	 * continues searching the text until the end of the text is found.
 	 */
-	while (startIndex < node.value.length) {
-		const value = node.value.slice(startIndex);
+	while (startIndex < nodeText.length) {
+		const value = nodeText.slice(startIndex);
 		const match = value.match(labelPattern);
 
 		if (!match) {
@@ -87,11 +92,11 @@ function findInvalidLabelReferences(node, docText) {
 
 		// find location of [ in the document text
 		const { lineOffset: startLineOffset, columnOffset: startColumnOffset } =
-			findOffsets(node.value, nodeMatchIndex + 1);
+			findOffsets(nodeText, nodeMatchIndex + 1);
 
 		// find location of [ in the document text
 		const { lineOffset: endLineOffset, columnOffset: endColumnOffset } =
-			findOffsets(node.value, nodeMatchIndex + match[0].length);
+			findOffsets(nodeText, nodeMatchIndex + match[0].length);
 
 		const startLine = nodeStartLine + startLineOffset;
 		const startColumn = nodeStartColumn + startColumnOffset;
@@ -123,7 +128,7 @@ function findInvalidLabelReferences(node, docText) {
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoInvalidLabelRuleDefinition} */
+/** @type {NoInvalidLabelRefsRuleDefinition} */
 export default {
 	meta: {
 		type: "problem",
@@ -147,7 +152,7 @@ export default {
 			text(node) {
 				const invalidReferences = findInvalidLabelReferences(
 					node,
-					sourceCode.text,
+					sourceCode,
 				);
 
 				for (const invalidReference of invalidReferences) {

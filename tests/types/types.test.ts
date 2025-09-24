@@ -1,18 +1,21 @@
-import markdown, {
-	MarkdownSourceCode,
-	MarkdownNode,
+import markdown from "@eslint/markdown";
+import type {
 	MarkdownRuleDefinition,
 	MarkdownRuleVisitor,
-	SourceLocation,
-	SourceRange,
-	type RuleModule,
+	MarkdownSourceCode,
+	Toml,
+	Json,
+	RangeMap,
+	Block,
 } from "@eslint/markdown";
-import { Toml } from "@eslint/markdown/types";
-import { ESLint, Linter } from "eslint";
+import type { SourceLocation, SourceRange } from "@eslint/core";
+import type { ESLint, Linter } from "eslint";
+import type { Position } from "unist";
 import type {
 	// Nodes (abstract)
 	Node,
 	Parent,
+	CodeData,
 	// Nodes
 	Blockquote,
 	Break,
@@ -43,6 +46,48 @@ import type {
 	// Extensions (front matter)
 	Yaml,
 } from "mdast";
+
+// Test that `Block` extends `Code` and `BlockBase` correctly
+// `meta` property is optional and not required in `Block`
+const validBlock: Block = {
+	// `Code` properties
+	type: "code",
+	value: "const foo = 'bar';",
+
+	// `BlockBase` properties
+	baseIndentText: "  ",
+	comments: ["// A comment"],
+	rangeMap: [{ indent: 2, js: 0, md: 4 }],
+};
+
+// Verify `Block` has `Code` properties
+validBlock.type satisfies "code";
+validBlock.position satisfies Position | undefined;
+validBlock.value satisfies string;
+validBlock.lang satisfies string | null | undefined;
+validBlock.meta satisfies string | null | undefined;
+validBlock.data satisfies CodeData | undefined;
+
+// Verify `Block` has `BlockBase` properties
+validBlock.baseIndentText satisfies string;
+validBlock.comments satisfies string[];
+validBlock.rangeMap satisfies RangeMap[];
+
+// Verify `RangeMap` structure
+validBlock.rangeMap[0].indent satisfies number;
+validBlock.rangeMap[0].js satisfies number;
+validBlock.rangeMap[0].md satisfies number;
+
+// Test that `Block` can be used where `Code` is expected
+const codeNode: Code = validBlock;
+codeNode.type satisfies "code";
+
+// Test that `BlockBase` properties are required
+// @ts-expect-error Missing BlockBase properties
+const invalidBlock: Block = {
+	type: "code",
+	value: "code",
+};
 
 markdown satisfies ESLint.Plugin;
 markdown.meta.name satisfies string;
@@ -79,7 +124,7 @@ typeof processorPlugins satisfies {};
 	null as AssertAllNamesIn<RecommendedRuleName, RuleName>;
 }
 
-(): RuleModule => ({
+(): MarkdownRuleDefinition => ({
 	create({ sourceCode }): MarkdownRuleVisitor {
 		sourceCode satisfies MarkdownSourceCode;
 		sourceCode.ast satisfies Root;
@@ -164,24 +209,21 @@ typeof processorPlugins satisfies {};
 			"yaml:exit": (...args) => testVisitor<Yaml>(...args),
 			toml: (...args) => testVisitor<Toml>(...args),
 			"toml:exit": (...args) => testVisitor<Toml>(...args),
+			json: (...args) => testVisitor<Json>(...args),
+			"json:exit": (...args) => testVisitor<Json>(...args),
 
 			// Unknown selectors allowed
-			"heading[depth=1]"(node: MarkdownNode, parent?: ParentNode) {},
-			"randomSelector:exit"(node: MarkdownNode, parent?: ParentNode) {},
+			"heading[depth=1]"(node: Node, parent?: ParentNode) {},
+			"randomSelector:exit"(node: Node, parent?: ParentNode) {},
 		};
 	},
 });
 
-// All options optional - MarkdownRuleDefinition, MarkdownRuleDefinition<{}> and RuleModule
+// All options optional - MarkdownRuleDefinition and MarkdownRuleDefinition<{}>
 // should be the same type.
-(
-	rule1: MarkdownRuleDefinition,
-	rule2: MarkdownRuleDefinition<{}>,
-	rule3: RuleModule,
-) => {
-	rule1 satisfies typeof rule2 satisfies typeof rule3;
-	rule2 satisfies typeof rule1 satisfies typeof rule3;
-	rule3 satisfies typeof rule1 satisfies typeof rule2;
+(rule1: MarkdownRuleDefinition, rule2: MarkdownRuleDefinition<{}>) => {
+	rule1 satisfies typeof rule2;
+	rule2 satisfies typeof rule1;
 };
 
 // Type restrictions should be enforced
@@ -246,5 +288,20 @@ typeof processorPlugins satisfies {};
 	},
 	create() {
 		return {};
+	},
+});
+
+// `meta.docs.recommended` can be any type
+(): MarkdownRuleDefinition => ({
+	create() {
+		return {};
+	},
+	meta: {
+		docs: {
+			recommended: {
+				severity: "warn",
+				options: ["never"],
+			},
+		},
 	},
 });

@@ -8,8 +8,10 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: [{ required?: string[]; }]; }>}
- * FencedCodeLanguageRuleDefinition
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"missingLanguage" | "disallowedLanguage"} FencedCodeLanguageMessageIds
+ * @typedef {[{ required?: string[] }]} FencedCodeLanguageOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: FencedCodeLanguageOptions, MessageIds: FencedCodeLanguageMessageIds }>} FencedCodeLanguageRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
@@ -54,10 +56,16 @@ export default {
 				additionalProperties: false,
 			},
 		],
+
+		defaultOptions: [
+			{
+				required: [],
+			},
+		],
 	},
 
 	create(context) {
-		const required = new Set(context.options[0]?.required);
+		const required = new Set(context.options[0].required);
 		const { sourceCode } = context;
 
 		return {
@@ -72,8 +80,30 @@ export default {
 						return;
 					}
 
+					/** @type {number} */
+					let openingCodeFenceEndOffset;
+
+					for (
+						openingCodeFenceEndOffset = node.position.start.offset;
+						fencedCodeCharacters.has(
+							sourceCode.text[openingCodeFenceEndOffset],
+						);
+						openingCodeFenceEndOffset++
+					) {
+						// Find the end offset of the opening code fence.
+					}
+
 					context.report({
-						loc: node.position,
+						loc: {
+							start: node.position.start,
+							end: {
+								line: node.position.start.line,
+								column:
+									node.position.start.column +
+									openingCodeFenceEndOffset -
+									node.position.start.offset,
+							},
+						},
 						messageId: "missingLanguage",
 					});
 
@@ -81,8 +111,21 @@ export default {
 				}
 
 				if (required.size && !required.has(node.lang)) {
+					const langIndex = sourceCode
+						.getText(node)
+						.indexOf(node.lang);
+
 					context.report({
-						loc: node.position,
+						loc: {
+							start: node.position.start,
+							end: {
+								line: node.position.start.line,
+								column:
+									node.position.start.column +
+									langIndex +
+									node.lang.length,
+							},
+						},
 						messageId: "disallowedLanguage",
 						data: {
 							lang: node.lang,

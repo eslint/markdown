@@ -1,5 +1,129 @@
 # Changelog
 
+## [7.3.0](https://github.com/eslint/markdown/compare/v7.2.0...v7.3.0) (2025-09-22)
+
+
+### Features
+
+* add allowLabels option to no-missing-label-refs ([#513](https://github.com/eslint/markdown/issues/513)) ([f6d6b76](https://github.com/eslint/markdown/commit/f6d6b767a97f2b648164503b5de0f105a31935d6))
+* add no-reference-like-urls rule ([#433](https://github.com/eslint/markdown/issues/433)) ([65251ec](https://github.com/eslint/markdown/commit/65251ec12b617f62357fe9239b60200973e5d2b7))
+* export types from main entry point ([#520](https://github.com/eslint/markdown/issues/520)) ([915837c](https://github.com/eslint/markdown/commit/915837c6cf72c7ca0c7d7b2f1708698d65e8dc14))
+* fix false positives and negatives for consecutive backslashes ([#490](https://github.com/eslint/markdown/issues/490)) ([3067607](https://github.com/eslint/markdown/commit/3067607753d4ed75b10ca394557c34e502dbacf9))
+
+
+### Bug Fixes
+
+* `exactOptionalPropertyTypes` causes type errors when using plugins ([#524](https://github.com/eslint/markdown/issues/524)) ([15014a4](https://github.com/eslint/markdown/commit/15014a4ad0ec5db1e24ae72a09c1e705c756f006))
+* handle consecutive backslashes in `no-reference-like-urls` ([#523](https://github.com/eslint/markdown/issues/523)) ([762712d](https://github.com/eslint/markdown/commit/762712d699f7962cecadfd906486f681c175ba9a))
+* no-*-definitions rules show original label and identifier ([#515](https://github.com/eslint/markdown/issues/515)) ([f80a9e1](https://github.com/eslint/markdown/commit/f80a9e1d6b505e42491f49fc6ac36eeacd3bdbab))
+* report locations with &lt;CR&gt; linebreaks in `no-reference-like-urls` ([#525](https://github.com/eslint/markdown/issues/525)) ([28723c2](https://github.com/eslint/markdown/commit/28723c2904ccf1450e781dd15473d3ef82fa2502))
+* wrong location reporting in `fenced-code-language` ([#518](https://github.com/eslint/markdown/issues/518)) ([c532194](https://github.com/eslint/markdown/commit/c532194e1c7e0fab4bb9fc9d683fc61d5a1a91c5))
+
+## [7.2.0](https://github.com/eslint/markdown/compare/v7.1.0...v7.2.0) (2025-08-22)
+
+
+### Features
+
+* add allowedIgnoreCase option to no-html ([#500](https://github.com/eslint/markdown/issues/500)) ([06ac53d](https://github.com/eslint/markdown/commit/06ac53d050f0b4e0a407d427790d85db4a1f0462))
+* add checkClosedHeadings option to no-missing-atx-heading-space ([#452](https://github.com/eslint/markdown/issues/452)) ([a9675aa](https://github.com/eslint/markdown/commit/a9675aa81e8bf79f2e865f433b961a201f82eac1))
+* add frontmatterTitle option to heading-increment ([#454](https://github.com/eslint/markdown/issues/454)) ([614ef3e](https://github.com/eslint/markdown/commit/614ef3e0bf539655170f202467119fbbbf8963f6))
+* add no-space-in-emphasis rule ([#403](https://github.com/eslint/markdown/issues/403)) ([e4b8de4](https://github.com/eslint/markdown/commit/e4b8de4494820b5a61beec6564cb4c5f9d72cede))
+* Expose identifiers in messages for no-duplicate-definitions ([#506](https://github.com/eslint/markdown/issues/506)) ([9f54c1b](https://github.com/eslint/markdown/commit/9f54c1b65549b584cbad686f5d488d803a4e3540))
+* expose identifiers in messages for no-empty-definitions ([#507](https://github.com/eslint/markdown/issues/507)) ([738f366](https://github.com/eslint/markdown/commit/738f3660e8f3df250028963547aad840a3145e20))
+* verify identifier data in no-empty-definitions ([#499](https://github.com/eslint/markdown/issues/499)) ([738f366](https://github.com/eslint/markdown/commit/738f3660e8f3df250028963547aad840a3145e20))
+
+
+### Bug Fixes
+
+* allow any type for `meta.docs.recommended` in custom rules ([#502](https://github.com/eslint/markdown/issues/502)) ([604a4b9](https://github.com/eslint/markdown/commit/604a4b97771c3c1c4b45b9999c18dc52bcd8b332))
+* detect errors after comments in no-multiple-h1 and require-alt-text ([#468](https://github.com/eslint/markdown/issues/468)) ([c9de444](https://github.com/eslint/markdown/commit/c9de44424f38d01ecc5a71e95558d2512f8a58ca))
+* false negatives and positives in `no-reversed-media-syntax` ([#473](https://github.com/eslint/markdown/issues/473)) ([c7a4d64](https://github.com/eslint/markdown/commit/c7a4d648a0ae810a55acd4f0b78bd57e8145a513))
+* fenced-code-language highlights only relevant parts ([#487](https://github.com/eslint/markdown/issues/487)) ([bb48ae2](https://github.com/eslint/markdown/commit/bb48ae2592240e53a35cd705691636b2ceeefd12))
+* handle multiline setext headings in `no-duplicate-headings` ([#469](https://github.com/eslint/markdown/issues/469)) ([99beea6](https://github.com/eslint/markdown/commit/99beea674271a5a98ba889fd00d96c3ad282f7e3))
+* improve HTML id/name regex for unquoted values and spaces ([#480](https://github.com/eslint/markdown/issues/480)) ([6c35261](https://github.com/eslint/markdown/commit/6c35261bb1ed925b43537a40909b04225668d5cf))
+* improve no-html rule's tag location reporting ([#491](https://github.com/eslint/markdown/issues/491)) ([5e6e94e](https://github.com/eslint/markdown/commit/5e6e94e0fc030ca4987f0f8067e78a3ec93f65a9))
+* make `meta` property optional in `Block` type ([#461](https://github.com/eslint/markdown/issues/461)) ([15c93a6](https://github.com/eslint/markdown/commit/15c93a69b970db3bac145ad0be80d32dfd9f4285))
+* normalize definition identifiers in no-*-definitions rules ([#488](https://github.com/eslint/markdown/issues/488)) ([b248383](https://github.com/eslint/markdown/commit/b24838360407dd32ceacc9fa8af8a926ce9f7144))
+
+## [7.1.0](https://github.com/eslint/markdown/compare/v7.0.0...v7.1.0) (2025-07-22)
+
+
+### Features
+
+* add checkMissingCells option to table-column-count ([#434](https://github.com/eslint/markdown/issues/434)) ([bf3f39b](https://github.com/eslint/markdown/commit/bf3f39be366f6dec6ad6a8d26751c06d04988e3f))
+
+
+### Bug Fixes
+
+* bump `plugin-kit` to latest to resolve security vulnerabilities ([#485](https://github.com/eslint/markdown/issues/485)) ([c5398ca](https://github.com/eslint/markdown/commit/c5398caac221daa147a2993cc945e42e374a6c5d))
+* case-insensitive attribute checks in `no-missing-link-fragment` ([#465](https://github.com/eslint/markdown/issues/465)) ([094a59d](https://github.com/eslint/markdown/commit/094a59d13b294f62c45693f41e921e08d15f0ccb))
+* case-insensitive checks for HTML attributes in `no-missing-link-fragment` ([094a59d](https://github.com/eslint/markdown/commit/094a59d13b294f62c45693f41e921e08d15f0ccb))
+* no-reversed-media-syntax add missing offset for code spans ([#460](https://github.com/eslint/markdown/issues/460)) ([af7736c](https://github.com/eslint/markdown/commit/af7736c51d2ad6d065d12b5b92ff01aff8d58a4a))
+* potential super-linear regular expressions ([#463](https://github.com/eslint/markdown/issues/463)) ([bc82567](https://github.com/eslint/markdown/commit/bc82567458f8fc41b36cbcb2c67aac746078e044))
+* remove unused types from `types.ts` ([#462](https://github.com/eslint/markdown/issues/462)) ([466f80e](https://github.com/eslint/markdown/commit/466f80e1b66e4894853ed26e7475fdab944a33ce))
+
+## [7.0.0](https://github.com/eslint/markdown/compare/v6.6.0...v7.0.0) (2025-07-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* move certain types to import them from `@eslint/markdown/types` ([#446](https://github.com/eslint/markdown/issues/446))
+* set no-missing-link-fragments default ignoreCase to true ([#447](https://github.com/eslint/markdown/issues/447))
+* remove rollup and extraneous types ([#383](https://github.com/eslint/markdown/issues/383))
+
+### Features
+
+* add allowDefinitions & allowFootnoteDefinitions opts to no-empty-definitions ([#455](https://github.com/eslint/markdown/issues/455)) ([e09eba6](https://github.com/eslint/markdown/commit/e09eba6b0e89148af1dd2b9ae4706bbf8e5f6b0d))
+* add checkFootnoteDefinitions option to no-empty-definitions ([#442](https://github.com/eslint/markdown/issues/442)) ([4d504e5](https://github.com/eslint/markdown/commit/4d504e523d7c63820aaaa7b4d2dd9de7edb50960))
+* create `no-unused-definitions` rule ([#425](https://github.com/eslint/markdown/issues/425)) ([6b43333](https://github.com/eslint/markdown/commit/6b43333e54a7685211252ae994091a066520861b))
+* set no-missing-link-fragments default ignoreCase to true ([#447](https://github.com/eslint/markdown/issues/447)) ([925191e](https://github.com/eslint/markdown/commit/925191e20282b53d95a6d54a9fea7a78df893242))
+
+
+### Bug Fixes
+
+* handle URL-encoded link fragments in no-missing-link-fragments rule ([#437](https://github.com/eslint/markdown/issues/437)) ([76685c5](https://github.com/eslint/markdown/commit/76685c58eab498bf4b4b2661d9fb303f37f18303))
+* move certain types to import them from `@eslint/markdown/types` ([#446](https://github.com/eslint/markdown/issues/446)) ([0dc6220](https://github.com/eslint/markdown/commit/0dc62200fc476e7e6b94823326edd23c2e119c16))
+* remove rollup and extraneous types ([#383](https://github.com/eslint/markdown/issues/383)) ([e7ccd2e](https://github.com/eslint/markdown/commit/e7ccd2e3e58757fa1a1d616fda285e957880c36d))
+* skip HTML nodes in heading slugs for no-missing-link-fragments ([#445](https://github.com/eslint/markdown/issues/445)) ([e4dcf6a](https://github.com/eslint/markdown/commit/e4dcf6a27e6761964293258c37c925029fdfaf22))
+* update `no-duplicate-headings` to align with CommonMark spec ([#438](https://github.com/eslint/markdown/issues/438)) ([2bc0a38](https://github.com/eslint/markdown/commit/2bc0a38a2e5558f06f2f015012901a1741d35338))
+
+## [6.6.0](https://github.com/eslint/markdown/compare/v6.5.0...v6.6.0) (2025-06-20)
+
+
+### Features
+
+* add checkSiblingsOnly option to no-duplicate-headings rule ([#393](https://github.com/eslint/markdown/issues/393)) ([2512729](https://github.com/eslint/markdown/commit/25127297f0ee8f63b860a42538cec9612e154b0b))
+* add JSON frontmatter support ([#411](https://github.com/eslint/markdown/issues/411)) ([8b77e69](https://github.com/eslint/markdown/commit/8b77e6993ed045482a966470d906d9636b1b4abc))
+* add no-bare-urls rule ([#418](https://github.com/eslint/markdown/issues/418)) ([5149927](https://github.com/eslint/markdown/commit/514992754650499cf1c8d7e4f56a1e7666a3d384))
+* add no-missing-link-fragments rule ([#380](https://github.com/eslint/markdown/issues/380)) ([70e7dac](https://github.com/eslint/markdown/commit/70e7dacab279579c57396589da798d7e2e3a0a50))
+* add no-reversed-media-syntax rule ([#398](https://github.com/eslint/markdown/issues/398)) ([ae547ab](https://github.com/eslint/markdown/commit/ae547ab935307f5bea60ea3d0e1ccefdc8fc43f6))
+* update `no-multiple-h1` rule to recognize JSON frontmatter ([#413](https://github.com/eslint/markdown/issues/413)) ([33dda18](https://github.com/eslint/markdown/commit/33dda184d2919ea33ba850a018b6972429aeb5c6))
+
+
+### Bug Fixes
+
+* ensure ATX headings follow spec for space after hash characters ([#421](https://github.com/eslint/markdown/issues/421)) ([bab9670](https://github.com/eslint/markdown/commit/bab96707428ee694888cfaa3f22ae8823a7880e0))
+
+## [6.5.0](https://github.com/eslint/markdown/compare/v6.4.0...v6.5.0) (2025-06-04)
+
+
+### Features
+
+* add `no-missing-atx-heading-space` rule ([#371](https://github.com/eslint/markdown/issues/371)) ([84c87c4](https://github.com/eslint/markdown/commit/84c87c407bdfb64694581afb26066a5b233bd59c))
+* add no-empty-definitions rule ([#364](https://github.com/eslint/markdown/issues/364)) ([cb5a956](https://github.com/eslint/markdown/commit/cb5a95666524e3c26650371bfdcd59e15cae4053))
+* add no-multiple-h1 rule ([#377](https://github.com/eslint/markdown/issues/377)) ([d7c88e8](https://github.com/eslint/markdown/commit/d7c88e898b251cb1bf9eb3b19075b6b6c4a4d255))
+* add require-alt-text rule ([#368](https://github.com/eslint/markdown/issues/368)) ([32d8cbd](https://github.com/eslint/markdown/commit/32d8cbd8b6d2d121225b5291c2f9a0ea6c2ccd00))
+* added new rule `table-column-count` ([#392](https://github.com/eslint/markdown/issues/392)) ([c685139](https://github.com/eslint/markdown/commit/c68513942c0735fc7fbae7edbc95a36093a30ee0))
+* create `no-duplicate-definitions` ([#360](https://github.com/eslint/markdown/issues/360)) ([18c7d77](https://github.com/eslint/markdown/commit/18c7d776c768b901a0049b6e9bd7cf9e060ae835))
+* create `no-empty-images` ([#357](https://github.com/eslint/markdown/issues/357)) ([23e4ff0](https://github.com/eslint/markdown/commit/23e4ff0d7be9e10ce017357cb5f8e15276c6c404))
+
+
+### Bug Fixes
+
+* `no-invalid-label-refs` do not report correct position ([#366](https://github.com/eslint/markdown/issues/366)) ([ed01747](https://github.com/eslint/markdown/commit/ed01747d29eed0b1379211bb1d97d3dbff3389c8))
+* `no-missing-label-refs` rule does not respect escaping ([#348](https://github.com/eslint/markdown/issues/348)) ([cb6b437](https://github.com/eslint/markdown/commit/cb6b4376e94f2f89a100352d01857ad08deff652))
+* update `require-alt-text` rule to ignore commented images ([#385](https://github.com/eslint/markdown/issues/385)) ([b2fc801](https://github.com/eslint/markdown/commit/b2fc801727eb7ed554e74a9cf690c4777b66ff72))
+
 ## [6.4.0](https://github.com/eslint/markdown/compare/v6.3.0...v6.4.0) (2025-04-17)
 
 

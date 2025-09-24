@@ -10,12 +10,13 @@ jobs:
             contents: write
             pull-requests: write
             id-token: write
+            models: read
         steps:
             - uses: googleapis/release-please-action@v4
               id: release
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
               if: ${{ steps.release.outputs.release_created }}
-            - uses: actions/setup-node@v4
+            - uses: actions/setup-node@v5
               with:
                   node-version: lts/*
                   registry-url: https://registry.npmjs.org
@@ -34,7 +35,14 @@ jobs:
                   npx jsr publish
               if: ${{ steps.release.outputs.release_created }}
 
-            - run: 'npx @humanwhocodes/crosspost -t -b -m "eslint/markdown v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }} has been released:\n\n${{ steps.release.outputs.html_url }}"'
+            # Generates the social media post
+            - run: npx @humanwhocodes/social-changelog --org ${{ github.repository_owner }} --repo ${{ github.event.repository.name }} --tag ${{ steps.release.outputs.tag_name }} > social-post.txt
+              if: ${{ steps.release.outputs.release_created }}
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Post release announcement
+              run: npx @humanwhocodes/crosspost -t -b -m --discord-webhook --file social-post.txt
               if: ${{ steps.release.outputs.release_created }}
               env:
                   TWITTER_API_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
@@ -46,3 +54,4 @@ jobs:
                   BLUESKY_IDENTIFIER: ${{ vars.BLUESKY_IDENTIFIER }}
                   BLUESKY_PASSWORD: ${{ secrets.BLUESKY_PASSWORD }}
                   BLUESKY_HOST: ${{ vars.BLUESKY_HOST }}
+                  DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}

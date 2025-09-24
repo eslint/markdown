@@ -13,15 +13,14 @@ import { fromMarkdown } from "mdast-util-from-markdown";
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("./types.ts").Block} Block */
-/** @typedef {import("./types.ts").RangeMap} RangeMap */
-/** @typedef {import("mdast").Node} Node */
-/** @typedef {import("mdast").Parent} ParentNode */
-/** @typedef {import("mdast").Code} CodeNode */
-/** @typedef {import("mdast").Html} HtmlNode */
-/** @typedef {import("eslint").Linter.LintMessage} Message */
-/** @typedef {import("eslint").Rule.Fix} Fix */
-/** @typedef {import("eslint").AST.Range} Range */
+/**
+ * @import { Node, Parent, Code, Html } from "mdast";
+ * @import { Linter, Rule, AST } from "eslint";
+ * @import { Block, RangeMap } from "./types.js";
+ * @typedef {Linter.LintMessage} Message
+ * @typedef {Rule.Fix} Fix
+ * @typedef {AST.Range} Range
+ */
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -53,7 +52,7 @@ function traverse(node, callbacks) {
 		callbacks["*"]();
 	}
 
-	const parent = /** @type {ParentNode} */ (node);
+	const parent = /** @type {Parent} */ (node);
 
 	if (typeof parent.children !== "undefined") {
 		for (let i = 0; i < parent.children.length; i++) {
@@ -71,7 +70,7 @@ function traverse(node, callbacks) {
 function getComment(html) {
 	const commentStart = "<!--";
 	const commentEnd = "-->";
-	const regex = /^(eslint\b|global\s)/u;
+	const regex = /^(?:eslint\b|global\s)/u;
 
 	if (
 		html.slice(0, commentStart.length) !== commentStart ||
@@ -96,7 +95,7 @@ const leadingWhitespaceRegex = /^[>\s]*/u;
 /**
  * Gets the offset for the first column of the node's first line in the
  * original source text.
- * @param {Node} node A Markdown code block AST node.
+ * @param {Code} node A Markdown code block AST node.
  * @returns {number} The offset for the first column of the node's first line.
  */
 function getBeginningOfLineOffset(node) {
@@ -107,7 +106,7 @@ function getBeginningOfLineOffset(node) {
  * Gets the leading text, typically whitespace with possible blockquote chars,
  * used to indent a code block.
  * @param {string} text The text of the file.
- * @param {Node} node A Markdown code block AST node.
+ * @param {Code} node A Markdown code block AST node.
  * @returns {string} The text from the start of the first line to the opening
  *     fence of the code block.
  */
@@ -141,7 +140,7 @@ function getIndentText(text, node) {
  * differences within the line, so the mapping need only provide the offset
  * delta at the beginning of each line.
  * @param {string} text The text of the file.
- * @param {Node} node A Markdown code block AST node.
+ * @param {Code} node A Markdown code block AST node.
  * @param {string[]} comments List of configuration comment strings that will be
  *     inserted at the beginning of the code block.
  * @returns {RangeMap[]} A list of offset-based adjustments, where lookups are
@@ -264,12 +263,14 @@ const languageToFileExtension = {
 /**
  * Extracts lintable code blocks from Markdown text.
  * @param {string} sourceText The text of the file.
- * @param {string} filename The filename of the file
+ * @param {string} filename The filename of the file.
  * @returns {Array<{ filename: string, text: string }>} Source code blocks to lint.
  */
 function preprocess(sourceText, filename) {
 	const text = sourceText.startsWith(BOM) ? sourceText.slice(1) : sourceText;
 	const ast = fromMarkdown(text);
+
+	/** @type {Block[]} */
 	const blocks = [];
 
 	blocksCache.set(filename, blocks);
@@ -291,11 +292,12 @@ function preprocess(sourceText, filename) {
 
 		/**
 		 * Visit a code node.
-		 * @param {CodeNode} node The visited node.
+		 * @param {Code} node The visited node.
 		 * @returns {void}
 		 */
 		code(node) {
 			if (node.lang) {
+				/** @type {string[]} */
 				const comments = [];
 
 				for (const comment of htmlComments) {
@@ -320,7 +322,7 @@ function preprocess(sourceText, filename) {
 
 		/**
 		 * Visit an HTML node.
-		 * @param {HtmlNode} node The visited node.
+		 * @param {Html} node The visited node.
 		 * @returns {void}
 		 */
 		html(node) {
@@ -467,7 +469,7 @@ function postprocess(messages, filename) {
 export const processor = {
 	meta: {
 		name: "@eslint/markdown/markdown",
-		version: "6.4.0", // x-release-please-version
+		version: "7.3.0", // x-release-please-version
 	},
 	preprocess,
 	postprocess,

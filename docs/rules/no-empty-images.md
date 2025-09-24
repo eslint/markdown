@@ -10,9 +10,11 @@ In Markdown, it’s not always easy to spot when you’ve forgotten to provide a
 
 This rule warns when it finds images that either don't have a URL specified or have only an empty fragment (`"#"`).
 
-Examples of incorrect code:
+Examples of **incorrect** code for this rule:
 
 ```markdown
+<!-- eslint markdown/no-empty-images: "error" -->
+
 ![]()
 
 ![ESLint Logo]()
@@ -25,6 +27,8 @@ Examples of incorrect code:
 Exmaples of correct code:
 
 ```markdown
+<!-- eslint markdown/no-empty-images: "error" -->
+
 ![](https://eslint.org/image.png)
 
 ![ESLint Logo](https://eslint.org/image.png)

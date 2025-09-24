@@ -13,11 +13,13 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("unist").Position} Position */
-/** @typedef {import("mdast").Text} TextNode */
 /**
- * @typedef {import("../types.ts").MarkdownRuleDefinition<{ RuleOptions: []; }>}
- * NoMissingLabelRuleDefinition
+ * @import { Position } from "unist";
+ * @import { Text } from "mdast";
+ * @import { MarkdownRuleDefinition } from "../types.js";
+ * @typedef {"notFound"} NoMissingLabelRefsMessageIds
+ * @typedef {[{ allowLabels?: string[] }]} NoMissingLabelRefsOptions
+ * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoMissingLabelRefsOptions, MessageIds: NoMissingLabelRefsMessageIds }>} NoMissingLabelRefsRuleDefinition
  */
 
 //-----------------------------------------------------------------------------
@@ -26,22 +28,23 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
 
 /**
  * Finds missing references in a node.
- * @param {TextNode} node The node to check.
+ * @param {Text} node The node to check.
  * @param {string} nodeText The text of the node.
  * @returns {Array<{label:string,position:Position}>} The missing references.
  */
 function findMissingReferences(node, nodeText) {
+	/** @type {Array<{label:string,position:Position}>} */
 	const missing = [];
 	const nodeStartLine = node.position.start.line;
 	const nodeStartColumn = node.position.start.column;
 
-	/*
-	 * Matches substrings like "[foo]", "[]", "[foo][bar]", "[foo][]", "[][bar]", or "[][]".
+	/**
+	 * Matches substrings like `"[foo]"`, `"[]"`, `"[foo][bar]"`, `"[foo][]"`, `"[][bar]"`, or `"[][]"`.
 	 * `left` is the content between the first brackets. It can be empty.
 	 * `right` is the content between the second brackets. It can be empty, and it can be undefined.
 	 */
 	const labelPattern =
-		/(?<!\\)\[(?<left>(?:\\.|[^\]])*)(?<!\\)\](?<!\\)(?:\[(?<right>(?:\\.|[^\]])*)(?<!\\)\])?/dgu;
+		/(?<=(?<!\\)(?:\\{2})*)\[(?<left>(?:\\.|[^[\]\\])*)\](?:\[(?<right>(?:\\.|[^\]\\])*)\])?/dgu;
 
 	let match;
 
@@ -105,7 +108,7 @@ function findMissingReferences(node, nodeText) {
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoMissingLabelRuleDefinition} */
+/** @type {NoMissingLabelRefsRuleDefinition} */
 export default {
 	meta: {
 		type: "problem",
@@ -116,6 +119,28 @@ export default {
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-missing-label-refs.md",
 		},
 
+		schema: [
+			{
+				type: "object",
+				properties: {
+					allowLabels: {
+						type: "array",
+						items: {
+							type: "string",
+						},
+						uniqueItems: true,
+					},
+				},
+				additionalProperties: false,
+			},
+		],
+
+		defaultOptions: [
+			{
+				allowLabels: [],
+			},
+		],
+
 		messages: {
 			notFound: "Label reference '{{label}}' not found.",
 		},
@@ -123,6 +148,9 @@ export default {
 
 	create(context) {
 		const { sourceCode } = context;
+		const allowLabels = new Set(context.options[0].allowLabels);
+
+		/** @type {Array<{label:string,position:Position}>} */
 		let allMissingReferences = [];
 
 		return {
@@ -139,9 +167,16 @@ export default {
 			},
 
 			text(node) {
-				allMissingReferences.push(
-					...findMissingReferences(node, sourceCode.getText(node)),
+				const missingReferences = findMissingReferences(
+					node,
+					sourceCode.getText(node),
 				);
+
+				for (const missingReference of missingReferences) {
+					if (!allowLabels.has(missingReference.label)) {
+						allMissingReferences.push(missingReference);
+					}
+				}
 			},
 
 			definition(node) {

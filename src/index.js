@@ -1,5 +1,5 @@
 /**
- * @fileoverview Enables the processor for Markdown file extensions.
+ * @fileoverview Markdown plugin.
  * @author Brandon Mills
  */
 
@@ -17,22 +17,15 @@ import rules from "./build/rules.js";
 // Type Definitions
 //-----------------------------------------------------------------------------
 
-/** @typedef {import("eslint").Linter.RulesRecord} RulesRecord*/
-/** @typedef {import("eslint").Linter.Config} Config*/
-/** @typedef {import("eslint").ESLint.Plugin} Plugin */
 /**
- * @typedef {import("./types.ts").MarkdownRuleDefinition<Options>} MarkdownRuleDefinition<Options>
- * @template {Partial<import("./types.ts").MarkdownRuleDefinitionTypeOptions>} [Options={}]
+ * @import { Linter } from "eslint";
  */
-/** @typedef {MarkdownRuleDefinition} RuleModule */
-/** @typedef {import("./types.ts").MarkdownRuleVisitor} MarkdownRuleVisitor */
-/** @typedef {import("@eslint/core").Language} Language */
 
 //-----------------------------------------------------------------------------
 // Exports
 //-----------------------------------------------------------------------------
 
-/** @type {RulesRecord} */
+/** @type {Linter.RulesRecord} */
 const processorRulesConfig = {
 	// The Markdown parser automatically trims trailing
 	// newlines from code blocks.
@@ -60,7 +53,7 @@ let recommendedPlugins, processorPlugins;
 const plugin = {
 	meta: {
 		name: "@eslint/markdown",
-		version: "6.4.0", // x-release-please-version
+		version: "7.3.0", // x-release-please-version
 	},
 	processors: {
 		markdown: processor,
@@ -104,7 +97,7 @@ const plugin = {
 				rules: recommendedRules,
 			},
 		],
-		processor: [
+		processor: /** @type {Linter.Config[]} */ ([
 			{
 				name: "markdown/recommended/plugin",
 				plugins: (processorPlugins = {}),
@@ -132,7 +125,7 @@ const plugin = {
 					...processorRulesConfig,
 				},
 			},
-		],
+		]),
 	},
 };
 
@@ -141,3 +134,4 @@ recommendedPlugins.markdown = processorPlugins.markdown = plugin;
 
 export default plugin;
 export { MarkdownSourceCode };
+export * from "./types.js";
