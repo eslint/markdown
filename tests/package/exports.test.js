@@ -122,6 +122,10 @@ describe("Package exports", () => {
 		);
 	});
 
+	it("has a MarkdownLanguage export", () => {
+		assert.ok(exports.MarkdownLanguage);
+	});
+
 	it("has a MarkdownSourceCode export", () => {
 		assert.ok(exports.MarkdownSourceCode);
 	});
