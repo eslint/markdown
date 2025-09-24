@@ -222,8 +222,6 @@ export class MarkdownLanguage {
 		return new MarkdownSourceCode({
 			text: /** @type {string} */ (file.body),
 			ast: parseResult.ast,
-			lineStart: this.lineStart,
-			columnStart: this.columnStart,
 		});
 	}
 }
