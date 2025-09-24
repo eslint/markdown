@@ -134,4 +134,5 @@ recommendedPlugins.markdown = processorPlugins.markdown = plugin;
 
 export default plugin;
 export { MarkdownSourceCode };
+export * from "./language/markdown-language.js";
 export * from "./types.js";
