@@ -8,5 +8,5 @@
     "exactOptionalPropertyTypes": true
   },
   "files": [],
-  "include": [".", "../../dist"]
+  "include": ["**/*.test.ts", "../../dist"]
 }
