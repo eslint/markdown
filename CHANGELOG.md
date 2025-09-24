@@ -1,5 +1,13 @@
 # Changelog
 
+## [7.4.0](https://github.com/eslint/markdown/compare/v7.3.0...v7.4.0) (2025-09-24)
+
+
+### Features
+
+* add support for `getLocFromIndex` and `getIndexFromLoc` ([#376](https://github.com/eslint/markdown/issues/376)) ([d634f82](https://github.com/eslint/markdown/commit/d634f820535d68579e62df46a0653ad67d912404))
+* export `MarkdownLanguage` from `index.js` ([#538](https://github.com/eslint/markdown/issues/538)) ([a5d78d5](https://github.com/eslint/markdown/commit/a5d78d5f4f054bb783827ec9d62fd302518572ba))
+
 ## [7.3.0](https://github.com/eslint/markdown/compare/v7.2.0...v7.3.0) (2025-09-22)
 
 
