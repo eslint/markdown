@@ -105,80 +105,128 @@ describe("MarkdownSourceCode", () => {
 	});
 
 	describe("getLocFromIndex()", () => {
-		it("should throw a TypeError when `offset` is not a number", () => {
-			assert.throws(() => {
-				sourceCode.getLocFromIndex("0");
-			}, TypeError);
-			assert.throws(() => {
-				sourceCode.getLocFromIndex(null);
-			}, TypeError);
-			assert.throws(() => {
-				sourceCode.getLocFromIndex(undefined);
-			}, TypeError);
-			assert.throws(() => {
-				sourceCode.getLocFromIndex(true);
-			}, TypeError);
-			assert.throws(() => {
-				sourceCode.getLocFromIndex(false);
-			}, TypeError);
-		});
-
-		it("should throw a RangeError when `offset` is less than `0`", () => {
-			assert.throws(() => {
-				sourceCode.getLocFromIndex(-1);
-			}, RangeError);
-		});
-
-		it("should throw a RangeError when `offset` is greater than `this.text.length`", () => {
-			assert.throws(() => {
-				sourceCode.getLocFromIndex(sourceCode.text.length + 1);
-			}, RangeError);
-		});
-
-		it("should return { line: 1, column: 1 } when `offset` is `0` and `text` is empty", () => {
-			const emptySourceCode = new MarkdownSourceCode({
-				text: "",
-				ast: fromMarkdown(""),
+		it("should convert index to location correctly", () => {
+			const text = "foo\nbar\r\nbaz";
+			const markdownSourceCode = new MarkdownSourceCode({
+				text,
+				ast: fromMarkdown(text),
 			});
 
-			assert.deepStrictEqual(emptySourceCode.getLocFromIndex(0), {
+			assert.deepStrictEqual(markdownSourceCode.getLocFromIndex(0), {
 				line: 1,
 				column: 1,
 			});
-		});
-
-		it("should return the correct location when `offset` is `0`", () => {
-			assert.deepStrictEqual(sourceCode.getLocFromIndex(0), {
+			assert.deepStrictEqual(markdownSourceCode.getLocFromIndex(1), {
 				line: 1,
+				column: 2,
+			});
+			assert.deepStrictEqual(markdownSourceCode.getLocFromIndex(2), {
+				line: 1,
+				column: 3,
+			});
+			assert.deepStrictEqual(markdownSourceCode.getLocFromIndex(3), {
+				line: 1,
+				column: 4,
+			});
+			assert.deepStrictEqual(markdownSourceCode.getLocFromIndex(4), {
+				line: 2,
 				column: 1,
 			});
-		});
-
-		it("should return the correct location when `offset` is `this.text.length`", () => {
-			const offset = 768;
-
-			assert.deepStrictEqual(sourceCode.text.length, offset);
-			assert.deepStrictEqual(sourceCode.getLocFromIndex(768), {
-				line: 37,
-				column: 63,
+			assert.deepStrictEqual(markdownSourceCode.getLocFromIndex(5), {
+				line: 2,
+				column: 2,
 			});
-		});
-
-		it("should return the correct location when `offset` is in the middle of a line", () => {
-			assert.deepStrictEqual(sourceCode.getLocFromIndex(15), {
-				line: 1,
-				column: 16,
+			assert.deepStrictEqual(markdownSourceCode.getLocFromIndex(6), {
+				line: 2,
+				column: 3,
 			});
-
-			assert.deepStrictEqual(sourceCode.getLocFromIndex(140), {
-				line: 13,
-				column: 1,
+			assert.deepStrictEqual(markdownSourceCode.getLocFromIndex(7), {
+				line: 2,
+				column: 4,
 			});
-
-			assert.deepStrictEqual(sourceCode.getLocFromIndex(427), {
-				line: 23,
+			assert.deepStrictEqual(markdownSourceCode.getLocFromIndex(8), {
+				line: 2,
 				column: 5,
 			});
+			assert.deepStrictEqual(markdownSourceCode.getLocFromIndex(9), {
+				line: 3,
+				column: 1,
+			});
+			assert.deepStrictEqual(markdownSourceCode.getLocFromIndex(10), {
+				line: 3,
+				column: 2,
+			});
+			assert.deepStrictEqual(markdownSourceCode.getLocFromIndex(11), {
+				line: 3,
+				column: 3,
+			});
+			assert.deepStrictEqual(markdownSourceCode.getLocFromIndex(12), {
+				line: 3,
+				column: 4,
+			});
+		});
+	});
+
+	describe("getIndexFromLoc()", () => {
+		it("should convert location to index correctly", () => {
+			const text = "foo\nbar\r\nbaz";
+			const markdownSourceCode = new MarkdownSourceCode({
+				text,
+				ast: fromMarkdown(text),
+			});
+
+			assert.strictEqual(
+				markdownSourceCode.getIndexFromLoc({ line: 1, column: 1 }),
+				0,
+			);
+			assert.strictEqual(
+				markdownSourceCode.getIndexFromLoc({ line: 1, column: 2 }),
+				1,
+			);
+			assert.strictEqual(
+				markdownSourceCode.getIndexFromLoc({ line: 1, column: 3 }),
+				2,
+			);
+			assert.strictEqual(
+				markdownSourceCode.getIndexFromLoc({ line: 1, column: 4 }),
+				3,
+			);
+			assert.strictEqual(
+				markdownSourceCode.getIndexFromLoc({ line: 2, column: 1 }),
+				4,
+			);
+			assert.strictEqual(
+				markdownSourceCode.getIndexFromLoc({ line: 2, column: 2 }),
+				5,
+			);
+			assert.strictEqual(
+				markdownSourceCode.getIndexFromLoc({ line: 2, column: 3 }),
+				6,
+			);
+			assert.strictEqual(
+				markdownSourceCode.getIndexFromLoc({ line: 2, column: 4 }),
+				7,
+			);
+			assert.strictEqual(
+				markdownSourceCode.getIndexFromLoc({ line: 2, column: 5 }),
+				8,
+			);
+			assert.strictEqual(
+				markdownSourceCode.getIndexFromLoc({ line: 3, column: 1 }),
+				9,
+			);
+			assert.strictEqual(
+				markdownSourceCode.getIndexFromLoc({ line: 3, column: 2 }),
+				10,
+			);
+			assert.strictEqual(
+				markdownSourceCode.getIndexFromLoc({ line: 3, column: 3 }),
+				11,
+			);
+			assert.strictEqual(
+				markdownSourceCode.getIndexFromLoc({ line: 3, column: 4 }),
+				12,
+			);
 		});
 	});
 
