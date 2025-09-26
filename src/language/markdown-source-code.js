@@ -65,9 +65,10 @@ class InlineConfigComment {
 /**
  * Extracts inline configuration comments from an HTML node.
  * @param {Html} node The HTML node to extract comments from.
+ * @param {MarkdownSourceCode} sourceCode The Markdown source code object.
  * @returns {Array<InlineConfigComment>} The inline configuration comments found in the node.
- */
-function extractInlineConfigCommentsFromHTML(node) {
+ */ // eslint-disable-next-line no-unused-vars -- TODO
+function extractInlineConfigCommentsFromHTML(node, sourceCode) {
 	if (!configCommentStart.test(node.value)) {
 		return [];
 	}
@@ -191,6 +192,7 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 	getInlineConfigNodes() {
 		if (!this.#inlineConfigComments) {
 			this.#inlineConfigComments = this.#htmlNodes.flatMap(
+				// @ts-ignore TODO
 				extractInlineConfigCommentsFromHTML,
 			);
 		}
