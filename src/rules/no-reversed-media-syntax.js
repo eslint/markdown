@@ -28,7 +28,7 @@ import { findOffsets } from "../util.js"; // TODO
 
 /** Matches reversed link/image syntax like `(text)[url]`, ignoring escaped characters like `\(text\)[url]`. */
 const reversedPattern =
-	/(?<=(?<!\\)(?:\\{2})*)\(((?:\\.|[^()\\]|\([\s\S]*\))*)\)\[((?:\\.|[^\]\\\n])*)\](?!\()/gu;
+	/(?<=(?<!\\)(?:\\{2})*)\((?<label>(?:\\.|[^()\\]|\([\s\S]*\))*)\)\[(?<url>(?:\\.|[^\]\\\n])*)\](?!\()/dgu;
 
 /**
  * Checks if a match is within any skip range
@@ -78,16 +78,17 @@ export default {
 		 */
 		function findReversedMediaSyntax(node) {
 			const text = sourceCode.getText(node);
+
+			/** @type {RegExpExecArray} */
 			let match;
 
 			while ((match = reversedPattern.exec(text)) !== null) {
-				const [reversedSyntax, label, url] = match;
-				const matchIndex = match.index;
-				const matchLength = reversedSyntax.length;
+				const { label, url } = match.groups;
+				const [matchStartOffset, matchEndOffset] = match.indices[0];
 
 				if (
 					isInSkipRange(
-						matchIndex + node.position.start.offset,
+						matchStartOffset + node.position.start.offset,
 						skipRanges,
 					)
 				) {
@@ -97,11 +98,11 @@ export default {
 				const {
 					lineOffset: startLineOffset,
 					columnOffset: startColumnOffset,
-				} = findOffsets(text, matchIndex); // TODO
+				} = findOffsets(text, matchStartOffset); // TODO
 				const {
 					lineOffset: endLineOffset,
 					columnOffset: endColumnOffset,
-				} = findOffsets(text, matchIndex + matchLength); // TODO
+				} = findOffsets(text, matchEndOffset); // TODO
 
 				const baseColumn = 1;
 				const nodeStartLine = node.position.start.line;
@@ -130,8 +131,9 @@ export default {
 					messageId: "reversedSyntax",
 					fix(fixer) {
 						const startOffset =
-							node.position.start.offset + matchIndex;
-						const endOffset = startOffset + matchLength;
+							node.position.start.offset + matchStartOffset;
+						const endOffset =
+							node.position.start.offset + matchEndOffset;
 
 						return fixer.replaceTextRange(
 							[startOffset, endOffset],
