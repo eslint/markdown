@@ -15,7 +15,7 @@ import { findOffsets } from "../util.js"; // TODO
 
 /**
  * @import { SourceRange } from "@eslint/core"
- * @import { Heading, Paragraph, TableCell } from "mdast";
+ * @import { Heading, Paragraph, TableCell, Html, InlineCode } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"reversedSyntax"} NoReversedMediaSyntaxMessageIds
  * @typedef {[]} NoReversedMediaSyntaxOptions
@@ -69,7 +69,7 @@ export default {
 		const { sourceCode } = context;
 
 		/** @type {Array<SourceRange>} */
-		let skipRanges = [];
+		const skipRanges = [];
 
 		/**
 		 * Finds reversed link/image syntax in a node.
@@ -145,31 +145,25 @@ export default {
 		}
 
 		return {
-			"heading :matches(html, inlineCode)"(node) {
+			":matches(heading, paragraph, tableCell) :matches(html, inlineCode)"(
+				/** @type {Html | InlineCode} */ node,
+			) {
 				skipRanges.push(sourceCode.getRange(node));
 			},
 
 			"heading:exit"(node) {
 				findReversedMediaSyntax(node);
-				skipRanges = [];
-			},
-
-			"paragraph :matches(html, inlineCode)"(node) {
-				skipRanges.push(sourceCode.getRange(node));
+				skipRanges.length = 0;
 			},
 
 			"paragraph:exit"(node) {
 				findReversedMediaSyntax(node);
-				skipRanges = [];
-			},
-
-			"tableCell :matches(html, inlineCode)"(node) {
-				skipRanges.push(sourceCode.getRange(node));
+				skipRanges.length = 0;
 			},
 
 			"tableCell:exit"(node) {
 				findReversedMediaSyntax(node);
-				skipRanges = [];
+				skipRanges.length = 0;
 			},
 		};
 	},
