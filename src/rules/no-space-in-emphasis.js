@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { findOffsets } from "../util.js";
+import { findOffsets } from "../util.js"; // TODO
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -132,11 +132,11 @@ export default {
 				const {
 					lineOffset: startLineOffset,
 					columnOffset: startColumnOffset,
-				} = findOffsets(originalText, highlightStartIndex);
+				} = findOffsets(originalText, highlightStartIndex); // TODO
 				const {
 					lineOffset: endLineOffset,
 					columnOffset: endColumnOffset,
-				} = findOffsets(originalText, highlightEndIndex);
+				} = findOffsets(originalText, highlightEndIndex); // TODO
 
 				context.report({
 					loc: {

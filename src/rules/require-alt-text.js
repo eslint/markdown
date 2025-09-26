@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { findOffsets, stripHtmlComments } from "../util.js";
+import { findOffsets, stripHtmlComments } from "../util.js"; // TODO
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -101,7 +101,7 @@ export default {
 						const {
 							lineOffset: startLineOffset,
 							columnOffset: startColumnOffset,
-						} = findOffsets(node.value, match.index);
+						} = findOffsets(node.value, match.index); // TODO
 
 						const {
 							lineOffset: endLineOffset,
@@ -109,7 +109,7 @@ export default {
 						} = findOffsets(
 							node.value,
 							match.index + imgTag.length,
-						);
+						); // TODO
 
 						const nodeStartLine = node.position.start.line;
 						const nodeStartColumn = node.position.start.column;
