@@ -96,10 +96,8 @@ export default {
 					const tagToCheck = allowedIgnoreCase
 						? tagName.toLowerCase()
 						: tagName;
-					if (
-						allowedElements.size === 0 ||
-						!allowedElements.has(tagToCheck)
-					) {
+
+					if (!allowedElements.has(tagToCheck)) {
 						context.report({
 							loc: {
 								start: sourceCode.getLocFromIndex(startOffset),
