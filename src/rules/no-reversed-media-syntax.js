@@ -4,12 +4,6 @@
  */
 
 //-----------------------------------------------------------------------------
-// Imports
-//-----------------------------------------------------------------------------
-
-import { findOffsets } from "../util.js"; // TODO
-
-//-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
@@ -84,57 +78,21 @@ export default {
 
 			while ((match = reversedPattern.exec(text)) !== null) {
 				const { label, url } = match.groups;
-				const [matchStartOffset, matchEndOffset] = match.indices[0];
+				const [startOffset, endOffset] = match.indices[0].map(
+					index => index + node.position.start.offset,
+				); // Adjust `reversedPattern` match indices to the full source code.
 
-				if (
-					isInSkipRange(
-						matchStartOffset + node.position.start.offset,
-						skipRanges,
-					)
-				) {
+				if (isInSkipRange(startOffset, skipRanges)) {
 					continue;
 				}
 
-				const {
-					lineOffset: startLineOffset,
-					columnOffset: startColumnOffset,
-				} = findOffsets(text, matchStartOffset); // TODO
-				const {
-					lineOffset: endLineOffset,
-					columnOffset: endColumnOffset,
-				} = findOffsets(text, matchEndOffset); // TODO
-
-				const baseColumn = 1;
-				const nodeStartLine = node.position.start.line;
-				const nodeStartColumn = node.position.start.column;
-				const startLine = nodeStartLine + startLineOffset;
-				const endLine = nodeStartLine + endLineOffset;
-				const startColumn =
-					(startLine === nodeStartLine
-						? nodeStartColumn
-						: baseColumn) + startColumnOffset;
-				const endColumn =
-					(endLine === nodeStartLine ? nodeStartColumn : baseColumn) +
-					endColumnOffset;
-
 				context.report({
 					loc: {
-						start: {
-							line: startLine,
-							column: startColumn,
-						},
-						end: {
-							line: endLine,
-							column: endColumn,
-						},
+						start: sourceCode.getLocFromIndex(startOffset),
+						end: sourceCode.getLocFromIndex(endOffset),
 					},
 					messageId: "reversedSyntax",
 					fix(fixer) {
-						const startOffset =
-							node.position.start.offset + matchStartOffset;
-						const endOffset =
-							node.position.start.offset + matchEndOffset;
-
 						return fixer.replaceTextRange(
 							[startOffset, endOffset],
 							`[${label}](${url})`,
