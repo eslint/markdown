@@ -136,6 +136,11 @@ typeof processorPlugins satisfies {};
 			parent?: Parent | undefined,
 		) {
 			sourceCode.getLoc(node) satisfies SourceLocation;
+			sourceCode.getLocFromIndex(0) satisfies {
+				line: number;
+				column: number;
+			};
+			sourceCode.getIndexFromLoc({ line: 1, column: 1 }) satisfies number;
 			sourceCode.getRange(node) satisfies SourceRange;
 			sourceCode.getParent(node) satisfies Node | undefined;
 			sourceCode.getAncestors(node) satisfies Node[];
