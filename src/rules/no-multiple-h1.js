@@ -74,9 +74,7 @@ export default {
 		let h1Count = 0;
 
 		return {
-			":matches(yaml, toml, json)"(
-				/** @type {Yaml | Toml | Json} */ node,
-			) {
+			"yaml, toml, json"(/** @type {Yaml | Toml | Json} */ node) {
 				if (frontmatterHasTitle(node.value, titlePattern)) {
 					h1Count++;
 				}
