@@ -14,6 +14,7 @@ import { stripHtmlComments } from "../util.js";
 //-----------------------------------------------------------------------------
 
 /**
+ * @import { Image, ImageReference } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"altTextRequired"} RequireAltTextMessageIds
  * @typedef {[]} RequireAltTextOptions
@@ -24,7 +25,7 @@ import { stripHtmlComments } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-const imgTagPattern = /<img[^>]*>/dgiu;
+const imgTagPattern = /<img[^>]*>/giu;
 
 /**
  * Creates a regex to match HTML attributes
@@ -59,16 +60,9 @@ export default {
 		const { sourceCode } = context;
 
 		return {
-			image(node) {
-				if (node.alt.trim().length === 0) {
-					context.report({
-						loc: node.position,
-						messageId: "altTextRequired",
-					});
-				}
-			},
-
-			imageReference(node) {
+			":matches(image, imageReference)"(
+				/** @type {Image | ImageReference} */ node,
+			) {
 				if (node.alt.trim().length === 0) {
 					context.report({
 						loc: node.position,
@@ -103,9 +97,9 @@ export default {
 							altMatch[1].trim().length === 0 &&
 							altMatch[1].length > 0)
 					) {
-						const [startOffset, endOffset] = match.indices[0].map(
-							index => index + node.position.start.offset,
-						); // Adjust `imgTagPattern` match indices to the full source code.
+						const startOffset = // Adjust `imgTagPattern` match indices to the full source code.
+							match.index + node.position.start.offset;
+						const endOffset = startOffset + imgTag.length;
 
 						context.report({
 							loc: {
