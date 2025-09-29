@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { findOffsets, stripHtmlComments } from "../util.js";
+import { stripHtmlComments } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -24,7 +24,7 @@ import { findOffsets, stripHtmlComments } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-const imgTagPattern = /<img[^>]*>/giu;
+const imgTagPattern = /<img[^>]*>/dgiu;
 
 /**
  * Creates a regex to match HTML attributes
@@ -56,6 +56,8 @@ export default {
 	},
 
 	create(context) {
+		const { sourceCode } = context;
+
 		return {
 			image(node) {
 				if (node.alt.trim().length === 0) {
@@ -78,7 +80,9 @@ export default {
 			html(node) {
 				const text = stripHtmlComments(node.value);
 
+				/** @type {RegExpExecArray} */
 				let match;
+
 				while ((match = imgTagPattern.exec(text)) !== null) {
 					const imgTag = match[0];
 					const ariaHiddenMatch = imgTag.match(
@@ -98,41 +102,14 @@ export default {
 							altMatch[1].trim().length === 0 &&
 							altMatch[1].length > 0)
 					) {
-						const {
-							lineOffset: startLineOffset,
-							columnOffset: startColumnOffset,
-						} = findOffsets(node.value, match.index);
-
-						const {
-							lineOffset: endLineOffset,
-							columnOffset: endColumnOffset,
-						} = findOffsets(
-							node.value,
-							match.index + imgTag.length,
-						);
-
-						const nodeStartLine = node.position.start.line;
-						const nodeStartColumn = node.position.start.column;
-						const startLine = nodeStartLine + startLineOffset;
-						const endLine = nodeStartLine + endLineOffset;
-						const startColumn =
-							(startLine === nodeStartLine
-								? nodeStartColumn
-								: 1) + startColumnOffset;
-						const endColumn =
-							(endLine === nodeStartLine ? nodeStartColumn : 1) +
-							endColumnOffset;
+						const [startOffset, endOffset] = match.indices[0].map(
+							index => index + node.position.start.offset,
+						); // Adjust `imgTagPattern` match indices to the full source code.
 
 						context.report({
 							loc: {
-								start: {
-									line: startLine,
-									column: startColumn,
-								},
-								end: {
-									line: endLine,
-									column: endColumn,
-								},
+								start: sourceCode.getLocFromIndex(startOffset),
+								end: sourceCode.getLocFromIndex(endOffset),
 							},
 							messageId: "altTextRequired",
 						});
