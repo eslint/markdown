@@ -14,7 +14,8 @@ import { frontmatterHasTitle, stripHtmlComments } from "../util.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @import { MarkdownRuleDefinition } from "../types.js";
+ * @import { Yaml } from "mdast";
+ * @import { MarkdownRuleDefinition, Toml, Json } from "../types.js";
  * @typedef {"multipleH1"} NoMultipleH1MessageIds
  * @typedef {[{ frontmatterTitle?: string }]} NoMultipleH1Options
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoMultipleH1Options, MessageIds: NoMultipleH1MessageIds }>} NoMultipleH1RuleDefinition
@@ -24,7 +25,7 @@ import { frontmatterHasTitle, stripHtmlComments } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-const h1TagPattern = /<h1[^>]*>[\s\S]*?<\/h1>/dgiu;
+const h1TagPattern = /<h1[^>]*>[\s\S]*?<\/h1>/giu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -73,19 +74,9 @@ export default {
 		let h1Count = 0;
 
 		return {
-			yaml(node) {
-				if (frontmatterHasTitle(node.value, titlePattern)) {
-					h1Count++;
-				}
-			},
-
-			toml(node) {
-				if (frontmatterHasTitle(node.value, titlePattern)) {
-					h1Count++;
-				}
-			},
-
-			json(node) {
+			":matches(yaml, toml, json)"(
+				/** @type {Yaml | Toml | Json} */ node,
+			) {
 				if (frontmatterHasTitle(node.value, titlePattern)) {
 					h1Count++;
 				}
@@ -100,9 +91,9 @@ export default {
 				while ((match = h1TagPattern.exec(text)) !== null) {
 					h1Count++;
 					if (h1Count > 1) {
-						const [startOffset, endOffset] = match.indices[0].map(
-							index => index + node.position.start.offset,
-						); // Adjust `h1TagPattern` match indices to the full source code.
+						const startOffset = // Adjust `h1TagPattern` match index to the full source code.
+							match.index + node.position.start.offset;
+						const endOffset = startOffset + match[0].length;
 
 						context.report({
 							loc: {
