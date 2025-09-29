@@ -60,7 +60,7 @@ export default {
 		const { sourceCode } = context;
 
 		return {
-			":matches(image, imageReference)"(
+			"image, imageReference"(
 				/** @type {Image | ImageReference} */ node,
 			) {
 				if (node.alt.trim().length === 0) {
