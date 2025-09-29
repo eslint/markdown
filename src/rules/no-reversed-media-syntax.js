@@ -109,17 +109,9 @@ export default {
 				skipRanges.push(sourceCode.getRange(node));
 			},
 
-			"heading:exit"(node) {
-				findReversedMediaSyntax(node);
-				skipRanges.length = 0;
-			},
-
-			"paragraph:exit"(node) {
-				findReversedMediaSyntax(node);
-				skipRanges.length = 0;
-			},
-
-			"tableCell:exit"(node) {
+			":matches(heading, paragraph, tableCell):exit"(
+				/** @type {Heading | Paragraph | TableCell} */ node,
+			) {
 				findReversedMediaSyntax(node);
 				skipRanges.length = 0;
 			},
