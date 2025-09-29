@@ -90,6 +90,7 @@ export default {
 					);
 					if (
 						ariaHiddenMatch &&
+						ariaHiddenMatch[1] &&
 						ariaHiddenMatch[1].toLowerCase() === "true"
 					) {
 						continue;
