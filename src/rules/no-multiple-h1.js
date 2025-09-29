@@ -98,12 +98,12 @@ export default {
 				let match;
 
 				while ((match = h1TagPattern.exec(text)) !== null) {
-					const [startOffset, endOffset] = match.indices[0].map(
-						index => index + node.position.start.offset,
-					); // Adjust `h1TagPattern` match indices to the full source code.
-
 					h1Count++;
 					if (h1Count > 1) {
+						const [startOffset, endOffset] = match.indices[0].map(
+							index => index + node.position.start.offset,
+						); // Adjust `h1TagPattern` match indices to the full source code.
+
 						context.report({
 							loc: {
 								start: sourceCode.getLocFromIndex(startOffset),
