@@ -7,11 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import {
-	findOffsets,
-	frontmatterHasTitle,
-	stripHtmlComments,
-} from "../util.js";
+import { frontmatterHasTitle, stripHtmlComments } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -28,7 +24,7 @@ import {
 // Helpers
 //-----------------------------------------------------------------------------
 
-const h1TagPattern = /<h1[^>]*>[\s\S]*?<\/h1>/giu;
+const h1TagPattern = /<h1[^>]*>[\s\S]*?<\/h1>/dgiu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -70,6 +66,7 @@ export default {
 	},
 
 	create(context) {
+		const { sourceCode } = context;
 		const [{ frontmatterTitle }] = context.options;
 		const titlePattern =
 			frontmatterTitle === "" ? null : new RegExp(frontmatterTitle, "iu");
@@ -97,45 +94,20 @@ export default {
 			html(node) {
 				const text = stripHtmlComments(node.value);
 
+				/** @type {RegExpExecArray} */
 				let match;
+
 				while ((match = h1TagPattern.exec(text)) !== null) {
+					const [startOffset, endOffset] = match.indices[0].map(
+						index => index + node.position.start.offset,
+					); // Adjust `h1TagPattern` match indices to the full source code.
+
 					h1Count++;
 					if (h1Count > 1) {
-						const {
-							lineOffset: startLineOffset,
-							columnOffset: startColumnOffset,
-						} = findOffsets(node.value, match.index);
-
-						const {
-							lineOffset: endLineOffset,
-							columnOffset: endColumnOffset,
-						} = findOffsets(
-							node.value,
-							match.index + match[0].length,
-						);
-
-						const nodeStartLine = node.position.start.line;
-						const nodeStartColumn = node.position.start.column;
-						const startLine = nodeStartLine + startLineOffset;
-						const endLine = nodeStartLine + endLineOffset;
-						const startColumn =
-							(startLine === nodeStartLine
-								? nodeStartColumn
-								: 1) + startColumnOffset;
-						const endColumn =
-							(endLine === nodeStartLine ? nodeStartColumn : 1) +
-							endColumnOffset;
-
 						context.report({
 							loc: {
-								start: {
-									line: startLine,
-									column: startColumn,
-								},
-								end: {
-									line: endLine,
-									column: endColumn,
-								},
+								start: sourceCode.getLocFromIndex(startOffset),
+								end: sourceCode.getLocFromIndex(endOffset),
 							},
 							messageId: "multipleH1",
 						});
