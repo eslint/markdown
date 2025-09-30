@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { findOffsets, illegalShorthandTailPattern } from "../util.js"; // TODO
+import { findOffsets, illegalShorthandTailPattern } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -27,7 +27,7 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js"; // TODO
 // Helpers
 //-----------------------------------------------------------------------------
 
-// matches i.e., [foo][bar]
+/** matches i.e., `[foo][bar]` */
 const labelPattern = /\]\[([^\]]+)\]/u;
 
 /**
@@ -41,9 +41,6 @@ function findInvalidLabelReferences(node, sourceCode) {
 	const docText = sourceCode.text;
 	const invalid = [];
 	let startIndex = 0;
-	const offset = node.position.start.offset;
-	const nodeStartLine = node.position.start.line;
-	const nodeStartColumn = node.position.start.column;
 
 	/*
 	 * This loop works by searching the string inside the node for the next
@@ -70,7 +67,7 @@ function findInvalidLabelReferences(node, sourceCode) {
 		 * to the entire document text.
 		 */
 		const nodeMatchIndex = startIndex + match.index;
-		const docMatchIndex = offset + nodeMatchIndex;
+		const docMatchIndex = nodeMatchIndex + node.position.start.offset;
 
 		/*
 		 * Search the entire document text to find the preceding open bracket.
@@ -91,26 +88,29 @@ function findInvalidLabelReferences(node, sourceCode) {
 			.match(/!?\[([^\]]+)\]/u)[1];
 
 		// find location of [ in the document text
-		const { lineOffset: startLineOffset, columnOffset: startColumnOffset } =
-			findOffsets(nodeText, nodeMatchIndex + 1); // TODO
+		const { line: startLine } = sourceCode.getLocFromIndex(
+			docMatchIndex + 1,
+		);
 
 		// find location of [ in the document text
-		const { lineOffset: endLineOffset, columnOffset: endColumnOffset } =
-			findOffsets(nodeText, nodeMatchIndex + match[0].length); // TODO
+		const { line: endLine } = sourceCode.getLocFromIndex(
+			docMatchIndex + match[0].length,
+		);
 
-		const startLine = nodeStartLine + startLineOffset;
-		const startColumn = nodeStartColumn + startColumnOffset;
-		const endLine = nodeStartLine + endLineOffset;
+		const { columnOffset: endColumnOffset } = findOffsets(
+			// TODO
+			nodeText,
+			nodeMatchIndex + match[0].length,
+		);
+
 		const endColumn =
-			(endLine === startLine ? nodeStartColumn : 0) + endColumnOffset;
+			(startLine === endLine ? node.position.start.column : 0) +
+			endColumnOffset;
 
 		invalid.push({
 			label: label.trim(),
 			position: {
-				start: {
-					line: startLine,
-					column: startColumn,
-				},
+				start: sourceCode.getLocFromIndex(docMatchIndex + 1),
 				end: {
 					line: endLine,
 					column: endColumn,
