@@ -7,13 +7,14 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { findOffsets, stripHtmlComments } from "../util.js"; // TODO
+import { stripHtmlComments } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
 /**
+ * @import { Image, ImageReference } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"altTextRequired"} RequireAltTextMessageIds
  * @typedef {[]} RequireAltTextOptions
@@ -56,17 +57,12 @@ export default {
 	},
 
 	create(context) {
-		return {
-			image(node) {
-				if (node.alt.trim().length === 0) {
-					context.report({
-						loc: node.position,
-						messageId: "altTextRequired",
-					});
-				}
-			},
+		const { sourceCode } = context;
 
-			imageReference(node) {
+		return {
+			"image, imageReference"(
+				/** @type {Image | ImageReference} */ node,
+			) {
 				if (node.alt.trim().length === 0) {
 					context.report({
 						loc: node.position,
@@ -78,7 +74,9 @@ export default {
 			html(node) {
 				const text = stripHtmlComments(node.value);
 
+				/** @type {RegExpExecArray} */
 				let match;
+
 				while ((match = imgTagPattern.exec(text)) !== null) {
 					const imgTag = match[0];
 					const ariaHiddenMatch = imgTag.match(
@@ -86,6 +84,7 @@ export default {
 					);
 					if (
 						ariaHiddenMatch &&
+						ariaHiddenMatch[1] &&
 						ariaHiddenMatch[1].toLowerCase() === "true"
 					) {
 						continue;
@@ -98,41 +97,14 @@ export default {
 							altMatch[1].trim().length === 0 &&
 							altMatch[1].length > 0)
 					) {
-						const {
-							lineOffset: startLineOffset,
-							columnOffset: startColumnOffset,
-						} = findOffsets(node.value, match.index); // TODO
-
-						const {
-							lineOffset: endLineOffset,
-							columnOffset: endColumnOffset,
-						} = findOffsets(
-							node.value,
-							match.index + imgTag.length,
-						); // TODO
-
-						const nodeStartLine = node.position.start.line;
-						const nodeStartColumn = node.position.start.column;
-						const startLine = nodeStartLine + startLineOffset;
-						const endLine = nodeStartLine + endLineOffset;
-						const startColumn =
-							(startLine === nodeStartLine
-								? nodeStartColumn
-								: 1) + startColumnOffset;
-						const endColumn =
-							(endLine === nodeStartLine ? nodeStartColumn : 1) +
-							endColumnOffset;
+						const startOffset = // Adjust `imgTagPattern` match indices to the full source code.
+							match.index + node.position.start.offset;
+						const endOffset = startOffset + imgTag.length;
 
 						context.report({
 							loc: {
-								start: {
-									line: startLine,
-									column: startColumn,
-								},
-								end: {
-									line: endLine,
-									column: endColumn,
-								},
+								start: sourceCode.getLocFromIndex(startOffset),
+								end: sourceCode.getLocFromIndex(endOffset),
 							},
 							messageId: "altTextRequired",
 						});

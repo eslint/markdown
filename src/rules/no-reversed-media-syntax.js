@@ -22,7 +22,7 @@
 
 /** Matches reversed link/image syntax like `(text)[url]`, ignoring escaped characters like `\(text\)[url]`. */
 const reversedPattern =
-	/(?<=(?<!\\)(?:\\{2})*)\((?<label>(?:\\.|[^()\\]|\([\s\S]*\))*)\)\[(?<url>(?:\\.|[^\]\\\n])*)\](?!\()/dgu;
+	/(?<=(?<!\\)(?:\\{2})*)\((?<label>(?:\\.|[^()\\]|\([\s\S]*\))*)\)\[(?<url>(?:\\.|[^\]\\\n])*)\](?!\()/gu;
 
 /**
  * Checks if a match is within any skip range
@@ -78,9 +78,8 @@ export default {
 
 			while ((match = reversedPattern.exec(text)) !== null) {
 				const { label, url } = match.groups;
-				const [startOffset, endOffset] = match.indices[0].map(
-					index => index + node.position.start.offset,
-				); // Adjust `reversedPattern` match indices to the full source code.
+				const startOffset = match.index + node.position.start.offset; // Adjust `reversedPattern` match index to the full source code.
+				const endOffset = startOffset + match[0].length;
 
 				if (isInSkipRange(startOffset, skipRanges)) {
 					continue;
@@ -109,17 +108,9 @@ export default {
 				skipRanges.push(sourceCode.getRange(node));
 			},
 
-			"heading:exit"(node) {
-				findReversedMediaSyntax(node);
-				skipRanges.length = 0;
-			},
-
-			"paragraph:exit"(node) {
-				findReversedMediaSyntax(node);
-				skipRanges.length = 0;
-			},
-
-			"tableCell:exit"(node) {
+			":matches(heading, paragraph, tableCell):exit"(
+				/** @type {Heading | Paragraph | TableCell} */ node,
+			) {
 				findReversedMediaSyntax(node);
 				skipRanges.length = 0;
 			},
