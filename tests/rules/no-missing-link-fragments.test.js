@@ -277,11 +277,8 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		`,
 
 		// Headings with emojis and accented characters
-		// This test case is skipped for non-Node environments like Bun
-		...(typeof process !== "undefined" &&
-		process.release &&
-		process.release.name === "node" &&
-		(!process.versions || !process.versions.bun)
+		// This test case is skipped when running on Bun
+		...(!process.versions.bun
 			? [
 					dedent`
 					# Heading with 🚀 emoji
@@ -749,11 +746,8 @@ ruleTester.run("no-missing-link-fragments", rule, {
 			],
 		},
 		// Headings with accented characters
-		// This test case is skipped for non-Node environments like Bun
-		...(typeof process !== "undefined" &&
-		process.release &&
-		process.release.name === "node" &&
-		(!process.versions || !process.versions.bun)
+		// This test case is skipped when running on Bun
+		...(!process.versions.bun
 			? [
 					{
 						code: dedent`
