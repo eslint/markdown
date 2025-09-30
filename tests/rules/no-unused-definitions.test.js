@@ -199,10 +199,8 @@ Mercury[^mercury]
 				},
 			],
 		},
-		// This test case is skipped for non-Node environments like Bun
-		...(typeof process !== "undefined" &&
-		process.release?.name === "node" &&
-		!process.versions?.bun
+		// This test case is skipped when running on Bun
+		...(!process.versions.bun
 			? [
 					{
 						code: "[Grüsse]: https://example.com/",
