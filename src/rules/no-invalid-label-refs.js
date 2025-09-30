@@ -102,7 +102,7 @@ function findInvalidLabelReferences(node, sourceCode) {
 		const startColumn = nodeStartColumn + startColumnOffset;
 		const endLine = nodeStartLine + endLineOffset;
 		const endColumn =
-			(endLine === startLine ? nodeStartColumn : 0) + endColumnOffset;
+			(endLine === startLine ? nodeStartColumn : 1) + endColumnOffset;
 
 		invalid.push({
 			label: label.trim(),

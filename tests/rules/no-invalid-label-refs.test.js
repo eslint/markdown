@@ -31,6 +31,7 @@ ruleTester.run("no-invalid-label-refs", rule, {
 		"[foo][]\n\n[foo]: http://bar.com/image.jpg",
 		"![foo][]\n\n[foo]: http://bar.com/image.jpg",
 		"[  foo ][]\n\n[foo]: http://bar.com/image.jpg",
+		"[eslint][\n\n]",
 	],
 	invalid: [
 		{
@@ -68,7 +69,20 @@ ruleTester.run("no-invalid-label-refs", rule, {
 					line: 3,
 					column: 2,
 					endLine: 4,
-					endColumn: 1,
+					endColumn: 2,
+				},
+			],
+		},
+		{
+			code: "[\nfoo\n][\n ]\n\n[foo]: http://bar.com/image.jpg",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo" },
+					line: 3,
+					column: 2,
+					endLine: 4,
+					endColumn: 3,
 				},
 			],
 		},
@@ -163,6 +177,32 @@ ruleTester.run("no-invalid-label-refs", rule, {
 					column: 20,
 					endLine: 1,
 					endColumn: 23,
+				},
+			],
+		},
+		{
+			code: "[eslint][ ]",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "eslint" },
+					line: 1,
+					column: 9,
+					endLine: 1,
+					endColumn: 12,
+				},
+			],
+		},
+		{
+			code: "[eslint][\n]",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "eslint" },
+					line: 1,
+					column: 9,
+					endLine: 2,
+					endColumn: 2,
 				},
 			],
 		},
