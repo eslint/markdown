@@ -20,8 +20,9 @@ import { findOffsets } from "../util.js"; // TODO
 //-----------------------------------------------------------------------------
 
 /**
+ * @import { Position } from "unist";
  * @import { Root, Node, Html } from "mdast";
- * @import { TraversalStep, SourceLocation, FileProblem, DirectiveType, RulesConfig } from "@eslint/core";
+ * @import { TraversalStep, FileProblem, DirectiveType, RulesConfig } from "@eslint/core";
  * @import { MarkdownLanguageOptions } from "../types.js";
  */
 
@@ -46,7 +47,7 @@ class InlineConfigComment {
 
 	/**
 	 * The position of the comment in the source code.
-	 * @type {SourceLocation}
+	 * @type {Position}
 	 */
 	position;
 
@@ -54,7 +55,7 @@ class InlineConfigComment {
 	 * Creates a new instance.
 	 * @param {Object} options The options for the instance.
 	 * @param {string} options.value The comment text.
-	 * @param {SourceLocation} options.position The position of the comment in the source code.
+	 * @param {Position} options.position The position of the comment in the source code.
 	 */
 	constructor({ value, position }) {
 		this.value = value.trim();
@@ -131,7 +132,7 @@ function extractInlineConfigCommentsFromHTML(node, sourceCode) {
 
 /**
  * Markdown Source Code Object
- * @extends {TextSourceCodeBase<{LangOptions: MarkdownLanguageOptions, RootNode: Root, SyntaxElementWithLoc: Node, ConfigNode: { value: string; position: SourceLocation }}>}
+ * @extends {TextSourceCodeBase<{LangOptions: MarkdownLanguageOptions, RootNode: Root, SyntaxElementWithLoc: Node, ConfigNode: { value: string; position: Position }}>}
  */
 export class MarkdownSourceCode extends TextSourceCodeBase {
 	/**
@@ -265,13 +266,13 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 	/**
 	 * Returns inline rule configurations along with any problems
 	 * encountered while parsing the configurations.
-	 * @returns {{problems:Array<FileProblem>,configs:Array<{config:{rules:RulesConfig},loc:SourceLocation}>}} Information
+	 * @returns {{problems:Array<FileProblem>,configs:Array<{config:{rules:RulesConfig},loc:Position}>}} Information
 	 *      that ESLint needs to further process the rule configurations.
 	 */
 	applyInlineConfig() {
 		/** @type {Array<FileProblem>} */
 		const problems = [];
-		/** @type {Array<{config:{rules:RulesConfig},loc:SourceLocation}>} */
+		/** @type {Array<{config:{rules:RulesConfig},loc:Position}>} */
 		const configs = [];
 
 		this.getInlineConfigNodes().forEach(comment => {
