@@ -72,8 +72,11 @@ function extractInlineConfigCommentsFromHTML(node, sourceCode) {
 	if (!configCommentStart.test(node.value)) {
 		return [];
 	}
+
+	/** @type {Array<InlineConfigComment>} */
 	const comments = [];
 
+	/** @type {RegExpExecArray} */
 	let match;
 
 	while ((match = htmlComment.exec(node.value))) {
@@ -191,9 +194,8 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 	 */
 	getInlineConfigNodes() {
 		if (!this.#inlineConfigComments) {
-			this.#inlineConfigComments = this.#htmlNodes.flatMap(
-				// @ts-ignore TODO
-				extractInlineConfigCommentsFromHTML,
+			this.#inlineConfigComments = this.#htmlNodes.flatMap(htmlNode =>
+				extractInlineConfigCommentsFromHTML(htmlNode, this),
 			);
 		}
 
