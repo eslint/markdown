@@ -17,7 +17,7 @@ import { illegalShorthandTailPattern } from "../util.js";
  * @import { Position } from "unist";
  * @import { Text } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
- * @import { MarkdownSourceCode } from "../language/markdown-source-code.js";
+ * @import { MarkdownSourceCode } from "../index.js";
  * @typedef {"invalidLabelRef"} NoInvalidLabelRefsMessageIds
  * @typedef {[]} NoInvalidLabelRefsOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoInvalidLabelRefsOptions, MessageIds: NoInvalidLabelRefsMessageIds }>} NoInvalidLabelRefsRuleDefinition
