@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { findOffsets, illegalShorthandTailPattern } from "../util.js";
+import { illegalShorthandTailPattern } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -63,16 +63,16 @@ function findInvalidLabelReferences(node, sourceCode) {
 		}
 
 		/*
-		 * Calculate the match index relative to just the node and
-		 * to the entire document text.
+		 * Adjust `labelPattern` match index to the full source code.
 		 */
-		const nodeMatchIndex = startIndex + match.index;
-		const docMatchIndex = nodeMatchIndex + node.position.start.offset;
+		const startOffset =
+			startIndex + match.index + node.position.start.offset;
+		const endOffset = startOffset + match[0].length;
 
 		/*
 		 * Search the entire document text to find the preceding open bracket.
 		 */
-		const lastOpenBracketIndex = docText.lastIndexOf("[", docMatchIndex);
+		const lastOpenBracketIndex = docText.lastIndexOf("[", startOffset);
 
 		if (lastOpenBracketIndex === -1) {
 			startIndex += match.index + match[0].length;
@@ -84,37 +84,14 @@ function findInvalidLabelReferences(node, sourceCode) {
 		 * take that into account when calculating the line and column offsets.
 		 */
 		const label = docText
-			.slice(lastOpenBracketIndex, docMatchIndex + match[0].length)
+			.slice(lastOpenBracketIndex, endOffset)
 			.match(/!?\[([^\]]+)\]/u)[1];
-
-		// find location of [ in the document text
-		const { line: startLine } = sourceCode.getLocFromIndex(
-			docMatchIndex + 1,
-		);
-
-		// find location of [ in the document text
-		const { line: endLine } = sourceCode.getLocFromIndex(
-			docMatchIndex + match[0].length,
-		);
-
-		const { columnOffset: endColumnOffset } = findOffsets(
-			// TODO
-			nodeText,
-			nodeMatchIndex + match[0].length,
-		);
-
-		const endColumn =
-			(startLine === endLine ? node.position.start.column : 1) +
-			endColumnOffset;
 
 		invalid.push({
 			label: label.trim(),
 			position: {
-				start: sourceCode.getLocFromIndex(docMatchIndex + 1),
-				end: {
-					line: endLine,
-					column: endColumn,
-				},
+				start: sourceCode.getLocFromIndex(startOffset + 1),
+				end: sourceCode.getLocFromIndex(endOffset),
 			},
 		});
 
