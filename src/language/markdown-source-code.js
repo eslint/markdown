@@ -13,7 +13,6 @@ import {
 	ConfigCommentParser,
 	Directive,
 } from "@eslint/plugin-kit";
-import { findOffsets } from "../util.js"; // TODO
 
 //-----------------------------------------------------------------------------
 // Types
@@ -68,7 +67,7 @@ class InlineConfigComment {
  * @param {Html} node The HTML node to extract comments from.
  * @param {MarkdownSourceCode} sourceCode The Markdown source code object.
  * @returns {Array<InlineConfigComment>} The inline configuration comments found in the node.
- */ // eslint-disable-next-line no-unused-vars -- TODO
+ */
 function extractInlineConfigCommentsFromHTML(node, sourceCode) {
 	if (!configCommentStart.test(node.value)) {
 		return [];
@@ -82,41 +81,22 @@ function extractInlineConfigCommentsFromHTML(node, sourceCode) {
 
 	while ((match = htmlComment.exec(node.value))) {
 		if (configCommentStart.test(match[0])) {
-			const comment = match[0];
-
-			// calculate location of the comment inside the node
-			const start = {
-				...node.position.start,
-			};
-
-			const end = {
-				...node.position.start,
-			};
-
-			const {
-				lineOffset: startLineOffset,
-				columnOffset: startColumnOffset,
-			} = findOffsets(node.value, match.index); // TODO
-
-			start.line += startLineOffset;
-			start.column += startColumnOffset;
-			start.offset += match.index;
-
-			const commentLineCount = comment.split("\n").length - 1;
-
-			end.line = start.line + commentLineCount;
-			end.column =
-				commentLineCount === 0
-					? start.column + comment.length
-					: comment.length - comment.lastIndexOf("\n");
-			end.offset = start.offset + comment.length;
+			// calculate offset of the comment inside the node
+			const startOffset = match.index + node.position.start.offset;
+			const endOffset = startOffset + match[0].length;
 
 			comments.push(
 				new InlineConfigComment({
 					value: match[1].trim(),
 					position: {
-						start,
-						end,
+						start: {
+							...sourceCode.getLocFromIndex(startOffset),
+							offset: startOffset,
+						},
+						end: {
+							...sourceCode.getLocFromIndex(endOffset),
+							offset: endOffset,
+						},
 					},
 				}),
 			);
