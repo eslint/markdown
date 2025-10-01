@@ -104,7 +104,7 @@ function findInvalidLabelReferences(node, sourceCode) {
 		);
 
 		const endColumn =
-			(startLine === endLine ? node.position.start.column : 0) +
+			(startLine === endLine ? node.position.start.column : 1) +
 			endColumnOffset;
 
 		invalid.push({
