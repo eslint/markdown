@@ -32,6 +32,7 @@ ruleTester.run("no-invalid-label-refs", rule, {
 		"![foo][]\n\n[foo]: http://bar.com/image.jpg",
 		"[  foo ][]\n\n[foo]: http://bar.com/image.jpg",
 		"[eslint][\n\n]",
+		"[*eslint*][]\n\n[*eslint*]: http://bar.com",
 	],
 	invalid: [
 		{
@@ -203,6 +204,19 @@ ruleTester.run("no-invalid-label-refs", rule, {
 					column: 9,
 					endLine: 2,
 					endColumn: 2,
+				},
+			],
+		},
+		{
+			code: "[*eslint*][ ]",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "*eslint*" },
+					line: 1,
+					column: 11,
+					endLine: 1,
+					endColumn: 14,
 				},
 			],
 		},

@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { findOffsets, illegalShorthandTailPattern } from "../util.js";
+import { illegalShorthandTailPattern } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -17,23 +17,23 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
  * @import { Position } from "unist";
  * @import { Text } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
+ * @import { MarkdownSourceCode } from "../language/markdown-source-code.js";
  * @typedef {"invalidLabelRef"} NoInvalidLabelRefsMessageIds
  * @typedef {[]} NoInvalidLabelRefsOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoInvalidLabelRefsOptions, MessageIds: NoInvalidLabelRefsMessageIds }>} NoInvalidLabelRefsRuleDefinition
- * @typedef {Parameters<MarkdownRuleDefinition['create']>[0]['sourceCode']} SourceCode
  */
 
 //-----------------------------------------------------------------------------
 // Helpers
 //-----------------------------------------------------------------------------
 
-// matches i.e., [foo][bar]
+/** matches i.e., `[foo][bar]` */
 const labelPattern = /\]\[([^\]]+)\]/u;
 
 /**
  * Finds missing references in a node.
  * @param {Text} node The node to check.
- * @param {SourceCode} sourceCode The Markdown source code object.
+ * @param {MarkdownSourceCode} sourceCode The Markdown source code object.
  * @returns {Array<{label:string,position:Position}>} The missing references.
  */
 function findInvalidLabelReferences(node, sourceCode) {
@@ -41,9 +41,6 @@ function findInvalidLabelReferences(node, sourceCode) {
 	const docText = sourceCode.text;
 	const invalid = [];
 	let startIndex = 0;
-	const offset = node.position.start.offset;
-	const nodeStartLine = node.position.start.line;
-	const nodeStartColumn = node.position.start.column;
 
 	/*
 	 * This loop works by searching the string inside the node for the next
@@ -66,16 +63,16 @@ function findInvalidLabelReferences(node, sourceCode) {
 		}
 
 		/*
-		 * Calculate the match index relative to just the node and
-		 * to the entire document text.
+		 * Adjust `labelPattern` match index to the full source code.
 		 */
-		const nodeMatchIndex = startIndex + match.index;
-		const docMatchIndex = offset + nodeMatchIndex;
+		const startOffset =
+			startIndex + match.index + node.position.start.offset;
+		const endOffset = startOffset + match[0].length;
 
 		/*
 		 * Search the entire document text to find the preceding open bracket.
 		 */
-		const lastOpenBracketIndex = docText.lastIndexOf("[", docMatchIndex);
+		const lastOpenBracketIndex = docText.lastIndexOf("[", startOffset);
 
 		if (lastOpenBracketIndex === -1) {
 			startIndex += match.index + match[0].length;
@@ -87,34 +84,14 @@ function findInvalidLabelReferences(node, sourceCode) {
 		 * take that into account when calculating the line and column offsets.
 		 */
 		const label = docText
-			.slice(lastOpenBracketIndex, docMatchIndex + match[0].length)
+			.slice(lastOpenBracketIndex, endOffset)
 			.match(/!?\[([^\]]+)\]/u)[1];
-
-		// find location of [ in the document text
-		const { lineOffset: startLineOffset, columnOffset: startColumnOffset } =
-			findOffsets(nodeText, nodeMatchIndex + 1);
-
-		// find location of [ in the document text
-		const { lineOffset: endLineOffset, columnOffset: endColumnOffset } =
-			findOffsets(nodeText, nodeMatchIndex + match[0].length);
-
-		const startLine = nodeStartLine + startLineOffset;
-		const startColumn = nodeStartColumn + startColumnOffset;
-		const endLine = nodeStartLine + endLineOffset;
-		const endColumn =
-			(endLine === startLine ? nodeStartColumn : 1) + endColumnOffset;
 
 		invalid.push({
 			label: label.trim(),
 			position: {
-				start: {
-					line: startLine,
-					column: startColumn,
-				},
-				end: {
-					line: endLine,
-					column: endColumn,
-				},
+				start: sourceCode.getLocFromIndex(startOffset + 1),
+				end: sourceCode.getLocFromIndex(endOffset),
 			},
 		});
 
