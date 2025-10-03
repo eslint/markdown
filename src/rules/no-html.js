@@ -4,12 +4,6 @@
  */
 
 //-----------------------------------------------------------------------------
-// Imports
-//-----------------------------------------------------------------------------
-
-import { findOffsets } from "../util.js";
-
-//-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
@@ -25,7 +19,7 @@ import { findOffsets } from "../util.js";
 //-----------------------------------------------------------------------------
 
 const htmlTagPattern =
-	/<([a-z0-9]+(?:-[a-z0-9]+)*)(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?>/giu;
+	/<(?<tagName>[a-z0-9]+(?:-[a-z0-9]+)*)(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?>/giu;
 const lineEndingPattern = /\r\n?|\n/u;
 
 //-----------------------------------------------------------------------------
@@ -74,6 +68,7 @@ export default {
 	},
 
 	create(context) {
+		const { sourceCode } = context;
 		const [{ allowed, allowedIgnoreCase }] = context.options;
 		const allowedElements = new Set(
 			allowedIgnoreCase ? allowed.map(tag => tag.toLowerCase()) : allowed,
@@ -81,41 +76,33 @@ export default {
 
 		return {
 			html(node) {
+				/** @type {RegExpExecArray} */
 				let match;
 
 				while ((match = htmlTagPattern.exec(node.value)) !== null) {
 					const fullMatch = match[0];
-					const tagName = match[1];
-					const { lineOffset, columnOffset } = findOffsets(
-						node.value,
-						match.index,
-					);
-					const start = {
-						line: node.position.start.line + lineOffset,
-						column: node.position.start.column + columnOffset,
-					};
+					const { tagName } = match.groups;
+					const startOffset =
+						node.position.start.offset + match.index;
 
 					const firstNewlineIndex =
 						fullMatch.search(lineEndingPattern);
-					const endColumn =
-						firstNewlineIndex === -1
-							? start.column + fullMatch.length
-							: start.column + firstNewlineIndex;
 
-					const end = {
-						line: start.line,
-						column: endColumn,
-					};
+					const endOffset =
+						firstNewlineIndex === -1
+							? startOffset + fullMatch.length
+							: startOffset + firstNewlineIndex;
 
 					const tagToCheck = allowedIgnoreCase
 						? tagName.toLowerCase()
 						: tagName;
-					if (
-						allowedElements.size === 0 ||
-						!allowedElements.has(tagToCheck)
-					) {
+
+					if (!allowedElements.has(tagToCheck)) {
 						context.report({
-							loc: { start, end },
+							loc: {
+								start: sourceCode.getLocFromIndex(startOffset),
+								end: sourceCode.getLocFromIndex(endOffset),
+							},
 							messageId: "disallowedElement",
 							data: {
 								name: tagName,
