@@ -310,9 +310,8 @@ ruleTester.run("require-alt-text", rule, {
 			],
 		},
 		{
-			code: dedent`
-				<!-- comment with surrogate pairs: 👍🚀 --> <img src="image.png" />
-			`,
+			// NOTE dedent`` converts 👍🚀 to \u{1f44d}\u{1f680} in Bun, causing unexpected report locations
+			code: '<!-- comment with surrogate pairs: 👍🚀 --> <img src="image.png" />',
 			errors: [
 				{
 					messageId: "altTextRequired",

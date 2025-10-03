@@ -72,7 +72,7 @@ export function frontmatterHasTitle(value, pattern) {
 
 /**
  * Replaces all HTML comments with whitespace.
- * This preserves indexes and locations of characters
+ * This preserves offsets and locations of characters
  * outside HTML comments by keeping line breaks and replacing
  * other code units with a space character.
  * @param {string} value The string to remove HTML comments from.
