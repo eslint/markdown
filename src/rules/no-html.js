@@ -70,9 +70,17 @@ export default {
 	create(context) {
 		const { sourceCode } = context;
 		const [{ allowed, allowedIgnoreCase }] = context.options;
-		const allowedElements = new Set(
-			allowedIgnoreCase ? allowed.map(tag => tag.toLowerCase()) : allowed,
-		);
+
+		/**
+		 * Normalize a tag name based on the `allowedIgnoreCase` option.
+		 * @param {string} tagName The tag name to normalize.
+		 * @returns {string} The normalized tag name.
+		 */
+		function normalizeTagName(tagName) {
+			return allowedIgnoreCase ? tagName.toLowerCase() : tagName;
+		}
+
+		const allowedElements = new Set(allowed.map(normalizeTagName));
 
 		return {
 			html(node) {
@@ -85,7 +93,7 @@ export default {
 					const firstNewlineIndex =
 						fullMatch.search(lineEndingPattern);
 
-					const startOffset =
+					const startOffset = // Adjust `htmlTagPattern` match index to the full source code.
 						match.index + node.position.start.offset;
 					const endOffset =
 						startOffset +
@@ -93,11 +101,7 @@ export default {
 							? fullMatch.length
 							: firstNewlineIndex);
 
-					const tagToCheck = allowedIgnoreCase
-						? tagName.toLowerCase()
-						: tagName;
-
-					if (!allowedElements.has(tagToCheck)) {
+					if (!allowedElements.has(normalizeTagName(tagName))) {
 						context.report({
 							loc: {
 								start: sourceCode.getLocFromIndex(startOffset),
