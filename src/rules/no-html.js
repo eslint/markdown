@@ -82,16 +82,16 @@ export default {
 				while ((match = htmlTagPattern.exec(node.value)) !== null) {
 					const fullMatch = match[0];
 					const { tagName } = match.groups;
-					const startOffset =
-						node.position.start.offset + match.index;
-
 					const firstNewlineIndex =
 						fullMatch.search(lineEndingPattern);
 
+					const startOffset =
+						match.index + node.position.start.offset;
 					const endOffset =
-						firstNewlineIndex === -1
-							? startOffset + fullMatch.length
-							: startOffset + firstNewlineIndex;
+						startOffset +
+						(firstNewlineIndex === -1
+							? fullMatch.length
+							: firstNewlineIndex);
 
 					const tagToCheck = allowedIgnoreCase
 						? tagName.toLowerCase()
