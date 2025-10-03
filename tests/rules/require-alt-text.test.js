@@ -309,5 +309,19 @@ ruleTester.run("require-alt-text", rule, {
 				},
 			],
 		},
+		{
+			code: dedent`
+				<!-- comment with surrogate pairs: 👍🚀 --> <img src="image.png" />
+			`,
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 45,
+					endLine: 1,
+					endColumn: 68,
+				},
+			],
+		},
 	],
 });

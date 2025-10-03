@@ -71,12 +71,18 @@ export function frontmatterHasTitle(value, pattern) {
 }
 
 /**
- * Remove all HTML comments from a string.
+ * Replaces all HTML comments with whitespace.
+ * This preserves indexes and locations of characters
+ * outside HTML comments by keeping line breaks and replacing
+ * other code units with a space character.
  * @param {string} value The string to remove HTML comments from.
  * @returns {string} The string with HTML comments removed.
  */
 export function stripHtmlComments(value) {
 	return value.replace(htmlCommentPattern, match =>
-		match.replace(/[^\n]/gu, " "),
+		/* eslint-disable-next-line require-unicode-regexp
+		   -- we want to replace each code unit with a space
+		*/
+		match.replace(/[^\r\n]/g, " "),
 	);
 }

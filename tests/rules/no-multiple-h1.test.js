@@ -1202,5 +1202,20 @@ ruleTester.run("no-multiple-h1", rule, {
 				},
 			],
 		},
+		{
+			code: dedent`
+				<h1>Heading 1</h1>
+				<!-- comment with surrogate pairs: 👍🚀 --> <h1>Another H1</h1>
+			`,
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 2,
+					column: 45,
+					endLine: 2,
+					endColumn: 64,
+				},
+			],
+		},
 	],
 });
