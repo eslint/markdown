@@ -1202,5 +1202,18 @@ ruleTester.run("no-multiple-h1", rule, {
 				},
 			],
 		},
+		{
+			// NOTE: dedent`` converts 👍🚀 to \u{1f44d}\u{1f680} in Bun, causing unexpected report locations
+			code: "<h1>Heading 1</h1>\n<!-- comment with surrogate pairs: 👍🚀 --> <h1>Another H1</h1>",
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 2,
+					column: 45,
+					endLine: 2,
+					endColumn: 64,
+				},
+			],
+		},
 	],
 });
