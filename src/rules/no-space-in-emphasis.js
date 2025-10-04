@@ -255,33 +255,21 @@ export default {
 		};
 
 		return {
-			heading(node) {
+			"heading, paragraph, tableCell"(
+				/** @type {Heading | Paragraph | TableCell} */ node,
+			) {
 				bufferManager.enter(node);
-			},
-			"heading > text"(node) {
-				bufferManager.addText(node);
-			},
-			"heading:exit"(node) {
-				bufferManager.exit(node);
 			},
 
-			paragraph(node) {
-				bufferManager.enter(node);
-			},
-			"paragraph > text"(node) {
+			":matches(heading, paragraph, tableCell) > text"(
+				/** @type {Text} */ node,
+			) {
 				bufferManager.addText(node);
-			},
-			"paragraph:exit"(node) {
-				bufferManager.exit(node);
 			},
 
-			tableCell(node) {
-				bufferManager.enter(node);
-			},
-			"tableCell > text"(node) {
-				bufferManager.addText(node);
-			},
-			"tableCell:exit"(node) {
+			":matches(heading, paragraph, tableCell):exit"(
+				/** @type {Heading | Paragraph | TableCell} */ node,
+			) {
 				bufferManager.exit(node);
 			},
 		};
