@@ -141,51 +141,6 @@ export default {
 			}
 		}
 
-		/**
-		 * Checks a given node for emphasis markers with surrounding spaces.
-		 * @param {Heading|Paragraph|TableCell} node The node to check.
-		 * @param {string} maskedText The masked text preserving only direct text content.
-		 * @returns {void}
-		 */
-		function checkEmphasis(node, maskedText) {
-			const originalText = sourceCode.getText(node);
-			const markers = findEmphasisMarkers(maskedText, markerPattern);
-			const nodeStartOffset = node.position.start.offset;
-
-			/** @type {Map<string, EmphasisMarker[]>} */
-			const markerGroups = new Map();
-			for (const marker of markers) {
-				if (!markerGroups.has(marker.marker)) {
-					markerGroups.set(marker.marker, []);
-				}
-				markerGroups.get(marker.marker).push(marker);
-			}
-
-			for (const group of markerGroups.values()) {
-				for (let i = 0; i < group.length - 1; i += 2) {
-					const startMarker = group[i];
-					reportWhitespace({
-						originalText,
-						checkIndex: startMarker.endIndex,
-						highlightStartIndex: startMarker.startIndex,
-						highlightEndIndex: startMarker.endIndex + 2,
-						removeIndex: nodeStartOffset + startMarker.endIndex,
-						nodeStartOffset,
-					});
-
-					const endMarker = group[i + 1];
-					reportWhitespace({
-						originalText,
-						checkIndex: endMarker.startIndex - 1,
-						highlightStartIndex: endMarker.startIndex - 2,
-						highlightEndIndex: endMarker.endIndex,
-						removeIndex: nodeStartOffset + endMarker.startIndex - 1,
-						nodeStartOffset,
-					});
-				}
-			}
-		}
-
 		/** @type {{ buffer: string[], startOffset: number } | null} */
 		let bufferState = null;
 
@@ -217,7 +172,45 @@ export default {
 				/** @type {Heading | Paragraph | TableCell} */ node,
 			) {
 				// Join the character buffer into a masked string, run checks, then clear state.
-				checkEmphasis(node, bufferState.buffer.join(""));
+				const originalText = sourceCode.getText(node);
+				const maskedText = bufferState.buffer.join("");
+				const markers = findEmphasisMarkers(maskedText, markerPattern);
+				const nodeStartOffset = node.position.start.offset;
+
+				/** @type {Map<string, EmphasisMarker[]>} */
+				const markerGroups = new Map();
+				for (const marker of markers) {
+					if (!markerGroups.has(marker.marker)) {
+						markerGroups.set(marker.marker, []);
+					}
+					markerGroups.get(marker.marker).push(marker);
+				}
+
+				for (const group of markerGroups.values()) {
+					for (let i = 0; i < group.length - 1; i += 2) {
+						const startMarker = group[i];
+						reportWhitespace({
+							originalText,
+							checkIndex: startMarker.endIndex,
+							highlightStartIndex: startMarker.startIndex,
+							highlightEndIndex: startMarker.endIndex + 2,
+							removeIndex: nodeStartOffset + startMarker.endIndex,
+							nodeStartOffset,
+						});
+
+						const endMarker = group[i + 1];
+						reportWhitespace({
+							originalText,
+							checkIndex: endMarker.startIndex - 1,
+							highlightStartIndex: endMarker.startIndex - 2,
+							highlightEndIndex: endMarker.endIndex,
+							removeIndex:
+								nodeStartOffset + endMarker.startIndex - 1,
+							nodeStartOffset,
+						});
+					}
+				}
+
 				bufferState = null;
 			},
 		};
