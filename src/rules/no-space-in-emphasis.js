@@ -33,29 +33,6 @@ function createMarkerPattern(checkStrikethrough) {
 		: /(?<=(?<!\\)(?:\\{2})*)(?<marker>\*\*\*|\*\*|\*|___|__|_)/gu;
 }
 
-/**
- * Finds all emphasis markers in the text.
- * @param {string} text The text to search.
- * @param {RegExp} pattern The marker pattern to use.
- * @returns {Array<EmphasisMarker>} Array of emphasis markers.
- */
-function findEmphasisMarkers(text, pattern) {
-	/** @type {Array<EmphasisMarker>} */
-	const markers = [];
-	/** @type {RegExpExecArray | null} */
-	let match;
-
-	while ((match = pattern.exec(text)) !== null) {
-		markers.push({
-			marker: match.groups.marker,
-			startIndex: match.index,
-			endIndex: match.index + match.groups.marker.length,
-		});
-	}
-
-	return markers;
-}
-
 //-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
@@ -132,10 +109,10 @@ export default {
 		}
 
 		return {
+			// Initialize `bufferState` with a whitespace-masked character buffer for the node.
 			"heading, paragraph, tableCell"(
 				/** @type {Heading | Paragraph | TableCell} */ node,
 			) {
-				// Initialize state with a whitespace-masked character buffer for the node.
 				const [startOffset, endOffset] = sourceCode.getRange(node);
 				bufferState = {
 					buffer: new Array(endOffset - startOffset).fill(" "),
@@ -143,10 +120,10 @@ export default {
 				};
 			},
 
+			// Add the content of a `Text` node into the current buffer at the correct offsets.
 			":matches(heading, paragraph, tableCell) > text"(
 				/** @type {Text} */ node,
 			) {
-				// Add the content of a Text node into the current buffer at the correct offsets.
 				const start =
 					node.position.start.offset - bufferState.startOffset;
 				const text = sourceCode.getText(node);
@@ -155,16 +132,29 @@ export default {
 				}
 			},
 
+			// Join the character buffer into a masked string, run checks, then clear state.
 			":matches(heading, paragraph, tableCell):exit"(
 				/** @type {Heading | Paragraph | TableCell} */ node,
 			) {
-				// Join the character buffer into a masked string, run checks, then clear state.
 				const maskedText = bufferState.buffer.join("");
-				const markers = findEmphasisMarkers(maskedText, markerPattern);
-				const nodeStartOffset = node.position.start.offset;
-
+				/** @type {EmphasisMarker[]} */
+				const markers = [];
 				/** @type {Map<string, EmphasisMarker[]>} */
 				const markerGroups = new Map();
+
+				/** @type {RegExpExecArray | null} */
+				let match;
+
+				while ((match = markerPattern.exec(maskedText)) !== null) {
+					const startIndex = match.index + node.position.start.offset;
+					const endIndex = startIndex + match.groups.marker.length;
+
+					markers.push({
+						marker: match.groups.marker,
+						startIndex,
+						endIndex,
+					});
+				}
 
 				for (const marker of markers) {
 					if (!markerGroups.has(marker.marker)) {
@@ -177,21 +167,16 @@ export default {
 					for (let i = 0; i < group.length - 1; i += 2) {
 						const startMarker = group[i];
 						reportWhitespace({
-							checkIndex: nodeStartOffset + startMarker.endIndex,
-							highlightStartIndex:
-								nodeStartOffset + startMarker.startIndex,
-							highlightEndIndex:
-								nodeStartOffset + startMarker.endIndex + 2,
+							checkIndex: startMarker.endIndex,
+							highlightStartIndex: startMarker.startIndex,
+							highlightEndIndex: startMarker.endIndex + 2,
 						});
 
 						const endMarker = group[i + 1];
 						reportWhitespace({
-							checkIndex:
-								nodeStartOffset + endMarker.startIndex - 1,
-							highlightStartIndex:
-								nodeStartOffset + endMarker.startIndex - 2,
-							highlightEndIndex:
-								nodeStartOffset + endMarker.endIndex,
+							checkIndex: endMarker.startIndex - 1,
+							highlightStartIndex: endMarker.startIndex - 2,
+							highlightEndIndex: endMarker.endIndex,
 						});
 					}
 				}
