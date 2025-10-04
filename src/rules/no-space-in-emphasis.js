@@ -4,12 +4,6 @@
  */
 
 //-----------------------------------------------------------------------------
-// Imports
-//-----------------------------------------------------------------------------
-
-import { findOffsets } from "../util.js"; // TODO
-
-//-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
@@ -115,8 +109,7 @@ export default {
 		 * @param {number} params.highlightStartIndex Start index for highlighting.
 		 * @param {number} params.highlightEndIndex End index for highlighting.
 		 * @param {number} params.removeIndex Absolute index of the space to remove.
-		 * @param {number} params.nodeStartLine The starting line number for the node.
-		 * @param {number} params.nodeStartColumn The starting column number for the node.
+		 * @param {number} params.nodeStartOffset The starting offset for the node.
 		 * @returns {void}
 		 */
 		function reportWhitespace({
@@ -125,29 +118,17 @@ export default {
 			highlightStartIndex,
 			highlightEndIndex,
 			removeIndex,
-			nodeStartLine,
-			nodeStartColumn,
+			nodeStartOffset,
 		}) {
 			if (whitespacePattern.test(originalText[checkIndex])) {
-				const {
-					lineOffset: startLineOffset,
-					columnOffset: startColumnOffset,
-				} = findOffsets(originalText, highlightStartIndex); // TODO
-				const {
-					lineOffset: endLineOffset,
-					columnOffset: endColumnOffset,
-				} = findOffsets(originalText, highlightEndIndex); // TODO
-
 				context.report({
 					loc: {
-						start: {
-							line: nodeStartLine + startLineOffset,
-							column: nodeStartColumn + startColumnOffset,
-						},
-						end: {
-							line: nodeStartLine + endLineOffset,
-							column: nodeStartColumn + endColumnOffset,
-						},
+						start: sourceCode.getLocFromIndex(
+							nodeStartOffset + highlightStartIndex,
+						),
+						end: sourceCode.getLocFromIndex(
+							nodeStartOffset + highlightEndIndex,
+						),
 					},
 					messageId: "spaceInEmphasis",
 					fix(fixer) {
@@ -169,8 +150,6 @@ export default {
 		function checkEmphasis(node, maskedText) {
 			const originalText = sourceCode.getText(node);
 			const markers = findEmphasisMarkers(maskedText, markerPattern);
-			const nodeStartLine = node.position.start.line;
-			const nodeStartColumn = node.position.start.column;
 			const nodeStartOffset = node.position.start.offset;
 
 			const markerGroups = new Map();
@@ -190,8 +169,7 @@ export default {
 						highlightStartIndex: startMarker.startIndex,
 						highlightEndIndex: startMarker.endIndex + 2,
 						removeIndex: nodeStartOffset + startMarker.endIndex,
-						nodeStartLine,
-						nodeStartColumn,
+						nodeStartOffset,
 					});
 
 					const endMarker = group[i + 1];
@@ -201,8 +179,7 @@ export default {
 						highlightStartIndex: endMarker.startIndex - 2,
 						highlightEndIndex: endMarker.endIndex,
 						removeIndex: nodeStartOffset + endMarker.startIndex - 1,
-						nodeStartLine,
-						nodeStartColumn,
+						nodeStartOffset,
 					});
 				}
 			}
