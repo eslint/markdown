@@ -13,6 +13,7 @@
  * @typedef {"spaceInEmphasis"} NoSpaceInEmphasisMessageIds
  * @typedef {[{ checkStrikethrough?: boolean }]} NoSpaceInEmphasisOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoSpaceInEmphasisOptions, MessageIds: NoSpaceInEmphasisMessageIds }>} NoSpaceInEmphasisRuleDefinition
+ * @typedef {{marker: string, startIndex: number, endIndex: number}} EmphasisMarker
  */
 
 //-----------------------------------------------------------------------------
@@ -36,7 +37,6 @@ function createMarkerPattern(checkStrikethrough) {
  * Finds all emphasis markers in the text.
  * @param {string} text The text to search.
  * @param {RegExp} pattern The marker pattern to use.
- * @typedef {{marker: string, startIndex: number, endIndex: number}} EmphasisMarker
  * @returns {Array<EmphasisMarker>} Array of emphasis markers.
  */
 function findEmphasisMarkers(text, pattern) {
@@ -152,6 +152,7 @@ export default {
 			const markers = findEmphasisMarkers(maskedText, markerPattern);
 			const nodeStartOffset = node.position.start.offset;
 
+			/** @type {Map<string, EmphasisMarker[]>} */
 			const markerGroups = new Map();
 			for (const marker of markers) {
 				if (!markerGroups.has(marker.marker)) {
