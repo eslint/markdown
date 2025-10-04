@@ -8,12 +8,12 @@
 //-----------------------------------------------------------------------------
 
 /**
+ * @import { SourceRange } from "@eslint/core";
  * @import { Heading, Paragraph, TableCell, Text } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"spaceInEmphasis"} NoSpaceInEmphasisMessageIds
  * @typedef {[{ checkStrikethrough?: boolean }]} NoSpaceInEmphasisOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoSpaceInEmphasisOptions, MessageIds: NoSpaceInEmphasisMessageIds }>} NoSpaceInEmphasisRuleDefinition
- * @typedef {{startIndex: number, endIndex: number}} EmphasisMarker
  */
 
 //-----------------------------------------------------------------------------
@@ -29,8 +29,8 @@ const whitespacePattern = /[ \t]/u;
  */
 function createMarkerPattern(checkStrikethrough) {
 	return checkStrikethrough
-		? /(?<=(?<!\\)(?:\\{2})*)(?<marker>\*\*\*|\*\*|\*|___|__|_|~~|~)/gu
-		: /(?<=(?<!\\)(?:\\{2})*)(?<marker>\*\*\*|\*\*|\*|___|__|_)/gu;
+		? /(?<=(?<!\\)(?:\\{2})*)(?<marker>\*\*\*|\*\*|\*|___|__|_|~~|~)/dgu
+		: /(?<=(?<!\\)(?:\\{2})*)(?<marker>\*\*\*|\*\*|\*|___|__|_)/dgu;
 }
 
 //-----------------------------------------------------------------------------
@@ -136,7 +136,7 @@ export default {
 				/** @type {Heading | Paragraph | TableCell} */ node,
 			) {
 				const maskedText = bufferState.buffer.join("");
-				/** @type {Map<string, EmphasisMarker[]>} */
+				/** @type {Map<string, SourceRange[]>} */
 				const markerGroups = new Map();
 
 				/** @type {RegExpExecArray | null} */
@@ -144,29 +144,31 @@ export default {
 
 				while ((match = markerPattern.exec(maskedText)) !== null) {
 					const marker = match.groups.marker;
-					const startIndex = match.index + node.position.start.offset;
-					const endIndex = startIndex + match.groups.marker.length;
+					const [startOffset, endOffset] =
+						match.indices.groups.marker.map(
+							index => index + node.position.start.offset,
+						);
 
 					if (!markerGroups.has(marker)) {
 						markerGroups.set(marker, []);
 					}
-					markerGroups.get(marker).push({ startIndex, endIndex });
+					markerGroups.get(marker).push([startOffset, endOffset]);
 				}
 
 				for (const group of markerGroups.values()) {
 					for (let i = 0; i < group.length - 1; i += 2) {
 						const startMarker = group[i];
 						reportWhitespace(
-							startMarker.endIndex,
-							startMarker.startIndex,
-							startMarker.endIndex + 2,
+							startMarker[1],
+							startMarker[0],
+							startMarker[1] + 2,
 						);
 
 						const endMarker = group[i + 1];
 						reportWhitespace(
-							endMarker.startIndex - 1,
-							endMarker.startIndex - 2,
-							endMarker.endIndex,
+							endMarker[0] - 1,
+							endMarker[0] - 2,
+							endMarker[1],
 						);
 					}
 				}
