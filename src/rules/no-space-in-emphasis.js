@@ -13,7 +13,7 @@
  * @typedef {"spaceInEmphasis"} NoSpaceInEmphasisMessageIds
  * @typedef {[{ checkStrikethrough?: boolean }]} NoSpaceInEmphasisOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoSpaceInEmphasisOptions, MessageIds: NoSpaceInEmphasisMessageIds }>} NoSpaceInEmphasisRuleDefinition
- * @typedef {{marker: string, startIndex: number, endIndex: number}} EmphasisMarker
+ * @typedef {{startIndex: number, endIndex: number}} EmphasisMarker
  */
 
 //-----------------------------------------------------------------------------
@@ -136,8 +136,6 @@ export default {
 				/** @type {Heading | Paragraph | TableCell} */ node,
 			) {
 				const maskedText = bufferState.buffer.join("");
-				/** @type {EmphasisMarker[]} */
-				const markers = [];
 				/** @type {Map<string, EmphasisMarker[]>} */
 				const markerGroups = new Map();
 
@@ -145,21 +143,14 @@ export default {
 				let match;
 
 				while ((match = markerPattern.exec(maskedText)) !== null) {
+					const marker = match.groups.marker;
 					const startIndex = match.index + node.position.start.offset;
 					const endIndex = startIndex + match.groups.marker.length;
 
-					markers.push({
-						marker: match.groups.marker,
-						startIndex,
-						endIndex,
-					});
-				}
-
-				for (const marker of markers) {
-					if (!markerGroups.has(marker.marker)) {
-						markerGroups.set(marker.marker, []);
+					if (!markerGroups.has(marker)) {
+						markerGroups.set(marker, []);
 					}
-					markerGroups.get(marker.marker).push(marker);
+					markerGroups.get(marker).push({ startIndex, endIndex });
 				}
 
 				for (const group of markerGroups.values()) {
