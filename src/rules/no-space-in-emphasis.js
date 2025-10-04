@@ -108,28 +108,28 @@ export default {
 		}
 
 		return {
-			// Initialize `bufferState` with a whitespace-masked character buffer for the node.
 			"heading, paragraph, tableCell"(
 				/** @type {Heading | Paragraph | TableCell} */ node,
 			) {
 				const [startOffset, endOffset] = sourceCode.getRange(node);
+
+				// Initialize `buffer` with a whitespace-masked character array.
 				buffer = new Array(endOffset - startOffset).fill(" ");
 			},
 
-			// Add the content of a `Text` node into the current buffer at the correct offsets.
 			":matches(heading, paragraph, tableCell) > text"(
 				/** @type {Text} */ node,
 			) {
-				const start =
-					node.position.start.offset -
-					sourceCode.getParent(node).position.start.offset;
-				const text = sourceCode.getText(node);
-				for (let i = 0; i < text.length; i++) {
-					buffer[start + i] = text[i];
+				const [startOffset, endOffset] = sourceCode.getRange(node);
+
+				// Add the content of a `Text` node into the current buffer at the correct offsets.
+				for (let i = startOffset; i < endOffset; i++) {
+					buffer[
+						i - sourceCode.getParent(node).position.start.offset // Adjust to parent node (`Heading`, `Paragraph`, `TableCell`) start.
+					] = sourceCode.text[i];
 				}
 			},
 
-			// Join the character buffer into a masked string, run checks, then clear state.
 			":matches(heading, paragraph, tableCell):exit"(
 				/** @type {Heading | Paragraph | TableCell} */ node,
 			) {
