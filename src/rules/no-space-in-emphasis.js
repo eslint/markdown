@@ -83,17 +83,16 @@ export default {
 
 		/**
 		 * Reports a surrounding-space violation if present.
-		 * @param {Object} params Options for the report arguments.
-		 * @param {number} params.checkIndex Character index to test for whitespace.
-		 * @param {number} params.highlightStartIndex Start index for highlighting.
-		 * @param {number} params.highlightEndIndex End index for highlighting.
+		 * @param {number} checkIndex Character index to test for whitespace.
+		 * @param {number} highlightStartIndex Start index for highlighting.
+		 * @param {number} highlightEndIndex End index for highlighting.
 		 * @returns {void}
 		 */
-		function reportWhitespace({
+		function reportWhitespace(
 			checkIndex,
 			highlightStartIndex,
 			highlightEndIndex,
-		}) {
+		) {
 			if (whitespacePattern.test(sourceCode.text[checkIndex])) {
 				context.report({
 					loc: {
@@ -166,18 +165,18 @@ export default {
 				for (const group of markerGroups.values()) {
 					for (let i = 0; i < group.length - 1; i += 2) {
 						const startMarker = group[i];
-						reportWhitespace({
-							checkIndex: startMarker.endIndex,
-							highlightStartIndex: startMarker.startIndex,
-							highlightEndIndex: startMarker.endIndex + 2,
-						});
+						reportWhitespace(
+							startMarker.endIndex,
+							startMarker.startIndex,
+							startMarker.endIndex + 2,
+						);
 
 						const endMarker = group[i + 1];
-						reportWhitespace({
-							checkIndex: endMarker.startIndex - 1,
-							highlightStartIndex: endMarker.startIndex - 2,
-							highlightEndIndex: endMarker.endIndex,
-						});
+						reportWhitespace(
+							endMarker.startIndex - 1,
+							endMarker.startIndex - 2,
+							endMarker.endIndex,
+						);
 					}
 				}
 
