@@ -78,8 +78,8 @@ export default {
 		const [{ checkStrikethrough }] = context.options;
 		const markerPattern = createMarkerPattern(checkStrikethrough);
 
-		/** @type {string[] | null} */
-		let buffer = null;
+		/** @type {string[]} */
+		let buffer;
 
 		/**
 		 * Reports a surrounding-space violation if present.
@@ -170,8 +170,6 @@ export default {
 						);
 					}
 				}
-
-				buffer = null;
 			},
 		};
 	},
