@@ -78,8 +78,8 @@ export default {
 		const [{ checkStrikethrough }] = context.options;
 		const markerPattern = createMarkerPattern(checkStrikethrough);
 
-		/** @type {{ buffer: string[], startOffset: number } | null} */
-		let bufferState = null;
+		/** @type {string[] | null} */
+		let buffer = null;
 
 		/**
 		 * Reports a surrounding-space violation if present.
@@ -113,10 +113,7 @@ export default {
 				/** @type {Heading | Paragraph | TableCell} */ node,
 			) {
 				const [startOffset, endOffset] = sourceCode.getRange(node);
-				bufferState = {
-					buffer: new Array(endOffset - startOffset).fill(" "),
-					startOffset,
-				};
+				buffer = new Array(endOffset - startOffset).fill(" ");
 			},
 
 			// Add the content of a `Text` node into the current buffer at the correct offsets.
@@ -124,10 +121,11 @@ export default {
 				/** @type {Text} */ node,
 			) {
 				const start =
-					node.position.start.offset - bufferState.startOffset;
+					node.position.start.offset -
+					sourceCode.getParent(node).position.start.offset;
 				const text = sourceCode.getText(node);
 				for (let i = 0; i < text.length; i++) {
-					bufferState.buffer[start + i] = text[i];
+					buffer[start + i] = text[i];
 				}
 			},
 
@@ -135,7 +133,7 @@ export default {
 			":matches(heading, paragraph, tableCell):exit"(
 				/** @type {Heading | Paragraph | TableCell} */ node,
 			) {
-				const maskedText = bufferState.buffer.join("");
+				const maskedText = buffer.join("");
 				/** @type {Map<string, SourceRange[]>} */
 				const markerGroups = new Map();
 
@@ -144,7 +142,7 @@ export default {
 
 				while ((match = markerPattern.exec(maskedText)) !== null) {
 					const marker = match.groups.marker;
-					const [startOffset, endOffset] =
+					const [startOffset, endOffset] = // Adjust `markerPattern` match indices to the full source code.
 						match.indices.groups.marker.map(
 							index => index + node.position.start.offset,
 						);
@@ -173,7 +171,7 @@ export default {
 					}
 				}
 
-				bufferState = null;
+				buffer = null;
 			},
 		};
 	},
