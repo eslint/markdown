@@ -110,14 +110,12 @@ export default {
 		 * @param {number} params.checkIndex Character index to test for whitespace.
 		 * @param {number} params.highlightStartIndex Start index for highlighting.
 		 * @param {number} params.highlightEndIndex End index for highlighting.
-		 * @param {number} params.removeIndex Absolute index of the space to remove.
 		 * @returns {void}
 		 */
 		function reportWhitespace({
 			checkIndex,
 			highlightStartIndex,
 			highlightEndIndex,
-			removeIndex,
 		}) {
 			if (whitespacePattern.test(sourceCode.text[checkIndex])) {
 				context.report({
@@ -127,10 +125,7 @@ export default {
 					},
 					messageId: "spaceInEmphasis",
 					fix(fixer) {
-						return fixer.removeRange([
-							removeIndex,
-							removeIndex + 1,
-						]);
+						return fixer.removeRange([checkIndex, checkIndex + 1]);
 					},
 				});
 			}
@@ -170,6 +165,7 @@ export default {
 
 				/** @type {Map<string, EmphasisMarker[]>} */
 				const markerGroups = new Map();
+
 				for (const marker of markers) {
 					if (!markerGroups.has(marker.marker)) {
 						markerGroups.set(marker.marker, []);
@@ -186,7 +182,6 @@ export default {
 								nodeStartOffset + startMarker.startIndex,
 							highlightEndIndex:
 								nodeStartOffset + startMarker.endIndex + 2,
-							removeIndex: nodeStartOffset + startMarker.endIndex,
 						});
 
 						const endMarker = group[i + 1];
@@ -197,8 +192,6 @@ export default {
 								nodeStartOffset + endMarker.startIndex - 2,
 							highlightEndIndex:
 								nodeStartOffset + endMarker.endIndex,
-							removeIndex:
-								nodeStartOffset + endMarker.startIndex - 1,
 						});
 					}
 				}
