@@ -107,7 +107,6 @@ export default {
 		/**
 		 * Reports a surrounding-space violation if present.
 		 * @param {Object} params Options for the report arguments.
-		 * @param {string} params.originalText The original text of the node.
 		 * @param {number} params.checkIndex Character index to test for whitespace.
 		 * @param {number} params.highlightStartIndex Start index for highlighting.
 		 * @param {number} params.highlightEndIndex End index for highlighting.
@@ -115,13 +114,12 @@ export default {
 		 * @returns {void}
 		 */
 		function reportWhitespace({
-			originalText,
 			checkIndex,
 			highlightStartIndex,
 			highlightEndIndex,
 			removeIndex,
 		}) {
-			if (whitespacePattern.test(originalText[checkIndex])) {
+			if (whitespacePattern.test(sourceCode.text[checkIndex])) {
 				context.report({
 					loc: {
 						start: sourceCode.getLocFromIndex(highlightStartIndex),
@@ -166,7 +164,6 @@ export default {
 				/** @type {Heading | Paragraph | TableCell} */ node,
 			) {
 				// Join the character buffer into a masked string, run checks, then clear state.
-				const originalText = sourceCode.getText(node);
 				const maskedText = bufferState.buffer.join("");
 				const markers = findEmphasisMarkers(maskedText, markerPattern);
 				const nodeStartOffset = node.position.start.offset;
@@ -184,8 +181,7 @@ export default {
 					for (let i = 0; i < group.length - 1; i += 2) {
 						const startMarker = group[i];
 						reportWhitespace({
-							originalText,
-							checkIndex: startMarker.endIndex,
+							checkIndex: nodeStartOffset + startMarker.endIndex,
 							highlightStartIndex:
 								nodeStartOffset + startMarker.startIndex,
 							highlightEndIndex:
@@ -195,8 +191,8 @@ export default {
 
 						const endMarker = group[i + 1];
 						reportWhitespace({
-							originalText,
-							checkIndex: endMarker.startIndex - 1,
+							checkIndex:
+								nodeStartOffset + endMarker.startIndex - 1,
 							highlightStartIndex:
 								nodeStartOffset + endMarker.startIndex - 2,
 							highlightEndIndex:
