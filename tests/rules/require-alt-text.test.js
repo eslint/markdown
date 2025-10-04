@@ -309,5 +309,18 @@ ruleTester.run("require-alt-text", rule, {
 				},
 			],
 		},
+		{
+			// NOTE: dedent`` converts 👍🚀 to \u{1f44d}\u{1f680} in Bun, causing unexpected report locations
+			code: '<!-- comment with surrogate pairs: 👍🚀 --> <img src="image.png" />',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 45,
+					endLine: 1,
+					endColumn: 68,
+				},
+			],
+		},
 	],
 });
