@@ -1,6 +1,6 @@
 {
   "name": "@eslint/markdown",
-  "version": "7.3.0",
+  "version": "7.4.0",
   "description": "The official ESLint language plugin for Markdown",
   "license": "MIT",
   "author": {
