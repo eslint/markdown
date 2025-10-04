@@ -208,69 +208,39 @@ export default {
 			}
 		}
 
-		/**
-		 * Manager for building a masked character array for a node's direct text content.
-		 * @typedef {{ buffer: string[], startOffset: number }} BufferState
-		 */
-		const bufferManager = {
-			/** @type {BufferState | null} */
-			state: null,
-
-			/**
-			 * Initialize state with a whitespace-masked character buffer for the node.
-			 * @param {Heading|Paragraph|TableCell} node Heading, Paragraph, or TableCell node to enter.
-			 * @returns {void}
-			 */
-			enter(node) {
-				const [startOffset, endOffset] = sourceCode.getRange(node);
-				this.state = {
-					buffer: new Array(endOffset - startOffset).fill(" "),
-					startOffset,
-				};
-			},
-
-			/**
-			 * Add the content of a Text node into the current buffer at the correct offsets.
-			 * @param {Text} node Text node whose characters will be copied into the buffer.
-			 * @returns {void}
-			 */
-			addText(node) {
-				const start =
-					node.position.start.offset - this.state.startOffset;
-				const text = sourceCode.getText(node);
-				for (let i = 0; i < text.length; i++) {
-					this.state.buffer[start + i] = text[i];
-				}
-			},
-
-			/**
-			 * Join the character buffer into a masked string, run checks, then clear state.
-			 * @param {Heading|Paragraph|TableCell} node Heading, Paragraph, or TableCell node to exit.
-			 * @returns {void}
-			 */
-			exit(node) {
-				checkEmphasis(node, this.state.buffer.join(""));
-				this.state = null;
-			},
-		};
+		/** @type {{ buffer: string[], startOffset: number } | null} */
+		let bufferState = null;
 
 		return {
 			"heading, paragraph, tableCell"(
 				/** @type {Heading | Paragraph | TableCell} */ node,
 			) {
-				bufferManager.enter(node);
+				// Initialize state with a whitespace-masked character buffer for the node.
+				const [startOffset, endOffset] = sourceCode.getRange(node);
+				bufferState = {
+					buffer: new Array(endOffset - startOffset).fill(" "),
+					startOffset,
+				};
 			},
 
 			":matches(heading, paragraph, tableCell) > text"(
 				/** @type {Text} */ node,
 			) {
-				bufferManager.addText(node);
+				// Add the content of a Text node into the current buffer at the correct offsets.
+				const start =
+					node.position.start.offset - bufferState.startOffset;
+				const text = sourceCode.getText(node);
+				for (let i = 0; i < text.length; i++) {
+					bufferState.buffer[start + i] = text[i];
+				}
 			},
 
 			":matches(heading, paragraph, tableCell):exit"(
 				/** @type {Heading | Paragraph | TableCell} */ node,
 			) {
-				bufferManager.exit(node);
+				// Join the character buffer into a masked string, run checks, then clear state.
+				checkEmphasis(node, bufferState.buffer.join(""));
+				bufferState = null;
 			},
 		};
 	},
