@@ -101,6 +101,9 @@ export default {
 		const [{ checkStrikethrough }] = context.options;
 		const markerPattern = createMarkerPattern(checkStrikethrough);
 
+		/** @type {{ buffer: string[], startOffset: number } | null} */
+		let bufferState = null;
+
 		/**
 		 * Reports a surrounding-space violation if present.
 		 * @param {Object} params Options for the report arguments.
@@ -109,7 +112,6 @@ export default {
 		 * @param {number} params.highlightStartIndex Start index for highlighting.
 		 * @param {number} params.highlightEndIndex End index for highlighting.
 		 * @param {number} params.removeIndex Absolute index of the space to remove.
-		 * @param {number} params.nodeStartOffset The starting offset for the node.
 		 * @returns {void}
 		 */
 		function reportWhitespace({
@@ -118,17 +120,12 @@ export default {
 			highlightStartIndex,
 			highlightEndIndex,
 			removeIndex,
-			nodeStartOffset,
 		}) {
 			if (whitespacePattern.test(originalText[checkIndex])) {
 				context.report({
 					loc: {
-						start: sourceCode.getLocFromIndex(
-							nodeStartOffset + highlightStartIndex,
-						),
-						end: sourceCode.getLocFromIndex(
-							nodeStartOffset + highlightEndIndex,
-						),
+						start: sourceCode.getLocFromIndex(highlightStartIndex),
+						end: sourceCode.getLocFromIndex(highlightEndIndex),
 					},
 					messageId: "spaceInEmphasis",
 					fix(fixer) {
@@ -140,9 +137,6 @@ export default {
 				});
 			}
 		}
-
-		/** @type {{ buffer: string[], startOffset: number } | null} */
-		let bufferState = null;
 
 		return {
 			"heading, paragraph, tableCell"(
@@ -192,21 +186,23 @@ export default {
 						reportWhitespace({
 							originalText,
 							checkIndex: startMarker.endIndex,
-							highlightStartIndex: startMarker.startIndex,
-							highlightEndIndex: startMarker.endIndex + 2,
+							highlightStartIndex:
+								nodeStartOffset + startMarker.startIndex,
+							highlightEndIndex:
+								nodeStartOffset + startMarker.endIndex + 2,
 							removeIndex: nodeStartOffset + startMarker.endIndex,
-							nodeStartOffset,
 						});
 
 						const endMarker = group[i + 1];
 						reportWhitespace({
 							originalText,
 							checkIndex: endMarker.startIndex - 1,
-							highlightStartIndex: endMarker.startIndex - 2,
-							highlightEndIndex: endMarker.endIndex,
+							highlightStartIndex:
+								nodeStartOffset + endMarker.startIndex - 2,
+							highlightEndIndex:
+								nodeStartOffset + endMarker.endIndex,
 							removeIndex:
 								nodeStartOffset + endMarker.startIndex - 1,
-							nodeStartOffset,
 						});
 					}
 				}
