@@ -29,8 +29,8 @@ const whitespacePattern = /[ \t]/u;
  */
 function createMarkerPattern(checkStrikethrough) {
 	return checkStrikethrough
-		? /(?<=(?<!\\)(?:\\{2})*)(?<marker>\*\*\*|\*\*|\*|___|__|_|~~|~)/dgu
-		: /(?<=(?<!\\)(?:\\{2})*)(?<marker>\*\*\*|\*\*|\*|___|__|_)/dgu;
+		? /(?<=(?<!\\)(?:\\{2})*)(?:\*\*\*|\*\*|\*|___|__|_|~~|~)/gu
+		: /(?<=(?<!\\)(?:\\{2})*)(?:\*\*\*|\*\*|\*|___|__|_)/gu;
 }
 
 //-----------------------------------------------------------------------------
@@ -141,11 +141,10 @@ export default {
 				let match;
 
 				while ((match = markerPattern.exec(maskedText)) !== null) {
-					const marker = match.groups.marker;
-					const [startOffset, endOffset] = // Adjust `markerPattern` match indices to the full source code.
-						match.indices.groups.marker.map(
-							index => index + node.position.start.offset,
-						);
+					const marker = match[0];
+					const startOffset = // Adjust `markerPattern` match index to the full source code.
+						match.index + node.position.start.offset;
+					const endOffset = startOffset + marker.length;
 
 					if (!markerGroups.has(marker)) {
 						markerGroups.set(marker, []);
