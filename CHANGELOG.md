@@ -1,5 +1,21 @@
 # Changelog
 
+## [7.4.0](https://github.com/eslint/markdown/compare/v7.3.0...v7.4.0) (2025-10-06)
+
+
+### Features
+
+* add support for `getLocFromIndex` and `getIndexFromLoc` ([#376](https://github.com/eslint/markdown/issues/376)) ([d634f82](https://github.com/eslint/markdown/commit/d634f820535d68579e62df46a0653ad67d912404))
+* export `MarkdownLanguage` from `index.js` ([#538](https://github.com/eslint/markdown/issues/538)) ([a5d78d5](https://github.com/eslint/markdown/commit/a5d78d5f4f054bb783827ec9d62fd302518572ba))
+
+
+### Bug Fixes
+
+* add `null` check and use `getLocFromIndex` in `require-alt-text` ([#543](https://github.com/eslint/markdown/issues/543)) ([41ae6c8](https://github.com/eslint/markdown/commit/41ae6c850af3e51bde15eeab02ffc1c85a12e539))
+* correct the return type of `applyInlineConfig` ([#548](https://github.com/eslint/markdown/issues/548)) ([d6621a7](https://github.com/eslint/markdown/commit/d6621a744ea601bcaef4a3b74354dca51b1745b7))
+* report locations in `no-multiple-h1` and `require-alt-text` ([#551](https://github.com/eslint/markdown/issues/551)) ([ec30c7d](https://github.com/eslint/markdown/commit/ec30c7d3aed506c13d5a2ac277fbc079427fb0d3))
+* wrong location reporting in `no-invalid-label-refs` ([#545](https://github.com/eslint/markdown/issues/545)) ([e0f7d23](https://github.com/eslint/markdown/commit/e0f7d23a485bc39624b330209c1cb6f904f781c5))
+
 ## [7.3.0](https://github.com/eslint/markdown/compare/v7.2.0...v7.3.0) (2025-09-22)
 
 
