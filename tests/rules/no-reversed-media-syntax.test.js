@@ -75,6 +75,9 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 		"![()[]](hi)",
 		"![(hi)[something]](hi)",
 		"![()[]](https://example.com)",
+		// ImageReference
+		"![()[]][ref]\n\n[ref]: https://example.com",
+		"![(hi)[something]][ref]\n\n[ref]: https://example.com",
 		// Link
 		// "[()[]](hi)",
 		// "[(hi)[something]](hi)",
