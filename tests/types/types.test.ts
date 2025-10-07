@@ -124,6 +124,18 @@ typeof processorPlugins satisfies {};
 	null as AssertAllNamesIn<RecommendedRuleName, RuleName>;
 }
 
+{
+	type ApplyInlineConfigLoc = ReturnType<
+		MarkdownSourceCode["applyInlineConfig"]
+	>["configs"][0]["loc"];
+
+	// Check that `applyInlineConfig`'s return type includes correct `loc` structure.
+	const loc: ApplyInlineConfigLoc = {
+		start: { line: 1, column: 1, offset: 0 },
+		end: { line: 1, column: 1, offset: 0 },
+	};
+}
+
 (): MarkdownRuleDefinition => ({
 	create({ sourceCode }): MarkdownRuleVisitor {
 		sourceCode satisfies MarkdownSourceCode;
@@ -136,10 +148,19 @@ typeof processorPlugins satisfies {};
 			parent?: Parent | undefined,
 		) {
 			sourceCode.getLoc(node) satisfies SourceLocation;
+			sourceCode.getLocFromIndex(0) satisfies {
+				line: number;
+				column: number;
+			};
+			sourceCode.getIndexFromLoc({ line: 1, column: 1 }) satisfies number;
 			sourceCode.getRange(node) satisfies SourceRange;
 			sourceCode.getParent(node) satisfies Node | undefined;
 			sourceCode.getAncestors(node) satisfies Node[];
 			sourceCode.getText(node) satisfies string;
+			sourceCode.applyInlineConfig().configs[0].loc.start
+				.offset satisfies Position["start"]["offset"];
+			sourceCode.applyInlineConfig().configs[0].loc.end
+				.offset satisfies Position["end"]["offset"];
 		}
 
 		return {

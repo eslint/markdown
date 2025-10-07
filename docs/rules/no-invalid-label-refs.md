@@ -30,7 +30,6 @@ Examples of **incorrect** code for this rule:
 [eslint][ ]
 
 [eslint][
-
 ]
 ```
 

@@ -21,9 +21,9 @@ jobs:
         outputs:
             version: ${{ steps.get_version.outputs.version }}
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v5
               with:
                   node-version: "lts/*"
             - run: npm install
@@ -41,11 +41,11 @@ jobs:
         needs: npm-build
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/download-artifact@v4
+            - uses: actions/download-artifact@v5
               with:
                   name: build
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v5
               with:
                   node-version: "lts/*"
             - name: npm install
@@ -56,11 +56,11 @@ jobs:
         needs: npm-build
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/download-artifact@v4
+            - uses: actions/download-artifact@v5
               with:
                   name: build
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v5
               with:
                   node-version: "lts/*"
             - name: yarn add
@@ -71,11 +71,11 @@ jobs:
         needs: npm-build
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/download-artifact@v4
+            - uses: actions/download-artifact@v5
               with:
                   name: build
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v5
               with:
                   node-version: "lts/*"
             - name: Install Corepack latest
@@ -94,7 +94,7 @@ jobs:
         needs: npm-build
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/download-artifact@v4
+            - uses: actions/download-artifact@v5
               with:
                   name: build
             - name: Install pnpm
@@ -102,7 +102,7 @@ jobs:
               with:
                   version: latest
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v5
               with:
                   node-version: "lts/*"
             - name: pnpm add
@@ -117,11 +117,11 @@ jobs:
         needs: npm-build
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/download-artifact@v4
+            - uses: actions/download-artifact@v5
               with:
                   name: build
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v5
               with:
                   node-version: "lts/*"
             - name: setup bun

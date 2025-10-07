@@ -155,6 +155,11 @@ ruleTester.run("no-reference-like-urls", rule, {
 			`,
 			language: "markdown/gfm",
 		},
+		// Backslash escaping
+		`${"\\".repeat(1)}[Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
+		`${"\\".repeat(3)}[Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
+		`${"\\".repeat(5)}[Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
+		`${"\\".repeat(7)}[Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
 	],
 	invalid: [
 		{
@@ -262,8 +267,8 @@ ruleTester.run("no-reference-like-urls", rule, {
 					data: { type: "link", prefix: "" },
 					line: 1,
 					column: 1,
-					endLine: 1,
-					endColumn: 20,
+					endLine: 2,
+					endColumn: 9,
 				},
 			],
 		},
@@ -328,8 +333,8 @@ ruleTester.run("no-reference-like-urls", rule, {
 					data: { type: "image", prefix: "!" },
 					line: 1,
 					column: 1,
-					endLine: 1,
-					endColumn: 21,
+					endLine: 2,
+					endColumn: 9,
 				},
 			],
 		},
@@ -1168,10 +1173,149 @@ ruleTester.run("no-reference-like-urls", rule, {
 				},
 			],
 		},
-		// This test case is skipped for non-Node environments like Bun
-		...(typeof process !== "undefined" &&
-		process.release?.name === "node" &&
-		!process.versions?.bun
+		// Backslash escaping
+		{
+			code: `${"\\".repeat(1)}![Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
+			output: `${"\\".repeat(1)}![Mercury][mercury]\n\n[mercury]: https://example.com/mercury`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 3,
+					endLine: 1,
+					endColumn: 21,
+				},
+			],
+		},
+		{
+			code: `${"\\".repeat(3)}![Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
+			output: `${"\\".repeat(3)}![Mercury][mercury]\n\n[mercury]: https://example.com/mercury`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 5,
+					endLine: 1,
+					endColumn: 23,
+				},
+			],
+		},
+		{
+			code: `${"\\".repeat(5)}![Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
+			output: `${"\\".repeat(5)}![Mercury][mercury]\n\n[mercury]: https://example.com/mercury`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 7,
+					endLine: 1,
+					endColumn: 25,
+				},
+			],
+		},
+		{
+			code: `${"\\".repeat(7)}![Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
+			output: `${"\\".repeat(7)}![Mercury][mercury]\n\n[mercury]: https://example.com/mercury`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 9,
+					endLine: 1,
+					endColumn: 27,
+				},
+			],
+		},
+		{
+			code: `${"\\".repeat(2)}[Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
+			output: `${"\\".repeat(2)}[Mercury][mercury]\n\n[mercury]: https://example.com/mercury`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 3,
+					endLine: 1,
+					endColumn: 21,
+				},
+			],
+		},
+		{
+			code: `${"\\".repeat(4)}[Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
+			output: `${"\\".repeat(4)}[Mercury][mercury]\n\n[mercury]: https://example.com/mercury`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 5,
+					endLine: 1,
+					endColumn: 23,
+				},
+			],
+		},
+		{
+			code: `${"\\".repeat(6)}[Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
+			output: `${"\\".repeat(6)}[Mercury][mercury]\n\n[mercury]: https://example.com/mercury`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 7,
+					endLine: 1,
+					endColumn: 25,
+				},
+			],
+		},
+		{
+			code: `${"\\".repeat(2)}![Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
+			output: `${"\\".repeat(2)}![Mercury][mercury]\n\n[mercury]: https://example.com/mercury`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 3,
+					endLine: 1,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: `${"\\".repeat(4)}![Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
+			output: `${"\\".repeat(4)}![Mercury][mercury]\n\n[mercury]: https://example.com/mercury`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 5,
+					endLine: 1,
+					endColumn: 24,
+				},
+			],
+		},
+		{
+			code: `${"\\".repeat(6)}![Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
+			output: `${"\\".repeat(6)}![Mercury][mercury]\n\n[mercury]: https://example.com/mercury`,
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "image", prefix: "!" },
+					line: 1,
+					column: 7,
+					endLine: 1,
+					endColumn: 26,
+				},
+			],
+		},
+		// This test case is skipped when running on Bun
+		...(!process.versions.bun
 			? [
 					{
 						code: dedent`
