@@ -121,12 +121,12 @@ export default {
 				/** @type {Text} */ node,
 			) {
 				const [startOffset, endOffset] = sourceCode.getRange(node);
+				const parentNodeStartOffset = // Parent node can be `Heading`, `Paragraph`, or `TableCell`.
+					sourceCode.getParent(node).position.start.offset;
 
 				// Add the content of a `Text` node into the current buffer at the correct offsets.
 				for (let i = startOffset; i < endOffset; i++) {
-					buffer[
-						i - sourceCode.getParent(node).position.start.offset // Adjust to parent node (`Heading`, `Paragraph`, `TableCell`) start.
-					] = sourceCode.text[i];
+					buffer[i - parentNodeStartOffset] = sourceCode.text[i];
 				}
 			},
 
