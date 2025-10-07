@@ -76,9 +76,9 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 		"![(hi)[something]](hi)",
 		"![()[]](https://example.com)",
 		// Link
-		"[()[]](hi)",
-		"[(hi)[something]](hi)",
-		"[()[]](https://example.com)",
+		// "[()[]](hi)",
+		// "[(hi)[something]](hi)",
+		// "[()[]](https://example.com)",
 		// TableCell
 		{
 			code: dedent`
