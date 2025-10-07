@@ -4,19 +4,12 @@
  */
 
 //-----------------------------------------------------------------------------
-// Imports
-//-----------------------------------------------------------------------------
-
-import { findOffsets } from "../util.js";
-
-//-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Html, Image, InlineCode } from "mdast";
  * @import { SourceRange } from "@eslint/core"
- * @import { Heading, Paragraph, TableCell } from "mdast";
+ * @import { Heading, Paragraph, TableCell, Html, InlineCode } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"reversedSyntax"} NoReversedMediaSyntaxMessageIds
  * @typedef {[]} NoReversedMediaSyntaxOptions
@@ -29,7 +22,7 @@ import { findOffsets } from "../util.js";
 
 /** Matches reversed link/image syntax like `(text)[url]`, ignoring escaped characters like `\(text\)[url]`. */
 const reversedPattern =
-	/(?<=(?<!\\)(?:\\{2})*)\(((?:\\.|[^()\\]|\([\s\S]*\))*)\)\[((?:\\.|[^\]\\\n])*)\](?!\()/gu;
+	/(?<=(?<!\\)(?:\\{2})*)\((?<label>(?:\\.|[^()\\]|\([\s\S]*\))*)\)\[(?<url>(?:\\.|[^\]\\\n])*)\](?!\()/gu;
 
 /**
  * Checks if a match is within any skip range
@@ -70,7 +63,7 @@ export default {
 		const { sourceCode } = context;
 
 		/** @type {Array<SourceRange>} */
-		let skipRanges = [];
+		const skipRanges = [];
 
 		/**
 		 * Finds reversed link/image syntax in a node.
@@ -79,61 +72,26 @@ export default {
 		 */
 		function findReversedMediaSyntax(node) {
 			const text = sourceCode.getText(node);
+
+			/** @type {RegExpExecArray} */
 			let match;
 
 			while ((match = reversedPattern.exec(text)) !== null) {
-				const [reversedSyntax, label, url] = match;
-				const matchIndex = match.index;
-				const matchLength = reversedSyntax.length;
+				const { label, url } = match.groups;
+				const startOffset = match.index + node.position.start.offset; // Adjust `reversedPattern` match index to the full source code.
+				const endOffset = startOffset + match[0].length;
 
-				if (
-					isInSkipRange(
-						matchIndex + node.position.start.offset,
-						skipRanges,
-					)
-				) {
+				if (isInSkipRange(startOffset, skipRanges)) {
 					continue;
 				}
 
-				const {
-					lineOffset: startLineOffset,
-					columnOffset: startColumnOffset,
-				} = findOffsets(text, matchIndex);
-				const {
-					lineOffset: endLineOffset,
-					columnOffset: endColumnOffset,
-				} = findOffsets(text, matchIndex + matchLength);
-
-				const baseColumn = 1;
-				const nodeStartLine = node.position.start.line;
-				const nodeStartColumn = node.position.start.column;
-				const startLine = nodeStartLine + startLineOffset;
-				const endLine = nodeStartLine + endLineOffset;
-				const startColumn =
-					(startLine === nodeStartLine
-						? nodeStartColumn
-						: baseColumn) + startColumnOffset;
-				const endColumn =
-					(endLine === nodeStartLine ? nodeStartColumn : baseColumn) +
-					endColumnOffset;
-
 				context.report({
 					loc: {
-						start: {
-							line: startLine,
-							column: startColumn,
-						},
-						end: {
-							line: endLine,
-							column: endColumn,
-						},
+						start: sourceCode.getLocFromIndex(startOffset),
+						end: sourceCode.getLocFromIndex(endOffset),
 					},
 					messageId: "reversedSyntax",
 					fix(fixer) {
-						const startOffset =
-							node.position.start.offset + matchIndex;
-						const endOffset = startOffset + matchLength;
-
 						return fixer.replaceTextRange(
 							[startOffset, endOffset],
 							`[${label}](${url})`,
@@ -144,37 +102,17 @@ export default {
 		}
 
 		return {
-			"heading :matches(html, image, inlineCode)"(
-				/** @type {Html | Image | InlineCode} */ node,
+			":matches(heading, paragraph, tableCell) :matches(html, inlineCode)"(
+				/** @type {Html | InlineCode} */ node,
 			) {
 				skipRanges.push(sourceCode.getRange(node));
 			},
 
-			"heading:exit"(node) {
-				findReversedMediaSyntax(node);
-				skipRanges = [];
-			},
-
-			"paragraph :matches(html, image, inlineCode)"(
-				/** @type {Html | Image | InlineCode} */ node,
+			":matches(heading, paragraph, tableCell):exit"(
+				/** @type {Heading | Paragraph | TableCell} */ node,
 			) {
-				skipRanges.push(sourceCode.getRange(node));
-			},
-
-			"paragraph:exit"(node) {
 				findReversedMediaSyntax(node);
-				skipRanges = [];
-			},
-
-			"tableCell :matches(html, image, inlineCode)"(
-				/** @type {Html | Image | InlineCode} */ node,
-			) {
-				skipRanges.push(sourceCode.getRange(node));
-			},
-
-			"tableCell:exit"(node) {
-				findReversedMediaSyntax(node);
-				skipRanges = [];
+				skipRanges.length = 0;
 			},
 		};
 	},
