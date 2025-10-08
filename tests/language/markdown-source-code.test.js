@@ -113,12 +113,12 @@ describe("MarkdownSourceCode", () => {
 
 		it("should parse CRLF CR LF line endings", () => {
 			const text = "lumir\r\nlumir\rlumir\nlumir";
-			const sourceCodeWithLFCRCRLF = new MarkdownSourceCode({
+			const sourceCodeWithCRLFCRLF = new MarkdownSourceCode({
 				text,
 				ast: fromMarkdown(text),
 			});
 
-			assert.deepStrictEqual(sourceCodeWithLFCRCRLF.lines, [
+			assert.deepStrictEqual(sourceCodeWithCRLFCRLF.lines, [
 				"lumir",
 				"lumir",
 				"lumir",
