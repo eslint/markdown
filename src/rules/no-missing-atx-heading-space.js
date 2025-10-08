@@ -18,7 +18,7 @@
 // Helpers
 //-----------------------------------------------------------------------------
 
-const leadingAtxHeadingHashPattern = /^(#{1,6})(?:[^# \t]|$)/u;
+const leadingAtxHeadingHashPattern = /^(?<hashes>#{1,6})(?:[^# \t]|$)/u;
 const trailingAtxHeadingHashPattern =
 	/(?<![ \t])(?<closingSequenceSpaces>[ \t]*)(?<=(?<!\\)(?:\\{2})*)(?<closingSequence>#+)(?<trailingSpaces>[ \t]*)$/u;
 const newLinePattern = /\r?\n/u;
@@ -142,7 +142,7 @@ export default {
 					const lineNum = node.position.start.line + idx;
 
 					if (match) {
-						const hashes = match[1];
+						const { hashes } = match.groups;
 
 						context.report({
 							loc: {
