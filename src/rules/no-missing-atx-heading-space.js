@@ -20,7 +20,7 @@
 
 const leadingAtxHeadingHashPattern = /^(#{1,6})(?:[^# \t]|$)/u;
 const trailingAtxHeadingHashPattern =
-	/(?<![ \t])([ \t]*)(?<=(?<!\\)(?:\\{2})*)(#+)([ \t]*)$/u;
+	/(?<![ \t])(?<closingSequenceSpaces>[ \t]*)(?<=(?<!\\)(?:\\{2})*)(?<closingSequence>#+)(?<trailingSpaces>[ \t]*)$/u;
 const newLinePattern = /\r?\n/u;
 
 /**
@@ -32,8 +32,8 @@ function findMissingSpaceBeforeClosingHash(text) {
 	const match = trailingAtxHeadingHashPattern.exec(text);
 
 	if (match) {
-		const [, closingSequenceSpaces, closingSequence, trailingSpaces] =
-			match;
+		const { closingSequenceSpaces, closingSequence, trailingSpaces } =
+			match.groups;
 
 		if (closingSequenceSpaces.length === 0) {
 			const closingHashIdx =
@@ -99,31 +99,27 @@ export default {
 				}
 
 				const text = context.sourceCode.getText(node);
-				const lineNum = node.position.start.line;
-				const startColumn = node.position.start.column;
+				const nodeStartOffset = node.position.start.offset;
 
 				const missingSpace = findMissingSpaceBeforeClosingHash(text);
 				if (missingSpace) {
 					context.report({
 						loc: {
-							start: {
-								line: lineNum,
-								column:
-									startColumn + missingSpace.beforeHashIdx,
-							},
-							end: {
-								line: lineNum,
-								column: startColumn + missingSpace.endIdx,
-							},
+							start: context.sourceCode.getLocFromIndex(
+								nodeStartOffset + missingSpace.beforeHashIdx,
+							),
+							end: context.sourceCode.getLocFromIndex(
+								nodeStartOffset + missingSpace.endIdx,
+							),
 						},
 						messageId: "missingSpace",
 						data: { position: "before" },
 						fix(fixer) {
 							return fixer.insertTextBeforeRange(
 								[
-									node.position.start.offset +
+									nodeStartOffset +
 										missingSpace.closingHashIdx,
-									node.position.start.offset +
+									nodeStartOffset +
 										missingSpace.closingHashIdx +
 										1,
 								],
