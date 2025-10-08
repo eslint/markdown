@@ -20,7 +20,7 @@
 
 const htmlTagPattern =
 	/<(?<tagName>[a-z0-9]+(?:-[a-z0-9]+)*)(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?>/giu;
-const lineEndingPattern = /\r\n?|\n/u;
+const lineEndingPattern = /\r\n?|\n/u; // TODO
 
 //-----------------------------------------------------------------------------
 // Rule Definition
