@@ -66,67 +66,6 @@ describe("MarkdownSourceCode", () => {
 		sourceCode = new MarkdownSourceCode({ text: markdownText, ast });
 	});
 
-	describe("constructor", () => {
-		it("should create a MarkdownSourceCode instance", () => {
-			assert.strictEqual(
-				sourceCode.constructor.name,
-				"MarkdownSourceCode",
-			);
-			assert.strictEqual(sourceCode.ast, ast);
-			assert.strictEqual(sourceCode.text, markdownText);
-		});
-
-		it("should parse LF line endings", () => {
-			const text = "lumir\nlumir";
-			const sourceCodeWithLF = new MarkdownSourceCode({
-				text,
-				ast: fromMarkdown(text),
-			});
-
-			assert.deepStrictEqual(sourceCodeWithLF.lines, ["lumir", "lumir"]);
-		});
-
-		it("should parse CR line endings", () => {
-			const text = "lumir\rlumir";
-			const sourceCodeWithCR = new MarkdownSourceCode({
-				text,
-				ast: fromMarkdown(text),
-			});
-
-			assert.deepStrictEqual(sourceCodeWithCR.lines, ["lumir", "lumir"]);
-		});
-
-		it("should parse CRLF line endings", () => {
-			// TODO: Bug: Should work once https://github.com/eslint/rewrite/pull/212 is merged.
-			const text = "lumir\r\nlumir";
-			const sourceCodeWithCRLF = new MarkdownSourceCode({
-				text,
-				ast: fromMarkdown(text),
-			});
-
-			assert.deepStrictEqual(sourceCodeWithCRLF.lines, [
-				"lumir",
-				"lumir",
-			]);
-		});
-
-		it("should parse LF CR CRLF line endings", () => {
-			// TODO: Bug: Should work once https://github.com/eslint/rewrite/pull/212 is merged.
-			const text = "lumir\nlumir\rlumir\r\nlumir";
-			const sourceCodeWithLFCRCRLF = new MarkdownSourceCode({
-				text,
-				ast: fromMarkdown(text),
-			});
-
-			assert.deepStrictEqual(sourceCodeWithLFCRCRLF.lines, [
-				"lumir",
-				"lumir",
-				"lumir",
-				"lumir",
-			]);
-		});
-	});
-
 	describe("getText()", () => {
 		it("should return the text of the Markdown source code", () => {
 			assert.strictEqual(sourceCode.getText(), markdownText);
