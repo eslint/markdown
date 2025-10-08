@@ -21,7 +21,7 @@
 const leadingAtxHeadingHashPattern = /^(#{1,6})(?:[^# \t]|$)/u;
 const trailingAtxHeadingHashPattern =
 	/(?<![ \t])([ \t]*)(?<=(?<!\\)(?:\\{2})*)(#+)([ \t]*)$/u;
-const newLinePattern = /\r?\n/u; // TODO
+const newLinePattern = /\r?\n/u;
 
 /**
  * Finds missing space before the closing hashes in an ATX heading.
