@@ -20,33 +20,7 @@
 
 const leadingAtxHeadingHashPattern = /^(?<hashes>#{1,6})(?:[^# \t]|$)/gmu;
 const trailingAtxHeadingHashPattern =
-	/(?<![ \t])(?<closingSequenceSpaces>[ \t]*)(?<=(?<!\\)(?:\\{2})*)(?<closingSequence>#+)[ \t]*$/u;
-
-/**
- * Finds missing space before the closing hashes in an ATX heading.
- * @param {string} text The input text to check.
- * @returns {{ closingHashIdx: number, beforeHashIdx: number, endIdx: number } | null} The positions of the closing hashes in the heading, or null if no missing space is found.
- */
-function findMissingSpaceBeforeClosingHash(text) {
-	const match = trailingAtxHeadingHashPattern.exec(text);
-
-	if (match) {
-		const { closingSequenceSpaces, closingSequence } = match.groups;
-
-		if (closingSequenceSpaces.length === 0) {
-			const closingHashIdx = match.index + closingSequenceSpaces.length;
-			const beforeHashIdx = closingHashIdx - 1;
-			const endIdx = closingHashIdx + closingSequence.length;
-			return {
-				closingHashIdx,
-				beforeHashIdx,
-				endIdx,
-			};
-		}
-	}
-
-	return null;
-}
+	/(?<![ \t])(?<spaces>[ \t]*)(?<=(?<!\\)(?:\\{2})*)(?<hashes>#+)[ \t]*$/gu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -97,34 +71,39 @@ export default {
 				}
 
 				const text = sourceCode.getText(node);
-				const nodeStartOffset = node.position.start.offset;
 
-				const missingSpace = findMissingSpaceBeforeClosingHash(text);
-				if (missingSpace) {
-					context.report({
-						loc: {
-							start: sourceCode.getLocFromIndex(
-								nodeStartOffset + missingSpace.beforeHashIdx,
-							),
-							end: sourceCode.getLocFromIndex(
-								nodeStartOffset + missingSpace.endIdx,
-							),
-						},
-						messageId: "missingSpace",
-						data: { position: "before" },
-						fix(fixer) {
-							return fixer.insertTextBeforeRange(
-								[
-									nodeStartOffset +
-										missingSpace.closingHashIdx,
-									nodeStartOffset +
-										missingSpace.closingHashIdx +
-										1,
-								],
-								" ",
-							);
-						},
-					});
+				/** @type {RegExpExecArray | null} */
+				let match;
+
+				while (
+					(match = trailingAtxHeadingHashPattern.exec(text)) !== null
+				) {
+					const { spaces, hashes } = match.groups;
+
+					if (spaces.length === 0) {
+						const startOffset =
+							node.position.start.offset +
+							match.index +
+							spaces.length;
+						const endOffset = startOffset + hashes.length;
+
+						context.report({
+							loc: {
+								start: sourceCode.getLocFromIndex(
+									startOffset - 1,
+								),
+								end: sourceCode.getLocFromIndex(endOffset),
+							},
+							messageId: "missingSpace",
+							data: { position: "before" },
+							fix(fixer) {
+								return fixer.insertTextBeforeRange(
+									[startOffset, startOffset + 1],
+									" ",
+								);
+							},
+						});
+					}
 				}
 			},
 
@@ -139,7 +118,7 @@ export default {
 				) {
 					const { hashes } = match.groups;
 					const startOffset =
-						match.index + node.position.start.offset;
+						node.position.start.offset + match.index;
 					const endOffset = startOffset + hashes.length;
 
 					context.report({
