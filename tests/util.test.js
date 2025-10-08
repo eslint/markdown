@@ -36,12 +36,30 @@ describe("util", () => {
 			);
 		});
 
-		it("should return true if the pattern matches any line in multiline frontmatter", () => {
+		it("should return true if the pattern matches any line in multiline frontmatter (LF)", () => {
 			const frontmatter = [
 				"description: Test",
 				"title: My Document",
 				"author: xbinaryx",
 			].join("\n");
+			assert.strictEqual(frontmatterHasTitle(frontmatter, pattern), true);
+		});
+
+		it("should return true if the pattern matches any line in multiline frontmatter (CR)", () => {
+			const frontmatter = [
+				"description: Test",
+				"title: My Document",
+				"author: lumirlumir",
+			].join("\r");
+			assert.strictEqual(frontmatterHasTitle(frontmatter, pattern), true);
+		});
+
+		it("should return true if the pattern matches any line in multiline frontmatter (CRLF)", () => {
+			const frontmatter = [
+				"description: Test",
+				"title: My Document",
+				"author: lumirlumir",
+			].join("\r\n");
 			assert.strictEqual(frontmatterHasTitle(frontmatter, pattern), true);
 		});
 
