@@ -166,7 +166,7 @@ export default {
 						});
 					}
 
-					offset += line.length + 1;
+					offset += line.length + 1; // TODO: `+1` should be replaced with the length of the line ending
 				});
 			},
 		};
