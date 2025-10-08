@@ -8,6 +8,12 @@
 //-----------------------------------------------------------------------------
 
 /**
+ * Line ending pattern to match all line endings (CRLF, CR, LF). (CommonMark spec)
+ * @see https://spec.commonmark.org/0.31.2/#line-ending
+ */
+export const lineEndingPattern = /\r\n|[\r\n]/u;
+
+/**
  * CommonMark does not allow any white space between the brackets in a reference link.
  * If that pattern is detected, then it's treated as text and not as a link. This pattern
  * is used to detect that situation.

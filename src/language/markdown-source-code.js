@@ -13,6 +13,7 @@ import {
 	ConfigCommentParser,
 	Directive,
 } from "@eslint/plugin-kit";
+import { lineEndingPattern } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Types
@@ -152,7 +153,7 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 	 * @param {Root} options.ast The root AST node.
 	 */
 	constructor({ text, ast }) {
-		super({ ast, text });
+		super({ ast, text, lineEndingPattern });
 		this.ast = ast;
 
 		// need to traverse the source code to get the inline config nodes
