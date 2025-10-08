@@ -36,12 +36,12 @@ describe("util", () => {
 			);
 		});
 
-		it("should return true if the pattern matches any line in multiline frontmatter (LF)", () => {
+		it("should return true if the pattern matches any line in multiline frontmatter (CRLF)", () => {
 			const frontmatter = [
 				"description: Test",
 				"title: My Document",
-				"author: xbinaryx",
-			].join("\n");
+				"author: lumirlumir",
+			].join("\r\n");
 			assert.strictEqual(frontmatterHasTitle(frontmatter, pattern), true);
 		});
 
@@ -54,12 +54,12 @@ describe("util", () => {
 			assert.strictEqual(frontmatterHasTitle(frontmatter, pattern), true);
 		});
 
-		it("should return true if the pattern matches any line in multiline frontmatter (CRLF)", () => {
+		it("should return true if the pattern matches any line in multiline frontmatter (LF)", () => {
 			const frontmatter = [
 				"description: Test",
 				"title: My Document",
-				"author: lumirlumir",
-			].join("\r\n");
+				"author: xbinaryx",
+			].join("\n");
 			assert.strictEqual(frontmatterHasTitle(frontmatter, pattern), true);
 		});
 
