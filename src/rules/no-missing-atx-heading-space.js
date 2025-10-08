@@ -18,10 +18,9 @@
 // Helpers
 //-----------------------------------------------------------------------------
 
-const leadingAtxHeadingHashPattern = /^(?<hashes>#{1,6})(?:[^# \t]|$)/u;
+const leadingAtxHeadingHashPattern = /^(?<hashes>#{1,6})(?:[^# \t]|$)/gmu;
 const trailingAtxHeadingHashPattern =
 	/(?<![ \t])(?<closingSequenceSpaces>[ \t]*)(?<=(?<!\\)(?:\\{2})*)(?<closingSequence>#+)(?<trailingSpaces>[ \t]*)$/u;
-const newLinePattern = /\r?\n/u;
 
 /**
  * Finds missing space before the closing hashes in an ATX heading.
@@ -133,34 +132,33 @@ export default {
 
 			paragraph(node) {
 				const text = sourceCode.getText(node);
-				const lines = text.split(newLinePattern);
-				let startOffset = node.position.start.offset;
 
-				lines.forEach(line => {
-					const match = leadingAtxHeadingHashPattern.exec(line);
+				/** @type {RegExpExecArray | null} */
+				let match;
 
-					if (match) {
-						const { hashes } = match.groups;
-						const endOffset = startOffset + hashes.length;
+				while (
+					(match = leadingAtxHeadingHashPattern.exec(text)) !== null
+				) {
+					const { hashes } = match.groups;
+					const startOffset =
+						match.index + node.position.start.offset;
+					const endOffset = startOffset + hashes.length;
 
-						context.report({
-							loc: {
-								start: sourceCode.getLocFromIndex(startOffset),
-								end: sourceCode.getLocFromIndex(endOffset + 1),
-							},
-							messageId: "missingSpace",
-							data: { position: "after" },
-							fix(fixer) {
-								return fixer.insertTextAfterRange(
-									[endOffset - 1, endOffset],
-									" ",
-								);
-							},
-						});
-					}
-
-					startOffset += line.length + 1; // TODO: `+1` should be replaced with the length of the line ending
-				});
+					context.report({
+						loc: {
+							start: sourceCode.getLocFromIndex(startOffset),
+							end: sourceCode.getLocFromIndex(endOffset + 1),
+						},
+						messageId: "missingSpace",
+						data: { position: "after" },
+						fix(fixer) {
+							return fixer.insertTextAfterRange(
+								[endOffset - 1, endOffset],
+								" ",
+							);
+						},
+					});
+				}
 			},
 		};
 	},

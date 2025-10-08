@@ -463,10 +463,24 @@ const invalidTests = [
 			},
 		],
 	},
-	/*
 	{
 		code: "Text before\r\n#Heading with ``` code markers\r\nText after",
 		output: "Text before\r\n# Heading with ``` code markers\r\nText after",
+		errors: [
+			{
+				messageId: "missingSpace",
+				data: { position: "after" },
+				line: 2,
+				column: 1,
+				endLine: 2,
+				endColumn: 3,
+			},
+		],
+	},
+	/*
+	{
+		code: "Text before\r#Heading with ``` code markers\rText after",
+		output: "Text before\r# Heading with ``` code markers\rText after",
 		errors: [
 			{
 				messageId: "missingSpace",
