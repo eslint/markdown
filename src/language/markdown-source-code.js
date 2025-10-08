@@ -13,15 +13,15 @@ import {
 	ConfigCommentParser,
 	Directive,
 } from "@eslint/plugin-kit";
-import { findOffsets } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Types
 //-----------------------------------------------------------------------------
 
 /**
+ * @import { Position } from "unist";
  * @import { Root, Node, Html } from "mdast";
- * @import { TraversalStep, SourceLocation, FileProblem, DirectiveType, RulesConfig } from "@eslint/core";
+ * @import { TraversalStep, FileProblem, DirectiveType, RulesConfig } from "@eslint/core";
  * @import { MarkdownLanguageOptions } from "../types.js";
  */
 
@@ -31,7 +31,7 @@ import { findOffsets } from "../util.js";
 
 const commentParser = new ConfigCommentParser();
 const configCommentStart =
-	/<!--\s*(?:eslint(?:-enable|-disable(?:(?:-next)?-line)?)?)(?:\s|-->)/u;
+	/<!--\s*eslint(?:-enable|-disable(?:(?:-next)?-line)?)?(?:\s|-->)/u;
 const htmlComment = /<!--(.*?)-->/gsu;
 
 /**
@@ -46,7 +46,7 @@ class InlineConfigComment {
 
 	/**
 	 * The position of the comment in the source code.
-	 * @type {SourceLocation}
+	 * @type {Position}
 	 */
 	position;
 
@@ -54,7 +54,7 @@ class InlineConfigComment {
 	 * Creates a new instance.
 	 * @param {Object} options The options for the instance.
 	 * @param {string} options.value The comment text.
-	 * @param {SourceLocation} options.position The position of the comment in the source code.
+	 * @param {Position} options.position The position of the comment in the source code.
 	 */
 	constructor({ value, position }) {
 		this.value = value.trim();
@@ -65,53 +65,38 @@ class InlineConfigComment {
 /**
  * Extracts inline configuration comments from an HTML node.
  * @param {Html} node The HTML node to extract comments from.
+ * @param {MarkdownSourceCode} sourceCode The Markdown source code object.
  * @returns {Array<InlineConfigComment>} The inline configuration comments found in the node.
  */
-function extractInlineConfigCommentsFromHTML(node) {
+function extractInlineConfigCommentsFromHTML(node, sourceCode) {
 	if (!configCommentStart.test(node.value)) {
 		return [];
 	}
+
+	/** @type {Array<InlineConfigComment>} */
 	const comments = [];
 
+	/** @type {RegExpExecArray} */
 	let match;
 
 	while ((match = htmlComment.exec(node.value))) {
 		if (configCommentStart.test(match[0])) {
-			const comment = match[0];
-
-			// calculate location of the comment inside the node
-			const start = {
-				...node.position.start,
-			};
-
-			const end = {
-				...node.position.start,
-			};
-
-			const {
-				lineOffset: startLineOffset,
-				columnOffset: startColumnOffset,
-			} = findOffsets(node.value, match.index);
-
-			start.line += startLineOffset;
-			start.column += startColumnOffset;
-			start.offset += match.index;
-
-			const commentLineCount = comment.split("\n").length - 1; // TODO
-
-			end.line = start.line + commentLineCount;
-			end.column =
-				commentLineCount === 0
-					? start.column + comment.length
-					: comment.length - comment.lastIndexOf("\n"); // TODO
-			end.offset = start.offset + comment.length;
+			// calculate offset of the comment inside the node
+			const startOffset = match.index + node.position.start.offset;
+			const endOffset = startOffset + match[0].length;
 
 			comments.push(
 				new InlineConfigComment({
 					value: match[1].trim(),
 					position: {
-						start,
-						end,
+						start: {
+							...sourceCode.getLocFromIndex(startOffset),
+							offset: startOffset,
+						},
+						end: {
+							...sourceCode.getLocFromIndex(endOffset),
+							offset: endOffset,
+						},
 					},
 				}),
 			);
@@ -127,7 +112,7 @@ function extractInlineConfigCommentsFromHTML(node) {
 
 /**
  * Markdown Source Code Object
- * @extends {TextSourceCodeBase<{LangOptions: MarkdownLanguageOptions, RootNode: Root, SyntaxElementWithLoc: Node, ConfigNode: { value: string; position: SourceLocation }}>}
+ * @extends {TextSourceCodeBase<{LangOptions: MarkdownLanguageOptions, RootNode: Root, SyntaxElementWithLoc: Node, ConfigNode: { value: string; position: Position }}>}
  */
 export class MarkdownSourceCode extends TextSourceCodeBase {
 	/**
@@ -167,7 +152,7 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 	 * @param {Root} options.ast The root AST node.
 	 */
 	constructor({ text, ast }) {
-		super({ ast, text, lineEndingPattern: /\n|\r|\r\n/u });
+		super({ ast, text });
 		this.ast = ast;
 
 		// need to traverse the source code to get the inline config nodes
@@ -190,8 +175,8 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 	 */
 	getInlineConfigNodes() {
 		if (!this.#inlineConfigComments) {
-			this.#inlineConfigComments = this.#htmlNodes.flatMap(
-				extractInlineConfigCommentsFromHTML,
+			this.#inlineConfigComments = this.#htmlNodes.flatMap(htmlNode =>
+				extractInlineConfigCommentsFromHTML(htmlNode, this),
 			);
 		}
 
@@ -261,13 +246,13 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 	/**
 	 * Returns inline rule configurations along with any problems
 	 * encountered while parsing the configurations.
-	 * @returns {{problems:Array<FileProblem>,configs:Array<{config:{rules:RulesConfig},loc:SourceLocation}>}} Information
+	 * @returns {{problems:Array<FileProblem>,configs:Array<{config:{rules:RulesConfig},loc:Position}>}} Information
 	 *      that ESLint needs to further process the rule configurations.
 	 */
 	applyInlineConfig() {
 		/** @type {Array<FileProblem>} */
 		const problems = [];
-		/** @type {Array<{config:{rules:RulesConfig},loc:SourceLocation}>} */
+		/** @type {Array<{config:{rules:RulesConfig},loc:Position}>} */
 		const configs = [];
 
 		this.getInlineConfigNodes().forEach(comment => {

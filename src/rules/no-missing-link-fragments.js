@@ -29,7 +29,7 @@ import { htmlCommentPattern } from "../util.js";
 const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
 const customHeadingIdPattern = /\{#(?<id>[^}\s]+)\}\s*$/u;
 const htmlIdNamePattern =
-	/(?<!<)<(?:[^>]+)\s(?:id|name)\s*=\s*["']?(?<id>[^"'\s>]+)["']?/giu;
+	/(?<!<)<[^>]+\s(?:id|name)\s*=\s*["']?(?<id>[^"'\s>]+)["']?/giu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition

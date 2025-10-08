@@ -1,5 +1,66 @@
 # Changelog
 
+## [7.4.0](https://github.com/eslint/markdown/compare/v7.3.0...v7.4.0) (2025-10-06)
+
+
+### Features
+
+* add support for `getLocFromIndex` and `getIndexFromLoc` ([#376](https://github.com/eslint/markdown/issues/376)) ([d634f82](https://github.com/eslint/markdown/commit/d634f820535d68579e62df46a0653ad67d912404))
+* export `MarkdownLanguage` from `index.js` ([#538](https://github.com/eslint/markdown/issues/538)) ([a5d78d5](https://github.com/eslint/markdown/commit/a5d78d5f4f054bb783827ec9d62fd302518572ba))
+
+
+### Bug Fixes
+
+* add `null` check and use `getLocFromIndex` in `require-alt-text` ([#543](https://github.com/eslint/markdown/issues/543)) ([41ae6c8](https://github.com/eslint/markdown/commit/41ae6c850af3e51bde15eeab02ffc1c85a12e539))
+* correct the return type of `applyInlineConfig` ([#548](https://github.com/eslint/markdown/issues/548)) ([d6621a7](https://github.com/eslint/markdown/commit/d6621a744ea601bcaef4a3b74354dca51b1745b7))
+* report locations in `no-multiple-h1` and `require-alt-text` ([#551](https://github.com/eslint/markdown/issues/551)) ([ec30c7d](https://github.com/eslint/markdown/commit/ec30c7d3aed506c13d5a2ac277fbc079427fb0d3))
+* wrong location reporting in `no-invalid-label-refs` ([#545](https://github.com/eslint/markdown/issues/545)) ([e0f7d23](https://github.com/eslint/markdown/commit/e0f7d23a485bc39624b330209c1cb6f904f781c5))
+
+## [7.3.0](https://github.com/eslint/markdown/compare/v7.2.0...v7.3.0) (2025-09-22)
+
+
+### Features
+
+* add allowLabels option to no-missing-label-refs ([#513](https://github.com/eslint/markdown/issues/513)) ([f6d6b76](https://github.com/eslint/markdown/commit/f6d6b767a97f2b648164503b5de0f105a31935d6))
+* add no-reference-like-urls rule ([#433](https://github.com/eslint/markdown/issues/433)) ([65251ec](https://github.com/eslint/markdown/commit/65251ec12b617f62357fe9239b60200973e5d2b7))
+* export types from main entry point ([#520](https://github.com/eslint/markdown/issues/520)) ([915837c](https://github.com/eslint/markdown/commit/915837c6cf72c7ca0c7d7b2f1708698d65e8dc14))
+* fix false positives and negatives for consecutive backslashes ([#490](https://github.com/eslint/markdown/issues/490)) ([3067607](https://github.com/eslint/markdown/commit/3067607753d4ed75b10ca394557c34e502dbacf9))
+
+
+### Bug Fixes
+
+* `exactOptionalPropertyTypes` causes type errors when using plugins ([#524](https://github.com/eslint/markdown/issues/524)) ([15014a4](https://github.com/eslint/markdown/commit/15014a4ad0ec5db1e24ae72a09c1e705c756f006))
+* handle consecutive backslashes in `no-reference-like-urls` ([#523](https://github.com/eslint/markdown/issues/523)) ([762712d](https://github.com/eslint/markdown/commit/762712d699f7962cecadfd906486f681c175ba9a))
+* no-*-definitions rules show original label and identifier ([#515](https://github.com/eslint/markdown/issues/515)) ([f80a9e1](https://github.com/eslint/markdown/commit/f80a9e1d6b505e42491f49fc6ac36eeacd3bdbab))
+* report locations with &lt;CR&gt; linebreaks in `no-reference-like-urls` ([#525](https://github.com/eslint/markdown/issues/525)) ([28723c2](https://github.com/eslint/markdown/commit/28723c2904ccf1450e781dd15473d3ef82fa2502))
+* wrong location reporting in `fenced-code-language` ([#518](https://github.com/eslint/markdown/issues/518)) ([c532194](https://github.com/eslint/markdown/commit/c532194e1c7e0fab4bb9fc9d683fc61d5a1a91c5))
+
+## [7.2.0](https://github.com/eslint/markdown/compare/v7.1.0...v7.2.0) (2025-08-22)
+
+
+### Features
+
+* add allowedIgnoreCase option to no-html ([#500](https://github.com/eslint/markdown/issues/500)) ([06ac53d](https://github.com/eslint/markdown/commit/06ac53d050f0b4e0a407d427790d85db4a1f0462))
+* add checkClosedHeadings option to no-missing-atx-heading-space ([#452](https://github.com/eslint/markdown/issues/452)) ([a9675aa](https://github.com/eslint/markdown/commit/a9675aa81e8bf79f2e865f433b961a201f82eac1))
+* add frontmatterTitle option to heading-increment ([#454](https://github.com/eslint/markdown/issues/454)) ([614ef3e](https://github.com/eslint/markdown/commit/614ef3e0bf539655170f202467119fbbbf8963f6))
+* add no-space-in-emphasis rule ([#403](https://github.com/eslint/markdown/issues/403)) ([e4b8de4](https://github.com/eslint/markdown/commit/e4b8de4494820b5a61beec6564cb4c5f9d72cede))
+* Expose identifiers in messages for no-duplicate-definitions ([#506](https://github.com/eslint/markdown/issues/506)) ([9f54c1b](https://github.com/eslint/markdown/commit/9f54c1b65549b584cbad686f5d488d803a4e3540))
+* expose identifiers in messages for no-empty-definitions ([#507](https://github.com/eslint/markdown/issues/507)) ([738f366](https://github.com/eslint/markdown/commit/738f3660e8f3df250028963547aad840a3145e20))
+* verify identifier data in no-empty-definitions ([#499](https://github.com/eslint/markdown/issues/499)) ([738f366](https://github.com/eslint/markdown/commit/738f3660e8f3df250028963547aad840a3145e20))
+
+
+### Bug Fixes
+
+* allow any type for `meta.docs.recommended` in custom rules ([#502](https://github.com/eslint/markdown/issues/502)) ([604a4b9](https://github.com/eslint/markdown/commit/604a4b97771c3c1c4b45b9999c18dc52bcd8b332))
+* detect errors after comments in no-multiple-h1 and require-alt-text ([#468](https://github.com/eslint/markdown/issues/468)) ([c9de444](https://github.com/eslint/markdown/commit/c9de44424f38d01ecc5a71e95558d2512f8a58ca))
+* false negatives and positives in `no-reversed-media-syntax` ([#473](https://github.com/eslint/markdown/issues/473)) ([c7a4d64](https://github.com/eslint/markdown/commit/c7a4d648a0ae810a55acd4f0b78bd57e8145a513))
+* fenced-code-language highlights only relevant parts ([#487](https://github.com/eslint/markdown/issues/487)) ([bb48ae2](https://github.com/eslint/markdown/commit/bb48ae2592240e53a35cd705691636b2ceeefd12))
+* handle multiline setext headings in `no-duplicate-headings` ([#469](https://github.com/eslint/markdown/issues/469)) ([99beea6](https://github.com/eslint/markdown/commit/99beea674271a5a98ba889fd00d96c3ad282f7e3))
+* improve HTML id/name regex for unquoted values and spaces ([#480](https://github.com/eslint/markdown/issues/480)) ([6c35261](https://github.com/eslint/markdown/commit/6c35261bb1ed925b43537a40909b04225668d5cf))
+* improve no-html rule's tag location reporting ([#491](https://github.com/eslint/markdown/issues/491)) ([5e6e94e](https://github.com/eslint/markdown/commit/5e6e94e0fc030ca4987f0f8067e78a3ec93f65a9))
+* make `meta` property optional in `Block` type ([#461](https://github.com/eslint/markdown/issues/461)) ([15c93a6](https://github.com/eslint/markdown/commit/15c93a69b970db3bac145ad0be80d32dfd9f4285))
+* normalize definition identifiers in no-*-definitions rules ([#488](https://github.com/eslint/markdown/issues/488)) ([b248383](https://github.com/eslint/markdown/commit/b24838360407dd32ceacc9fa8af8a926ce9f7144))
+
 ## [7.1.0](https://github.com/eslint/markdown/compare/v7.0.0...v7.1.0) (2025-07-22)
 
 
