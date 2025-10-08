@@ -134,39 +134,32 @@ export default {
 			paragraph(node) {
 				const text = sourceCode.getText(node);
 				const lines = text.split(newLinePattern);
-				const startColumn = node.position.start.column;
-				let offset = node.position.start.offset;
+				let startOffset = node.position.start.offset;
 
-				lines.forEach((line, idx) => {
+				lines.forEach(line => {
 					const match = leadingAtxHeadingHashPattern.exec(line);
-					const lineNum = node.position.start.line + idx;
 
 					if (match) {
 						const { hashes } = match.groups;
+						const endOffset = startOffset + hashes.length;
 
 						context.report({
 							loc: {
-								start: { line: lineNum, column: startColumn },
-								end: {
-									line: lineNum,
-									column: startColumn + hashes.length + 1,
-								},
+								start: sourceCode.getLocFromIndex(startOffset),
+								end: sourceCode.getLocFromIndex(endOffset + 1),
 							},
 							messageId: "missingSpace",
 							data: { position: "after" },
 							fix(fixer) {
 								return fixer.insertTextAfterRange(
-									[
-										offset + hashes.length - 1,
-										offset + hashes.length,
-									],
+									[endOffset - 1, endOffset],
 									" ",
 								);
 							},
 						});
 					}
 
-					offset += line.length + 1; // TODO: `+1` should be replaced with the length of the line ending
+					startOffset += line.length + 1; // TODO: `+1` should be replaced with the length of the line ending
 				});
 			},
 		};
