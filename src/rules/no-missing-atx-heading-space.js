@@ -90,6 +90,7 @@ export default {
 	},
 
 	create(context) {
+		const { sourceCode } = context;
 		const [{ checkClosedHeadings }] = context.options;
 
 		return {
@@ -98,17 +99,17 @@ export default {
 					return;
 				}
 
-				const text = context.sourceCode.getText(node);
+				const text = sourceCode.getText(node);
 				const nodeStartOffset = node.position.start.offset;
 
 				const missingSpace = findMissingSpaceBeforeClosingHash(text);
 				if (missingSpace) {
 					context.report({
 						loc: {
-							start: context.sourceCode.getLocFromIndex(
+							start: sourceCode.getLocFromIndex(
 								nodeStartOffset + missingSpace.beforeHashIdx,
 							),
-							end: context.sourceCode.getLocFromIndex(
+							end: sourceCode.getLocFromIndex(
 								nodeStartOffset + missingSpace.endIdx,
 							),
 						},
@@ -131,7 +132,7 @@ export default {
 			},
 
 			paragraph(node) {
-				const text = context.sourceCode.getText(node);
+				const text = sourceCode.getText(node);
 				const lines = text.split(newLinePattern);
 				const startColumn = node.position.start.column;
 				let offset = node.position.start.offset;
