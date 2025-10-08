@@ -20,7 +20,7 @@
 
 const leadingAtxHeadingHashPattern = /^(?<hashes>#{1,6})(?:[^# \t]|$)/gmu;
 const trailingAtxHeadingHashPattern =
-	/(?<![ \t])(?<closingSequenceSpaces>[ \t]*)(?<=(?<!\\)(?:\\{2})*)(?<closingSequence>#+)(?<trailingSpaces>[ \t]*)$/u;
+	/(?<![ \t])(?<closingSequenceSpaces>[ \t]*)(?<=(?<!\\)(?:\\{2})*)(?<closingSequence>#+)[ \t]*$/u;
 
 /**
  * Finds missing space before the closing hashes in an ATX heading.
@@ -31,12 +31,10 @@ function findMissingSpaceBeforeClosingHash(text) {
 	const match = trailingAtxHeadingHashPattern.exec(text);
 
 	if (match) {
-		const { closingSequenceSpaces, closingSequence, trailingSpaces } =
-			match.groups;
+		const { closingSequenceSpaces, closingSequence } = match.groups;
 
 		if (closingSequenceSpaces.length === 0) {
-			const closingHashIdx =
-				text.length - (trailingSpaces.length + closingSequence.length);
+			const closingHashIdx = match.index + closingSequenceSpaces.length;
 			const beforeHashIdx = closingHashIdx - 1;
 			const endIdx = closingHashIdx + closingSequence.length;
 			return {
