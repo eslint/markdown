@@ -82,9 +82,7 @@ export default {
 
 					if (spaces.length === 0) {
 						const startOffset =
-							node.position.start.offset +
-							match.index +
-							spaces.length;
+							node.position.start.offset + match.index;
 						const endOffset = startOffset + hashes.length;
 
 						context.report({
