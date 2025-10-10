@@ -50,10 +50,13 @@ export default {
 		return {
 			code(node) {
 				const lineText = sourceCode.lines[node.position.start.line - 1];
+				const fenceLineText = lineText.slice(
+					node.position.start.column - 1,
+				);
 
 				if (mode === "always") {
 					if (node.lang && !node.meta) {
-						const langStart = lineText.indexOf(node.lang);
+						const langIndex = fenceLineText.indexOf(node.lang);
 
 						context.report({
 							loc: {
@@ -62,7 +65,7 @@ export default {
 									line: node.position.start.line,
 									column:
 										node.position.start.column +
-										langStart +
+										langIndex +
 										node.lang.trim().length,
 								},
 							},
@@ -74,19 +77,19 @@ export default {
 				}
 
 				if (node.meta) {
-					const metaStart = lineText.lastIndexOf(node.meta);
+					const metaIndex = fenceLineText.lastIndexOf(node.meta);
 
 					context.report({
 						loc: {
 							start: {
 								line: node.position.start.line,
-								column: node.position.start.column + metaStart,
+								column: node.position.start.column + metaIndex,
 							},
 							end: {
 								line: node.position.start.line,
 								column:
 									node.position.start.column +
-									metaStart +
+									metaIndex +
 									node.meta.trim().length,
 							},
 						},

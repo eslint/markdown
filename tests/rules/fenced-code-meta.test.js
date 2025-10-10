@@ -148,6 +148,30 @@ ruleTester.run("fenced-code-meta", rule, {
 			],
 		},
 		{
+			code: "  ```javascript\nconsole.log('Hello, world!');\n```",
+			errors: [
+				{
+					messageId: "missingMetadata",
+					line: 1,
+					column: 3,
+					endLine: 1,
+					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: "  ~~~javascript\nconsole.log('Hello, world!');\n~~~",
+			errors: [
+				{
+					messageId: "missingMetadata",
+					line: 1,
+					column: 3,
+					endLine: 1,
+					endColumn: 16,
+				},
+			],
+		},
+		{
 			code: dedent`\`\`\`js title="example.js"
 			console.log("Hello, world!");
 			\`\`\``,
@@ -174,6 +198,32 @@ ruleTester.run("fenced-code-meta", rule, {
 					column: 7,
 					endLine: 1,
 					endColumn: 25,
+				},
+			],
+		},
+		{
+			code: "  ```js title='example.js'\nconsole.log('Hello, world!');\n```",
+			options: ["never"],
+			errors: [
+				{
+					messageId: "disallowedMetadata",
+					line: 1,
+					column: 9,
+					endLine: 1,
+					endColumn: 27,
+				},
+			],
+		},
+		{
+			code: "  ~~~js title='example.js'\nconsole.log('Hello, world!');\n~~~",
+			options: ["never"],
+			errors: [
+				{
+					messageId: "disallowedMetadata",
+					line: 1,
+					column: 9,
+					endLine: 1,
+					endColumn: 27,
 				},
 			],
 		},
