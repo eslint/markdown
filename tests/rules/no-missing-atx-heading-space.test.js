@@ -477,7 +477,6 @@ const invalidTests = [
 			},
 		],
 	},
-	/*
 	{
 		code: "Text before\r#Heading with ``` code markers\rText after",
 		output: "Text before\r# Heading with ``` code markers\rText after",
@@ -492,7 +491,6 @@ const invalidTests = [
 			},
 		],
 	},
-	*/
 
 	{
 		code: "   ##Heading 2",
