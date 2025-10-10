@@ -66,6 +66,67 @@ describe("MarkdownSourceCode", () => {
 		sourceCode = new MarkdownSourceCode({ text: markdownText, ast });
 	});
 
+	describe("constructor", () => {
+		it("should create a MarkdownSourceCode instance", () => {
+			assert.strictEqual(
+				sourceCode.constructor.name,
+				"MarkdownSourceCode",
+			);
+			assert.strictEqual(sourceCode.ast, ast);
+			assert.strictEqual(sourceCode.text, markdownText);
+		});
+	});
+
+	describe("lines", () => {
+		it("should parse CRLF line endings", () => {
+			const text = "lumir\r\nlumir";
+			const sourceCodeWithCRLF = new MarkdownSourceCode({
+				text,
+				ast: fromMarkdown(text),
+			});
+
+			assert.deepStrictEqual(sourceCodeWithCRLF.lines, [
+				"lumir",
+				"lumir",
+			]);
+		});
+
+		it("should parse CR line endings", () => {
+			const text = "lumir\rlumir";
+			const sourceCodeWithCR = new MarkdownSourceCode({
+				text,
+				ast: fromMarkdown(text),
+			});
+
+			assert.deepStrictEqual(sourceCodeWithCR.lines, ["lumir", "lumir"]);
+		});
+
+		it("should parse LF line endings", () => {
+			const text = "lumir\nlumir";
+			const sourceCodeWithLF = new MarkdownSourceCode({
+				text,
+				ast: fromMarkdown(text),
+			});
+
+			assert.deepStrictEqual(sourceCodeWithLF.lines, ["lumir", "lumir"]);
+		});
+
+		it("should parse CRLF CR LF line endings", () => {
+			const text = "lumir\r\nlumir\rlumir\nlumir";
+			const sourceCodeWithCRLFCRLF = new MarkdownSourceCode({
+				text,
+				ast: fromMarkdown(text),
+			});
+
+			assert.deepStrictEqual(sourceCodeWithCRLFCRLF.lines, [
+				"lumir",
+				"lumir",
+				"lumir",
+				"lumir",
+			]);
+		});
+	});
+
 	describe("getText()", () => {
 		it("should return the text of the Markdown source code", () => {
 			assert.strictEqual(sourceCode.getText(), markdownText);
