@@ -71,6 +71,18 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 		// Heading
 		"# [ESLint](https://eslint.org/)",
 		"# ![A beautiful sunset](sunset.png)",
+		// Image
+		"![()[]](hi)",
+		"![(hi)[something]](hi)",
+		"![()[]](https://example.com)",
+		// ImageReference
+		"![()[]][ref]\n\n[ref]: https://example.com",
+		"![(hi)[something]][ref]\n\n[ref]: https://example.com",
+		// Link
+		'[()[]](hi "()[]")',
+		"[(hi)[something]](hi)",
+		"[()[]](https://example.com)",
+		"[()[]](https://example.com '()[]')",
 		// TableCell
 		{
 			code: dedent`
@@ -249,6 +261,20 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 					column: 1,
 					endLine: 1,
 					endColumn: 10,
+				},
+			],
+		},
+		{
+			code: "[^1]: !(Footnote alt)[https://example.com]",
+			output: "[^1]: ![Footnote alt](https://example.com)",
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 43,
 				},
 			],
 		},
