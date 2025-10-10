@@ -2,6 +2,7 @@ on:
     push:
         branches:
             - main
+
 name: release-please
 jobs:
     release-please:
@@ -21,14 +22,17 @@ jobs:
                   node-version: lts/*
                   registry-url: https://registry.npmjs.org
               if: ${{ steps.release.outputs.release_created }}
+
+              # npm 11.5.1 or later is required so update to latest to be sure
+            - name: Update npm
+              run: npm install -g npm@latest
+
             - name: Publish to npm
               run: |
                   npm install
-                  npm run build --if-present
                   npm publish --provenance
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
               if: ${{ steps.release.outputs.release_created }}
+
             - name: Publish to JSR
               run: |
                   npm run build --if-present
