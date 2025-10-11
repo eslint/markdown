@@ -164,7 +164,7 @@ function getBlockRangeMap(text, node, comments) {
 	 * line.
 	 */
 	const code = text.slice(startOffset, node.position.end.offset);
-	const lines = code.split("\n"); // TODO
+	const lines = code.split("\n");
 
 	/*
 	 * The parser trims leading whitespace from each line of code within the
@@ -344,7 +344,7 @@ function preprocess(sourceText, filename) {
 
 		return {
 			filename: fileNameFromMeta(block) ?? `${index}.${fileExtension}`,
-			text: [...block.comments, block.value, ""].join("\n"), // TODO
+			text: [...block.comments, block.value, ""].join("\n"),
 		};
 	});
 }
@@ -375,7 +375,7 @@ function adjustFix(block, fix) {
 				return range + block.rangeMap[i - 1].md;
 			})
 		),
-		text: fix.text.replace(/\n/gu, `\n${block.baseIndentText}`), // TODO
+		text: fix.text.replace(/\n/gu, `\n${block.baseIndentText}`),
 	};
 }
 
@@ -386,7 +386,7 @@ function adjustFix(block, fix) {
  */
 function adjustBlock(block) {
 	const leadingCommentLines = block.comments.reduce(
-		(count, comment) => count + comment.split("\n").length, // TODO
+		(count, comment) => count + comment.split("\n").length,
 		0,
 	);
 
