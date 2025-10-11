@@ -86,6 +86,7 @@
     "lint-staged": "^15.2.9",
     "mocha": "^11.6.0",
     "prettier": "^3.3.3",
+    "semver": "^7.7.3",
     "typescript": "^5.9.2",
     "yorkie": "^2.0.0"
   },
