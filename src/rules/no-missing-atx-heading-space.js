@@ -20,7 +20,7 @@
 
 const leadingAtxHeadingHashPattern = /^(?<hashes>#{1,6})(?:[^# \t]|$)/gmu;
 const trailingAtxHeadingHashPattern =
-	/(?<![ \t])(?<spaces>[ \t]*)(?<=(?<!\\)(?:\\{2})*)(?<hashes>#+)[ \t]*$/gu;
+	/(?<![ \t])(?<spaces>[ \t]*)(?<=(?<!\\)(?:\\{2})*)(?<hashes>#+)[ \t]*$/u;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -71,38 +71,35 @@ export default {
 				}
 
 				const text = sourceCode.getText(node);
+				const match = trailingAtxHeadingHashPattern.exec(text);
 
-				/** @type {RegExpExecArray | null} */
-				let match;
-
-				while (
-					(match = trailingAtxHeadingHashPattern.exec(text)) !== null
-				) {
-					const { spaces, hashes } = match.groups;
-
-					if (spaces.length === 0) {
-						const startOffset =
-							node.position.start.offset + match.index;
-						const endOffset = startOffset + hashes.length;
-
-						context.report({
-							loc: {
-								start: sourceCode.getLocFromIndex(
-									startOffset - 1,
-								),
-								end: sourceCode.getLocFromIndex(endOffset),
-							},
-							messageId: "missingSpace",
-							data: { position: "before" },
-							fix(fixer) {
-								return fixer.insertTextBeforeRange(
-									[startOffset, startOffset + 1],
-									" ",
-								);
-							},
-						});
-					}
+				if (match === null) {
+					return;
 				}
+
+				const { spaces, hashes } = match.groups;
+
+				if (spaces.length > 0) {
+					return;
+				}
+
+				const startOffset = node.position.start.offset + match.index;
+				const endOffset = startOffset + hashes.length;
+
+				context.report({
+					loc: {
+						start: sourceCode.getLocFromIndex(startOffset - 1),
+						end: sourceCode.getLocFromIndex(endOffset),
+					},
+					messageId: "missingSpace",
+					data: { position: "before" },
+					fix(fixer) {
+						return fixer.insertTextBeforeRange(
+							[startOffset, startOffset + 1],
+							" ",
+						);
+					},
+				});
 			},
 
 			paragraph(node) {
