@@ -62,6 +62,7 @@ const validHeadings = [
 	"Not a heading",
 	"This is a paragraph with a #hashtag",
 	"Text with # in the middle",
+	"foo\u2028\u2028#Bar\u2029\u2029#Baz", // with line and paragraph separators
 
 	// 7. Code blocks containing hash symbols
 	// 7.1 Fenced code blocks
