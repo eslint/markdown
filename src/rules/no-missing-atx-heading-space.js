@@ -18,7 +18,8 @@
 // Helpers
 //-----------------------------------------------------------------------------
 
-const leadingAtxHeadingHashPattern = /^(?<hashes>#{1,6})(?:[^# \t]|$)/gmu;
+const leadingAtxHeadingHashPattern =
+	/(?:^|(?<=\r\n)|(?<=[\r\n]))(?<hashes>#{1,6})(?:[^# \t]|$)/gu;
 const trailingAtxHeadingHashPattern =
 	/(?<![ \t])(?<spaces>[ \t]*)(?<=(?<!\\)(?:\\{2})*)(?<hashes>#+)[ \t]*$/u;
 
