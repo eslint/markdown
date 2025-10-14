@@ -5,6 +5,7 @@
 Starting with v6, `@eslint/markdown` officially replaced `eslint-plugin-markdown`.
 You can take the following steps to migrate from the old package.
 
+<!-- eslint-disable-next-line markdown/no-missing-label-refs -- This should be fixed in https://github.com/eslint/markdown/issues/294 -->
 > [!NOTE]
 > `@eslint/markdown` requires that you're on at least ESLint v9.
 
@@ -48,7 +49,7 @@ export default defineConfig([
   // your other configs
 ]);
 ```
-
+<!-- eslint-disable-next-line markdown/no-missing-label-refs -- This should be fixed in https://github.com/eslint/markdown/issues/294 -->
 [!IMPORTANT]
 > Because this plugin uses a new language to power its linting, you may need to update the other configs you're using so that you limit those to only apply to `js / ts` files.
 > Otherwise, those rules will be applied to markdown files now, too, which can lead to unexpected failures.
@@ -98,7 +99,7 @@ export default defineConfig([
 ]);
 
 ```
-
+<!-- eslint-disable-next-line markdown/no-missing-label-refs -- This should be fixed in https://github.com/eslint/markdown/issues/294 -->
 [!IMPORTANT]
 > Because this plugin uses a new language to power its linting, you may need to update the other configs you're using so that you limit those to only apply to `js / ts` files.
 > Otherwise, those rules will be applied to markdown files now, too, which can lead to unexpected failures.
