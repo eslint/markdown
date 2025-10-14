@@ -47,14 +47,14 @@ jobs:
             matrix:
                 os: [ubuntu-latest]
                 eslint: [9]
-                node: [25.x, 24.x, 22.x, 20.x, 18.x, "18.18.0"]
+                node: [25.x, 24.x, 22.x, 20.x, "20.19.0"]
                 include:
                     - os: windows-latest
                       eslint: 9
-                      node: 20
+                      node: lts/*
                     - os: macOS-latest
                       eslint: 9
-                      node: 20
+                      node: lts/*
         runs-on: ${{ matrix.os }}
         steps:
             - name: Checkout
