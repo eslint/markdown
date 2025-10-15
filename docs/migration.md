@@ -57,20 +57,6 @@ export default defineConfig([
 
 ```
 
-If you were previously applying rules from other languages to code blocks within your markdown files, you can use this plugin's `processor` config to still allow for that.
-
-```js
-// eslint.config.js
-import { defineConfig } from "eslint/config";
-import markdown from "@eslint/markdown";
-
-export default defineConfig([
-  markdown.configs.recommended,
-  markdown.configs.processor,
-
-  // your other configs
-]);
-```
 <!-- eslint-disable-next-line markdown/no-missing-label-refs -- This should be fixed in https://github.com/eslint/markdown/issues/294 -->
 > [!IMPORTANT]
 > Because this plugin uses a new language to power its linting, you may need to update the other configs you're using so that you limit those to only apply to `js / ts` files.
@@ -94,6 +80,25 @@ export default defineConfig([
   markdown.configs.recommended,
 ]);
 ```
+
+If you were previously applying rules from other languages to code blocks within your markdown files, you can use this plugin's `processor` config to still allow for that.
+
+```js
+// eslint.config.js
+import { defineConfig } from "eslint/config";
+import markdown from "@eslint/markdown";
+
+export default defineConfig([
+  markdown.configs.processor,
+
+  // your other configs
+]);
+```
+
+<!-- eslint-disable-next-line markdown/no-missing-label-refs -- This should be fixed in https://github.com/eslint/markdown/issues/294 -->
+> [!WARNING]
+> It is not currently possible to use both the language-based `recommended` config and the processor-based `processor` config, due to a limitation in ESLint core.
+> We hope at some point in the future the core will have a solution for this.
 
 #### Rules Only
 
@@ -148,7 +153,7 @@ export default defineConfig([
     },
     language: "markdown/commonmark",
     rules: {
-    "markdown/no-html": "error",
+      "markdown/no-html": "error",
     },
   },
 ]);
