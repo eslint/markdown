@@ -220,6 +220,10 @@ export default defineConfig([
 | ------------------------------------------- | ----------------------------------------------------------------------------------- |
 | [`markdown`](./docs/processors/markdown.md) | Extract fenced code blocks from the Markdown code so they can be linted separately. |
 
+## Migration from `eslint-plugin-markdown`
+
+See [Migration](./docs/migration.md#from-eslint-plugin-markdown).
+
 ## Editor Integrations
 
 ### VSCode
