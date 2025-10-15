@@ -52,8 +52,13 @@ import { defineConfig } from "eslint/config";
 import markdown from "@eslint/markdown";
 
 export default defineConfig([
-	markdown.configs.recommended,
-
+	{
+		files: ["**/*.md"],
+		plugins: {
+			markdown,
+		},
+		extends: ["markdown/recommended"],
+	},
 	// your other configs here
 ]);
 ```

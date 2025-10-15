@@ -11,30 +11,8 @@ You can take the following steps to migrate from the old package.
 
 ### Update dependencies
 
-```sh
-pnpm remove eslint-plugin-markdown
-pnpm add -D @eslint/markdown
-
-# or
-
-npm remove eslint-plugin-markdown
-npm add -D @eslint/markdown
-
-# or
-
-yarn remove eslint-plugin-markdown
-yarn add -D @eslint/markdown
-
-# or
-
-bun remove eslint-plugin-markdown
-bun add -D @eslint/markdown
-
-# or
-
-deno remove eslint-plugin-markdown
-deno add jsr:@eslint/markdown
-```
+- `npm remove eslint-plugin-markdown`
+- `npm add -D @eslint/markdown`
 
 ### Update `eslint.config.js/ts`
 
@@ -50,7 +28,14 @@ import { defineConfig } from "eslint/config";
 
 export default defineConfig([
 - ...markdown.configs.recommended,
-+ markdown.configs.recommended,
++ {
++   name: "your-project/markdown-rules",
++   files: ["**/*.md"],
++   plugins: {
++     markdown
++   },
++   extends: ["markdown/recommended"]
+  },
 
   // your other configs
 ]);
@@ -77,7 +62,14 @@ export default defineConfig([
     },
     extends: ["js/recommended"],
   },
-  markdown.configs.recommended,
+  {
+    name: "your-project/markdown-rules",
+    files: ["**/*.md"],
+    plugins: {
+      markdown
+    },
+    extends: ["markdown/recommended"]
+  },
 ]);
 ```
 
@@ -89,8 +81,14 @@ import { defineConfig } from "eslint/config";
 import markdown from "@eslint/markdown";
 
 export default defineConfig([
-  markdown.configs.processor,
-
+  {
+    name: "your-project/markdown-processor",
+    files: ["**/*.md"],
+    plugins: {
+      markdown
+    },
+    extends: ["markdown/processor"]
+  },
   // your other configs
 ]);
 ```
