@@ -7,12 +7,34 @@ You can take the following steps to migrate from the old package.
 
 <!-- eslint-disable-next-line markdown/no-missing-label-refs -- This should be fixed in https://github.com/eslint/markdown/issues/294 -->
 > [!NOTE]
-> `@eslint/markdown` requires that you're on at least ESLint v9.
+> `@eslint/markdown` requires that you're on at least ESLint v9.15.0.
 
 ### Update dependencies
 
-- `pnpm remove eslint-plugin-markdown`
-- `pnpm add -D @eslint/markdown`
+```sh
+pnpm remove eslint-plugin-markdown
+pnpm add -D @eslint/markdown
+
+# or
+
+npm remove eslint-plugin-markdown
+npm add -D @eslint/markdown
+
+# or
+
+yarn remove eslint-plugin-markdown
+yarn add -D @eslint/markdown
+
+# or
+
+bun remove eslint-plugin-markdown
+bun add -D @eslint/markdown
+
+# or
+
+deno remove eslint-plugin-markdown
+deno add jsr:@eslint/markdown
+```
 
 ### Update `eslint.config.js/ts`
 
@@ -50,7 +72,7 @@ export default defineConfig([
 ]);
 ```
 <!-- eslint-disable-next-line markdown/no-missing-label-refs -- This should be fixed in https://github.com/eslint/markdown/issues/294 -->
-[!IMPORTANT]
+> [!IMPORTANT]
 > Because this plugin uses a new language to power its linting, you may need to update the other configs you're using so that you limit those to only apply to `js / ts` files.
 > Otherwise, those rules will be applied to markdown files now, too, which can lead to unexpected failures.
 
@@ -100,7 +122,7 @@ export default defineConfig([
 
 ```
 <!-- eslint-disable-next-line markdown/no-missing-label-refs -- This should be fixed in https://github.com/eslint/markdown/issues/294 -->
-[!IMPORTANT]
+> [!IMPORTANT]
 > Because this plugin uses a new language to power its linting, you may need to update the other configs you're using so that you limit those to only apply to `js / ts` files.
 > Otherwise, those rules will be applied to markdown files now, too, which can lead to unexpected failures.
 
