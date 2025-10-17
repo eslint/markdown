@@ -52,8 +52,13 @@ import { defineConfig } from "eslint/config";
 import markdown from "@eslint/markdown";
 
 export default defineConfig([
-	markdown.configs.recommended,
-
+	{
+		files: ["**/*.md"],
+		plugins: {
+			markdown,
+		},
+		extends: ["markdown/recommended"],
+	},
 	// your other configs here
 ]);
 ```
@@ -219,6 +224,10 @@ export default defineConfig([
 | **Processor Name**                          | **Description**                                                                     |
 | ------------------------------------------- | ----------------------------------------------------------------------------------- |
 | [`markdown`](./docs/processors/markdown.md) | Extract fenced code blocks from the Markdown code so they can be linted separately. |
+
+## Migration from `eslint-plugin-markdown`
+
+See [Migration](./docs/migration.md#from-eslint-plugin-markdown).
 
 ## Editor Integrations
 
