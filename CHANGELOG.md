@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.4.1](https://github.com/eslint/markdown/compare/v7.4.0...v7.4.1) (2025-10-18)
+
+
+### Bug Fixes
+
+* handle CR in `MarkdownSourceCode` and Front Matter util ([#554](https://github.com/eslint/markdown/issues/554)) ([d1ad828](https://github.com/eslint/markdown/commit/d1ad8284736b2747c9be8d64c417da11ca0b3eca))
+
 ## [7.4.0](https://github.com/eslint/markdown/compare/v7.3.0...v7.4.0) (2025-10-06)
 
 
