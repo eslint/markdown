@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.5.0](https://github.com/eslint/markdown/compare/v7.4.1...v7.5.0) (2025-10-22)
+
+
+### Features
+
+* handle CR and CRLF in `no-missing-atx-heading-space` ([#555](https://github.com/eslint/markdown/issues/555)) ([a869d98](https://github.com/eslint/markdown/commit/a869d98ba85eecadd3b11c9fafaa07ee9b1f6a62))
+
 ## [7.4.1](https://github.com/eslint/markdown/compare/v7.4.0...v7.4.1) (2025-10-20)
 
 
