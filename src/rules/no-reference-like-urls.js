@@ -27,7 +27,7 @@ import { normalizeIdentifier } from "micromark-util-normalize-identifier";
 
 /** Pattern to match both inline links: `[text](url)` and images: `![alt](url)`, with optional title */
 const linkOrImagePattern =
-	/(?<imageBang>!)?\[(?<label>(?:\\.|[^()\\]|\([\s\S]*\))*?)\]\((?<destination>[ \t]*(?:\r\n?|\n)?(?<![ \t])[ \t]*(?:<[^>]*>|[^ \t()]+))(?:[ \t]*(?:\r\n?|\n)?(?<![ \t])[ \t]*(?<title>"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*(?:\r\n?|\n)?(?<![ \t])[ \t]*\)$/u;
+	/\[(?<label>(?:\\.|[^()\\]|\([\s\S]*\))*?)\]\((?<destination>[ \t]*\r?\n?(?<![ \t])[ \t]*(?:<[^>]*>|[^ \t()]+))(?:[ \t]*\r?\n?(?<![ \t])[ \t]*(?:"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*\r?\n?(?<![ \t])[ \t]*\)$/u;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -75,17 +75,9 @@ export default {
 
 					const match = linkOrImagePattern.exec(text);
 					if (match !== null) {
-						const {
-							imageBang,
-							label,
-							destination,
-							title: titleRaw,
-						} = match.groups;
-						const title = titleRaw?.slice(1, -1);
-
-						const isImage = !!imageBang;
-						const type = isImage ? "image" : "link";
-						const prefix = isImage ? "!" : "";
+						const { label, destination } = match.groups;
+						const { type, title } = node;
+						const prefix = type === "image" ? "!" : "";
 						const url =
 							normalizeIdentifier(destination).toLowerCase();
 
