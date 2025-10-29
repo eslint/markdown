@@ -8,35 +8,11 @@ import type {
 	Data,
 	Literal,
 	Parent,
-	// Nodes
-	Blockquote,
-	Break,
+	Parents,
+	// Node unions
+	Nodes,
 	Code,
-	Definition,
-	Emphasis,
-	Heading,
-	Html,
-	Image,
-	ImageReference,
-	InlineCode,
-	Link,
-	LinkReference,
-	List,
-	ListItem,
-	Paragraph,
 	Root,
-	Strong,
-	Text,
-	ThematicBreak,
-	// Extensions (GFM)
-	Delete,
-	FootnoteDefinition,
-	FootnoteReference,
-	Table,
-	TableCell,
-	TableRow,
-	// Extensions (front matter)
-	Yaml,
 } from "mdast";
 import type {
 	CustomRuleDefinitionType,
@@ -57,6 +33,25 @@ type WithExit<RuleVisitorType extends RuleVisitor> = {
 		| Key
 		| `${Key & string}:exit`]: RuleVisitorType[Key];
 };
+
+/**
+ * Compute the precise parent type for a given node `T`.
+ * - Root has no parent (returns `never`).
+ * - Custom frontmatter nodes (`toml` / `json`) only appear directly under `Root`.
+ * - For nodes, include every parent `P` where `T` is assignable to one of
+ *   `P['children'][number]` (i.e. `T` can appear in `P.children`).
+ */
+type ParentOf<T extends MarkdownNode> = T extends Root
+	? never
+	: T extends Toml | Json
+		? Root
+		: Parents extends infer P
+			? P extends Parent
+				? T extends P["children"][number]
+					? P
+					: never
+				: never
+			: never;
 
 //------------------------------------------------------------------------------
 // Exports
@@ -129,45 +124,19 @@ export interface MarkdownLanguageOptions extends LanguageOptions {
  */
 export type MarkdownLanguageContext = LanguageContext<MarkdownLanguageOptions>;
 
+export type MarkdownSyntaxElement = Node;
+
+type MarkdownNode = Nodes | Json | Toml;
+
+type MarkdownNodeVisitor = {
+	[Node in MarkdownNode as Node["type"]]: Node extends Root
+		? ((node: Node) => void) | undefined
+		: ((node: Node, parent: ParentOf<Node>) => void) | undefined;
+};
+
 export interface MarkdownRuleVisitor
 	extends RuleVisitor,
-		WithExit<
-			{
-				root?(node: Root): void;
-			} & {
-				[NodeType in
-					| Blockquote // Nodes
-					| Break
-					| Code
-					| Definition
-					| Emphasis
-					| Heading
-					| Html
-					| Image
-					| ImageReference
-					| InlineCode
-					| Link
-					| LinkReference
-					| List
-					| ListItem
-					| Paragraph
-					| Strong
-					| Text
-					| ThematicBreak
-					| Delete // Extensions (GFM)
-					| FootnoteDefinition
-					| FootnoteReference
-					| Table
-					| TableCell
-					| TableRow
-					| Yaml // Extensions (front matter)
-					| Toml
-					| Json as NodeType["type"]]?: (
-					node: NodeType,
-					parent?: Parent,
-				) => void;
-			}
-		> {}
+		Partial<WithExit<MarkdownNodeVisitor>> {}
 
 export type MarkdownRuleDefinitionTypeOptions = CustomRuleTypeDefinitions;
 
@@ -178,7 +147,7 @@ export type MarkdownRuleDefinition<
 		LangOptions: MarkdownLanguageOptions;
 		Code: MarkdownSourceCode;
 		Visitor: MarkdownRuleVisitor;
-		Node: Node;
+		Node: MarkdownSyntaxElement;
 	},
 	Options
 >;

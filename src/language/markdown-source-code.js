@@ -23,7 +23,7 @@ import { lineEndingPattern } from "../util.js";
  * @import { Position } from "unist";
  * @import { Root, Node, Html } from "mdast";
  * @import { TraversalStep, FileProblem, DirectiveType, RulesConfig } from "@eslint/core";
- * @import { MarkdownLanguageOptions } from "../types.js";
+ * @import { MarkdownLanguageOptions, MarkdownSyntaxElement } from "../types.js";
  */
 
 //-----------------------------------------------------------------------------
@@ -113,7 +113,7 @@ function extractInlineConfigCommentsFromHTML(node, sourceCode) {
 
 /**
  * Markdown Source Code Object
- * @extends {TextSourceCodeBase<{LangOptions: MarkdownLanguageOptions, RootNode: Root, SyntaxElementWithLoc: Node, ConfigNode: { value: string; position: Position }}>}
+ * @extends {TextSourceCodeBase<{LangOptions: MarkdownLanguageOptions, RootNode: Root, SyntaxElementWithLoc: MarkdownSyntaxElement, ConfigNode: { value: string; position: Position }}>}
  */
 export class MarkdownSourceCode extends TextSourceCodeBase {
 	/**
