@@ -12,9 +12,9 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
             - name: Install Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version: lts/*
             - name: Install Packages
@@ -29,9 +29,9 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
             - name: Install Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version: lts/*
             - name: Install Packages
@@ -47,7 +47,7 @@ jobs:
             matrix:
                 os: [ubuntu-latest]
                 eslint: [9]
-                node: [24.x, 22.x, 20.x, 18.x, "18.18.0"]
+                node: [25.x, 24.x, 22.x, 20.x, 18.x, "18.18.0"]
                 include:
                     - os: windows-latest
                       eslint: 9
@@ -58,9 +58,9 @@ jobs:
         runs-on: ${{ matrix.os }}
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
             - name: Install Node.js ${{ matrix.node }}
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version: ${{ matrix.node }}
             - name: Install Packages
@@ -75,9 +75,9 @@ jobs:
         name: Test Types
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version: "lts/*"
             - name: Install dependencies
@@ -90,8 +90,8 @@ jobs:
         name: Verify JSR Publish
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
+            - uses: actions/checkout@v5
+            - uses: actions/setup-node@v6
               with:
                   node-version: "lts/*"
             - name: Install Packages

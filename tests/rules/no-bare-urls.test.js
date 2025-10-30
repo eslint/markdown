@@ -288,6 +288,32 @@ ruleTester.run("no-bare-urls", rule, {
 			],
 		},
 		{
+			code: "<br> Another violation: https://example.com. <br />",
+			output: "<br> Another violation: <https://example.com>. <br />",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 25,
+					endLine: 1,
+					endColumn: 44,
+				},
+			],
+		},
+		{
+			code: "<br /> Another violation: https://example.com. <br />",
+			output: "<br /> Another violation: <https://example.com>. <br />",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 27,
+					endLine: 1,
+					endColumn: 46,
+				},
+			],
+		},
+		{
 			code: dedent`
             <div>
             
@@ -341,6 +367,65 @@ ruleTester.run("no-bare-urls", rule, {
 					column: 38,
 					endLine: 1,
 					endColumn: 57,
+				},
+			],
+		},
+		{
+			code: "text <>https://example.com</> https://example.com", // Empty tag is not recognized as an HTML node.
+			output: "text <><https://example.com></> <https://example.com>",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 27,
+				},
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 31,
+					endLine: 1,
+					endColumn: 50,
+				},
+			],
+		},
+		{
+			code: "<!DOCTYPE html>\nhttps://example.com",
+			output: "<!DOCTYPE html>\n<https://example.com>",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: "hi <!-- comment --> https://example.com <!-- comment -->",
+			output: "hi <!-- comment --> <https://example.com> <!-- comment -->",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 21,
+					endLine: 1,
+					endColumn: 40,
+				},
+			],
+		},
+		{
+			code: "hi <!-- comment --> https://example.com <!-- comment --> <a>https://example.com</a>",
+			output: "hi <!-- comment --> <https://example.com> <!-- comment --> <a>https://example.com</a>",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 21,
+					endLine: 1,
+					endColumn: 40,
 				},
 			],
 		},

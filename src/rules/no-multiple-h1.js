@@ -7,18 +7,15 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import {
-	findOffsets,
-	frontmatterHasTitle,
-	stripHtmlComments,
-} from "../util.js";
+import { frontmatterHasTitle, stripHtmlComments } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
 /**
- * @import { MarkdownRuleDefinition } from "../types.js";
+ * @import { Yaml } from "mdast";
+ * @import { MarkdownRuleDefinition, Toml, Json } from "../types.js";
  * @typedef {"multipleH1"} NoMultipleH1MessageIds
  * @typedef {[{ frontmatterTitle?: string }]} NoMultipleH1Options
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoMultipleH1Options, MessageIds: NoMultipleH1MessageIds }>} NoMultipleH1RuleDefinition
@@ -70,25 +67,14 @@ export default {
 	},
 
 	create(context) {
+		const { sourceCode } = context;
 		const [{ frontmatterTitle }] = context.options;
 		const titlePattern =
 			frontmatterTitle === "" ? null : new RegExp(frontmatterTitle, "iu");
 		let h1Count = 0;
 
 		return {
-			yaml(node) {
-				if (frontmatterHasTitle(node.value, titlePattern)) {
-					h1Count++;
-				}
-			},
-
-			toml(node) {
-				if (frontmatterHasTitle(node.value, titlePattern)) {
-					h1Count++;
-				}
-			},
-
-			json(node) {
+			"yaml, toml, json"(/** @type {Yaml | Toml | Json} */ node) {
 				if (frontmatterHasTitle(node.value, titlePattern)) {
 					h1Count++;
 				}
@@ -97,45 +83,20 @@ export default {
 			html(node) {
 				const text = stripHtmlComments(node.value);
 
+				/** @type {RegExpExecArray} */
 				let match;
+
 				while ((match = h1TagPattern.exec(text)) !== null) {
 					h1Count++;
 					if (h1Count > 1) {
-						const {
-							lineOffset: startLineOffset,
-							columnOffset: startColumnOffset,
-						} = findOffsets(node.value, match.index);
-
-						const {
-							lineOffset: endLineOffset,
-							columnOffset: endColumnOffset,
-						} = findOffsets(
-							node.value,
-							match.index + match[0].length,
-						);
-
-						const nodeStartLine = node.position.start.line;
-						const nodeStartColumn = node.position.start.column;
-						const startLine = nodeStartLine + startLineOffset;
-						const endLine = nodeStartLine + endLineOffset;
-						const startColumn =
-							(startLine === nodeStartLine
-								? nodeStartColumn
-								: 1) + startColumnOffset;
-						const endColumn =
-							(endLine === nodeStartLine ? nodeStartColumn : 1) +
-							endColumnOffset;
+						const startOffset = // Adjust `h1TagPattern` match index to the full source code.
+							match.index + node.position.start.offset;
+						const endOffset = startOffset + match[0].length;
 
 						context.report({
 							loc: {
-								start: {
-									line: startLine,
-									column: startColumn,
-								},
-								end: {
-									line: endLine,
-									column: endColumn,
-								},
+								start: sourceCode.getLocFromIndex(startOffset),
+								end: sourceCode.getLocFromIndex(endOffset),
 							},
 							messageId: "multipleH1",
 						});

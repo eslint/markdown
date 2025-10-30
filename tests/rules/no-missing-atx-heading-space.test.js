@@ -62,6 +62,7 @@ const validHeadings = [
 	"Not a heading",
 	"This is a paragraph with a #hashtag",
 	"Text with # in the middle",
+	"foo\u2028\u2028#Bar\u2029\u2029#Baz", // with line and paragraph separators
 
 	// 7. Code blocks containing hash symbols
 	// 7.1 Fenced code blocks
@@ -214,6 +215,24 @@ const validHeadings = [
 	},
 	{
 		code: "#Setext Heading#\n---",
+		options: [{ checkClosedHeadings: true }],
+	},
+
+	// 14. Backslash escaping
+	{
+		code: `# Backslash Escaping${"\\".repeat(1)}#`,
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: `# Backslash Escaping${"\\".repeat(3)}#`,
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: `# Backslash Escaping${"\\".repeat(5)}#`,
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: `# Backslash Escaping${"\\".repeat(7)}#`,
 		options: [{ checkClosedHeadings: true }],
 	},
 ];
@@ -434,6 +453,34 @@ const invalidTests = [
 		output: dedent`Text before
 		# Heading with \`\`\` code markers
 		Text after`,
+		errors: [
+			{
+				messageId: "missingSpace",
+				data: { position: "after" },
+				line: 2,
+				column: 1,
+				endLine: 2,
+				endColumn: 3,
+			},
+		],
+	},
+	{
+		code: "Text before\r\n#Heading with ``` code markers\r\nText after",
+		output: "Text before\r\n# Heading with ``` code markers\r\nText after",
+		errors: [
+			{
+				messageId: "missingSpace",
+				data: { position: "after" },
+				line: 2,
+				column: 1,
+				endLine: 2,
+				endColumn: 3,
+			},
+		],
+	},
+	{
+		code: "Text before\r#Heading with ``` code markers\rText after",
+		output: "Text before\r# Heading with ``` code markers\rText after",
 		errors: [
 			{
 				messageId: "missingSpace",
@@ -760,6 +807,8 @@ const invalidTests = [
 			},
 		],
 	},
+
+	// 9. Backslash escaping
 	{
 		code: "# Heading 1\\\\#",
 		output: "# Heading 1\\\\ #",
@@ -772,6 +821,51 @@ const invalidTests = [
 				column: 13,
 				endLine: 1,
 				endColumn: 15,
+			},
+		],
+	},
+	{
+		code: `# Heading 1${"\\".repeat(4)}#`,
+		output: `# Heading 1${"\\".repeat(4)} #`,
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				data: { position: "before" },
+				line: 1,
+				column: 15,
+				endLine: 1,
+				endColumn: 17,
+			},
+		],
+	},
+	{
+		code: `# Heading 1${"\\".repeat(6)}#`,
+		output: `# Heading 1${"\\".repeat(6)} #`,
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				data: { position: "before" },
+				line: 1,
+				column: 17,
+				endLine: 1,
+				endColumn: 19,
+			},
+		],
+	},
+	{
+		code: `# Heading 1${"\\".repeat(8)}#`,
+		output: `# Heading 1${"\\".repeat(8)} #`,
+		options: [{ checkClosedHeadings: true }],
+		errors: [
+			{
+				messageId: "missingSpace",
+				data: { position: "before" },
+				line: 1,
+				column: 19,
+				endLine: 1,
+				endColumn: 21,
 			},
 		],
 	},

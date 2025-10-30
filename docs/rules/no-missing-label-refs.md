@@ -30,6 +30,24 @@ Examples of **incorrect** code for this rule:
 [eslint]
 ```
 
+## Options
+
+The following options are available on this rule:
+
+* `allowLabels: Array<string>` - labels to allow when checking for missing label references. (default: `[]`)
+
+Examples of **correct** code when configured as `"no-missing-label-refs": ["error", { allowLabels: ["eslint"] }]`:
+
+```markdown
+<!-- eslint markdown/no-missing-label-refs: ["error", { allowLabels: ["eslint"] }] -->
+
+[ESLint][eslint]
+
+[eslint][]
+
+[eslint]
+```
+
 ## When Not to Use It
 
 If you aren't concerned with missing label references, you can safely disable this rule.
