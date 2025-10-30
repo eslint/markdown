@@ -4,7 +4,7 @@ Require or disallow metadata for fenced code blocks.
 
 ## Background
 
-Fenced code blocks can include an info string after the opening fence. The first word typically specifies the language (e.g., `js`). Many tools also support additional metadata after the language (separated by whitespace), such as titles or line highlighting parameters. This rule enforces a consistent policy for including such metadata.
+Fenced code blocks can include an [info string](https://spec.commonmark.org/0.31.2/#info-string) after the opening fence. The first word typically specifies the language (e.g., `js`). Many tools also support additional metadata after the language (separated by whitespace), such as titles or line highlighting parameters. This rule enforces a consistent policy for including such metadata.
 
 ## Rule Details
 

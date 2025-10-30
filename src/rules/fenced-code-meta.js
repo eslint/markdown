@@ -66,7 +66,7 @@ export default {
 									column:
 										node.position.start.column +
 										langIndex +
-										node.lang.trim().length,
+										node.lang.length,
 								},
 							},
 							messageId: "missingMetadata",
@@ -90,7 +90,7 @@ export default {
 								column:
 									node.position.start.column +
 									metaIndex +
-									node.meta.trim().length,
+									node.meta.trimEnd().length,
 							},
 						},
 						messageId: "disallowedMetadata",

@@ -318,9 +318,7 @@ ruleTester.run("fenced-code-meta", rule, {
 			],
 		},
 		{
-			code: dedent`\`\`\` js   foo   
-			console.log("Hello, world!");
-			\`\`\``,
+			code: '``` js   foo   \nconsole.log("Hello, world!");\n```',
 			options: ["never"],
 			errors: [
 				{
@@ -333,9 +331,7 @@ ruleTester.run("fenced-code-meta", rule, {
 			],
 		},
 		{
-			code: dedent`~~~ js   foo   
-			console.log("Hello, world!");
-			~~~`,
+			code: '~~~ js   foo   \nconsole.log("Hello, world!");\n~~~',
 			options: ["never"],
 			errors: [
 				{
