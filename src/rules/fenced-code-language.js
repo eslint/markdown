@@ -65,7 +65,7 @@ export default {
 	},
 
 	create(context) {
-		const required = new Set(context.options[0]?.required);
+		const required = new Set(context.options[0].required);
 		const { sourceCode } = context;
 
 		return {
@@ -80,15 +80,28 @@ export default {
 						return;
 					}
 
+					/** @type {number} */
+					let openingCodeFenceEndOffset;
+
+					for (
+						openingCodeFenceEndOffset = node.position.start.offset;
+						fencedCodeCharacters.has(
+							sourceCode.text[openingCodeFenceEndOffset],
+						);
+						openingCodeFenceEndOffset++
+					) {
+						// Find the end offset of the opening code fence.
+					}
+
 					context.report({
 						loc: {
 							start: node.position.start,
 							end: {
 								line: node.position.start.line,
 								column:
-									sourceCode.lines[
-										node.position.start.line - 1
-									].length + 1,
+									node.position.start.column +
+									openingCodeFenceEndOffset -
+									node.position.start.offset,
 							},
 						},
 						messageId: "missingLanguage",
@@ -98,9 +111,9 @@ export default {
 				}
 
 				if (required.size && !required.has(node.lang)) {
-					const lineText =
-						sourceCode.lines[node.position.start.line - 1];
-					const langIndex = lineText.indexOf(node.lang);
+					const langIndex = sourceCode
+						.getText(node)
+						.indexOf(node.lang);
 
 					context.report({
 						loc: {

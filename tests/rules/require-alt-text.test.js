@@ -41,6 +41,7 @@ ruleTester.run("require-alt-text", rule, {
 		'<img src="image.png" alt="" />',
 		"<img src=\"image.png\" alt='' />",
 		'<IMG SRC="image.png" ALT="Descriptive text"/>',
+		'<img src="image.png" aria-hidden alt="alt">',
 		'<img src="image.png" aria-hidden="true"/>',
 		'<img src="image.png" ARIA-HIDDEN="TRUE" />',
 		'<p><img src="image.png" alt="Descriptive text" /></p>',
@@ -305,6 +306,19 @@ ruleTester.run("require-alt-text", rule, {
 					column: 18,
 					endLine: 2,
 					endColumn: 41,
+				},
+			],
+		},
+		{
+			// NOTE: dedent`` converts 👍🚀 to \u{1f44d}\u{1f680} in Bun, causing unexpected report locations
+			code: '<!-- comment with surrogate pairs: 👍🚀 --> <img src="image.png" />',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 45,
+					endLine: 1,
+					endColumn: 68,
 				},
 			],
 		},

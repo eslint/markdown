@@ -138,10 +138,8 @@ ruleTester.run("no-empty-definitions", rule, {
 			code: "[^note]:",
 			options: [{ allowFootnoteDefinitions: ["   note   "] }],
 		},
-		// This test case is skipped for non-Node environments like Bun
-		...(typeof process !== "undefined" &&
-		process.release?.name === "node" &&
-		!process.versions?.bun
+		// This test case is skipped when running on Bun
+		...(!process.versions.bun
 			? [
 					{
 						code: "[Grüsse]: #",
@@ -164,6 +162,7 @@ ruleTester.run("no-empty-definitions", rule, {
 			errors: [
 				{
 					messageId: "emptyDefinition",
+					data: { identifier: "foo", label: "foo" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -172,10 +171,37 @@ ruleTester.run("no-empty-definitions", rule, {
 			],
 		},
 		{
+			code: "[Foo]: #",
+			errors: [
+				{
+					messageId: "emptyDefinition",
+					data: { identifier: "foo", label: "Foo" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: "[  Foo  ]: #",
+			errors: [
+				{
+					messageId: "emptyDefinition",
+					data: { identifier: "foo", label: "Foo" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 13,
+				},
+			],
+		},
+		{
 			code: "[foo]: <>",
 			errors: [
 				{
 					messageId: "emptyDefinition",
+					data: { identifier: "foo", label: "foo" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -191,6 +217,7 @@ ruleTester.run("no-empty-definitions", rule, {
 			errors: [
 				{
 					messageId: "emptyDefinition",
+					data: { identifier: "foo", label: "foo" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -198,6 +225,7 @@ ruleTester.run("no-empty-definitions", rule, {
 				},
 				{
 					messageId: "emptyDefinition",
+					data: { identifier: "bar", label: "bar" },
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -210,6 +238,20 @@ ruleTester.run("no-empty-definitions", rule, {
 			errors: [
 				{
 					messageId: "emptyFootnoteDefinition",
+					data: { identifier: "note", label: "note" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: "[^Note]:",
+			errors: [
+				{
+					messageId: "emptyFootnoteDefinition",
+					data: { identifier: "note", label: "Note" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -222,6 +264,7 @@ ruleTester.run("no-empty-definitions", rule, {
 			errors: [
 				{
 					messageId: "emptyFootnoteDefinition",
+					data: { identifier: "note", label: "note" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -234,6 +277,7 @@ ruleTester.run("no-empty-definitions", rule, {
 			errors: [
 				{
 					messageId: "emptyFootnoteDefinition",
+					data: { identifier: "note", label: "note" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -246,6 +290,7 @@ ruleTester.run("no-empty-definitions", rule, {
 			errors: [
 				{
 					messageId: "emptyFootnoteDefinition",
+					data: { identifier: "a", label: "a" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -253,6 +298,7 @@ ruleTester.run("no-empty-definitions", rule, {
 				},
 				{
 					messageId: "emptyFootnoteDefinition",
+					data: { identifier: "b", label: "b" },
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -265,6 +311,7 @@ ruleTester.run("no-empty-definitions", rule, {
 			errors: [
 				{
 					messageId: "emptyDefinition",
+					data: { identifier: "foo", label: "foo" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -272,6 +319,7 @@ ruleTester.run("no-empty-definitions", rule, {
 				},
 				{
 					messageId: "emptyFootnoteDefinition",
+					data: { identifier: "note", label: "note" },
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -285,6 +333,7 @@ ruleTester.run("no-empty-definitions", rule, {
 			errors: [
 				{
 					messageId: "emptyDefinition",
+					data: { identifier: "foo", label: "foo" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -297,6 +346,7 @@ ruleTester.run("no-empty-definitions", rule, {
 			errors: [
 				{
 					messageId: "emptyFootnoteDefinition",
+					data: { identifier: "foo", label: "foo" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -311,6 +361,7 @@ ruleTester.run("no-empty-definitions", rule, {
 			errors: [
 				{
 					messageId: "emptyFootnoteDefinition",
+					data: { identifier: "foo", label: "foo" },
 					line: 1,
 					column: 1,
 					endLine: 2,
@@ -325,6 +376,7 @@ ruleTester.run("no-empty-definitions", rule, {
 			errors: [
 				{
 					messageId: "emptyFootnoteDefinition",
+					data: { identifier: "foo", label: "foo" },
 					line: 1,
 					column: 1,
 					endLine: 2,
@@ -337,6 +389,7 @@ ruleTester.run("no-empty-definitions", rule, {
 			errors: [
 				{
 					messageId: "emptyDefinition",
+					data: { identifier: "foo", label: "foo" },
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -355,6 +408,7 @@ ruleTester.run("no-empty-definitions", rule, {
 			errors: [
 				{
 					messageId: "emptyDefinition",
+					data: { identifier: "foo", label: "foo" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -373,6 +427,7 @@ ruleTester.run("no-empty-definitions", rule, {
 			errors: [
 				{
 					messageId: "emptyFootnoteDefinition",
+					data: { identifier: "foo", label: "foo" },
 					line: 1,
 					column: 1,
 					endLine: 1,

@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { findOffsets, illegalShorthandTailPattern } from "../util.js";
+import { illegalShorthandTailPattern } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -17,8 +17,9 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
  * @import { Position } from "unist";
  * @import { Text } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
+ * @import { MarkdownSourceCode } from "../language/markdown-source-code.js";
  * @typedef {"notFound"} NoMissingLabelRefsMessageIds
- * @typedef {[]} NoMissingLabelRefsOptions
+ * @typedef {[{ allowLabels?: string[] }]} NoMissingLabelRefsOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoMissingLabelRefsOptions, MessageIds: NoMissingLabelRefsMessageIds }>} NoMissingLabelRefsRuleDefinition
  */
 
@@ -29,22 +30,23 @@ import { findOffsets, illegalShorthandTailPattern } from "../util.js";
 /**
  * Finds missing references in a node.
  * @param {Text} node The node to check.
- * @param {string} nodeText The text of the node.
+ * @param {MarkdownSourceCode} sourceCode The Markdown source code object.
  * @returns {Array<{label:string,position:Position}>} The missing references.
  */
-function findMissingReferences(node, nodeText) {
+function findMissingReferences(node, sourceCode) {
+	/** @type {Array<{label:string,position:Position}>} */
 	const missing = [];
-	const nodeStartLine = node.position.start.line;
-	const nodeStartColumn = node.position.start.column;
+	const nodeText = sourceCode.getText(node);
 
-	/*
-	 * Matches substrings like "[foo]", "[]", "[foo][bar]", "[foo][]", "[][bar]", or "[][]".
+	/**
+	 * Matches substrings like `"[foo]"`, `"[]"`, `"[foo][bar]"`, `"[foo][]"`, `"[][bar]"`, or `"[][]"`.
 	 * `left` is the content between the first brackets. It can be empty.
 	 * `right` is the content between the second brackets. It can be empty, and it can be undefined.
 	 */
 	const labelPattern =
-		/(?<!\\)\[(?<left>(?:\\.|[^[\]])*)(?<!\\)\](?<!\\)(?:\[(?<right>(?:\\.|[^\]])*)(?<!\\)\])?/dgu;
+		/(?<=(?<!\\)(?:\\{2})*)\[(?<left>(?:\\.|[^[\]\\])*)\](?:\[(?<right>(?:\\.|[^\]\\])*)\])?/dgu;
 
+	/** @type {RegExpExecArray} */
 	let match;
 
 	/*
@@ -74,28 +76,14 @@ function findMissingReferences(node, nodeText) {
 			labelIndices = match.indices.groups.left;
 		}
 
-		const { lineOffset: startLineOffset, columnOffset: startColumnOffset } =
-			findOffsets(nodeText, labelIndices[0]);
-		const { lineOffset: endLineOffset, columnOffset: endColumnOffset } =
-			findOffsets(nodeText, labelIndices[1]);
+		const startOffset = labelIndices[0] + node.position.start.offset;
+		const endOffset = labelIndices[1] + node.position.start.offset;
 
 		missing.push({
 			label: label.trim(),
 			position: {
-				start: {
-					line: nodeStartLine + startLineOffset,
-					column:
-						startLineOffset > 0
-							? startColumnOffset + 1
-							: nodeStartColumn + startColumnOffset,
-				},
-				end: {
-					line: nodeStartLine + endLineOffset,
-					column:
-						endLineOffset > 0
-							? endColumnOffset + 1
-							: nodeStartColumn + endColumnOffset,
-				},
+				start: sourceCode.getLocFromIndex(startOffset),
+				end: sourceCode.getLocFromIndex(endOffset),
 			},
 		});
 	}
@@ -118,6 +106,28 @@ export default {
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-missing-label-refs.md",
 		},
 
+		schema: [
+			{
+				type: "object",
+				properties: {
+					allowLabels: {
+						type: "array",
+						items: {
+							type: "string",
+						},
+						uniqueItems: true,
+					},
+				},
+				additionalProperties: false,
+			},
+		],
+
+		defaultOptions: [
+			{
+				allowLabels: [],
+			},
+		],
+
 		messages: {
 			notFound: "Label reference '{{label}}' not found.",
 		},
@@ -125,6 +135,7 @@ export default {
 
 	create(context) {
 		const { sourceCode } = context;
+		const allowLabels = new Set(context.options[0].allowLabels);
 
 		/** @type {Array<{label:string,position:Position}>} */
 		let allMissingReferences = [];
@@ -143,9 +154,16 @@ export default {
 			},
 
 			text(node) {
-				allMissingReferences.push(
-					...findMissingReferences(node, sourceCode.getText(node)),
+				const missingReferences = findMissingReferences(
+					node,
+					sourceCode,
 				);
+
+				for (const missingReference of missingReferences) {
+					if (!allowLabels.has(missingReference.label)) {
+						allMissingReferences.push(missingReference);
+					}
+				}
 			},
 
 			definition(node) {

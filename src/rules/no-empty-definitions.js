@@ -52,9 +52,10 @@ export default {
 		},
 
 		messages: {
-			emptyDefinition: "Unexpected empty definition found.",
+			emptyDefinition:
+				"Unexpected empty definition `{{ identifier }}` (label: `{{ label }}`) found.",
 			emptyFootnoteDefinition:
-				"Unexpected empty footnote definition found.",
+				"Unexpected empty footnote definition `{{ identifier }}` (label: `{{ label }}`) found.",
 		},
 
 		schema: [
@@ -114,6 +115,10 @@ export default {
 					context.report({
 						loc: node.position,
 						messageId: "emptyDefinition",
+						data: {
+							identifier: node.identifier,
+							label: node.label.trim(),
+						},
 					});
 				}
 			},
@@ -132,6 +137,10 @@ export default {
 					context.report({
 						loc: node.position,
 						messageId: "emptyFootnoteDefinition",
+						data: {
+							identifier: node.identifier,
+							label: node.label,
+						},
 					});
 				}
 			},

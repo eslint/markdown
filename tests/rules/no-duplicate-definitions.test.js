@@ -153,10 +153,8 @@ ruleTester.run("no-duplicate-definitions", rule, {
 				},
 			],
 		},
-		// This test case is skipped for non-Node environments like Bun
-		...(typeof process !== "undefined" &&
-		process.release?.name === "node" &&
-		!process.versions?.bun
+		// This test case is skipped when running on Bun
+		...(!process.versions.bun
 			? [
 					{
 						code: `
@@ -185,6 +183,12 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateDefinition",
+					data: {
+						identifier: "mercury",
+						label: "mercury",
+						firstLine: "2",
+						firstLabel: "mercury",
+					},
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -203,6 +207,12 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateDefinition",
+					data: {
+						identifier: "mercury",
+						label: "mercury",
+						firstLine: "2",
+						firstLabel: "mercury",
+					},
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -210,6 +220,12 @@ ruleTester.run("no-duplicate-definitions", rule, {
 				},
 				{
 					messageId: "duplicateDefinition",
+					data: {
+						identifier: "mercury",
+						label: "mercury",
+						firstLine: "2",
+						firstLabel: "mercury",
+					},
 					line: 4,
 					column: 1,
 					endLine: 4,
@@ -217,6 +233,12 @@ ruleTester.run("no-duplicate-definitions", rule, {
 				},
 				{
 					messageId: "duplicateDefinition",
+					data: {
+						identifier: "mercury",
+						label: "mercury",
+						firstLine: "2",
+						firstLabel: "mercury",
+					},
 					line: 5,
 					column: 1,
 					endLine: 5,
@@ -233,6 +255,12 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateDefinition",
+					data: {
+						identifier: "mercury",
+						label: "Mercury",
+						firstLine: "2",
+						firstLabel: "mercury",
+					},
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -249,6 +277,12 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateDefinition",
+					data: {
+						identifier: "mercury",
+						label: "mercury",
+						firstLine: "2",
+						firstLabel: "mercury",
+					},
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -272,6 +306,12 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateDefinition",
+					data: {
+						identifier: "mercury",
+						label: "mercury",
+						firstLine: "2",
+						firstLabel: "mercury",
+					},
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -288,6 +328,12 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateFootnoteDefinition",
+					data: {
+						identifier: "mercury",
+						label: "mercury",
+						firstLine: "2",
+						firstLabel: "mercury",
+					},
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -306,6 +352,12 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateFootnoteDefinition",
+					data: {
+						identifier: "mercury",
+						label: "mercury",
+						firstLine: "2",
+						firstLabel: "mercury",
+					},
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -313,6 +365,12 @@ ruleTester.run("no-duplicate-definitions", rule, {
 				},
 				{
 					messageId: "duplicateFootnoteDefinition",
+					data: {
+						identifier: "mercury",
+						label: "mercury",
+						firstLine: "2",
+						firstLabel: "mercury",
+					},
 					line: 4,
 					column: 1,
 					endLine: 4,
@@ -320,6 +378,12 @@ ruleTester.run("no-duplicate-definitions", rule, {
 				},
 				{
 					messageId: "duplicateFootnoteDefinition",
+					data: {
+						identifier: "mercury",
+						label: "mercury",
+						firstLine: "2",
+						firstLabel: "mercury",
+					},
 					line: 5,
 					column: 1,
 					endLine: 5,
@@ -336,6 +400,12 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateFootnoteDefinition",
+					data: {
+						identifier: "mercury",
+						label: "Mercury",
+						firstLine: "2",
+						firstLabel: "mercury",
+					},
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -359,6 +429,12 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateFootnoteDefinition",
+					data: {
+						identifier: "mercury",
+						label: "mercury",
+						firstLine: "2",
+						firstLabel: "mercury",
+					},
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -384,6 +460,12 @@ ruleTester.run("no-duplicate-definitions", rule, {
 			errors: [
 				{
 					messageId: "duplicateDefinition",
+					data: {
+						identifier: "mercury",
+						label: "mercury",
+						firstLine: "2",
+						firstLabel: "mercury",
+					},
 					line: 12,
 					column: 1,
 					endLine: 12,

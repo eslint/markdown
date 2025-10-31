@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { findOffsets } from "../util.js";
+import { lineEndingPattern } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -16,7 +16,7 @@ import { findOffsets } from "../util.js";
 /**
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"disallowedElement"} NoHtmlMessageIds
- * @typedef {[{ allowed?: string[] }]} NoHtmlOptions
+ * @typedef {[{ allowed?: string[], allowedIgnoreCase?: boolean }]} NoHtmlOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoHtmlOptions, MessageIds: NoHtmlMessageIds }>} NoHtmlRuleDefinition
  */
 
@@ -24,7 +24,8 @@ import { findOffsets } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-const htmlTagPattern = /<([a-z0-9]+(?:-[a-z0-9]+)*)/giu;
+const htmlTagPattern =
+	/<(?<tagName>[a-z0-9]+(?:-[a-z0-9]+)*)(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?>/giu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -55,6 +56,9 @@ export default {
 						},
 						uniqueItems: true,
 					},
+					allowedIgnoreCase: {
+						type: "boolean",
+					},
 				},
 				additionalProperties: false,
 			},
@@ -63,35 +67,51 @@ export default {
 		defaultOptions: [
 			{
 				allowed: [],
+				allowedIgnoreCase: false,
 			},
 		],
 	},
 
 	create(context) {
-		const allowed = new Set(context.options[0]?.allowed);
+		const { sourceCode } = context;
+		const [{ allowed, allowedIgnoreCase }] = context.options;
+
+		/**
+		 * Normalize a tag name based on the `allowedIgnoreCase` option.
+		 * @param {string} tagName The tag name to normalize.
+		 * @returns {string} The normalized tag name.
+		 */
+		function normalizeTagName(tagName) {
+			return allowedIgnoreCase ? tagName.toLowerCase() : tagName;
+		}
+
+		const allowedElements = new Set(allowed.map(normalizeTagName));
 
 		return {
 			html(node) {
+				/** @type {RegExpExecArray} */
 				let match;
 
 				while ((match = htmlTagPattern.exec(node.value)) !== null) {
-					const tagName = match[1];
-					const { lineOffset, columnOffset } = findOffsets(
-						node.value,
-						match.index,
-					);
-					const start = {
-						line: node.position.start.line + lineOffset,
-						column: node.position.start.column + columnOffset,
-					};
-					const end = {
-						line: start.line,
-						column: start.column + match[0].length + 1,
-					};
+					const fullMatch = match[0];
+					const { tagName } = match.groups;
+					const firstNewlineIndex =
+						fullMatch.search(lineEndingPattern);
 
-					if (allowed.size === 0 || !allowed.has(tagName)) {
+					const startOffset = // Adjust `htmlTagPattern` match index to the full source code.
+						match.index + node.position.start.offset;
+					const endOffset =
+						startOffset +
+						(firstNewlineIndex === -1
+							? fullMatch.length
+							: firstNewlineIndex);
+
+					if (!allowedElements.has(normalizeTagName(tagName))) {
 						context.report({
-							loc: { start, end },
+							loc: {
+								start: sourceCode.getLocFromIndex(startOffset),
+								end: sourceCode.getLocFromIndex(endOffset),
+							},
 							messageId: "disallowedElement",
 							data: {
 								name: tagName,

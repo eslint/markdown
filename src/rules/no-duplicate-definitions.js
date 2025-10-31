@@ -14,6 +14,7 @@ import { normalizeIdentifier } from "micromark-util-normalize-identifier";
 //-----------------------------------------------------------------------------
 
 /**
+ * @import { Definition, FootnoteDefinition } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"duplicateDefinition" | "duplicateFootnoteDefinition"} NoDuplicateDefinitionsMessageIds
  * @typedef {[{ allowDefinitions?: string[], allowFootnoteDefinitions?: string[] }]} NoDuplicateDefinitionsOptions
@@ -36,9 +37,10 @@ export default {
 		},
 
 		messages: {
-			duplicateDefinition: "Unexpected duplicate definition found.",
+			duplicateDefinition:
+				"Unexpected duplicate definition `{{ identifier }}` (label: `{{ label }}`) found. First defined at line {{ firstLine }} (label: `{{ firstLabel }}`).",
 			duplicateFootnoteDefinition:
-				"Unexpected duplicate footnote definition found.",
+				"Unexpected duplicate footnote definition `{{ identifier }}` (label: `{{ label }}`) found. First defined at line {{ firstLine }} (label: `{{ firstLabel }}`).",
 		},
 
 		schema: [
@@ -84,11 +86,11 @@ export default {
 			),
 		);
 
-		/** @type {Set<string>} */
-		const definitions = new Set();
+		/** @type {Map<string, Definition>} */
+		const definitions = new Map();
 
-		/** @type {Set<string>} */
-		const footnoteDefinitions = new Set();
+		/** @type {Map<string, FootnoteDefinition>} */
+		const footnoteDefinitions = new Map();
 
 		return {
 			definition(node) {
@@ -97,12 +99,22 @@ export default {
 				}
 
 				if (definitions.has(node.identifier)) {
+					const firstDefinitionNode = definitions.get(
+						node.identifier,
+					);
 					context.report({
 						node,
 						messageId: "duplicateDefinition",
+						data: {
+							identifier: node.identifier,
+							label: node.label.trim(),
+							firstLine:
+								firstDefinitionNode.position.start.line.toString(),
+							firstLabel: firstDefinitionNode.label.trim(),
+						},
 					});
 				} else {
-					definitions.add(node.identifier);
+					definitions.set(node.identifier, node);
 				}
 			},
 
@@ -112,12 +124,22 @@ export default {
 				}
 
 				if (footnoteDefinitions.has(node.identifier)) {
+					const firstFootnoteDefinitionNode = footnoteDefinitions.get(
+						node.identifier,
+					);
 					context.report({
 						node,
 						messageId: "duplicateFootnoteDefinition",
+						data: {
+							identifier: node.identifier,
+							label: node.label,
+							firstLine:
+								firstFootnoteDefinitionNode.position.start.line.toString(),
+							firstLabel: firstFootnoteDefinitionNode.label,
+						},
 					});
 				} else {
-					footnoteDefinitions.add(node.identifier);
+					footnoteDefinitions.set(node.identifier, node);
 				}
 			},
 		};

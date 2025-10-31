@@ -199,10 +199,8 @@ Mercury[^mercury]
 				},
 			],
 		},
-		// This test case is skipped for non-Node environments like Bun
-		...(typeof process !== "undefined" &&
-		process.release?.name === "node" &&
-		!process.versions?.bun
+		// This test case is skipped when running on Bun
+		...(!process.versions.bun
 			? [
 					{
 						code: "[Grüsse]: https://example.com/",
@@ -232,11 +230,43 @@ Mercury[^mercury]
 			errors: [
 				{
 					messageId: "unusedDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 2,
 					column: 1,
 					endLine: 2,
 					endColumn: 40,
+				},
+			],
+		},
+
+		{
+			code: `
+[Mercury]: https://example.com/mercury/
+`,
+			errors: [
+				{
+					messageId: "unusedDefinition",
+					data: { identifier: "mercury", label: "Mercury" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 40,
+				},
+			],
+		},
+
+		{
+			code: `
+[  Mercury  ]: https://example.com/mercury/
+`,
+			errors: [
+				{
+					messageId: "unusedDefinition",
+					data: { identifier: "mercury", label: "Mercury" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 44,
 				},
 			],
 		},
@@ -250,7 +280,7 @@ Mercury[^mercury]
 			errors: [
 				{
 					messageId: "unusedDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -258,7 +288,7 @@ Mercury[^mercury]
 				},
 				{
 					messageId: "unusedDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -266,7 +296,7 @@ Mercury[^mercury]
 				},
 				{
 					messageId: "unusedDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 4,
 					column: 1,
 					endLine: 4,
@@ -289,7 +319,7 @@ Mercury[^mercury]
 			errors: [
 				{
 					messageId: "unusedDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -305,7 +335,23 @@ Mercury[^mercury]
 			errors: [
 				{
 					messageId: "unusedFootnoteDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 28,
+				},
+			],
+		},
+
+		{
+			code: `
+[^Mercury]: Hello, Mercury!
+`,
+			errors: [
+				{
+					messageId: "unusedFootnoteDefinition",
+					data: { identifier: "mercury", label: "Mercury" },
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -323,7 +369,7 @@ Mercury[^mercury]
 			errors: [
 				{
 					messageId: "unusedFootnoteDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -331,7 +377,7 @@ Mercury[^mercury]
 				},
 				{
 					messageId: "unusedFootnoteDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 3,
 					column: 1,
 					endLine: 3,
@@ -339,7 +385,7 @@ Mercury[^mercury]
 				},
 				{
 					messageId: "unusedFootnoteDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 4,
 					column: 1,
 					endLine: 4,
@@ -362,7 +408,7 @@ Mercury[^mercury]
 			errors: [
 				{
 					messageId: "unusedFootnoteDefinition",
-					data: { identifier: "mercury" },
+					data: { identifier: "mercury", label: "mercury" },
 					line: 2,
 					column: 1,
 					endLine: 2,
@@ -391,7 +437,7 @@ I am living on [Earth][earth] and I am going to [Mars][mars].
 			errors: [
 				{
 					messageId: "unusedDefinition",
-					data: { identifier: "jupiter" },
+					data: { identifier: "jupiter", label: "jupiter" },
 					line: 11,
 					column: 1,
 					endLine: 11,
