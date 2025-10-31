@@ -61,6 +61,7 @@
   "scripts": {
     "lint": "eslint && eslint -c eslint.config-content.js",
     "lint:fix": "eslint --fix && eslint --fix -c eslint.config-content.js",
+    "lint:unused": "knip",
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
     "build:rules": "node tools/build-rules.js",
@@ -69,7 +70,7 @@
     "prepare": "npm run build",
     "test": "mocha \"tests/**/*.test.js\" --timeout 30000",
     "test:coverage": "c8 npm test",
-    "test:jsr": "npx jsr@latest publish --dry-run",
+    "test:jsr": "npx -y jsr@latest publish --dry-run",
     "test:types": "tsc -p tests/types/tsconfig.json"
   },
   "devDependencies": {
@@ -83,6 +84,7 @@
     "eslint-config-eslint": "^13.0.0",
     "eslint-plugin-eslint-plugin": "^6.3.2",
     "globals": "^16.4.0",
+    "knip": "^5.66.4",
     "lint-staged": "^15.2.9",
     "mocha": "^11.6.0",
     "prettier": "^3.3.3",
