@@ -72,7 +72,7 @@ export default {
 			},
 
 			html(node) {
-				const text = stripHtmlComments(node.value);
+				const text = stripHtmlComments(sourceCode.getText(node));
 
 				/** @type {RegExpExecArray} */
 				let match;
