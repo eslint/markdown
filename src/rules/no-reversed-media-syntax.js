@@ -9,14 +9,12 @@
 
 /**
  * @import { SourceRange } from "@eslint/core"
- * @import { Heading, Paragraph, TableCell, Html, Image, ImageReference, InlineCode, Link } from "mdast";
+ * @import { Heading, Paragraph, TableCell, Html, Image, ImageReference, InlineCode, LinkReference } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"reversedSyntax"} NoReversedMediaSyntaxMessageIds
  * @typedef {[]} NoReversedMediaSyntaxOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoReversedMediaSyntaxOptions, MessageIds: NoReversedMediaSyntaxMessageIds }>} NoReversedMediaSyntaxRuleDefinition
  */
-
-// TODO: (FootnoteReference), (html), (image), (imageReference), (inlineCode), (link), linkReference
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -104,21 +102,10 @@ export default {
 		}
 
 		return {
-			":matches(heading, paragraph, tableCell) :matches(html, image, imageReference, inlineCode)"(
-				/** @type {Html | Image | ImageReference | InlineCode | Link} */ node,
+			":matches(heading, paragraph, tableCell) :matches(html, image, imageReference, inlineCode, linkReference)"(
+				/** @type {Html | Image | ImageReference | InlineCode | LinkReference} */ node,
 			) {
 				skipRanges.push(sourceCode.getRange(node));
-			},
-
-			":matches(heading, paragraph, tableCell) link"(
-				/** @type {Link} */ node,
-			) {
-				const text = sourceCode.getText(node);
-
-				// Autolinks are not skipped. Only full link syntax like `[text](url)` is skipped.
-				if (text.startsWith("[") && text.endsWith(")")) {
-					skipRanges.push(sourceCode.getRange(node));
-				}
 			},
 
 			":matches(heading, paragraph, tableCell):exit"(

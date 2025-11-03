@@ -81,11 +81,9 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 		// ImageReference
 		"![()[]][ref]\n\n[ref]: https://example.com",
 		"![(hi)[something]][ref]\n\n[ref]: https://example.com",
-		// Link
-		'[()[]](hi "()[]")',
-		"[(hi)[something]](hi)",
-		"[()[]](https://example.com)",
-		"[()[]](https://example.com '()[]')",
+		// LinkReference
+		"[()[]][ref]\n\n[ref]: https://example.com",
+		"[(hi)[something]][ref]\n\n[ref]: https://example.com",
 		// TableCell
 		{
 			code: dedent`
