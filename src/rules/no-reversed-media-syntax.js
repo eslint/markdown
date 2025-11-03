@@ -9,7 +9,7 @@
 
 /**
  * @import { SourceRange } from "@eslint/core"
- * @import { Heading, Paragraph, TableCell, Html, InlineCode } from "mdast";
+ * @import { Heading, Paragraph, TableCell, Html, Image, ImageReference, InlineCode, LinkReference } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"reversedSyntax"} NoReversedMediaSyntaxMessageIds
  * @typedef {[]} NoReversedMediaSyntaxOptions
@@ -102,8 +102,8 @@ export default {
 		}
 
 		return {
-			":matches(heading, paragraph, tableCell) :matches(html, inlineCode)"(
-				/** @type {Html | InlineCode} */ node,
+			":matches(heading, paragraph, tableCell) :matches(html, image, imageReference, inlineCode, linkReference)"(
+				/** @type {Html | Image | ImageReference | InlineCode | LinkReference} */ node,
 			) {
 				skipRanges.push(sourceCode.getRange(node));
 			},
