@@ -31,6 +31,9 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 		"![foo](bar)",
 		"![foo](#bar)",
 		"![foo](http://bar.com)",
+		"(foo)[bar\r\n]",
+		"(foo)[bar\r]",
+		"(foo)[bar\n]",
 		"(foo)[bar](http://bar.com)",
 		"		myObj.getFiles(test)[0]",
 		dedent`

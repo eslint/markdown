@@ -24,7 +24,7 @@
 
 /** Matches reversed link/image syntax like `(text)[url]`, ignoring escaped characters like `\(text\)[url]`. */
 const reversedPattern =
-	/(?<=(?<!\\)(?:\\{2})*)\((?<label>(?:\\.|[^()\\]|\([\s\S]*\))*)\)\[(?<url>(?:\\.|[^\]\\\n])*)\](?!\()/gu;
+	/(?<=(?<!\\)(?:\\{2})*)\((?<label>(?:\\.|[^()\\]|\([\s\S]*\))*)\)\[(?<url>(?:\\.|[^\]\\\r\n])*)\](?!\()/gu;
 
 /**
  * Checks if a match is within any skip range

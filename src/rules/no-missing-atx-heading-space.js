@@ -18,38 +18,10 @@
 // Helpers
 //-----------------------------------------------------------------------------
 
-const leadingAtxHeadingHashPattern = /^(#{1,6})(?:[^# \t]|$)/u;
+const leadingAtxHeadingHashPattern =
+	/(?:^|(?<=[\r\n]))(?<hashes>#{1,6})(?:[^# \t]|$)/gu;
 const trailingAtxHeadingHashPattern =
-	/(?<![ \t])([ \t]*)(?<=(?<!\\)(?:\\{2})*)(#+)([ \t]*)$/u;
-const newLinePattern = /\r?\n/u;
-
-/**
- * Finds missing space before the closing hashes in an ATX heading.
- * @param {string} text The input text to check.
- * @returns {{ closingHashIdx: number, beforeHashIdx: number, endIdx: number } | null} The positions of the closing hashes in the heading, or null if no missing space is found.
- */
-function findMissingSpaceBeforeClosingHash(text) {
-	const match = trailingAtxHeadingHashPattern.exec(text);
-
-	if (match) {
-		const [, closingSequenceSpaces, closingSequence, trailingSpaces] =
-			match;
-
-		if (closingSequenceSpaces.length === 0) {
-			const closingHashIdx =
-				text.length - (trailingSpaces.length + closingSequence.length);
-			const beforeHashIdx = closingHashIdx - 1;
-			const endIdx = closingHashIdx + closingSequence.length;
-			return {
-				closingHashIdx,
-				beforeHashIdx,
-				endIdx,
-			};
-		}
-	}
-
-	return null;
-}
+	/(?<![ \t])(?<spaces>[ \t]*)(?<=(?<!\\)(?:\\{2})*)(?<hashes>#+)[ \t]*$/u;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -90,6 +62,7 @@ export default {
 	},
 
 	create(context) {
+		const { sourceCode } = context;
 		const [{ checkClosedHeadings }] = context.options;
 
 		return {
@@ -98,79 +71,67 @@ export default {
 					return;
 				}
 
-				const text = context.sourceCode.getText(node);
-				const lineNum = node.position.start.line;
-				const startColumn = node.position.start.column;
+				const text = sourceCode.getText(node);
+				const match = trailingAtxHeadingHashPattern.exec(text);
 
-				const missingSpace = findMissingSpaceBeforeClosingHash(text);
-				if (missingSpace) {
+				if (match === null) {
+					return;
+				}
+
+				const { spaces, hashes } = match.groups;
+
+				if (spaces.length > 0) {
+					return;
+				}
+
+				const startOffset = node.position.start.offset + match.index;
+				const endOffset = startOffset + hashes.length;
+
+				context.report({
+					loc: {
+						start: sourceCode.getLocFromIndex(startOffset - 1),
+						end: sourceCode.getLocFromIndex(endOffset),
+					},
+					messageId: "missingSpace",
+					data: { position: "before" },
+					fix(fixer) {
+						return fixer.insertTextBeforeRange(
+							[startOffset, startOffset + 1],
+							" ",
+						);
+					},
+				});
+			},
+
+			paragraph(node) {
+				const text = sourceCode.getText(node);
+
+				/** @type {RegExpExecArray | null} */
+				let match;
+
+				while (
+					(match = leadingAtxHeadingHashPattern.exec(text)) !== null
+				) {
+					const { hashes } = match.groups;
+					const startOffset =
+						node.position.start.offset + match.index;
+					const endOffset = startOffset + hashes.length;
+
 					context.report({
 						loc: {
-							start: {
-								line: lineNum,
-								column:
-									startColumn + missingSpace.beforeHashIdx,
-							},
-							end: {
-								line: lineNum,
-								column: startColumn + missingSpace.endIdx,
-							},
+							start: sourceCode.getLocFromIndex(startOffset),
+							end: sourceCode.getLocFromIndex(endOffset + 1),
 						},
 						messageId: "missingSpace",
-						data: { position: "before" },
+						data: { position: "after" },
 						fix(fixer) {
-							return fixer.insertTextBeforeRange(
-								[
-									node.position.start.offset +
-										missingSpace.closingHashIdx,
-									node.position.start.offset +
-										missingSpace.closingHashIdx +
-										1,
-								],
+							return fixer.insertTextAfterRange(
+								[endOffset - 1, endOffset],
 								" ",
 							);
 						},
 					});
 				}
-			},
-
-			paragraph(node) {
-				const text = context.sourceCode.getText(node);
-				const lines = text.split(newLinePattern);
-				const startColumn = node.position.start.column;
-				let offset = node.position.start.offset;
-
-				lines.forEach((line, idx) => {
-					const match = leadingAtxHeadingHashPattern.exec(line);
-					const lineNum = node.position.start.line + idx;
-
-					if (match) {
-						const hashes = match[1];
-
-						context.report({
-							loc: {
-								start: { line: lineNum, column: startColumn },
-								end: {
-									line: lineNum,
-									column: startColumn + hashes.length + 1,
-								},
-							},
-							messageId: "missingSpace",
-							data: { position: "after" },
-							fix(fixer) {
-								return fixer.insertTextAfterRange(
-									[
-										offset + hashes.length - 1,
-										offset + hashes.length,
-									],
-									" ",
-								);
-							},
-						});
-					}
-
-					offset += line.length + 1;
-				});
 			},
 		};
 	},

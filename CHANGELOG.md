@@ -1,5 +1,20 @@
 # Changelog
 
+## [7.5.0](https://github.com/eslint/markdown/compare/v7.4.1...v7.5.0) (2025-10-22)
+
+
+### Features
+
+* handle CR and CRLF in `no-missing-atx-heading-space` ([#555](https://github.com/eslint/markdown/issues/555)) ([a869d98](https://github.com/eslint/markdown/commit/a869d98ba85eecadd3b11c9fafaa07ee9b1f6a62))
+
+## [7.4.1](https://github.com/eslint/markdown/compare/v7.4.0...v7.4.1) (2025-10-20)
+
+
+### Bug Fixes
+
+* handle CR in `MarkdownSourceCode` and Front Matter util ([#554](https://github.com/eslint/markdown/issues/554)) ([d1ad828](https://github.com/eslint/markdown/commit/d1ad8284736b2747c9be8d64c417da11ca0b3eca))
+* handle CR in rules to follow CommonMark spec ([#493](https://github.com/eslint/markdown/issues/493)) ([20e88fe](https://github.com/eslint/markdown/commit/20e88fe739720fe42cf98a906e1da1c9cb5d8114))
+
 ## [7.4.0](https://github.com/eslint/markdown/compare/v7.3.0...v7.4.0) (2025-10-06)
 
 

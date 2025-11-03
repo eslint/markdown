@@ -62,6 +62,7 @@ const validHeadings = [
 	"Not a heading",
 	"This is a paragraph with a #hashtag",
 	"Text with # in the middle",
+	"foo\u2028\u2028#Bar\u2029\u2029#Baz", // with line and paragraph separators
 
 	// 7. Code blocks containing hash symbols
 	// 7.1 Fenced code blocks
@@ -452,6 +453,34 @@ const invalidTests = [
 		output: dedent`Text before
 		# Heading with \`\`\` code markers
 		Text after`,
+		errors: [
+			{
+				messageId: "missingSpace",
+				data: { position: "after" },
+				line: 2,
+				column: 1,
+				endLine: 2,
+				endColumn: 3,
+			},
+		],
+	},
+	{
+		code: "Text before\r\n#Heading with ``` code markers\r\nText after",
+		output: "Text before\r\n# Heading with ``` code markers\r\nText after",
+		errors: [
+			{
+				messageId: "missingSpace",
+				data: { position: "after" },
+				line: 2,
+				column: 1,
+				endLine: 2,
+				endColumn: 3,
+			},
+		],
+	},
+	{
+		code: "Text before\r#Heading with ``` code markers\rText after",
+		output: "Text before\r# Heading with ``` code markers\rText after",
 		errors: [
 			{
 				messageId: "missingSpace",

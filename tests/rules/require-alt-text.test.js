@@ -258,6 +258,42 @@ ruleTester.run("require-alt-text", rule, {
 			],
 		},
 		{
+			code: '<img\n src="image.png" />',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 2,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: '<img\n  src="image.png" />',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 2,
+					endColumn: 21,
+				},
+			],
+		},
+		{
+			code: '<img\n   src="image.png" />',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 2,
+					endColumn: 22,
+				},
+			],
+		},
+		{
 			code: dedent`
 				<!-- <img src="image.png" /> -->
 				<img src="image.png" />
