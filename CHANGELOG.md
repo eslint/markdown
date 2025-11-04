@@ -1,5 +1,13 @@
 # Changelog
 
+## [7.5.1](https://github.com/eslint/markdown/compare/v7.5.0...v7.5.1) (2025-11-04)
+
+
+### Bug Fixes
+
+* false positives in `no-reversed-media-syntax` ([#521](https://github.com/eslint/markdown/issues/521)) ([bee20dd](https://github.com/eslint/markdown/commit/bee20ddca67c9fa90645838c353f75168c0ba05c))
+* wrong location reporting in `require-alt-text` ([#574](https://github.com/eslint/markdown/issues/574)) ([bd69254](https://github.com/eslint/markdown/commit/bd692540992241411ee865cf3044a83eee5d7c08))
+
 ## [7.5.0](https://github.com/eslint/markdown/compare/v7.4.1...v7.5.0) (2025-10-22)
 
 
