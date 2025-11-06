@@ -13,4 +13,4 @@ dist
 src/build
 
 # Automatically generated files by GitHub Actions workflow
-tools/update-readme.js
+/.shared-workflows
