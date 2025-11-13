@@ -39,7 +39,7 @@ jobs:
             - name: Publish to JSR
               run: |
                   npm run build --if-present
-                  npx jsr publish
+                  npx -y jsr publish
               if: ${{ steps.release.outputs.release_created }}
 
             # Generates the social media post
