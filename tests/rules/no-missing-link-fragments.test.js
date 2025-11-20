@@ -37,6 +37,82 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		[Link](#custom-name)
 		`,
 
+		/*
+
+		// HTML `h1` tags
+		dedent`
+		<h1>heading 1</h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>{ } scss-to-css</h1>
+		
+		[Link](#--scss-to-css)
+		`,
+
+		dedent`
+		<h1>👍 scss-to-css</h1>
+
+		[Link](#-scss-to-css)
+		`,
+
+		dedent`
+		<h1>heading <em>1</em></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <strong><em>1</em></strong></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading  <strong><em>1</em></strong></h1>
+		
+		[Link](#heading--1)
+		`,
+
+		// HTML `h2` tags
+		dedent`
+		<h2>heading 2</h2>
+
+		[Link](#heading-2)
+		`,
+
+		// HTML `h3` tags
+		dedent`
+		<h3>heading 3</h3>
+
+		[Link](#heading-3)
+		`,
+
+		// HTML `h4` tags
+		dedent`
+		<h4>heading 4</h4>
+
+		[Link](#heading-4)
+		`,
+
+		// HTML `h5` tags
+		dedent`
+		<h5>heading 5</h5>
+
+		[Link](#heading-5)
+		`,
+
+		// HTML `h6` tags
+		dedent`
+		<h6>heading 6</h6>
+
+		[Link](#heading-6)
+		`,
+
+		*/
+
 		// HTML anchor tags
 		dedent`
 		<a id="bookmark"></a>
@@ -808,8 +884,6 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		},
 	],
 });
-
-// TODO
 
 // https://github.com/eslint/markdown/pull/463
 it("`no-missing-link-fragments` should not timeout for large inputs", () => {

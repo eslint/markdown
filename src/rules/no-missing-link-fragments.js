@@ -90,6 +90,15 @@ export default {
 		/** @type {string} */
 		let headingText;
 
+		/**
+		 * Normalize a fragment based on the `ignoreCase` option.
+		 * @param {string} fragment The fragment to normalize.
+		 * @returns {string} The normalized fragment.
+		 */
+		function normalizeFragment(fragment) {
+			return ignoreCase ? fragment.toLowerCase() : fragment;
+		}
+
 		return {
 			heading() {
 				headingText = "";
@@ -105,7 +114,7 @@ export default {
 					? customIdMatch.groups.id
 					: headingText;
 				const finalId = slugger.slug(baseId);
-				fragmentIds.add(ignoreCase ? finalId.toLowerCase() : finalId);
+				fragmentIds.add(normalizeFragment(finalId));
 			},
 
 			html(node) {
@@ -120,9 +129,7 @@ export default {
 				)) {
 					const extractedId = match.groups.id;
 					const finalId = slugger.slug(extractedId);
-					fragmentIds.add(
-						ignoreCase ? finalId.toLowerCase() : finalId,
-					);
+					fragmentIds.add(normalizeFragment(finalId));
 				}
 
 				// TODO
@@ -160,9 +167,8 @@ export default {
 						continue;
 					}
 
-					const normalizedFragment = ignoreCase
-						? decodedFragment.toLowerCase()
-						: decodedFragment;
+					const normalizedFragment =
+						normalizeFragment(decodedFragment);
 
 					if (!fragmentIds.has(normalizedFragment)) {
 						context.report({
