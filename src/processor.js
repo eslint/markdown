@@ -8,6 +8,8 @@
 //-----------------------------------------------------------------------------
 
 import { fromMarkdown } from "mdast-util-from-markdown";
+import { frontmatterFromMarkdown } from "mdast-util-frontmatter";
+import { frontmatter } from "micromark-extension-frontmatter";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -268,7 +270,10 @@ const languageToFileExtension = {
  */
 function preprocess(sourceText, filename) {
 	const text = sourceText.startsWith(BOM) ? sourceText.slice(1) : sourceText;
-	const ast = fromMarkdown(text);
+	const ast = fromMarkdown(text, {
+		extensions: [frontmatter(["yaml"])],
+		mdastExtensions: [frontmatterFromMarkdown(["yaml"])],
+	});
 
 	/** @type {Block[]} */
 	const blocks = [];
