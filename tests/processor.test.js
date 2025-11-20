@@ -805,6 +805,97 @@ describe("processor", () => {
 						);
 					});
 				});
+
+				describe("frontmatter", () => {
+					it("should ignore YAML frontmatter and extract code blocks", () => {
+						const code =
+							prefix +
+							[
+								"---",
+								"globs: ['**/*.{ts,tsx,js,jsx}']",
+								"alwaysApply: true",
+								"description: 'Comment best practices'",
+								"---",
+								"",
+								"```js",
+								"var answer = 6 * 7;",
+								"```",
+							].join("\n");
+						const blocks = processor.preprocess(code);
+
+						assert.strictEqual(blocks.length, 1);
+						assert.strictEqual(blocks[0].filename, "0.js");
+						assert.strictEqual(
+							blocks[0].text,
+							"var answer = 6 * 7;\n",
+						);
+					});
+
+					it("should handle frontmatter with multiple code blocks", () => {
+						const code =
+							prefix +
+							[
+								"---",
+								"title: Test",
+								"---",
+								"",
+								"```js",
+								"const a = 1;",
+								"```",
+								"",
+								"```ts",
+								"const b: number = 2;",
+								"```",
+							].join("\n");
+						const blocks = processor.preprocess(code);
+
+						assert.strictEqual(blocks.length, 2);
+						assert.strictEqual(blocks[0].filename, "0.js");
+						assert.strictEqual(blocks[0].text, "const a = 1;\n");
+						assert.strictEqual(blocks[1].filename, "1.ts");
+						assert.strictEqual(
+							blocks[1].text,
+							"const b: number = 2;\n",
+						);
+					});
+
+					it("should handle files without frontmatter (backward compatibility)", () => {
+						const code =
+							prefix +
+							["```js", "var answer = 6 * 7;", "```"].join("\n");
+						const blocks = processor.preprocess(code);
+
+						assert.strictEqual(blocks.length, 1);
+						assert.strictEqual(blocks[0].filename, "0.js");
+						assert.strictEqual(
+							blocks[0].text,
+							"var answer = 6 * 7;\n",
+						);
+					});
+
+					it("should handle frontmatter with HTML comments", () => {
+						const code =
+							prefix +
+							[
+								"---",
+								"title: Test",
+								"---",
+								"",
+								"<!-- eslint-disable no-console -->",
+								"```js",
+								"console.log('test');",
+								"```",
+							].join("\n");
+						const blocks = processor.preprocess(code);
+
+						assert.strictEqual(blocks.length, 1);
+						assert.strictEqual(blocks[0].filename, "0.js");
+						assert.strictEqual(
+							blocks[0].text,
+							"/* eslint-disable no-console */\nconsole.log('test');\n",
+						);
+					});
+				});
 			});
 
 			describe("postprocess", () => {
