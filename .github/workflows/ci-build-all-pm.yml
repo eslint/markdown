@@ -21,7 +21,7 @@ jobs:
         outputs:
             version: ${{ steps.get_version.outputs.version }}
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
             - name: Setup Node.js
               uses: actions/setup-node@v6
               with:

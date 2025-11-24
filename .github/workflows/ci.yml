@@ -12,7 +12,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v5
+              uses: actions/checkout@v6
             - name: Install Node.js
               uses: actions/setup-node@v6
               with:
@@ -29,7 +29,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v5
+              uses: actions/checkout@v6
             - name: Install Node.js
               uses: actions/setup-node@v6
               with:
@@ -58,7 +58,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         steps:
             - name: Checkout
-              uses: actions/checkout@v5
+              uses: actions/checkout@v6
             - name: Install Node.js ${{ matrix.node }}
               uses: actions/setup-node@v6
               with:
@@ -75,7 +75,7 @@ jobs:
         name: Test Types
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
             - name: Setup Node.js
               uses: actions/setup-node@v6
               with:
@@ -90,7 +90,7 @@ jobs:
         name: Verify JSR Publish
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
             - uses: actions/setup-node@v6
               with:
                   node-version: "lts/*"
