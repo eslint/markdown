@@ -6,7 +6,8 @@
       "project": ["**"]
     },
     "examples/*": {
-      "entry": ["**/*.*s"]
+      "entry": ["**/*.*s"],
+      "project": ["**"]
     }
   }
 }
