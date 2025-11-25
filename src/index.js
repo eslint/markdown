@@ -68,11 +68,11 @@ const plugin = {
 			plugins: ["markdown"],
 			overrides: [
 				{
-					files: ["*.md"],
+					files: ["*.{md,mdc}"],
 					processor: "markdown/markdown",
 				},
 				{
-					files: ["**/*.md/**"],
+					files: ["**/*.{md,mdc}/**"],
 					parserOptions: {
 						ecmaFeatures: {
 							// Adding a "use strict" directive at the top of
@@ -91,7 +91,7 @@ const plugin = {
 		recommended: [
 			{
 				name: "markdown/recommended",
-				files: ["**/*.md"],
+				files: ["**/*.{md,mdc}"],
 				language: "markdown/commonmark",
 				plugins: (recommendedPlugins = {}),
 				rules: recommendedRules,
@@ -104,12 +104,12 @@ const plugin = {
 			},
 			{
 				name: "markdown/recommended/processor",
-				files: ["**/*.md"],
+				files: ["**/*.{md,mdc}"],
 				processor: "markdown/markdown",
 			},
 			{
 				name: "markdown/recommended/code-blocks",
-				files: ["**/*.md/**"],
+				files: ["**/*.{md,mdc}/**"],
 				languageOptions: {
 					parserOptions: {
 						ecmaFeatures: {
