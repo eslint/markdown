@@ -28,6 +28,9 @@ ruleTester.run("no-html", rule, {
 		"Hello world!",
 		" 1 < 5",
 		"<!-- comment -->",
+		"<!-- <h1> -->",
+		'<!-- <div id="foo"> -->',
+		"<!-- abcdefg <abcdefg> -->",
 		dedent`\`\`\`html
         <b>Hello world!</b>
         \`\`\``,
