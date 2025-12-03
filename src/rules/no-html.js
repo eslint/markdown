@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { lineEndingPattern } from "../util.js";
+import { lineEndingPattern, stripHtmlComments } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -89,10 +89,12 @@ export default {
 
 		return {
 			html(node) {
+				const text = stripHtmlComments(sourceCode.getText(node));
+
 				/** @type {RegExpExecArray} */
 				let match;
 
-				while ((match = htmlTagPattern.exec(node.value)) !== null) {
+				while ((match = htmlTagPattern.exec(text)) !== null) {
 					const fullMatch = match[0];
 					const { tagName } = match.groups;
 					const firstNewlineIndex =
