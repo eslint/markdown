@@ -41,6 +41,7 @@ const pkg = JSON.parse(
  */
 function initLegacyESLint(fixtureConfigName, options = {}) {
 	return new LegacyESLint({
+		// TODO
 		cwd: path.resolve(__dirname, "./fixtures/"),
 		ignore: false,
 		useEslintrc: false,

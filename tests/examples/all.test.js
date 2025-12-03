@@ -40,7 +40,7 @@ for (const example of examples) {
 							paths: [cwd],
 						}),
 					);
-					const eslint = new FlatESLint({ cwd });
+					const eslint = new FlatESLint({ cwd }); // TODO
 					const results = await eslint.lintFiles(["README.md"]);
 					const readme = results.find(
 						result => path.basename(result.filePath) == "README.md",
