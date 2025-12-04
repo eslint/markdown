@@ -9,8 +9,8 @@
 
 import assert from "node:assert";
 import path from "node:path";
-import { processor } from "../src/processor.js";
 import fs from "node:fs";
+import { processor, setMarkdownProcessorOptions } from "../src/processor.js";
 import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -1099,6 +1099,66 @@ describe("processor", () => {
 	describe("supportsAutofix", () => {
 		it("should equal true", () => {
 			assert.strictEqual(processor.supportsAutofix, true);
+		});
+	});
+
+	describe("materializeCodeBlocks option", () => {
+		const tempRoot = path.resolve(__dirname, ".tmp-markdown-processor");
+
+		afterEach(() => {
+			// Reset processor options to defaults so other tests aren't affected.
+			setMarkdownProcessorOptions({
+				materializeCodeBlocks: false,
+				tempDir: undefined,
+			});
+
+			fs.rmSync(tempRoot, { recursive: true, force: true });
+		});
+
+		it("should not write temp files when materializeCodeBlocks is false", () => {
+			const tempDir = path.join(tempRoot, "off");
+
+			setMarkdownProcessorOptions({
+				materializeCodeBlocks: false,
+				tempDir,
+			});
+
+			const code = ["```ts", "const answer: number = 42;", "```"].join(
+				"\n",
+			);
+
+			processor.preprocess(code, "docs/example.md");
+
+			assert.strictEqual(fs.existsSync(tempDir), false);
+		});
+
+		it("should write temp files when materializeCodeBlocks is true", () => {
+			const tempDir = path.join(tempRoot, "on");
+
+			setMarkdownProcessorOptions({
+				materializeCodeBlocks: true,
+				tempDir,
+			});
+
+			const code = ["```ts", "const answer: number = 42;", "```"].join(
+				"\n",
+			);
+
+			const blocks = processor.preprocess(code, "docs/example.md");
+
+			// Derived from getMaterializedFilePath(): <tempDir>/<mdPath>/<index>_<virtualFilename>
+			const expectedPath = path.join(
+				tempDir,
+				"docs/example.md",
+				"0_0.ts",
+			);
+
+			assert.strictEqual(blocks.length, 1);
+			assert.strictEqual(fs.existsSync(expectedPath), true);
+			assert.strictEqual(
+				fs.readFileSync(expectedPath, "utf8"),
+				blocks[0].text,
+			);
 		});
 	});
 });

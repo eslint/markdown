@@ -104,6 +104,43 @@ export default [
 ];
 ```
 
+### Materializing code blocks as real files (optional)
+
+By default, the Markdown processor treats each fenced code block as a **virtual child file** (for example, `README.md/0.js` or `file.mdc/0.ts`) and does not write any additional files to disk.
+In some setups – especially when integrating with tools that require **real files on disk** (such as TypeScript project services) – it can be useful to also materialize these code blocks as temp files.
+
+You can opt into this behavior from your `eslint.config.*` file by calling the exported `setMarkdownProcessorOptions` function **before** running ESLint:
+
+```js
+// eslint.config.js
+import markdown, { setMarkdownProcessorOptions } from "@eslint/markdown";
+
+setMarkdownProcessorOptions({
+    materializeCodeBlocks: true,
+    // Optional: override the base directory for temp files.
+    // If omitted, a subdirectory of the operating system temp dir is used.
+    tempDir: ".eslint-markdown-temp",
+});
+
+export default [
+    {
+        plugins: {
+            markdown,
+        },
+        files: ["**/*.md"],
+        processor: "markdown/markdown",
+    },
+];
+```
+
+When `tempDir` is **not** provided, the processor uses a subdirectory of the operating system temp directory (for example, `os.tmpdir()/eslint-markdown`) as the base for materialized files.
+This is convenient for ad‑hoc tooling, but for TypeScript project services and other long‑lived setups we **strongly recommend** using a project‑local directory (such as `.eslint-markdown-temp`) and:
+
+- including it explicitly in your `tsconfig` `include`/`files` if needed, and
+- adding it to your VCS ignore list (for example, `.gitignore`).
+
+Using absolute OS‑specific temp paths (for example, `C:/Users/<user>/AppData/Local/Temp/eslint-markdown/**`) in `tsconfig` is discouraged, because such paths are brittle across machines, users, and CI environments.
+
 ## Frequently-Disabled Rules
 
 Some rules that catch mistakes in regular code are less helpful in documentation.

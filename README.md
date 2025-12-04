@@ -225,6 +225,37 @@ export default defineConfig([
 | ------------------------------------------- | ----------------------------------------------------------------------------------- |
 | [`markdown`](./docs/processors/markdown.md) | Extract fenced code blocks from the Markdown code so they can be linted separately. |
 
+### Materializing code blocks as temp files (advanced)
+
+By default, the Markdown processor only creates **virtual child files** for fenced code blocks (for example, `README.md/0.js` or `file.mdc/0.ts`).
+For some integrations – such as typed linting setups that require real files on disk – you can optionally ask the processor to also write each code block to a deterministic temp file.
+
+This behavior is disabled by default and can be enabled from your `eslint.config.*` file:
+
+```js
+// eslint.config.js
+import { defineConfig } from "eslint/config";
+import markdown, { setMarkdownProcessorOptions } from "@eslint/markdown";
+
+// Configure the Markdown processor before running ESLint.
+setMarkdownProcessorOptions({
+	materializeCodeBlocks: true,
+	// Optional: override the base directory for temp files.
+	// If omitted, a subdirectory of the OS temp directory is used.
+	tempDir: ".eslint-markdown-temp",
+});
+
+export default defineConfig([
+	{
+		files: ["**/*.md"],
+		plugins: {
+			markdown,
+		},
+		processor: "markdown/markdown",
+	},
+]);
+```
+
 ## Migration from `eslint-plugin-markdown`
 
 See [Migration](./docs/migration.md#from-eslint-plugin-markdown).

@@ -7,6 +7,9 @@
 // Imports
 //-----------------------------------------------------------------------------
 
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { fromMarkdown } from "mdast-util-from-markdown";
 
 //-----------------------------------------------------------------------------
@@ -22,6 +25,16 @@ import { fromMarkdown } from "mdast-util-from-markdown";
  * @typedef {AST.Range} Range
  */
 
+/**
+ * @typedef {Object} MarkdownProcessorOptions
+ * @property {boolean} [materializeCodeBlocks] When `true`, fenced code blocks
+ * will be written to real temp files on disk in addition to being returned to
+ * ESLint as virtual children. Defaults to `false`.
+ * @property {string} [tempDir] Optional base directory for materialized code
+ * blocks. When not provided, defaults to a subdirectory of the operating
+ * system temp directory (via `os.tmpdir()`).
+ */
+
 //-----------------------------------------------------------------------------
 // Helpers
 //-----------------------------------------------------------------------------
@@ -33,6 +46,91 @@ const UNSATISFIABLE_RULES = new Set([
 const SUPPORTS_AUTOFIX = true;
 
 const BOM = "\uFEFF";
+
+const DEFAULT_TEMP_DIR_NAME = "eslint-markdown";
+
+/**
+ * Runtime options for the processor.
+ * These are intentionally kept module-local and configurable via
+ * `setMarkdownProcessorOptions()` to avoid coupling to ESLint's configuration
+ * model, which does not currently pass options into processors.
+ * @type {Required<Pick<MarkdownProcessorOptions, "materializeCodeBlocks">> & Pick<MarkdownProcessorOptions, "tempDir">}
+ */
+const processorOptions = {
+	materializeCodeBlocks: false,
+	tempDir: undefined,
+};
+
+/**
+ * Gets the base directory for materialized code blocks.
+ * @returns {string} The absolute base directory path.
+ */
+function getMaterializeBaseDir() {
+	const baseDir =
+		processorOptions.tempDir ||
+		path.join(os.tmpdir(), DEFAULT_TEMP_DIR_NAME);
+
+	return path.resolve(baseDir);
+}
+
+/**
+ * Computes a deterministic on-disk path for a materialized code block.
+ * Layout:
+ *   <baseDir>/<sanitizedMarkdownPath>/<index>_<virtualFilename>
+ * @param {string|undefined} markdownFilename The Markdown file's filename as seen by ESLint.
+ * @param {number} index The zero-based index of the code block within the Markdown file.
+ * @param {string} virtualFilename The virtual filename returned to ESLint (e.g., `0.ts` or `src/example.ts`).
+ * @returns {string} Absolute path for the materialized temp file.
+ */
+function getMaterializedFilePath(markdownFilename, index, virtualFilename) {
+	const baseDir = getMaterializeBaseDir();
+
+	// Start with either the provided filename or a synthetic bucket.
+	let relativeMdPath = markdownFilename || "__anonymous__";
+
+	// Strip Windows drive letters and leading separators to keep the path relative.
+	relativeMdPath = relativeMdPath.replace(/^[a-zA-Z]:[\\/]/u, "");
+	relativeMdPath = relativeMdPath.replace(/^[\\/]/u, "");
+
+	// Replace any remaining colon characters to avoid issues on Windows.
+	relativeMdPath = relativeMdPath.replace(/:/gu, "_");
+
+	// Ensure we always have some directory segment.
+	if (!relativeMdPath) {
+		relativeMdPath = "__anonymous__";
+	}
+
+	const markdownDir = path.join(baseDir, relativeMdPath);
+
+	// Use the virtual filename for human-friendly diagnostics, but sanitize
+	// any path separators so that everything stays under `markdownDir`.
+	const safeVirtualName = virtualFilename.replace(/[\\/]/gu, "_");
+	const materializedName = `${index}_${safeVirtualName}`;
+
+	return path.join(markdownDir, materializedName);
+}
+
+/**
+ * Writes a code block to a materialized temp file on disk.
+ * @param {string|undefined} markdownFilename The Markdown file's filename as seen by ESLint.
+ * @param {number} index The zero-based index of the code block within the Markdown file.
+ * @param {string} virtualFilename The virtual filename returned to ESLint.
+ * @param {string} text The block text to write.
+ * @returns {string} The absolute path to the materialized file.
+ */
+function materializeCodeBlock(markdownFilename, index, virtualFilename, text) {
+	const filePath = getMaterializedFilePath(
+		markdownFilename,
+		index,
+		virtualFilename,
+	);
+
+	const dir = path.dirname(filePath);
+	fs.mkdirSync(dir, { recursive: true });
+	fs.writeFileSync(filePath, text, "utf8");
+
+	return filePath;
+}
 
 /**
  * @type {Map<string, Block[]>}
@@ -264,7 +362,7 @@ const languageToFileExtension = {
  * Extracts lintable code blocks from Markdown text.
  * @param {string} sourceText The text of the file.
  * @param {string} filename The filename of the file.
- * @returns {Array<{ filename: string, text: string }>} Source code blocks to lint.
+ * @returns {Array<{ filename: string, text: string, physicalFilename?: string }>} Source code blocks to lint.
  */
 function preprocess(sourceText, filename) {
 	const text = sourceText.startsWith(BOM) ? sourceText.slice(1) : sourceText;
@@ -342,9 +440,32 @@ function preprocess(sourceText, filename) {
 			? languageToFileExtension[language]
 			: language;
 
+		const virtualFilename =
+			fileNameFromMeta(block) ?? `${index}.${fileExtension}`;
+		const blockText = [...block.comments, block.value, ""].join("\n");
+
+		/** @type {string | undefined} */
+		let physicalFilename;
+
+		if (processorOptions.materializeCodeBlocks) {
+			/*
+			 * Best-effort: if materialization fails, it's better to surface the
+			 * underlying I/O problem (misconfigured permissions, invalid
+			 * tempDir, etc.) than to silently continue in a half-configured
+			 * state.
+			 */
+			physicalFilename = materializeCodeBlock(
+				filename,
+				index,
+				virtualFilename,
+				blockText,
+			);
+		}
+
 		return {
-			filename: fileNameFromMeta(block) ?? `${index}.${fileExtension}`,
-			text: [...block.comments, block.value, ""].join("\n"),
+			filename: virtualFilename,
+			text: blockText,
+			...(physicalFilename && { physicalFilename }),
 		};
 	});
 }
@@ -464,6 +585,46 @@ function postprocess(messages, filename) {
 
 		return group.map(adjust).filter(excludeUnsatisfiableRules);
 	});
+}
+
+/**
+ * Updates the runtime options used by the Markdown processor.
+ * This function is intentionally side-effectful and should be called from
+ * your `eslint.config.*` file before running ESLint. It is opt-in and does
+ * not change behavior unless explicitly configured.
+ * @param {MarkdownProcessorOptions} [options] The options to apply.
+ * @throws {Error} When invalid option values are provided.
+ * @returns {void}
+ */
+export function setMarkdownProcessorOptions(options = {}) {
+	if (Object.hasOwn(options, "materializeCodeBlocks")) {
+		const { materializeCodeBlocks } = options;
+
+		if (
+			typeof materializeCodeBlocks !== "boolean" &&
+			typeof materializeCodeBlocks !== "undefined"
+		) {
+			throw new Error(
+				"Invalid markdown processor option: `materializeCodeBlocks` must be a boolean.",
+			);
+		}
+
+		if (typeof materializeCodeBlocks === "boolean") {
+			processorOptions.materializeCodeBlocks = materializeCodeBlocks;
+		}
+	}
+
+	if (Object.hasOwn(options, "tempDir")) {
+		const { tempDir } = options;
+
+		if (tempDir !== undefined && typeof tempDir !== "string") {
+			throw new Error(
+				"Invalid markdown processor option: `tempDir` must be a string when provided.",
+			);
+		}
+
+		processorOptions.tempDir = tempDir;
+	}
 }
 
 export const processor = {
