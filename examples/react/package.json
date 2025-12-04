@@ -5,8 +5,8 @@
     "test": "eslint ."
   },
   "devDependencies": {
-    "@eslint/js": "^9.7.0",
-    "eslint": "^9.7.0",
+    "@eslint/js": ">=10.0.0-alpha.0 <10.0.0 || ^10.0.1",
+    "eslint": ">=10.0.0-alpha.0 <10.0.0 || ^10.0.1",
     "eslint-plugin-react": "^7.35.0",
     "globals": "^13.24.0"
   }
