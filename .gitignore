@@ -12,5 +12,8 @@ pnpm-lock.yaml
 dist
 src/build
 
+# Output of 'npm pack'
+*.tgz
+
 # Automatically generated files by GitHub Actions workflow
 /.shared-workflows
