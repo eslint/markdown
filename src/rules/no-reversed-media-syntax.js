@@ -76,11 +76,8 @@ export default {
 				}
 			},
 
-			":matches(heading, paragraph, tableCell):exit"(
-				/** @type {Heading | Paragraph | TableCell} */ node,
-			) {
+			":matches(heading, paragraph, tableCell):exit"() {
 				const maskedText = buffer.join("");
-				const originalText = sourceCode.getText(node);
 
 				/** @type {RegExpExecArray | null} */
 				let match;
@@ -90,10 +87,10 @@ export default {
 					const startOffset = match.index + nodeStartOffset; // Adjust `reversedPattern` match index to the full source code.
 					const endOffset = startOffset + match[0].length;
 
-					const labelStartOffset = match.index + 1; // skip "("
+					const labelStartOffset = startOffset + 1; // Skip "("
 					const labelEndOffset = labelStartOffset + label.length;
 
-					const urlStartOffset = labelEndOffset + 2; // skip ")["
+					const urlStartOffset = labelEndOffset + 2; // Skip ")["
 					const urlEndOffset = urlStartOffset + url.length;
 
 					context.report({
@@ -105,7 +102,7 @@ export default {
 						fix(fixer) {
 							return fixer.replaceTextRange(
 								[startOffset, endOffset],
-								`[${originalText.slice(labelStartOffset, labelEndOffset)}](${originalText.slice(urlStartOffset, urlEndOffset)})`,
+								`[${sourceCode.text.slice(labelStartOffset, labelEndOffset)}](${sourceCode.text.slice(urlStartOffset, urlEndOffset)})`,
 							);
 						},
 					});
