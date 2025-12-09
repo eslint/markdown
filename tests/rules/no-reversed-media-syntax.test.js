@@ -71,6 +71,9 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 		"text [foo](bar)[foo](bar)[foo](bar) text",
 		"text (text `func()[index]`) text",
 		'hi <span class="foo(bar)[baz]">hi</span>',
+		"( <!-- hi)[ --> ]",
+		'( <img data-custom = ")[" alt="alt"> ]',
+		"( ![image)[]]()",
 		"(`)[`]",
 		"(`)[]`",
 		// Heading
