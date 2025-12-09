@@ -21,7 +21,7 @@
 
 /** Matches reversed link/image syntax like `(text)[url]`, ignoring escaped characters like `\(text\)[url]`. */
 const reversedPattern =
-	/(?<=(?<!\\)(?:\\{2})*)\((?<label>(?:\\.|[^()\\]|\([\s\S]*\))*)\)\[(?<url>(?:\\.|[^\]\\\r\n])*)\](?!\()/dgu;
+	/(?<=(?<!\\)(?:\\{2})*)\((?<label>(?:\\.|[^()\\]|\([\s\S]*\))*)\)\[(?<url>(?:\\.|[^\]\\\r\n])*)\](?!\()/gu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -52,7 +52,7 @@ export default {
 		/** @type {string[]} */
 		let buffer;
 		/** @type {number} */
-		let parentNodeStartOffset;
+		let nodeStartOffset;
 
 		return {
 			"heading, paragraph, tableCell"(
@@ -61,8 +61,8 @@ export default {
 				// Initialize `buffer` with the full character array of the node text.
 				buffer = Array.from(sourceCode.getText(node));
 
-				// Store the start offset of the parent node for later calculations.
-				parentNodeStartOffset = node.position.start.offset;
+				// Store the start offset of the node for later calculations.
+				nodeStartOffset = node.position.start.offset;
 			},
 
 			":matches(heading, paragraph, tableCell) :matches(html, image, imageReference, inlineCode, linkReference)"(
@@ -70,8 +70,9 @@ export default {
 			) {
 				const [startOffset, endOffset] = sourceCode.getRange(node);
 
+				// Mask the content of `html`, `image`, `imageReference`, `inlineCode`, and `linkReference` nodes with whitespaces.
 				for (let i = startOffset; i < endOffset; i++) {
-					buffer[i - parentNodeStartOffset] = " ";
+					buffer[i - nodeStartOffset] = " ";
 				}
 			},
 
@@ -85,9 +86,15 @@ export default {
 				let match;
 
 				while ((match = reversedPattern.exec(maskedText)) !== null) {
-					const { label, url } = match.indices.groups;
-					const startOffset = match.index + parentNodeStartOffset; // Adjust `reversedPattern` match index to the full source code.
+					const { label, url } = match.groups;
+					const startOffset = match.index + nodeStartOffset; // Adjust `reversedPattern` match index to the full source code.
 					const endOffset = startOffset + match[0].length;
+
+					const labelStartOffset = match.index + 1; // skip "("
+					const labelEndOffset = labelStartOffset + label.length;
+
+					const urlStartOffset = labelEndOffset + 2; // skip ")["
+					const urlEndOffset = urlStartOffset + url.length;
 
 					context.report({
 						loc: {
@@ -98,7 +105,7 @@ export default {
 						fix(fixer) {
 							return fixer.replaceTextRange(
 								[startOffset, endOffset],
-								`[${originalText.slice(...label)}](${originalText.slice(...url)})`,
+								`[${originalText.slice(labelStartOffset, labelEndOffset)}](${originalText.slice(urlStartOffset, urlEndOffset)})`,
 							);
 						},
 					});
