@@ -1,5 +1,14 @@
 # Changelog
 
+## [7.5.2](https://github.com/eslint/markdown/compare/v7.5.1...v7.5.2) (2025-12-10)
+
+
+### Bug Fixes
+
+* false positive triggered by comments in `no-html` ([a2ccff8](https://github.com/eslint/markdown/commit/a2ccff86ba536894fddbcfc89cb8d56567a22ac4))
+* false positive triggered by HTML inside comments in `no-html` ([#592](https://github.com/eslint/markdown/issues/592)) ([a2ccff8](https://github.com/eslint/markdown/commit/a2ccff86ba536894fddbcfc89cb8d56567a22ac4))
+* false positives for inline elements in `no-reversed-media-syntax` ([#597](https://github.com/eslint/markdown/issues/597)) ([8538c10](https://github.com/eslint/markdown/commit/8538c109af89c1cb4e7131f1287fbb4e3267cc96))
+
 ## [7.5.1](https://github.com/eslint/markdown/compare/v7.5.0...v7.5.1) (2025-11-04)
 
 
