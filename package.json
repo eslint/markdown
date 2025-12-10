@@ -61,6 +61,7 @@
   "scripts": {
     "lint": "eslint && eslint -c eslint.config-content.js",
     "lint:fix": "eslint --fix && eslint --fix -c eslint.config-content.js",
+    "lint:types": "attw --pack --profile esm-only",
     "lint:unused": "knip",
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
@@ -74,6 +75,7 @@
     "test:types": "tsc -p tests/types/tsconfig.json"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
     "@eslint/js": "^9.39.1",
     "@eslint/json": "^0.14.0",
     "@types/mdast": "^4.0.4",
