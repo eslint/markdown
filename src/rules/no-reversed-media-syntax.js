@@ -8,7 +8,6 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @import { SourceRange } from "@eslint/core"
  * @import { Heading, Paragraph, TableCell, Html, Image, ImageReference, InlineCode, LinkReference } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"reversedSyntax"} NoReversedMediaSyntaxMessageIds
@@ -23,18 +22,6 @@
 /** Matches reversed link/image syntax like `(text)[url]`, ignoring escaped characters like `\(text\)[url]`. */
 const reversedPattern =
 	/(?<=(?<!\\)(?:\\{2})*)\((?<label>(?:\\.|[^()\\]|\([\s\S]*\))*)\)\[(?<url>(?:\\.|[^\]\\\r\n])*)\](?!\()/gu;
-
-/**
- * Checks if a match is within any skip range
- * @param {number} matchIndex The index of the match
- * @param {Array<SourceRange>} skipRanges The skip ranges
- * @returns {boolean} True if the match is within a skip range
- */
-function isInSkipRange(matchIndex, skipRanges) {
-	return skipRanges.some(
-		range => range[0] <= matchIndex && matchIndex < range[1],
-	);
-}
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -62,57 +49,64 @@ export default {
 	create(context) {
 		const { sourceCode } = context;
 
-		/** @type {Array<SourceRange>} */
-		const skipRanges = [];
-
-		/**
-		 * Finds reversed link/image syntax in a node.
-		 * @param {Heading | Paragraph | TableCell} node The node to check.
-		 * @returns {void} Reports any reversed syntax found.
-		 */
-		function findReversedMediaSyntax(node) {
-			const text = sourceCode.getText(node);
-
-			/** @type {RegExpExecArray} */
-			let match;
-
-			while ((match = reversedPattern.exec(text)) !== null) {
-				const { label, url } = match.groups;
-				const startOffset = match.index + node.position.start.offset; // Adjust `reversedPattern` match index to the full source code.
-				const endOffset = startOffset + match[0].length;
-
-				if (isInSkipRange(startOffset, skipRanges)) {
-					continue;
-				}
-
-				context.report({
-					loc: {
-						start: sourceCode.getLocFromIndex(startOffset),
-						end: sourceCode.getLocFromIndex(endOffset),
-					},
-					messageId: "reversedSyntax",
-					fix(fixer) {
-						return fixer.replaceTextRange(
-							[startOffset, endOffset],
-							`[${label}](${url})`,
-						);
-					},
-				});
-			}
-		}
+		/** @type {string[]} */
+		let buffer;
+		/** @type {number} */
+		let nodeStartOffset;
 
 		return {
+			"heading, paragraph, tableCell"(
+				/** @type {Heading | Paragraph | TableCell} */ node,
+			) {
+				// Initialize `buffer` with the full character array of the node text.
+				buffer = Array.from(sourceCode.getText(node));
+
+				// Store the start offset of the node for later calculations.
+				nodeStartOffset = node.position.start.offset;
+			},
+
 			":matches(heading, paragraph, tableCell) :matches(html, image, imageReference, inlineCode, linkReference)"(
 				/** @type {Html | Image | ImageReference | InlineCode | LinkReference} */ node,
 			) {
-				skipRanges.push(sourceCode.getRange(node));
+				const [startOffset, endOffset] = sourceCode.getRange(node);
+
+				// Mask the content of `html`, `image`, `imageReference`, `inlineCode`, and `linkReference` nodes with whitespaces.
+				for (let i = startOffset; i < endOffset; i++) {
+					buffer[i - nodeStartOffset] = " ";
+				}
 			},
 
-			":matches(heading, paragraph, tableCell):exit"(
-				/** @type {Heading | Paragraph | TableCell} */ node,
-			) {
-				findReversedMediaSyntax(node);
-				skipRanges.length = 0;
+			":matches(heading, paragraph, tableCell):exit"() {
+				const maskedText = buffer.join("");
+
+				/** @type {RegExpExecArray | null} */
+				let match;
+
+				while ((match = reversedPattern.exec(maskedText)) !== null) {
+					const { label, url } = match.groups;
+					const startOffset = match.index + nodeStartOffset; // Adjust `reversedPattern` match index to the full source code.
+					const endOffset = startOffset + match[0].length;
+
+					const labelStartOffset = startOffset + 1; // Skip "("
+					const labelEndOffset = labelStartOffset + label.length;
+
+					const urlStartOffset = labelEndOffset + 2; // Skip ")["
+					const urlEndOffset = urlStartOffset + url.length;
+
+					context.report({
+						loc: {
+							start: sourceCode.getLocFromIndex(startOffset),
+							end: sourceCode.getLocFromIndex(endOffset),
+						},
+						messageId: "reversedSyntax",
+						fix(fixer) {
+							return fixer.replaceTextRange(
+								[startOffset, endOffset],
+								`[${sourceCode.text.slice(labelStartOffset, labelEndOffset)}](${sourceCode.text.slice(urlStartOffset, urlEndOffset)})`,
+							);
+						},
+					});
+				}
 			},
 		};
 	},
