@@ -14,9 +14,6 @@
     ".": {
       "types": "./dist/esm/index.d.ts",
       "default": "./dist/esm/index.js"
-    },
-    "./types": {
-      "types": "./dist/esm/types.d.ts"
     }
   },
   "files": [
