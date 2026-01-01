@@ -1,5 +1,19 @@
 # Changelog
 
+## [7.6.0](https://github.com/eslint/markdown/compare/v7.5.1...v7.6.0) (2026-01-01)
+
+
+### Features
+
+* add fenced-code-meta rule ([#512](https://github.com/eslint/markdown/issues/512)) ([f30e1c9](https://github.com/eslint/markdown/commit/f30e1c992d12165d2c88f6eec042eea84e2ff948))
+
+
+### Bug Fixes
+
+* false positive triggered by comments in `no-html` ([a2ccff8](https://github.com/eslint/markdown/commit/a2ccff86ba536894fddbcfc89cb8d56567a22ac4))
+* false positive triggered by HTML inside comments in `no-html` ([#592](https://github.com/eslint/markdown/issues/592)) ([a2ccff8](https://github.com/eslint/markdown/commit/a2ccff86ba536894fddbcfc89cb8d56567a22ac4))
+* false positives for inline elements in `no-reversed-media-syntax` ([#597](https://github.com/eslint/markdown/issues/597)) ([8538c10](https://github.com/eslint/markdown/commit/8538c109af89c1cb4e7131f1287fbb4e3267cc96))
+
 ## [7.5.1](https://github.com/eslint/markdown/compare/v7.5.0...v7.5.1) (2025-11-04)
 
 
