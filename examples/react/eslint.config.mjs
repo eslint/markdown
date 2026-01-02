@@ -1,11 +1,12 @@
+import { defineConfig } from "eslint/config";
 import js from "@eslint/js";
 import markdown from "../../src/index.js";
 import globals from "globals";
 import reactPlugin from "eslint-plugin-react";
 
-export default [
+export default defineConfig([
 	js.configs.recommended,
-	...markdown.configs.processor,
+	markdown.configs.processor,
 	reactPlugin.configs.flat.recommended,
 	{
 		settings: {
@@ -32,4 +33,4 @@ export default [
 			},
 		},
 	},
-];
+]);
