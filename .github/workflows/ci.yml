@@ -88,7 +88,7 @@ jobs:
             - name: Check Types
               run: npm run test:types
 
-    are-the-types-wrong:
+    are_the_types_wrong:
         name: Are the types wrong?
         runs-on: ubuntu-latest
         steps:
