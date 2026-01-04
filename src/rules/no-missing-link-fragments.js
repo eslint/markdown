@@ -85,10 +85,19 @@ export default {
 		const fragmentIds = new Set(["top"]);
 		const slugger = new GithubSlugger();
 
-		/** @type {Array<{node: Link, fragment: string}>} */
+		/** @type {Array<Link>} */
 		const linkNodes = [];
 		/** @type {string} */
 		let headingText;
+
+		/**
+		 * Normalize a fragment based on the `ignoreCase` option.
+		 * @param {string} fragment The fragment to normalize.
+		 * @returns {string} The normalized fragment.
+		 */
+		function normalizeFragment(fragment) {
+			return ignoreCase ? fragment.toLowerCase() : fragment;
+		}
 
 		return {
 			heading() {
@@ -105,7 +114,7 @@ export default {
 					? customIdMatch.groups.id
 					: headingText;
 				const finalId = slugger.slug(baseId);
-				fragmentIds.add(ignoreCase ? finalId.toLowerCase() : finalId);
+				fragmentIds.add(normalizeFragment(finalId));
 			},
 
 			html(node) {
@@ -120,30 +129,27 @@ export default {
 				)) {
 					const extractedId = match.groups.id;
 					const finalId = slugger.slug(extractedId);
-					fragmentIds.add(
-						ignoreCase ? finalId.toLowerCase() : finalId,
-					);
+					fragmentIds.add(normalizeFragment(finalId));
 				}
 			},
 
 			link(node) {
-				const url = node.url;
-				if (!url || !url.startsWith("#")) {
+				const { url } = node;
+
+				// If `url` is empty, `"#"`, or does not start with `"#"`, skip it.
+				if (url === "" || url === "#" || !url.startsWith("#")) {
 					return;
 				}
 
-				const fragment = url.slice(1);
-				if (!fragment) {
-					return;
-				}
-
-				linkNodes.push({ node, fragment });
+				linkNodes.push(node);
 			},
 
 			"root:exit"() {
-				for (const { node, fragment } of linkNodes) {
+				for (const node of linkNodes) {
+					const fragment = node.url.slice(1);
 					/** @type {string} */
 					let decodedFragment;
+
 					try {
 						decodedFragment = decodeURIComponent(fragment);
 					} catch {
@@ -158,9 +164,8 @@ export default {
 						continue;
 					}
 
-					const normalizedFragment = ignoreCase
-						? decodedFragment.toLowerCase()
-						: decodedFragment;
+					const normalizedFragment =
+						normalizeFragment(decodedFragment);
 
 					if (!fragmentIds.has(normalizedFragment)) {
 						context.report({
