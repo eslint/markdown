@@ -130,7 +130,8 @@ export interface MarkdownLanguageOptions extends LanguageOptions {
 export type MarkdownLanguageContext = LanguageContext<MarkdownLanguageOptions>;
 
 export interface MarkdownRuleVisitor
-	extends RuleVisitor,
+	extends
+		RuleVisitor,
 		WithExit<
 			{
 				root?(node: Root): void;

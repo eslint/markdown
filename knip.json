@@ -1,0 +1,13 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "workspaces": {
+    ".": {
+      "entry": ["tests/**/*.test.{js,ts}", "tests/fixtures/*.js"],
+      "project": ["**"]
+    },
+    "examples/*": {
+      "entry": ["**/*.*s"],
+      "project": ["**"]
+    }
+  }
+}
