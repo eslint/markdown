@@ -15,7 +15,7 @@ import { htmlCommentPattern } from "../util.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Link } from "mdast";
+ * @import { Definition, Link } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"invalidFragment"} NoMissingLinkFragmentsMessageIds
  * @typedef {[{ ignoreCase?: boolean; allowPattern?: string }]} NoMissingLinkFragmentsOptions
@@ -85,8 +85,8 @@ export default {
 		const fragmentIds = new Set(["top"]);
 		const slugger = new GithubSlugger();
 
-		/** @type {Array<Link>} */
-		const linkNodes = [];
+		/** @type {Array<Definition | Link>} */
+		const relevantNodes = [];
 		/** @type {string} */
 		let headingText;
 
@@ -133,7 +133,7 @@ export default {
 				}
 			},
 
-			link(node) {
+			"definition, link"(/** @type {Definition | Link} */ node) {
 				const { url } = node;
 
 				// If `url` is empty, `"#"`, or does not start with `"#"`, skip it.
@@ -141,11 +141,11 @@ export default {
 					return;
 				}
 
-				linkNodes.push(node);
+				relevantNodes.push(node);
 			},
 
 			"root:exit"() {
-				for (const node of linkNodes) {
+				for (const node of relevantNodes) {
 					const fragment = node.url.slice(1);
 					/** @type {string} */
 					let decodedFragment;
