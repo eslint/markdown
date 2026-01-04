@@ -85,7 +85,7 @@ export default {
 		const fragmentIds = new Set(["top"]);
 		const slugger = new GithubSlugger();
 
-		/** @type {Array<{node: Link, fragment: string}>} */
+		/** @type {Array<Link>} */
 		const linkNodes = [];
 		/** @type {string} */
 		let headingText;
@@ -136,23 +136,22 @@ export default {
 			},
 
 			link(node) {
-				const url = node.url;
-				if (!url || !url.startsWith("#")) {
+				const { url } = node;
+
+				// If `url` is empty, `"#"`, or does not start with `"#"`, skip it.
+				if (url === "" || url === "#" || !url.startsWith("#")) {
 					return;
 				}
 
-				const fragment = url.slice(1);
-				if (!fragment) {
-					return;
-				}
-
-				linkNodes.push({ node, fragment });
+				linkNodes.push(node);
 			},
 
 			"root:exit"() {
-				for (const { node, fragment } of linkNodes) {
+				for (const node of linkNodes) {
+					const fragment = node.url.slice(1);
 					/** @type {string} */
 					let decodedFragment;
+
 					try {
 						decodedFragment = decodeURIComponent(fragment);
 					} catch {
