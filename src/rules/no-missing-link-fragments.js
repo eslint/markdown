@@ -147,14 +147,13 @@ export default {
 			"root:exit"() {
 				for (const node of relevantNodes) {
 					const fragment = node.url.slice(1);
-					/** @type {string} */
-					let decodedFragment;
+					let decodedFragment = fragment;
 
+					// Decode URI component to handle encoded characters such as `%20`.
 					try {
 						decodedFragment = decodeURIComponent(fragment);
 					} catch {
-						// fallback if not valid encoding
-						decodedFragment = fragment;
+						// If decoding fails due to an invalid URI sequence, use the original fragment.
 					}
 
 					if (
