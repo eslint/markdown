@@ -25,10 +25,18 @@ const ruleTester = new RuleTester({
 
 ruleTester.run("no-missing-link-fragments", rule, {
 	valid: [
-		// Basic heading match
+		// Basic heading match with `Link` node
 		dedent`
 		# Heading Name
 		[Link](#heading-name)
+		`,
+
+		// Basic heading match with `Definition` node
+		dedent`
+		# Heading Name
+		[Link][reference]
+
+		[reference]: #heading-name
 		`,
 
 		// Custom heading ID
@@ -383,7 +391,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 	],
 
 	invalid: [
-		// Basic invalid case
+		// Basic invalid case with `Link` node
 		{
 			code: dedent`
 			[Invalid](#non-existent)
@@ -396,6 +404,25 @@ ruleTester.run("no-missing-link-fragments", rule, {
 					column: 1,
 					endLine: 1,
 					endColumn: 25,
+				},
+			],
+		},
+
+		// Basic invalid case with `Definition` node
+		{
+			code: dedent`
+			[Invalid][reference]
+
+			[reference]: #non-existent
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "non-existent" },
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 27,
 				},
 			],
 		},
