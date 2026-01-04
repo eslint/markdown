@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 
 import GithubSlugger from "github-slugger";
-import { htmlCommentPattern } from "../util.js";
+import { stripHtmlComments } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -76,10 +76,9 @@ export default {
 	},
 
 	create(context) {
-		const [{ allowPattern: allowPatternString, ignoreCase }] =
-			context.options;
-		const allowPattern = allowPatternString
-			? new RegExp(allowPatternString, "u")
+		const [{ allowPattern, ignoreCase }] = context.options;
+		const allowPatternOrNull = allowPattern
+			? new RegExp(allowPattern, "u")
 			: null;
 
 		const fragmentIds = new Set(["top"]);
@@ -110,9 +109,7 @@ export default {
 
 			html(node) {
 				// 1. Remove all comments
-				const htmlTextWithoutComments = node.value
-					.trim()
-					.replace(htmlCommentPattern, "");
+				const htmlTextWithoutComments = stripHtmlComments(node.value);
 
 				// 2. Then look for IDs in the remaining text
 				for (const match of htmlTextWithoutComments.matchAll(
@@ -148,7 +145,7 @@ export default {
 					}
 
 					if (
-						allowPattern?.test(decodedFragment) ||
+						allowPatternOrNull?.test(decodedFragment) ||
 						githubLineReferencePattern.test(decodedFragment)
 					) {
 						continue;
