@@ -547,6 +547,36 @@ ruleTester.run("no-missing-link-fragments", rule, {
 				},
 			],
 		},
+		{
+			code: dedent`
+			[Invalid Format](#l20)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "l20" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 23,
+				},
+			],
+		},
+		{
+			code: dedent`
+			[Invalid Format](#l20-l30)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "l20-l30" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 27,
+				},
+			],
+		},
 
 		// Invalid link to suffixed heading that shouldn't exist
 		{
