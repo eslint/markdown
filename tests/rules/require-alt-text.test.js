@@ -165,6 +165,54 @@ ruleTester.run("require-alt-text", rule, {
 			],
 		},
 		{
+			code: "<img>",
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
+			code: "<img >",
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 7,
+				},
+			],
+		},
+		// {
+		// 	code: "<img/>",
+		// 	errors: [
+		// 		{
+		// 			messageId: "altTextRequired",
+		// 			line: 1,
+		// 			column: 1,
+		// 			endLine: 1,
+		// 			endColumn: 7,
+		// 		},
+		// 	],
+		// }, // TODO: recognize self-closing tags.
+		{
+			code: "<img />",
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 8,
+				},
+			],
+		},
+		{
 			code: '<img src="image.png" />',
 			errors: [
 				{
