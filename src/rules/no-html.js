@@ -91,7 +91,7 @@ export default {
 			html(node) {
 				const text = stripHtmlComments(sourceCode.getText(node));
 
-				/** @type {RegExpExecArray} */
+				/** @type {RegExpExecArray | null} */
 				let match;
 
 				while ((match = htmlTagPattern.exec(text)) !== null) {
