@@ -25,7 +25,7 @@ import { frontmatterHasTitle, stripHtmlComments } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-const h1TagPattern = /<h1[^>]*>[\s\S]*?<\/h1>/giu;
+const h1TagPattern = /<h1[^>]*>[\s\S]*?<\/h1>/giu; // TODO?
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -83,7 +83,7 @@ export default {
 			html(node) {
 				const text = stripHtmlComments(node.value);
 
-				/** @type {RegExpExecArray} */
+				/** @type {RegExpExecArray | null} */
 				let match;
 
 				while ((match = h1TagPattern.exec(text)) !== null) {

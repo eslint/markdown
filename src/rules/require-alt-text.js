@@ -25,15 +25,15 @@ import { stripHtmlComments } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-const imgTagPattern = /<img[^>]*>/giu;
+const imgTagPattern = /<img(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?>/giu;
 
 /**
  * Creates a regex to match HTML attributes
- * @param {string} name The attribute name to match
+ * @param {'aria-hidden' | 'alt'} name The attribute name to match
  * @returns {RegExp} Regular expression for matching the attribute
  */
 function getHtmlAttributeRe(name) {
-	return new RegExp(`\\s${name}(?:\\s*=\\s*['"]([^'"]*)['"])?`, "iu");
+	return new RegExp(`\\s${name}(?:\\s*=\\s*['"]?([^'">]*)['"]?)?`, "iu");
 }
 
 //-----------------------------------------------------------------------------
@@ -74,7 +74,7 @@ export default {
 			html(node) {
 				const text = stripHtmlComments(sourceCode.getText(node));
 
-				/** @type {RegExpExecArray} */
+				/** @type {RegExpExecArray | null} */
 				let match;
 
 				while ((match = imgTagPattern.exec(text)) !== null) {
