@@ -201,6 +201,18 @@ ruleTester.run("require-alt-text", rule, {
 			],
 		},
 		{
+			code: '<img src="image.png" data-custom1="custom>" data-custom2="custom">',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 67,
+				},
+			],
+		},
+		{
 			code: dedent`
 			<p>
 			<img src="image.png" />
