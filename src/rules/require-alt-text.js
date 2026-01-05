@@ -29,11 +29,11 @@ const imgTagPattern = /<img(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?>/giu;
 
 /**
  * Creates a regex to match HTML attributes
- * @param {'aria-hidden' | 'alt'} name The attribute name to match
+ * @param {string} name The attribute name to match
  * @returns {RegExp} Regular expression for matching the attribute
  */
 function getHtmlAttributeRe(name) {
-	return new RegExp(`\\s${name}(?:\\s*=\\s*['"]?([^'">]*)['"]?)?`, "iu"); // TODO
+	return new RegExp(`\\s${name}(?:\\s*=\\s*['"]([^'"]*)['"])?`, "iu");
 }
 
 //-----------------------------------------------------------------------------

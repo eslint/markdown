@@ -25,7 +25,7 @@ import { frontmatterHasTitle, stripHtmlComments } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-const h1TagPattern = /<h1[^>]*>[\s\S]*?<\/h1>/giu; // TODO
+const h1TagPattern = /<h1[^>]*>[\s\S]*?<\/h1>/giu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
