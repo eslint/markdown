@@ -40,6 +40,7 @@ ruleTester.run("require-alt-text", rule, {
 		'<img src="image.png" alt />',
 		'<img src="image.png" alt="" />',
 		'<img src="image.png>" alt="alt text">',
+		'<img src="image.png" data-custom="custom>" alt="alt text">',
 		'<img src="image.png>" data-custom="custom" alt="alt text">',
 		"<img src=\"image.png>\" alt='alt text'>",
 		'<img\r\nsrc="image.png>" alt="alt text">',
