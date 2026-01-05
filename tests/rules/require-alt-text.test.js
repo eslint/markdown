@@ -52,7 +52,7 @@ ruleTester.run("require-alt-text", rule, {
 		'<IMG SRC="image.png" ALT="Descriptive text"/>',
 		'<img src="image.png" aria-hidden alt="alt">',
 		'<img src="image.png" aria-hidden="true"/>',
-		// '<img src="image.png" aria-hidden=true/>',
+		// '<img src="image.png" aria-hidden=true/>', // TODO
 		'<img src="image.png" aria-hidden=true>',
 		'<img src="image.png" ARIA-HIDDEN="TRUE" />',
 		'<p><img src="image.png" alt="Descriptive text" /></p>',

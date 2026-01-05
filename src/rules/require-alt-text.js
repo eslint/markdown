@@ -33,7 +33,7 @@ const imgTagPattern = /<img(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?>/giu;
  * @returns {RegExp} Regular expression for matching the attribute
  */
 function getHtmlAttributeRe(name) {
-	return new RegExp(`\\s${name}(?:\\s*=\\s*['"]?([^'">]*)['"]?)?`, "iu");
+	return new RegExp(`\\s${name}(?:\\s*=\\s*['"]?([^'">]*)['"]?)?`, "iu"); // TODO
 }
 
 //-----------------------------------------------------------------------------
