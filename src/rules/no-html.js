@@ -25,7 +25,7 @@ import { lineEndingPattern, stripHtmlComments } from "../util.js";
 //-----------------------------------------------------------------------------
 
 const htmlTagPattern =
-	/<(?<tagName>[a-z0-9]+(?:-[a-z0-9]+)*)(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?>/giu; // TODO: recognize self-closing tags.
+	/<(?<tagName>[a-z0-9]+(?:-[a-z0-9]+)*)(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?\/?>/giu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
