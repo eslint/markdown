@@ -25,6 +25,8 @@ const ruleTester = new RuleTester({
 
 ruleTester.run("require-alt-text", rule, {
 	valid: [
+		"",
+		"  ",
 		"![Alternative text](image.jpg)",
 		'![Alternative text](image.jpg "Title")',
 		dedent`
@@ -36,10 +38,17 @@ ruleTester.run("require-alt-text", rule, {
 
 		[title]: image.jpg "Title"`,
 		"[![Alternative text](image.jpg)](image.jpg)",
+		'<img src="image.png" alt="Descriptive text">',
+		'<img src="image.png" alt="Descriptive text" >',
+		'<img src="image.png" alt="Descriptive text"/>',
 		'<img src="image.png" alt="Descriptive text" />',
+		'<img src="image.png" alt>',
+		'<img src="image.png" alt >',
+		'<img src="image.png" alt/>',
 		'<img src="image.png" alt />',
 		'<img src="image.png" alt="" />',
 		'<img src="image.png>" alt="alt text">',
+		'<img src="image.png" alt="alt text" data-custom="custom>">',
 		'<img src="image.png" data-custom="custom>" alt="alt text">',
 		'<img src="image.png>" data-custom="custom" alt="alt text">',
 		"<img src=\"image.png>\" alt='alt text'>",
@@ -57,6 +66,7 @@ ruleTester.run("require-alt-text", rule, {
 		'<p><img src="image.png" alt="Descriptive text" /></p>',
 		'<!-- <img src="image.png" /> -->',
 		'Some text <!-- <img src="image.png" /> --> more text.',
+		'<div>\n    <img src="https://example.com/image.jpg" alt="alt text">"\n</div>',
 		dedent`
 			<!--
 			<img src="image.png" />
@@ -213,6 +223,42 @@ ruleTester.run("require-alt-text", rule, {
 			],
 		},
 		{
+			code: '<img src="image.png">',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: '<img src="image.png" >',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 23,
+				},
+			],
+		},
+		{
+			code: '<img src="image.png"/>',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 23,
+				},
+			],
+		},
+		{
 			code: '<img src="image.png" />',
 			errors: [
 				{
@@ -296,6 +342,31 @@ ruleTester.run("require-alt-text", rule, {
 					line: 3,
 					column: 1,
 					endLine: 3,
+					endColumn: 25,
+				},
+			],
+		},
+		{
+			code: dedent`
+			<div>
+			<img src="image.png" />
+			<a href="#">Link</a><br>
+			<img src="image2.png" />
+			</div>
+			`,
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 24,
+				},
+				{
+					messageId: "altTextRequired",
+					line: 4,
+					column: 1,
+					endLine: 4,
 					endColumn: 25,
 				},
 			],
