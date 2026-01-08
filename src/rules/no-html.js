@@ -25,7 +25,7 @@ import { lineEndingPattern, stripHtmlComments } from "../util.js";
 //-----------------------------------------------------------------------------
 
 const htmlTagPattern =
-	/<(?<tagName>[a-z0-9]+(?:-[a-z0-9]+)*)(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?>/giu;
+	/<(?<tagName>[a-z0-9]+(?:-[a-z0-9]+)*)(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?\/?>/giu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -91,7 +91,7 @@ export default {
 			html(node) {
 				const text = stripHtmlComments(sourceCode.getText(node));
 
-				/** @type {RegExpExecArray} */
+				/** @type {RegExpExecArray | null} */
 				let match;
 
 				while ((match = htmlTagPattern.exec(text)) !== null) {

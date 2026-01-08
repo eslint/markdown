@@ -83,7 +83,7 @@ export default {
 			html(node) {
 				const text = stripHtmlComments(node.value);
 
-				/** @type {RegExpExecArray} */
+				/** @type {RegExpExecArray | null} */
 				let match;
 
 				while ((match = h1TagPattern.exec(text)) !== null) {

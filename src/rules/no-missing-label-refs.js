@@ -46,7 +46,7 @@ function findMissingReferences(node, sourceCode) {
 	const labelPattern =
 		/(?<=(?<!\\)(?:\\{2})*)\[(?<left>(?:\\.|[^[\]\\])*)\](?:\[(?<right>(?:\\.|[^\]\\])*)\])?/dgu;
 
-	/** @type {RegExpExecArray} */
+	/** @type {RegExpExecArray | null} */
 	let match;
 
 	/*
