@@ -25,7 +25,7 @@ import { stripHtmlComments } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-const imgTagPattern = /<img[^>]*>/giu;
+const imgTagPattern = /<img(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?\/?>/giu;
 
 /**
  * Creates a regex to match HTML attributes
@@ -74,7 +74,7 @@ export default {
 			html(node) {
 				const text = stripHtmlComments(sourceCode.getText(node));
 
-				/** @type {RegExpExecArray} */
+				/** @type {RegExpExecArray | null} */
 				let match;
 
 				while ((match = imgTagPattern.exec(text)) !== null) {
