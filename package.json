@@ -8,12 +8,12 @@
     "url": "https://github.com/btmills"
   },
   "type": "module",
-  "main": "dist/esm/index.js",
-  "types": "dist/esm/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/esm/index.d.ts",
-      "default": "./dist/esm/index.js"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     }
   },
   "files": [
@@ -62,9 +62,10 @@
     "lint:unused": "knip",
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
+    "build": "npm run build:rules && npm run build:types && npm run build:update-rules-docs",
     "build:rules": "node tools/build-rules.js",
+    "build:types": "tsc",
     "build:update-rules-docs": "node tools/update-rules-docs.js",
-    "build": "npm run build:rules && tsc && npm run build:update-rules-docs",
     "prepare": "npm run build",
     "test": "mocha \"tests/**/*.test.js\" --timeout 30000",
     "test:coverage": "c8 npm test",
