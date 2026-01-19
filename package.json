@@ -14,9 +14,6 @@
     ".": {
       "types": "./dist/esm/index.d.ts",
       "default": "./dist/esm/index.js"
-    },
-    "./types": {
-      "types": "./dist/esm/types.d.ts"
     }
   },
   "files": [
@@ -85,11 +82,11 @@
     "eslint": "^9.36.0",
     "eslint-config-eslint": "^13.0.0",
     "eslint-plugin-eslint-plugin": "^6.3.2",
-    "globals": "^16.4.0",
+    "globals": "^17.0.0",
     "knip": "^5.66.4",
     "lint-staged": "^15.2.9",
     "mocha": "^11.6.0",
-    "prettier": "^3.7.3",
+    "prettier": "3.8.0",
     "semver": "^7.7.3",
     "typescript": "^5.9.2",
     "yorkie": "^2.0.0"
