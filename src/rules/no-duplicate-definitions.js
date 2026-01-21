@@ -17,7 +17,7 @@ import { normalizeIdentifier } from "micromark-util-normalize-identifier";
  * @import { Definition, FootnoteDefinition } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"duplicateDefinition" | "duplicateFootnoteDefinition"} NoDuplicateDefinitionsMessageIds
- * @typedef {[{ allowDefinitions?: string[], allowFootnoteDefinitions?: string[] }]} NoDuplicateDefinitionsOptions
+ * @typedef {[{ allowDefinitions?: string[], allowFootnoteDefinitions?: string[], checkFootnoteDefinitions?: boolean }]} NoDuplicateDefinitionsOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoDuplicateDefinitionsOptions, MessageIds: NoDuplicateDefinitionsMessageIds }>} NoDuplicateDefinitionsRuleDefinition
  */
 
@@ -61,6 +61,9 @@ export default {
 						},
 						uniqueItems: true,
 					},
+					checkFootnoteDefinitions: {
+						type: "boolean",
+					},
 				},
 				additionalProperties: false,
 			},
@@ -70,6 +73,7 @@ export default {
 			{
 				allowDefinitions: ["//"],
 				allowFootnoteDefinitions: [],
+				checkFootnoteDefinitions: true,
 			},
 		],
 	},
@@ -85,6 +89,7 @@ export default {
 				normalizeIdentifier(identifier).toLowerCase(),
 			),
 		);
+		const [{ checkFootnoteDefinitions }] = context.options;
 
 		/** @type {Map<string, Definition>} */
 		const definitions = new Map();
@@ -119,6 +124,10 @@ export default {
 			},
 
 			footnoteDefinition(node) {
+				if (!checkFootnoteDefinitions) {
+					return;
+				}
+
 				if (allowFootnoteDefinitions.has(node.identifier)) {
 					return;
 				}
