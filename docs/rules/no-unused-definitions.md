@@ -90,6 +90,16 @@ Mercury[^mercury]
     [^mercury]: Hello, Venus!
     ```
 
+- `checkFootnoteDefinitions: boolean` - When set to `false`, the rule will not report unused footnote definitions. (default: `true`)
+
+    Examples of **correct** code when configured as `"no-unused-definitions": ["error", { checkFootnoteDefinitions: false }]`:
+
+    ```markdown
+    <!-- eslint markdown/no-unused-definitions: ["error", { checkFootnoteDefinitions: false }] -->
+
+    [^mercury]: Hello, Mercury!
+    ```
+
 ## When Not to Use It
 
 You might want to disable this rule if:
