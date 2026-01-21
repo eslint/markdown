@@ -124,11 +124,10 @@ export default {
 			},
 
 			footnoteDefinition(node) {
-				if (!checkFootnoteDefinitions) {
-					return;
-				}
-
-				if (allowFootnoteDefinitions.has(node.identifier)) {
+				if (
+					!checkFootnoteDefinitions ||
+					allowFootnoteDefinitions.has(node.identifier)
+				) {
 					return;
 				}
 
