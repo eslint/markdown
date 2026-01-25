@@ -25,6 +25,7 @@ Examples of **incorrect** code:
 
 ```markdown
 <!-- eslint markdown/no-duplicate-definitions: "error" -->
+
 <!-- definition -->
 
 [mercury]: https://example.com/mercury/
@@ -46,6 +47,7 @@ Examples of **correct** code:
 
 ```markdown
 <!-- eslint markdown/no-duplicate-definitions: "error" -->
+
 <!-- definition -->
 
 [mercury]: https://example.com/mercury/
@@ -72,6 +74,7 @@ The following options are available on this rule:
 
     ```markdown
     <!-- eslint markdown/no-duplicate-definitions: ["error", { allowDefinitions: ["mercury"] }] -->
+
     [mercury]: https://example.com/mercury/
     [mercury]: https://example.com/venus/
     ```
@@ -82,6 +85,7 @@ The following options are available on this rule:
 
     ```markdown
     <!-- eslint markdown/no-duplicate-definitions: ["error", { allowFootnoteDefinitions: ["mercury"] }] -->
+
     [^mercury]: Hello, Mercury!
     [^mercury]: Hello, Venus!
     ```
