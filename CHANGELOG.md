@@ -1,5 +1,26 @@
 # Changelog
 
+## [8.0.0](https://github.com/eslint/markdown/compare/v7.5.1...v8.0.0) (2026-01-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove `/types` export ([#564](https://github.com/eslint/markdown/issues/564))
+
+### Features
+
+* add fenced-code-meta rule ([#512](https://github.com/eslint/markdown/issues/512)) ([f30e1c9](https://github.com/eslint/markdown/commit/f30e1c992d12165d2c88f6eec042eea84e2ff948))
+* fix incorrect regex pattern in `require-alt-text` and `no-html` ([#604](https://github.com/eslint/markdown/issues/604)) ([cd264d0](https://github.com/eslint/markdown/commit/cd264d07d9b271608c6d59365c42a499a595a767))
+
+
+### Bug Fixes
+
+* false positive triggered by comments in `no-html` ([a2ccff8](https://github.com/eslint/markdown/commit/a2ccff86ba536894fddbcfc89cb8d56567a22ac4))
+* false positive triggered by HTML inside comments in `no-html` ([#592](https://github.com/eslint/markdown/issues/592)) ([a2ccff8](https://github.com/eslint/markdown/commit/a2ccff86ba536894fddbcfc89cb8d56567a22ac4))
+* false positives for inline elements in `no-reversed-media-syntax` ([#597](https://github.com/eslint/markdown/issues/597)) ([8538c10](https://github.com/eslint/markdown/commit/8538c109af89c1cb4e7131f1287fbb4e3267cc96))
+* recognize `Definition` node in `no-missing-link-fragments` ([#603](https://github.com/eslint/markdown/issues/603)) ([9b58e36](https://github.com/eslint/markdown/commit/9b58e36ee78fb327392a8fd4dcb2af69bea518b3))
+* remove `/types` export ([#564](https://github.com/eslint/markdown/issues/564)) ([28eecf6](https://github.com/eslint/markdown/commit/28eecf6f178ecb31e47cc67dbe32c6286aae4dec))
+
 ## [7.5.1](https://github.com/eslint/markdown/compare/v7.5.0...v7.5.1) (2025-11-04)
 
 
