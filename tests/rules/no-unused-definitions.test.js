@@ -199,6 +199,23 @@ Mercury[^mercury]
 				},
 			],
 		},
+		{
+			code: "[^mercury]: Hello, Mercury!",
+			options: [
+				{
+					checkFootnoteDefinitions: false,
+				},
+			],
+		},
+		{
+			code: "[^mercury]: Hello, Mercury!",
+			options: [
+				{
+					checkFootnoteDefinitions: true,
+					allowFootnoteDefinitions: ["mercury"],
+				},
+			],
+		},
 		// This test case is skipped when running on Bun
 		...(!process.versions.bun
 			? [
@@ -402,6 +419,28 @@ Mercury[^mercury]
 				{
 					allowDefinitions: ["mercury"],
 					allowFootnoteDefinitions: ["venus"],
+				},
+			],
+
+			errors: [
+				{
+					messageId: "unusedFootnoteDefinition",
+					data: { identifier: "mercury", label: "mercury" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 28,
+				},
+			],
+		},
+
+		{
+			code: `
+[^mercury]: Hello, Mercury!
+`,
+			options: [
+				{
+					checkFootnoteDefinitions: true,
 				},
 			],
 
