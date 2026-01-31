@@ -65,7 +65,7 @@ export default {
 				nodeStartOffset = node.position.start.offset;
 			},
 
-			":matches(heading, paragraph, tableCell) :matches(html, image, imageReference, inlineCode, linkReference)"(
+			":matches(heading, paragraph, tableCell) :matches(html, image, imageReference, inlineCode, linkReference)"( // TODO: add `inlineMath` and `math` node.
 				/** @type {Html | Image | ImageReference | InlineCode | LinkReference} */ node,
 			) {
 				const [startOffset, endOffset] = sourceCode.getRange(node);
