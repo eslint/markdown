@@ -96,6 +96,7 @@ The following options are available on this rule:
 
     ```markdown
     <!-- eslint markdown/no-duplicate-definitions: ["error", { checkFootnoteDefinitions: false }] -->
+
     [^mercury]: Hello, Mercury!
     [^mercury]: Hello, Venus!
     ```
