@@ -153,6 +153,29 @@ ruleTester.run("no-duplicate-definitions", rule, {
 				},
 			],
 		},
+		{
+			code: `
+[^mercury]: Hello, Mercury!
+[^mercury]: Hello, Venus!
+`,
+			options: [
+				{
+					checkFootnoteDefinitions: false,
+				},
+			],
+		},
+		{
+			code: `
+[^mercury]: Hello, Mercury!
+[^mercury]: Hello, Venus!
+`,
+			options: [
+				{
+					checkFootnoteDefinitions: true,
+					allowFootnoteDefinitions: ["mercury"],
+				},
+			],
+		},
 		// This test case is skipped when running on Bun
 		...(!process.versions.bun
 			? [
@@ -423,6 +446,34 @@ ruleTester.run("no-duplicate-definitions", rule, {
 				{
 					allowDefinitions: ["mercury"],
 					allowFootnoteDefinitions: ["venus"],
+				},
+			],
+
+			errors: [
+				{
+					messageId: "duplicateFootnoteDefinition",
+					data: {
+						identifier: "mercury",
+						label: "mercury",
+						firstLine: "2",
+						firstLabel: "mercury",
+					},
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 26,
+				},
+			],
+		},
+
+		{
+			code: `
+[^mercury]: Hello, Mercury!
+[^mercury]: Hello, Venus!
+`,
+			options: [
+				{
+					checkFootnoteDefinitions: true,
 				},
 			],
 
