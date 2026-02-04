@@ -46,6 +46,7 @@ import type {
 	// Extensions (front matter)
 	Yaml,
 } from "mdast";
+import { InlineMath, Math } from "mdast-util-math";
 
 // Test that `Block` extends `Code` and `BlockBase` correctly
 // `meta` property is optional and not required in `Block`
@@ -232,6 +233,12 @@ typeof processorPlugins satisfies {};
 			"toml:exit": (...args) => testVisitor<Toml>(...args),
 			json: (...args) => testVisitor<Json>(...args),
 			"json:exit": (...args) => testVisitor<Json>(...args),
+
+			// Extensions (math)
+			inlineMath: (...args) => testVisitor<InlineMath>(...args),
+			"inlineMath:exit": (...args) => testVisitor<InlineMath>(...args),
+			math: (...args) => testVisitor<Math>(...args),
+			"math:exit": (...args) => testVisitor<Math>(...args),
 
 			// Unknown selectors allowed
 			"heading[depth=1]"(node: Node, parent?: ParentNode) {},

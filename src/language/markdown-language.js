@@ -13,8 +13,10 @@ import { MarkdownSourceCode } from "./markdown-source-code.js";
 import { fromMarkdown } from "mdast-util-from-markdown";
 import { frontmatterFromMarkdown } from "mdast-util-frontmatter";
 import { gfmFromMarkdown } from "mdast-util-gfm";
+import { mathFromMarkdown } from "mdast-util-math";
 import { frontmatter } from "micromark-extension-frontmatter";
 import { gfm } from "micromark-extension-gfm";
+import { math } from "micromark-extension-math";
 
 //-----------------------------------------------------------------------------
 // Types
@@ -88,6 +90,15 @@ function createParserOptions(mode, languageOptions) {
 		}
 	}
 
+	// 3. `languageOptions.math`: Handle math option
+	const mathOption = languageOptions?.math;
+
+	// Skip math entirely if false
+	if (mathOption === true) {
+		extensions.push(math());
+		mdastExtensions.push(mathFromMarkdown());
+	}
+
 	return {
 		extensions,
 		mdastExtensions,
@@ -133,6 +144,7 @@ export class MarkdownLanguage {
 	 */
 	defaultLanguageOptions = {
 		frontmatter: false,
+		math: false,
 	};
 
 	/**
@@ -173,6 +185,15 @@ export class MarkdownLanguage {
 		) {
 			throw new Error(
 				`Invalid language option value \`${frontmatterOption}\` for frontmatter.`,
+			);
+		}
+
+		const mathOption = languageOptions?.math;
+		const validMathOptions = new Set([true, false]);
+
+		if (mathOption !== undefined && !validMathOptions.has(mathOption)) {
+			throw new Error(
+				`Invalid language option value \`${mathOption}\` for math.`,
 			);
 		}
 	}

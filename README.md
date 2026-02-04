@@ -220,6 +220,39 @@ export default defineConfig([
 ]);
 ```
 
+#### Enabling Math (LaTeX) in both `commonmark` and `gfm`
+
+By default, Markdown parsers do not support [math](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/writing-mathematical-expressions) ([LaTeX](https://www.latex-project.org/)). To enable math in both `commonmark` and `gfm`, you can use the `math` option in `languageOptions`.
+
+> `@eslint/markdown` internally uses [`micromark-extension-math`](https://github.com/micromark/micromark-extension-math) and [`mdast-util-math`](https://github.com/syntax-tree/mdast-util-math) to parse math.
+
+| **Option Value** | **Description**                                    |
+| ---------------- | -------------------------------------------------- |
+| `false`          | Disables math parsing in Markdown files. (Default) |
+| `true`           | Enables math parsing in Markdown files.            |
+
+```js
+// eslint.config.js
+import { defineConfig } from "eslint/config";
+import markdown from "@eslint/markdown";
+
+export default defineConfig([
+	{
+		files: ["**/*.md"],
+		plugins: {
+			markdown,
+		},
+		language: "markdown/gfm",
+		languageOptions: {
+			math: true, // Or pass `false` to disable math parsing.
+		},
+		rules: {
+			"markdown/no-html": "error",
+		},
+	},
+]);
+```
+
 ### Processors
 
 | **Processor Name**                          | **Description**                                                                     |

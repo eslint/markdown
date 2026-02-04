@@ -38,6 +38,7 @@ import type {
 	// Extensions (front matter)
 	Yaml,
 } from "mdast";
+import { InlineMath, Math } from "mdast-util-math";
 import type {
 	CustomRuleDefinitionType,
 	CustomRuleTypeDefinitions,
@@ -59,7 +60,7 @@ type WithExit<RuleVisitorType extends RuleVisitor> = {
 };
 
 //------------------------------------------------------------------------------
-// Exports
+// Exports: Processors
 //------------------------------------------------------------------------------
 
 export interface RangeMap {
@@ -75,6 +76,10 @@ export interface BlockBase {
 }
 
 export type Block = Code & BlockBase;
+
+//------------------------------------------------------------------------------
+// Exports: Nodes
+//------------------------------------------------------------------------------
 
 /**
  * Markdown TOML.
@@ -114,6 +119,10 @@ export interface Json extends Literal {
  */
 export interface JsonData extends Data {}
 
+//------------------------------------------------------------------------------
+// Exports: Language and Source Code
+//------------------------------------------------------------------------------
+
 /**
  * Language options provided for Markdown files.
  */
@@ -122,6 +131,11 @@ export interface MarkdownLanguageOptions extends LanguageOptions {
 	 * The options for parsing frontmatter.
 	 */
 	frontmatter?: false | "yaml" | "toml" | "json";
+
+	/**
+	 * The options for parsing math.
+	 */
+	math?: boolean;
 }
 
 /**
@@ -163,7 +177,9 @@ export interface MarkdownRuleVisitor
 					| TableRow
 					| Yaml // Extensions (front matter)
 					| Toml
-					| Json as NodeType["type"]]?: (
+					| Json
+					| InlineMath // Extensions (math)
+					| Math as NodeType["type"]]?: (
 					node: NodeType,
 					parent?: Parent,
 				) => void;
