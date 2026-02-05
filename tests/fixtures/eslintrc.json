@@ -3,6 +3,7 @@
   "env": {
     "browser": true
   },
+  "reportUnusedDisableDirectives": false,
   "plugins": ["markdown"],
   "overrides": [
     {

@@ -2402,4 +2402,204 @@ describe("FlatESLint", () => {
 			assert.strictEqual(results[0].messages.length, 0);
 		});
 	});
+
+	// https://github.com/eslint/markdown/issues/115
+	describe("reportUnusedDisableDirectives", () => {
+		it("should report unused disable directives with correct line numbers", async () => {
+			const eslintWithUnusedDirectives = new ESLint({
+				overrideConfigFile: true,
+				overrideConfig: [
+					{
+						plugins: {
+							markdown: plugin,
+						},
+						linterOptions: {
+							reportUnusedDisableDirectives: "error",
+						},
+					},
+					{
+						files: ["*.md"],
+						processor: "markdown/markdown",
+					},
+					{
+						files: ["**/*.js"],
+						rules: {
+							"no-console": "error",
+						},
+					},
+				],
+			});
+
+			const code = [
+				"# Test",
+				"",
+				"<!-- eslint-disable no-undef -->",
+				"",
+				"```js",
+				'console.log("hello");',
+				"```",
+			].join("\n");
+
+			const results = await eslintWithUnusedDirectives.lintText(code, {
+				filePath: "test.md",
+			});
+
+			// Should report both: unused disable directive + no-console
+			assert.strictEqual(results[0].messages.length, 2);
+
+			// First message should be the unused disable directive
+			assert.strictEqual(
+				results[0].messages[0].message,
+				"Unused eslint-disable directive (no problems were reported from 'no-undef').",
+			);
+			// Line should point to the HTML comment in Markdown (line 3)
+			assert.strictEqual(results[0].messages[0].line, 3);
+
+			// Second message should be the no-console error
+			assert.strictEqual(
+				results[0].messages[1].message,
+				"Unexpected console statement.",
+			);
+			assert.strictEqual(results[0].messages[1].line, 6);
+		});
+
+		it("should report unused disable directives for multi-line HTML comments", async () => {
+			const eslintWithUnusedDirectives = new ESLint({
+				overrideConfigFile: true,
+				overrideConfig: [
+					{
+						plugins: {
+							markdown: plugin,
+						},
+						linterOptions: {
+							reportUnusedDisableDirectives: "error",
+						},
+					},
+					{
+						files: ["*.md"],
+						processor: "markdown/markdown",
+					},
+				],
+			});
+
+			const code = [
+				"# Test",
+				"",
+				"<!--",
+				"  eslint-disable no-undef",
+				"-->",
+				"",
+				"```js",
+				"var x = 1;",
+				"```",
+			].join("\n");
+
+			const results = await eslintWithUnusedDirectives.lintText(code, {
+				filePath: "test.md",
+			});
+
+			assert.strictEqual(results[0].messages.length, 1);
+			assert.strictEqual(
+				results[0].messages[0].message,
+				"Unused eslint-disable directive (no problems were reported from 'no-undef').",
+			);
+			// Line should point to the start of the multi-line HTML comment
+			assert.strictEqual(results[0].messages[0].line, 3);
+		});
+
+		it("should report unused disable directives for multiple HTML comments before a code block", async () => {
+			const eslintWithUnusedDirectives = new ESLint({
+				overrideConfigFile: true,
+				overrideConfig: [
+					{
+						plugins: {
+							markdown: plugin,
+						},
+						linterOptions: {
+							reportUnusedDisableDirectives: "error",
+						},
+					},
+					{
+						files: ["*.md"],
+						processor: "markdown/markdown",
+					},
+					{
+						files: ["**/*.js"],
+						rules: {
+							"no-console": "error",
+						},
+					},
+				],
+			});
+
+			const code = [
+				"# Test",
+				"",
+				"<!-- eslint-disable no-undef -->",
+				"<!-- eslint-disable no-alert -->",
+				"",
+				"```js",
+				'console.log("hello");',
+				"```",
+			].join("\n");
+
+			const results = await eslintWithUnusedDirectives.lintText(code, {
+				filePath: "test.md",
+			});
+
+			// Should report: unused no-undef + unused no-alert + no-console
+			assert.strictEqual(results[0].messages.length, 3);
+
+			// First unused directive (no-undef) should point to line 3
+			assert.strictEqual(results[0].messages[0].line, 3);
+			assert.ok(results[0].messages[0].message.includes("no-undef"));
+
+			// Second unused directive (no-alert) should point to line 4
+			assert.strictEqual(results[0].messages[1].line, 4);
+			assert.ok(results[0].messages[1].message.includes("no-alert"));
+
+			// Third message should be the no-console error on line 7
+			assert.strictEqual(results[0].messages[2].line, 7);
+		});
+
+		it("should not include fix or suggestions for configuration comment messages", async () => {
+			const eslintWithUnusedDirectives = new ESLint({
+				overrideConfigFile: true,
+				overrideConfig: [
+					{
+						plugins: {
+							markdown: plugin,
+						},
+						linterOptions: {
+							reportUnusedDisableDirectives: "error",
+						},
+					},
+					{
+						files: ["*.md"],
+						processor: "markdown/markdown",
+					},
+				],
+			});
+
+			const code = [
+				"# Test",
+				"",
+				"<!-- eslint-disable no-undef -->",
+				"",
+				"```js",
+				"var x = 1;",
+				"```",
+			].join("\n");
+
+			const results = await eslintWithUnusedDirectives.lintText(code, {
+				filePath: "test.md",
+			});
+
+			assert.strictEqual(results[0].messages.length, 1);
+			assert.strictEqual(results[0].messages[0].fix, undefined);
+			assert.strictEqual(results[0].messages[0].suggestions, undefined);
+			assert.strictEqual(results[0].messages[0].endLine, undefined);
+			assert.strictEqual(results[0].messages[0].endColumn, undefined);
+		});
+	});
 });

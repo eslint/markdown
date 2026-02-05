@@ -68,9 +68,18 @@ export interface RangeMap {
 	md: number;
 }
 
+export interface CommentInfo {
+	text: string;
+	position: {
+		start: { line: number; column: number };
+		end?: { line: number; column: number };
+	};
+}
+
 export interface BlockBase {
 	baseIndentText: string;
 	comments: string[];
+	commentInfos: CommentInfo[];
 	rangeMap: RangeMap[];
 }
 
