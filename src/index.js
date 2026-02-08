@@ -18,7 +18,8 @@ import rules from "./build/rules.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @import { ConfigObject, RulesConfig } from "@eslint/core";
+ * @import { Linter } from "eslint";
+ * @import { RulesConfig } from "@eslint/core";
  */
 
 //-----------------------------------------------------------------------------
@@ -97,7 +98,7 @@ const plugin = {
 				rules: recommendedRules,
 			},
 		],
-		processor: /** @type {ConfigObject[]} */ ([
+		processor: /** @type {Linter.Config[]} */ ([
 			{
 				name: "markdown/recommended/plugin",
 				plugins: (processorPlugins = {}),

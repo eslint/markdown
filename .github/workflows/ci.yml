@@ -80,7 +80,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                eslint: [9.15.0, 9.x, 10.x]
+                eslint: [9.x, 10.x]
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v6
