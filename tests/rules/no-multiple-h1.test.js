@@ -972,6 +972,22 @@ ruleTester.run("no-multiple-h1", rule, {
 		},
 		{
 			code: dedent`
+				<H1>Heading</H1>
+
+				# Another H1
+			`,
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: dedent`
 				# Heading 1
 
 				<h1 

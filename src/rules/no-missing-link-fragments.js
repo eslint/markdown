@@ -8,14 +8,14 @@
 //-----------------------------------------------------------------------------
 
 import GithubSlugger from "github-slugger";
-import { htmlCommentPattern } from "../util.js";
+import { stripHtmlComments } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Link } from "mdast";
+ * @import { Definition, Link } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"invalidFragment"} NoMissingLinkFragmentsMessageIds
  * @typedef {[{ ignoreCase?: boolean; allowPattern?: string }]} NoMissingLinkFragmentsOptions
@@ -76,28 +76,18 @@ export default {
 	},
 
 	create(context) {
-		const [{ allowPattern: allowPatternString, ignoreCase }] =
-			context.options;
-		const allowPattern = allowPatternString
-			? new RegExp(allowPatternString, "u")
+		const [{ allowPattern, ignoreCase }] = context.options;
+		const allowPatternOrNull = allowPattern
+			? new RegExp(allowPattern, "u")
 			: null;
 
 		const fragmentIds = new Set(["top"]);
 		const slugger = new GithubSlugger();
 
-		/** @type {Array<Link>} */
-		const linkNodes = [];
+		/** @type {Array<Definition | Link>} */
+		const relevantNodes = [];
 		/** @type {string} */
 		let headingText;
-
-		/**
-		 * Normalize a fragment based on the `ignoreCase` option.
-		 * @param {string} fragment The fragment to normalize.
-		 * @returns {string} The normalized fragment.
-		 */
-		function normalizeFragment(fragment) {
-			return ignoreCase ? fragment.toLowerCase() : fragment;
-		}
 
 		return {
 			heading() {
@@ -110,32 +100,28 @@ export default {
 
 			"heading:exit"() {
 				const customIdMatch = headingText.match(customHeadingIdPattern);
-				const baseId = customIdMatch
+				const id = customIdMatch
 					? customIdMatch.groups.id
 					: headingText;
-				const finalId = slugger.slug(baseId);
-				fragmentIds.add(normalizeFragment(finalId));
+
+				fragmentIds.add(slugger.slug(id));
 			},
 
 			html(node) {
 				// 1. Remove all comments
-				const htmlTextWithoutComments = node.value
-					.trim()
-					.replace(htmlCommentPattern, "");
+				const htmlTextWithoutComments = stripHtmlComments(node.value);
 
 				// 2. Then look for IDs in the remaining text
 				for (const match of htmlTextWithoutComments.matchAll(
 					htmlIdNamePattern,
 				)) {
-					const extractedId = match.groups.id;
-					const finalId = slugger.slug(extractedId);
-					fragmentIds.add(normalizeFragment(finalId));
-				}
+					const { id } = match.groups;
 
-				// TODO
+					fragmentIds.add(slugger.slug(id));
+				}
 			},
 
-			link(node) {
+			"definition, link"(/** @type {Definition | Link} */ node) {
 				const { url } = node;
 
 				// If `url` is empty, `"#"`, or does not start with `"#"`, skip it.
@@ -143,31 +129,31 @@ export default {
 					return;
 				}
 
-				linkNodes.push(node);
+				relevantNodes.push(node);
 			},
 
 			"root:exit"() {
-				for (const node of linkNodes) {
+				for (const node of relevantNodes) {
 					const fragment = node.url.slice(1);
-					/** @type {string} */
-					let decodedFragment;
+					let decodedFragment = fragment;
 
+					// Decode URI component to handle encoded characters such as `%20`.
 					try {
 						decodedFragment = decodeURIComponent(fragment);
 					} catch {
-						// fallback if not valid encoding
-						decodedFragment = fragment;
+						// If decoding fails due to an invalid URI sequence, use the original fragment.
 					}
 
 					if (
-						allowPattern?.test(decodedFragment) ||
+						allowPatternOrNull?.test(decodedFragment) ||
 						githubLineReferencePattern.test(decodedFragment)
 					) {
 						continue;
 					}
 
-					const normalizedFragment =
-						normalizeFragment(decodedFragment);
+					const normalizedFragment = ignoreCase
+						? decodedFragment.toLowerCase()
+						: decodedFragment;
 
 					if (!fragmentIds.has(normalizedFragment)) {
 						context.report({

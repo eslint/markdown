@@ -1,9 +1,11 @@
+import { defineConfig, globalIgnores } from "eslint/config";
 import markdown from "./src/index.js";
 
-export default [
-	{
-		name: "markdown/content/ignores",
-		ignores: ["**/*.js", "**/.cjs", "**/.mjs"],
-	},
-	...markdown.configs.recommended,
-];
+export default defineConfig([
+	globalIgnores(
+		["**/*.js", "**/.cjs", "**/.mjs"],
+		"markdown/content/ignores",
+	),
+
+	markdown.configs.recommended,
+]);
