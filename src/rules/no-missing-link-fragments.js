@@ -28,6 +28,7 @@ import { stripHtmlComments } from "../util.js";
 
 const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
 const customHeadingIdPattern = /\{#(?<id>[^}\s]+)\}\s*$/u;
+// const htmlHeadingPattern = /<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/giu;
 const htmlIdNamePattern =
 	/(?<!<)<[^>]+\s(?:id|name)\s*=\s*["']?(?<id>[^"'\s>]+)["']?/giu;
 
@@ -119,6 +120,31 @@ export default {
 
 					fragmentIds.add(slugger.slug(id));
 				}
+
+				// 3. Finally, look for headings in the HTML
+				/*
+				let match;
+				while (
+					(match = htmlHeadingPattern.exec(htmlTextWithoutComments))
+				) {
+					const headingContent = match[1];
+
+					// Remove any HTML tags within the heading content to get plain text
+					const plainTextHeading = headingContent.replace(
+						/<[^>]+>/gu,
+						"",
+					);
+
+					const customIdMatch = plainTextHeading.match(
+						customHeadingIdPattern,
+					);
+					const id = customIdMatch
+						? customIdMatch.groups.id
+						: plainTextHeading;
+
+					fragmentIds.add(slugger.slug(id));
+				}
+				*/
 			},
 
 			"definition, link"(/** @type {Definition | Link} */ node) {
