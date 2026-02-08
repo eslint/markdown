@@ -1,0 +1,7 @@
+{
+  "root": true,
+  "extends": ["eslint:recommended", "plugin:markdown/recommended-legacy"],
+  "rules": {
+    "no-console": "error"
+  }
+}

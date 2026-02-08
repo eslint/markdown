@@ -1,0 +1,20 @@
+{
+  "root": true,
+  "env": {
+    "browser": true
+  },
+  "plugins": ["markdown"],
+  "overrides": [
+    {
+      "files": ["*.md", "*.mkdn", "*.mdown", "*.markdown", "*.custom"],
+      "processor": "markdown/markdown"
+    }
+  ],
+  "rules": {
+    "eol-last": "error",
+    "no-console": "error",
+    "no-undef": "error",
+    "quotes": "error",
+    "spaced-comment": "error"
+  }
+}
