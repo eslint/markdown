@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { lineEndingPattern } from "../util.js";
+import { lineEndingPattern, stripHtmlComments } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -25,7 +25,7 @@ import { lineEndingPattern } from "../util.js";
 //-----------------------------------------------------------------------------
 
 const htmlTagPattern =
-	/<(?<tagName>[a-z0-9]+(?:-[a-z0-9]+)*)(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?>/giu;
+	/<(?<tagName>[a-z0-9]+(?:-[a-z0-9]+)*)(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?\/?>/giu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -89,10 +89,12 @@ export default {
 
 		return {
 			html(node) {
-				/** @type {RegExpExecArray} */
+				const text = stripHtmlComments(sourceCode.getText(node));
+
+				/** @type {RegExpExecArray | null} */
 				let match;
 
-				while ((match = htmlTagPattern.exec(node.value)) !== null) {
+				while ((match = htmlTagPattern.exec(text)) !== null) {
 					const fullMatch = match[0];
 					const { tagName } = match.groups;
 					const firstNewlineIndex =

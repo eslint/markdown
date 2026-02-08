@@ -17,7 +17,7 @@ import { normalizeIdentifier } from "micromark-util-normalize-identifier";
  * @import { Definition, FootnoteDefinition } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"unusedDefinition" | "unusedFootnoteDefinition"} NoUnusedDefinitionsMessageIds
- * @typedef {[{ allowDefinitions?: string[], allowFootnoteDefinitions?: string[] }]} NoUnusedDefinitionsOptions
+ * @typedef {[{ allowDefinitions?: string[], allowFootnoteDefinitions?: string[], checkFootnoteDefinitions?: boolean }]} NoUnusedDefinitionsOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoUnusedDefinitionsOptions, MessageIds: NoUnusedDefinitionsMessageIds }>} NoUnusedDefinitionsRuleDefinition
  */
 
@@ -61,6 +61,9 @@ export default {
 						},
 						uniqueItems: true,
 					},
+					checkFootnoteDefinitions: {
+						type: "boolean",
+					},
 				},
 				additionalProperties: false,
 			},
@@ -70,6 +73,7 @@ export default {
 			{
 				allowDefinitions: ["//"],
 				allowFootnoteDefinitions: [],
+				checkFootnoteDefinitions: true,
 			},
 		],
 	},
@@ -85,6 +89,7 @@ export default {
 				normalizeIdentifier(identifier).toLowerCase(),
 			),
 		);
+		const [{ checkFootnoteDefinitions }] = context.options;
 
 		/** @type {Set<string>} Set to track used identifiers */
 		const usedIdentifiers = new Set();
@@ -117,7 +122,10 @@ export default {
 			},
 
 			footnoteDefinition(node) {
-				if (allowFootnoteDefinitions.has(node.identifier)) {
+				if (
+					!checkFootnoteDefinitions ||
+					allowFootnoteDefinitions.has(node.identifier)
+				) {
 					return;
 				}
 

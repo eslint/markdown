@@ -28,6 +28,9 @@ ruleTester.run("no-html", rule, {
 		"Hello world!",
 		" 1 < 5",
 		"<!-- comment -->",
+		"<!-- <h1> -->",
+		'<!-- <div id="foo"> -->',
+		"<!-- abcdefg <abcdefg> -->",
 		dedent`\`\`\`html
         <b>Hello world!</b>
         \`\`\``,
@@ -69,6 +72,186 @@ ruleTester.run("no-html", rule, {
 		},
 	],
 	invalid: [
+		{
+			code: "<img>",
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+					data: {
+						name: "img",
+					},
+				},
+			],
+		},
+		{
+			code: "<img >",
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 7,
+					data: {
+						name: "img",
+					},
+				},
+			],
+		},
+		{
+			code: "<img/>",
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 7,
+					data: {
+						name: "img",
+					},
+				},
+			],
+		},
+		{
+			code: "<img />",
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 8,
+					data: {
+						name: "img",
+					},
+				},
+			],
+		},
+		{
+			code: "<hr>",
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 5,
+					data: {
+						name: "hr",
+					},
+				},
+			],
+		},
+		{
+			code: "<hr >",
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+					data: {
+						name: "hr",
+					},
+				},
+			],
+		},
+		{
+			code: "<hr/>",
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+					data: {
+						name: "hr",
+					},
+				},
+			],
+		},
+		{
+			code: "<hr />",
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 7,
+					data: {
+						name: "hr",
+					},
+				},
+			],
+		},
+		{
+			code: "<br>",
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 5,
+					data: {
+						name: "br",
+					},
+				},
+			],
+		},
+		{
+			code: "<br >",
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+					data: {
+						name: "br",
+					},
+				},
+			],
+		},
+		{
+			code: "<br/>",
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+					data: {
+						name: "br",
+					},
+				},
+			],
+		},
+		{
+			code: "<br />",
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 7,
+					data: {
+						name: "br",
+					},
+				},
+			],
+		},
 		{
 			code: "<b>Hello world!</b>",
 			errors: [

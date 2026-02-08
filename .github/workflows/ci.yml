@@ -48,7 +48,7 @@ jobs:
         strategy:
             matrix:
                 os: [ubuntu-latest]
-                node: [25.x, 24.x, 22.x, 20.x, 18.x, "18.18.0"]
+                node: [25.x, 24.x, 22.x, 20.x, "20.19.0"]
                 include:
                     - os: windows-latest
                       node: "lts/*"
@@ -68,6 +68,7 @@ jobs:
                   CI: true
             - name: Test
               run: npm run test
+
     test_types:
         name: Test Types
         runs-on: ubuntu-latest
@@ -79,10 +80,23 @@ jobs:
                   node-version: "lts/*"
             - name: Install dependencies
               run: npm install
-            - name: Build
-              run: npm run build
             - name: Check Types
               run: npm run test:types
+
+    are_the_types_wrong:
+        name: Are the types wrong?
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+            - name: Setup Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version: "lts/*"
+            - name: Install Packages
+              run: npm install
+            - name: Check validity of type definitions
+              run: npm run lint:types
+
     jsr_test:
         name: Verify JSR Publish
         runs-on: ubuntu-latest
@@ -94,6 +108,4 @@ jobs:
             - name: Install Packages
               run: npm install
             - name: Run --dry-run
-              run: |
-                  npm run build
-                  npm run test:jsr
+              run: npm run test:jsr
