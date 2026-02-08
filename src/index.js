@@ -18,14 +18,14 @@ import rules from "./build/rules.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Linter } from "eslint";
+ * @import { ConfigObject, RulesConfig } from "@eslint/core";
  */
 
 //-----------------------------------------------------------------------------
 // Exports
 //-----------------------------------------------------------------------------
 
-/** @type {Linter.RulesRecord} */
+/** @type {RulesConfig} */
 const processorRulesConfig = {
 	// The Markdown parser automatically trims trailing
 	// newlines from code blocks.
@@ -97,7 +97,7 @@ const plugin = {
 				rules: recommendedRules,
 			},
 		],
-		processor: /** @type {Linter.Config[]} */ ([
+		processor: /** @type {ConfigObject[]} */ ([
 			{
 				name: "markdown/recommended/plugin",
 				plugins: (processorPlugins = {}),
