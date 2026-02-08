@@ -19,14 +19,13 @@ import rules from "./build/rules.js";
 
 /**
  * @import { Linter } from "eslint";
- * @import { RulesConfig } from "@eslint/core";
  */
 
 //-----------------------------------------------------------------------------
 // Exports
 //-----------------------------------------------------------------------------
 
-/** @type {RulesConfig} */
+/** @satisfies {Linter.RulesRecord} */
 const processorRulesConfig = {
 	// The Markdown parser automatically trims trailing
 	// newlines from code blocks.
