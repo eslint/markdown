@@ -8,16 +8,12 @@
 //-----------------------------------------------------------------------------
 
 import assert from "node:assert";
-import api from "eslint";
 import path from "node:path";
-import plugin from "../src/index.js";
 import fs from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { ESLint } from "eslint";
+import plugin from "../src/index.js";
 
-import unsupportedAPI from "eslint/use-at-your-own-risk"; // TODO
-const LegacyESLint = unsupportedAPI.LegacyESLint; // TODO
-
-const ESLint = api.ESLint;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rulesDir = path.resolve(__dirname, "../src/rules");
@@ -35,12 +31,22 @@ const pkg = JSON.parse(
 //-----------------------------------------------------------------------------
 
 /**
+ * Gets the major version of the currently installed ESLint.
+ * @returns {number} The major version.
+ */
+function getESLintMajorVersion() {
+	return Number(ESLint.version.split(".")[0]);
+}
+
+/**
  * Helper function which creates ESLint instance with enabled/disabled autofix feature.
  * @param {string} fixtureConfigName ESLint JSON config fixture filename.
  * @param {Object} [options={}] Whether to enable autofix feature.
  * @returns {LegacyESLint} ESLint instance to execute in tests.
  */
-function initLegacyESLint(fixtureConfigName, options = {}) {
+async function initLegacyESLint(fixtureConfigName, options = {}) {
+	const { LegacyESLint } = await import("eslint/use-at-your-own-risk");
+
 	return new LegacyESLint({
 		cwd: path.resolve(__dirname, "./fixtures/"),
 		ignore: false,
@@ -88,6 +94,10 @@ describe("meta", () => {
 });
 
 describe("LegacyESLint", () => {
+	if (getESLintMajorVersion() >= 10) {
+		return; // Skip `LegacyESLint` tests on ESLint v10+
+	}
+
 	describe("recommended config", () => {
 		let eslint;
 		const shortText = [
@@ -97,8 +107,8 @@ describe("LegacyESLint", () => {
 			"```",
 		].join("\n");
 
-		before(() => {
-			eslint = initLegacyESLint("recommended.json");
+		before(async () => {
+			eslint = await initLegacyESLint("recommended.json");
 		});
 
 		it("should include the plugin", async () => {
@@ -143,8 +153,8 @@ describe("LegacyESLint", () => {
 		let eslint;
 		const shortText = ["```js", "console.log(42);", "```"].join("\n");
 
-		before(() => {
-			eslint = initLegacyESLint("eslintrc.json");
+		before(async () => {
+			eslint = await initLegacyESLint("eslintrc.json");
 		});
 
 		it("should run on .md files", async () => {
@@ -373,7 +383,7 @@ describe("LegacyESLint", () => {
 				"```",
 				"````",
 			].join("\n");
-			const recursiveCli = initLegacyESLint("eslintrc.json", {
+			const recursiveCli = await initLegacyESLint("eslintrc.json", {
 				extensions: [".js", ".markdown", ".md"],
 			});
 			const results = await recursiveCli.lintText(code, {
@@ -467,8 +477,8 @@ describe("LegacyESLint", () => {
 		});
 
 		describe("should fix code", () => {
-			before(() => {
-				eslint = initLegacyESLint("eslintrc.json", { fix: true });
+			before(async () => {
+				eslint = await initLegacyESLint("eslintrc.json", { fix: true });
 			});
 
 			it("in the simplest case", async () => {
@@ -1488,8 +1498,7 @@ describe("FlatESLint", () => {
 				"```",
 				"````",
 			].join("\n");
-
-			const recursiveCli = initLegacyESLint("eslintrc.json", {
+			const recursiveCli = await initLegacyESLint("eslintrc.json", {
 				extensions: [".js", ".markdown", ".md"],
 			});
 			const results = await recursiveCli.lintText(code, {
