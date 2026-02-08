@@ -70,7 +70,7 @@ jobs:
               env:
                   CI: true
             - name: Install ESLint@${{ matrix.eslint }}
-              run: npm install eslint@${{ matrix.eslint }}
+              run: npm install -D eslint@${{ matrix.eslint }}
             - name: Test
               run: npm run test
 
