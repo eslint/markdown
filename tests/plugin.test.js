@@ -42,7 +42,7 @@ function getESLintMajorVersion() {
  * Helper function which creates ESLint instance with enabled/disabled autofix feature.
  * @param {string} fixtureConfigName ESLint JSON config fixture filename.
  * @param {Object} [options={}] Whether to enable autofix feature.
- * @returns {LegacyESLint} ESLint instance to execute in tests.
+ * @returns {Promise<LegacyESLint>} ESLint instance to execute in tests.
  */
 async function initLegacyESLint(fixtureConfigName, options = {}) {
 	const { LegacyESLint } = await import("eslint/use-at-your-own-risk");
