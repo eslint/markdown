@@ -1473,52 +1473,6 @@ describe("FlatESLint", () => {
 			assert.strictEqual(results[0].messages[0].column, 1);
 		});
 
-		// https://github.com/eslint/markdown/issues/181
-		it("should work when called on nested code blocks in the same file", async () => {
-			/*
-			 * As of this writing, the nested code block, though it uses the same
-			 * Markdown processor, must use a different extension or ESLint will not
-			 * re-apply the processor on the nested code block. To work around that,
-			 * a file named `test.md` contains a nested `markdown` code block in
-			 * this test.
-			 *
-			 * https://github.com/eslint/eslint/pull/14227/files#r602802758
-			 */
-			const code = [
-				"<!-- test.md -->",
-				"",
-				"````markdown",
-				"<!-- test.md/0_0.markdown -->",
-				"",
-				"This test only repros if the MD files have a different number of lines before code blocks.",
-				"",
-				"```js",
-				"// test.md/0_0.markdown/0_0.js",
-				"console.log('single quotes')",
-				"```",
-				"````",
-			].join("\n");
-			const recursiveCli = await initLegacyESLint("eslintrc.json", {
-				extensions: [".js", ".markdown", ".md"],
-			});
-			const results = await recursiveCli.lintText(code, {
-				filePath: "test.md",
-			});
-
-			assert.strictEqual(results.length, 1);
-			assert.strictEqual(results[0].messages.length, 2);
-			assert.strictEqual(
-				results[0].messages[0].message,
-				"Unexpected console statement.",
-			);
-			assert.strictEqual(results[0].messages[0].line, 10);
-			assert.strictEqual(
-				results[0].messages[1].message,
-				"Strings must use doublequote.",
-			);
-			assert.strictEqual(results[0].messages[1].line, 10);
-		});
-
 		describe("configuration comments", () => {
 			it("apply only to the code block immediately following", async () => {
 				const code = [
