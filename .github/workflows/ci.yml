@@ -46,6 +46,7 @@ jobs:
     test:
         name: Test
         strategy:
+            fail-fast: false
             matrix:
                 os: [ubuntu-latest]
                 eslint: [9.15.0, 9.x, 10.x]
