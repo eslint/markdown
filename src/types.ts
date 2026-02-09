@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Additional types for this package.
+ * @author Nicholas C. Zakas
+ */
+
 //------------------------------------------------------------------------------
 // Imports
 //------------------------------------------------------------------------------
@@ -59,7 +64,7 @@ type WithExit<RuleVisitorType extends RuleVisitor> = {
 };
 
 //------------------------------------------------------------------------------
-// Exports
+// Exports: Processor
 //------------------------------------------------------------------------------
 
 export interface RangeMap {
@@ -75,6 +80,72 @@ export interface BlockBase {
 }
 
 export type Block = Code & BlockBase;
+
+//------------------------------------------------------------------------------
+// Exports: HTML
+//------------------------------------------------------------------------------
+
+export type HtmlNode =
+	| HtmlDocumentNode
+	| HtmlElementNode
+	| HtmlTextNode
+	| HtmlCommentNode
+	| HtmlDoctypeNode;
+
+export type HtmlNodeType =
+	| HtmlDocumentNode["type"]
+	| HtmlElementNode["type"]
+	| HtmlTextNode["type"]
+	| HtmlCommentNode["type"]
+	| HtmlDoctypeNode["type"];
+
+export interface HtmlLocation {
+	start: number;
+	end: number;
+}
+
+interface HtmlBaseNode {
+	type: HtmlNodeType;
+	loc: [HtmlLocation, HtmlLocation];
+	parent: HtmlNode;
+	[key: string]: any;
+}
+
+export interface HtmlLiteralNode extends HtmlBaseNode {
+	value: string;
+}
+
+export interface HtmlParentNode extends HtmlBaseNode {
+	children: HtmlNode[];
+}
+
+export interface HtmlDocumentNode extends Omit<HtmlParentNode, "parent"> {
+	type: "document";
+	attributes: Record<string, string>;
+	parent: undefined;
+}
+
+export interface HtmlElementNode extends HtmlParentNode {
+	type: "element";
+	name: string;
+	attributes: Record<string, string>;
+}
+
+export interface HtmlTextNode extends HtmlLiteralNode {
+	type: "text";
+}
+
+export interface HtmlCommentNode extends HtmlLiteralNode {
+	type: "comment";
+}
+
+export interface HtmlDoctypeNode extends HtmlLiteralNode {
+	type: "doctype";
+}
+
+//------------------------------------------------------------------------------
+// Exports: Front Matter
+//------------------------------------------------------------------------------
 
 /**
  * Markdown TOML.
@@ -114,6 +185,10 @@ export interface Json extends Literal {
  */
 export interface JsonData extends Data {}
 
+//------------------------------------------------------------------------------
+// Exports: Markdown Language
+//------------------------------------------------------------------------------
+
 /**
  * Language options provided for Markdown files.
  */
@@ -128,6 +203,10 @@ export interface MarkdownLanguageOptions extends LanguageOptions {
  * The context object that is passed to the Markdown language plugin methods.
  */
 export type MarkdownLanguageContext = LanguageContext<MarkdownLanguageOptions>;
+
+//------------------------------------------------------------------------------
+// Exports: Markdown Rule Definition
+//------------------------------------------------------------------------------
 
 export interface MarkdownRuleVisitor
 	extends
