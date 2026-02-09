@@ -127,6 +127,10 @@ export default {
 
 		return {
 			text(node) {
+				if (!node.position) {
+					return;
+				}
+
 				const invalidReferences = findInvalidLabelReferences(
 					node,
 					sourceCode,
