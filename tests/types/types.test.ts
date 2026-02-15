@@ -8,8 +8,8 @@ import type {
 	RangeMap,
 	Block,
 } from "@eslint/markdown";
-import type { SourceLocation, SourceRange } from "@eslint/core";
-import type { ESLint, Linter } from "eslint";
+import type { Plugin, SourceLocation, SourceRange } from "@eslint/core";
+import type { Linter } from "eslint";
 import type { Position } from "unist";
 import type {
 	// Nodes (abstract)
@@ -89,7 +89,7 @@ const invalidBlock: Block = {
 	value: "code",
 };
 
-markdown satisfies ESLint.Plugin;
+markdown satisfies Plugin;
 markdown.meta.name satisfies string;
 markdown.meta.version satisfies string;
 
