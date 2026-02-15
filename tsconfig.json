@@ -4,7 +4,7 @@
     "declaration": true,
     "allowJs": true,
     "checkJs": true,
-    "outDir": "dist/esm",
+    "outDir": "dist",
     "target": "ES2022",
     "moduleResolution": "NodeNext",
     "module": "NodeNext"
