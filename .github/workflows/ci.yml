@@ -76,9 +76,6 @@ jobs:
 
     test_types:
         name: Test Types
-        strategy:
-            matrix:
-                eslint: [9.x, 10.x]
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v6
@@ -88,8 +85,6 @@ jobs:
                   node-version: "lts/*"
             - name: Install dependencies
               run: npm install
-            - name: Install ESLint@${{ matrix.eslint }}
-              run: npm install -D eslint@${{ matrix.eslint }}
             - name: Check Types
               run: npm run test:types
 
