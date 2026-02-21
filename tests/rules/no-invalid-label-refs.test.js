@@ -33,6 +33,10 @@ ruleTester.run("no-invalid-label-refs", rule, {
 		"[  foo ][]\n\n[foo]: http://bar.com/image.jpg",
 		"[eslint][\n\n]",
 		"[*eslint*][]\n\n[*eslint*]: http://bar.com",
+		{
+			code: `Hello [World][https://example.com]`,
+			language: "markdown/gfm",
+		},
 	],
 	invalid: [
 		{
