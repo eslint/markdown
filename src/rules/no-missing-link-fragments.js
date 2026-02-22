@@ -33,6 +33,8 @@ import { stripHtmlComments } from "../util.js";
 
 const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
 const customHeadingIdPattern = /\{#(?<id>[^}\s]+)\}\s*$/u;
+const htmlTagPattern =
+	/<\/?[a-z0-9]+(?:-[a-z0-9]+)*(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?\/?>/giu;
 const htmlHeadingPattern = /<h[1-6][^>]*>(?<children>[\s\S]*?)<\/h[1-6]>/giu;
 const htmlIdNamePattern =
 	/(?<!<)<[^>]+\s(?:id|name)\s*=\s*["']?(?<id>[^"'\s>]+)["']?/giu;
@@ -132,15 +134,10 @@ export default {
 				)) {
 					const { children } = match.groups;
 
-					/*
 					// Remove any HTML tags within the heading content to get plain text
-					const plainTextHeading = headingContent.replace(
-						/<[^>]+>/gu,
-						"",
-					);
-					*/
+					const id = children.replace(htmlTagPattern, "");
 
-					fragmentIds.add(slugger.slug(children));
+					fragmentIds.add(slugger.slug(id));
 				}
 			},
 

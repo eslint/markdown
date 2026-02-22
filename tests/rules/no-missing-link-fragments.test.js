@@ -82,10 +82,8 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		[Link](#-scss-to-css)
 		`,
 
-		/*
-
 		dedent`
-		<h1>heading <em>1</em></h1>
+		<h1>heading <strong>1</strong></h1>
 		
 		[Link](#heading-1)
 		`,
@@ -102,7 +100,77 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		[Link](#heading--1)
 		`,
 
-		*/
+		dedent`
+		<h1>heading  <strong><em> 1 </em></strong></h1>
+
+		[Link](#heading---1-)
+		`,
+
+		dedent`
+		<h1>heading <em>1</em></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <EM>1</EM></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em data-test="test">1</em></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em data-test="test >">1</em></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em data-test="test <>">1</em></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em>1</em data-test="test"></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em>1</em data-test="test >"></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em>1</em data-test="test <>"></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em data-test="test">1</em data-test="test"></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em data-test="test >">1</em data-test="test >"></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em data-test="test <>">1</em data-test="test <>"></h1>
+		
+		[Link](#heading-1)
+		`,
 
 		// HTML `h2` tags
 		dedent`
