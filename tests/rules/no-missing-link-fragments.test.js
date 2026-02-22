@@ -651,7 +651,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 			],
 		},
 
-		// Basic invalid case with HTML tags
+		// Basic invalid case with HTML heading tags
 		{
 			code: dedent`
 			<h1>heading 1</h1>
