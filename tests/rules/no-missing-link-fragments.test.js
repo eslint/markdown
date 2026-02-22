@@ -74,14 +74,21 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		<h1>{ } scss-to-css</h1>
 		
 		[Link](#--scss-to-css)
-		`,
+		`, // https://github.com/eslint/markdown/issues/582
 
 		dedent`
 		<h1>👍 scss-to-css</h1>
 
 		[Link](#-scss-to-css)
-		`,
+		`, // https://github.com/eslint/markdown/issues/582
 
+		dedent`
+		<h1>scss-to-css</h1>
+		
+		[Link](#scss-to-css)
+		`, // https://github.com/eslint/markdown/issues/582
+
+		// HTML `h1` tags with children
 		dedent`
 		<h1>heading <strong>1</strong></h1>
 		
@@ -615,6 +622,59 @@ ruleTester.run("no-missing-link-fragments", rule, {
 					column: 1,
 					endLine: 3,
 					endColumn: 27,
+				},
+			],
+		},
+
+		// Basic invalid case with HTML tags
+		{
+			code: dedent`
+			<h1>heading 1</h1>
+
+			[Invalid](#non-existent)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "non-existent" },
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 25,
+				},
+			],
+		},
+		{
+			code: dedent`
+			<h7>heading 1</h7>
+
+			[Invalid](#heading-1)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: dedent`
+			<h8>heading 1</h8>
+
+			[Invalid](#heading-1)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 22,
 				},
 			],
 		},
