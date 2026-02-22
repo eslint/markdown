@@ -3,6 +3,11 @@
  * @author Sweta Tanwar (@SwetaTanwar)
  */
 
+/*
+ * TODO:
+ * - `<h1 name="abcd">heading 1</h1>`: `name` and `h1` tag combination.
+ */
+
 //-----------------------------------------------------------------------------
 // Imports
 //-----------------------------------------------------------------------------
@@ -28,7 +33,7 @@ import { stripHtmlComments } from "../util.js";
 
 const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
 const customHeadingIdPattern = /\{#(?<id>[^}\s]+)\}\s*$/u;
-// const htmlHeadingPattern = /<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/giu;
+const htmlHeadingPattern = /<h[1-6][^>]*>(?<children>[\s\S]*?)<\/h[1-6]>/giu;
 const htmlIdNamePattern =
 	/(?<!<)<[^>]+\s(?:id|name)\s*=\s*["']?(?<id>[^"'\s>]+)["']?/giu;
 
@@ -122,29 +127,21 @@ export default {
 				}
 
 				// 3. Finally, look for headings in the HTML
-				/*
-				let match;
-				while (
-					(match = htmlHeadingPattern.exec(htmlTextWithoutComments))
-				) {
-					const headingContent = match[1];
+				for (const match of htmlTextWithoutComments.matchAll(
+					htmlHeadingPattern,
+				)) {
+					const { children } = match.groups;
 
+					/*
 					// Remove any HTML tags within the heading content to get plain text
 					const plainTextHeading = headingContent.replace(
 						/<[^>]+>/gu,
 						"",
 					);
+					*/
 
-					const customIdMatch = plainTextHeading.match(
-						customHeadingIdPattern,
-					);
-					const id = customIdMatch
-						? customIdMatch.groups.id
-						: plainTextHeading;
-
-					fragmentIds.add(slugger.slug(id));
+					fragmentIds.add(slugger.slug(children));
 				}
-				*/
 			},
 
 			"definition, link"(/** @type {Definition | Link} */ node) {

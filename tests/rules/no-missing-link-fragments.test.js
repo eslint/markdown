@@ -45,11 +45,27 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		[Link](#custom-name)
 		`,
 
-		/*
-
 		// HTML `h1` tags
 		dedent`
 		<h1>heading 1</h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<H1>heading 1</H1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>HEADING 1</h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>HeAdInG 1</h1>
 
 		[Link](#heading-1)
 		`,
@@ -65,6 +81,8 @@ ruleTester.run("no-missing-link-fragments", rule, {
 
 		[Link](#-scss-to-css)
 		`,
+
+		/*
 
 		dedent`
 		<h1>heading <em>1</em></h1>
@@ -84,9 +102,17 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		[Link](#heading--1)
 		`,
 
+		*/
+
 		// HTML `h2` tags
 		dedent`
 		<h2>heading 2</h2>
+
+		[Link](#heading-2)
+		`,
+
+		dedent`
+		<H2>heading 2</H2>
 
 		[Link](#heading-2)
 		`,
@@ -98,9 +124,21 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		[Link](#heading-3)
 		`,
 
+		dedent`
+		<H3>heading 3</H3>
+
+		[Link](#heading-3)
+		`,
+
 		// HTML `h4` tags
 		dedent`
 		<h4>heading 4</h4>
+
+		[Link](#heading-4)
+		`,
+
+		dedent`
+		<H4>heading 4</H4>
 
 		[Link](#heading-4)
 		`,
@@ -112,6 +150,12 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		[Link](#heading-5)
 		`,
 
+		dedent`
+		<H5>heading 5</H5>
+
+		[Link](#heading-5)
+		`,
+
 		// HTML `h6` tags
 		dedent`
 		<h6>heading 6</h6>
@@ -119,7 +163,11 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		[Link](#heading-6)
 		`,
 
-		*/
+		dedent`
+		<H6>heading 6</H6>
+
+		[Link](#heading-6)
+		`,
 
 		// HTML anchor tags
 		dedent`
