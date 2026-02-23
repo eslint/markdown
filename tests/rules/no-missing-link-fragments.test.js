@@ -242,6 +242,12 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		`,
 
 		dedent`
+		<h1>heading <em data-test='test >'>1</em></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
 		<h1>heading <em data-test="test <>">1</em></h1>
 		
 		[Link](#heading-1)
@@ -347,6 +353,21 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		<h1>heading 1<br/  ></h1>
 		
 		[Link](#heading-1)
+		`,
+
+		// HTML `h1` tag with `id` or `name` attributes
+		dedent`
+		<h1 id="foo">bar</h1>
+
+		[Link](#foo)
+		[Link](#bar)
+		`,
+
+		dedent`
+		<h1 name="foo">bar</h1>
+
+		[Link](#foo)
+		[Link](#bar)
 		`,
 
 		// HTML `h2` tags
