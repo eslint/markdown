@@ -208,19 +208,19 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		dedent`
 		<h1>heading <em>1< /em></h1>
 
-		[Invalid](#heading-1-em)
+		[Link](#heading-1-em)
 		`,
 
 		dedent`
 		<h1>heading < em>1</em></h1>
 
-		[Invalid](#heading--em1)
+		[Link](#heading--em1)
 		`,
 
 		dedent`
 		<h1>heading <  em>1</em></h1>
 
-		[Invalid](#heading---em1)
+		[Link](#heading---em1)
 		`,
 
 		dedent`
