@@ -29,7 +29,7 @@ import { stripHtmlComments } from "../util.js";
 const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
 const customHeadingIdPattern = /\{#(?<id>[^}\s]+)\}\s*$/u;
 const htmlHeadingPattern =
-	/<h[1-6][^>]*>(?<children>[\s\S]*?)<\/\s*h[1-6]\s*>/giu;
+	/<h(?<depth>[1-6])[^>]*>(?<children>[\s\S]*?)<\/\s*h\k<depth>\s*>/giu;
 const htmlIdNamePattern =
 	/(?<!<)<[^>]+\s(?:id|name)\s*=\s*["']?(?<id>[^"'\s>]+)["']?/giu;
 const htmlTagPattern =

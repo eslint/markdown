@@ -909,6 +909,40 @@ ruleTester.run("no-missing-link-fragments", rule, {
 				},
 			],
 		},
+		{
+			code: dedent`
+			<h1>heading 1</h2>
+
+			[Invalid](#heading-1)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: dedent`
+			<h3>heading 1</h6>
+
+			[Invalid](#heading-1)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 22,
+				},
+			],
+		},
 
 		// Case-sensitive mismatch (with ignoreCase false option)
 		{
