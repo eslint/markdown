@@ -71,7 +71,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		`,
 
 		dedent`
-        <h1>heading 1</  
+        <h1>heading 1</
         h1>
 
 		[Link](#heading-1)
@@ -122,7 +122,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 
 		dedent`
 		<h1>{ } scss-to-css</h1>
-		
+
 		[Link](#--scss-to-css)
 		`, // https://github.com/eslint/markdown/issues/582
 
@@ -134,26 +134,26 @@ ruleTester.run("no-missing-link-fragments", rule, {
 
 		dedent`
 		<h1>scss-to-css</h1>
-		
+
 		[Link](#scss-to-css)
 		`, // https://github.com/eslint/markdown/issues/582
 
 		// HTML `h1` tags with children
 		dedent`
 		<h1>heading <strong>1</strong></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading <strong><em>1</em></strong></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading  <strong><em>1</em></strong></h1>
-		
+
 		[Link](#heading--1)
 		`,
 
@@ -165,43 +165,43 @@ ruleTester.run("no-missing-link-fragments", rule, {
 
 		dedent`
 		<h1>heading <em>1</em></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading <em >1</em></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading <em  >1</em></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading <em>1</em ></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading <em>1</em  ></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading <em>1</ em></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading <em>1</  em></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
@@ -231,127 +231,127 @@ ruleTester.run("no-missing-link-fragments", rule, {
 
 		dedent`
 		<h1>heading <em data-test="test">1</em></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading <em data-test="test >">1</em></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading <em data-test='test >'>1</em></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading <em data-test="test <>">1</em></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading <em>1</em data-test="test"></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading <em>1</em data-test="test >"></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading <em>1</em data-test="test <>"></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading <em data-test="test">1</em data-test="test"></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading <em data-test="test >">1</em data-test="test >"></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading <em data-test="test <>">1</em data-test="test <>"></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading 1<br></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading 1< br></h1>
-		
+
 		[Link](#heading-1-br)
 		`,
 
 		dedent`
 		<h1>heading 1<  br></h1>
-		
+
 		[Link](#heading-1--br)
 		`,
 
 		dedent`
 		<h1>heading 1<   br></h1>
-		
+
 		[Link](#heading-1---br)
 		`,
 
 		dedent`
 		<h1>heading 1<br ></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading 1<br  ></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading 1<br/></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading 1<br /></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading 1<br  /></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading 1<br/ ></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
 		dedent`
 		<h1>heading 1<br/  ></h1>
-		
+
 		[Link](#heading-1)
 		`,
 
@@ -484,7 +484,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		<h5 name="old-style-5">Old Style 5</h5>
 		<h6 id="bookmark-6">Bookmark 6</h6>
 		<h6 name="old-style-6">Old Style 6</h6>
-		
+
 		[Link](#bookmark)
 		[Link](#old-style)
 		[Link](#bookmark-2)
@@ -525,7 +525,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		<h6 name= "old-style-11">Old Style 11</h6>
 		<h6 id ="bookmark-12">Bookmark 12</h6>
 		<h6 name ="old-style-12">Old Style 12</h6>
-		
+
 		[Link](#bookmark)
 		[Link](#old-style)
 		[Link](#bookmark-2)
@@ -566,21 +566,21 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		// GitHub line references with actual content
 		dedent`
 		# Sample Code Section
-		
+
 		\`\`\`js
 		// Line 1: Function declaration
 		function add(a, b) {
 			// Line 2: Add numbers
 			return a + b;
 		}
-		
+
 		// Line 3: Function call
 		const result = add(1, 2);
-		
+
 		// Line 4: Log result
 		console.log(result);
 		\`\`\`
-		
+
 		[Reference Line 2](#L6)
 		[Reference Lines 2-4](#L6-L12)
 		[Reference Line with Column](#L6C13)
@@ -641,7 +641,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		# First Heading
 		## Second Heading
 		### Third Heading
-		
+
 		[Link 1](#first-heading)
 		[Link 2](#second-heading)
 		[Link 3](#third-heading)
@@ -832,6 +832,46 @@ ruleTester.run("no-missing-link-fragments", rule, {
 					column: 1,
 					endLine: 3,
 					endColumn: 25,
+				},
+			],
+		},
+		{
+			// This heading tag is invalid because there is a space between `<` and `h1`
+			code: dedent`
+			< h1>heading 1</h1>
+
+            ^^^----------------
+
+			[Invalid](#heading-1)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			// This heading tag is invalid because there are spaces between `<` and `h1`
+			code: dedent`
+			<  h1>heading 1</h1>
+
+            ^^^^----------------
+
+			[Invalid](#heading-1)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 22,
 				},
 			],
 		},
@@ -1152,7 +1192,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		},
 		{
 			code: dedent`
-			<h1 id="one"> 
+			<h1 id="one">
 			<!-- comment <h1 id="two"> </h1> -->
 			</h1>
 
@@ -1252,13 +1292,13 @@ ruleTester.run("no-missing-link-fragments", rule, {
 					{
 						code: dedent`
 						# fóo
-			
+
 						## fóo
-			
+
 						[Link](#f%C3%B3o)
-			
+
 						[Link](#f%C3%B3o-1)
-			
+
 						[Link](#f%C3%B3o-2)
 						`,
 						errors: [
