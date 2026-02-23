@@ -972,6 +972,118 @@ ruleTester.run("no-multiple-h1", rule, {
 		},
 		{
 			code: dedent`
+				<h1>Heading</ h1>
+
+				# Another H1
+			`,
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: dedent`
+				<h1>Heading</  h1>
+
+				# Another H1
+			`,
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: dedent`
+				<h1>Heading</   h1>
+
+				# Another H1
+			`,
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: dedent`
+				<h1>Heading</h1 >
+
+				# Another H1
+			`,
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: dedent`
+				<h1>Heading</h1  >
+
+				# Another H1
+			`,
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: dedent`
+				<h1>Heading</h1   >
+
+				# Another H1
+			`,
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: dedent`
+				<h1>Heading</ h1 >
+
+				# Another H1
+			`,
+			errors: [
+				{
+					messageId: "multipleH1",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: dedent`
 				<H1>Heading</H1>
 
 				# Another H1
@@ -990,7 +1102,7 @@ ruleTester.run("no-multiple-h1", rule, {
 			code: dedent`
 				# Heading 1
 
-				<h1 
+				<h1
 				class="title">
 				Another H1</h1>
 			`,
@@ -1117,7 +1229,7 @@ ruleTester.run("no-multiple-h1", rule, {
 				}
 				---
 				# Heading 1
-				
+
 				<h1>Another H1</h1>
 			`,
 			languageOptions: {
