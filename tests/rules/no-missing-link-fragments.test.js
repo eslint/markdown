@@ -127,12 +127,6 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		`, // https://github.com/eslint/markdown/issues/582
 
 		dedent`
-		<h1>👍 scss-to-css</h1>
-
-		[Link](#-scss-to-css)
-		`, // https://github.com/eslint/markdown/issues/582
-
-		dedent`
 		<h1>scss-to-css</h1>
 
 		[Link](#scss-to-css)
@@ -688,6 +682,11 @@ ruleTester.run("no-missing-link-fragments", rule, {
 					# Mix: _Héading_ with 🚀 & \`code\`
 					[Link](#mix-héading-with---code)
 					`,
+					dedent`
+		            <h1>👍 scss-to-css</h1>
+
+            		[Link](#-scss-to-css)
+		            `, // https://github.com/eslint/markdown/issues/582
 					dedent`
 					# Hèading
 					[Link](#h%C3%A8ading)
