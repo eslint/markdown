@@ -78,6 +78,31 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		`,
 
 		dedent`
+		<h1>heading 1</h1 >
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1</h1  >
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1</h1   >
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1</h1
+		>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
 		<H1>heading 1</H1>
 
 		[Link](#heading-1)
