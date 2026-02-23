@@ -170,6 +170,60 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		`,
 
 		dedent`
+		<h1>heading <em >1</em></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em  >1</em></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em>1</em ></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em>1</em  ></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em>1</ em></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em>1</  em></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em>1< /em></h1>
+
+		[Invalid](#heading-1-em)
+		`,
+
+		dedent`
+		<h1>heading < em>1</em></h1>
+
+		[Invalid](#heading--em1)
+		`,
+
+		dedent`
+		<h1>heading <  em>1</em></h1>
+
+		[Invalid](#heading---em1)
+		`,
+
+		dedent`
 		<h1>heading <EM>1</EM></h1>
 
 		[Link](#heading-1)
@@ -225,6 +279,72 @@ ruleTester.run("no-missing-link-fragments", rule, {
 
 		dedent`
 		<h1>heading <em data-test="test <>">1</em data-test="test <>"></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1<br></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1< br></h1>
+		
+		[Link](#heading-1-br)
+		`,
+
+		dedent`
+		<h1>heading 1<  br></h1>
+		
+		[Link](#heading-1--br)
+		`,
+
+		dedent`
+		<h1>heading 1<   br></h1>
+		
+		[Link](#heading-1---br)
+		`,
+
+		dedent`
+		<h1>heading 1<br ></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1<br  ></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1<br/></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1<br /></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1<br  /></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1<br/ ></h1>
+		
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1<br/  ></h1>
 		
 		[Link](#heading-1)
 		`,
