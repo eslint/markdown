@@ -25,7 +25,7 @@ import { stripHtmlComments } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-const imgTagPattern = /<img(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?\/?>/giu;
+const imgTagPattern = /<img(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?\/?>/giu; // TODO
 
 /**
  * Creates a regex to match HTML attributes
