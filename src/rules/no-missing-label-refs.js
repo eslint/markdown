@@ -141,6 +141,10 @@ export default {
 		let allMissingReferences = [];
 
 		return {
+			":matches(heading, paragraph, tableCell) :matches(footnoteReference, html, image, imageReference, inlineCode, link, linkReference)"() {
+				// TODO
+			},
+
 			"root:exit"() {
 				for (const missingReference of allMissingReferences) {
 					context.report({
