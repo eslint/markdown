@@ -78,7 +78,7 @@
     "@eslint/json": "^0.14.0",
     "@types/mdast": "^4.0.4",
     "@types/unist": "^3.0.3",
-    "c8": "^10.1.3",
+    "c8": "^11.0.0",
     "dedent": "^1.7.1",
     "eslint": "^9.39.2",
     "eslint-config-eslint": "^13.0.0",
