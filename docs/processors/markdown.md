@@ -180,6 +180,8 @@ Comment bodies are passed through unmodified, so the plugin supports any [config
 
 This example enables the `alert` global variable, disables the `no-alert` rule, and configures the `quotes` rule to prefer single quotes:
 
+<!-- eslint-skip -->
+
 ````markdown
 <!-- global alert -->
 <!-- eslint-disable no-alert -->
@@ -191,6 +193,8 @@ alert('Hello, world!');
 ````
 
 Each code block in a file is linted separately, so configuration comments apply only to the code block that immediately follows.
+
+<!-- eslint-skip -->
 
 ````markdown
 Assuming `no-alert` is enabled in `eslint.config.js`, the first code block will have no error from `no-alert`:

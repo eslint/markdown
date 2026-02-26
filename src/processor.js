@@ -20,6 +20,7 @@ import { fromMarkdown } from "mdast-util-from-markdown";
  * @typedef {Linter.LintMessage} Message
  * @typedef {Rule.Fix} Fix
  * @typedef {AST.Range} Range
+ * @typedef {{ text: string, position: { start: { line: number, column: number }, end?: { line: number, column: number } } }} CommentInfo
  */
 
 //-----------------------------------------------------------------------------
@@ -31,6 +32,19 @@ const UNSATISFIABLE_RULES = new Set([
 	"unicode-bom", // Code blocks will begin in the middle of Markdown files
 ]);
 const SUPPORTS_AUTOFIX = true;
+
+/**
+ * Wraps comment text in a JS block comment with normalized spacing so that
+ * rules like `spaced-comment` are not triggered by the generated comments.
+ * @param {string} text The comment body extracted from the HTML comment.
+ * @returns {string} A JS block comment string.
+ */
+function wrapComment(text) {
+	const prefix = /^[\s*]/u.test(text) ? "" : " ";
+	const suffix = /[\s*]$/u.test(text) ? "" : " ";
+
+	return `/*${prefix}${text}${suffix}*/`;
+}
 
 const BOM = "\uFEFF";
 
@@ -281,7 +295,7 @@ function preprocess(sourceText, filename) {
 	 * block immediately follows such a sequence, insert the comments at the
 	 * top of the code block. Any non-ESLint comment or other node type breaks
 	 * and empties the sequence.
-	 * @type {string[]}
+	 * @type {CommentInfo[]}
 	 */
 	let htmlComments = [];
 
@@ -300,13 +314,17 @@ function preprocess(sourceText, filename) {
 				/** @type {string[]} */
 				const comments = [];
 
-				for (const comment of htmlComments) {
-					if (comment.trim() === "eslint-skip") {
+				/** @type {CommentInfo[]} */
+				const commentInfos = [];
+
+				for (const commentInfo of htmlComments) {
+					if (commentInfo.text.trim() === "eslint-skip") {
 						htmlComments = [];
 						return;
 					}
 
-					comments.push(`/*${comment}*/`);
+					comments.push(wrapComment(commentInfo.text));
+					commentInfos.push(commentInfo);
 				}
 
 				htmlComments = [];
@@ -315,6 +333,10 @@ function preprocess(sourceText, filename) {
 					...node,
 					baseIndentText: getIndentText(text, node),
 					comments,
+
+					// Original HTML comment positions, used to map
+					// configuration comment messages back to Markdown
+					commentInfos,
 					rangeMap: getBlockRangeMap(text, node, comments),
 				});
 			}
@@ -329,7 +351,10 @@ function preprocess(sourceText, filename) {
 			const comment = getComment(node.value);
 
 			if (comment) {
-				htmlComments.push(comment);
+				htmlComments.push({
+					text: comment,
+					position: node.position,
+				});
 			} else {
 				htmlComments = [];
 			}
@@ -382,7 +407,7 @@ function adjustFix(block, fix) {
 /**
  * Creates a map function that adjusts messages in a code block.
  * @param {Block} block A code block.
- * @returns {(message: Message) => Message} A function that adjusts messages in a code block.
+ * @returns {(message: Message) => Message | null} A function that adjusts messages in a code block.
  */
 function adjustBlock(block) {
 	const leadingCommentLines = block.comments.reduce(
@@ -392,10 +417,33 @@ function adjustBlock(block) {
 
 	const blockStart = block.position.start.line;
 
+	/*
+	 * Build a mapping from line numbers in the linted code (1-indexed) to the
+	 * original HTML comment info. This allows us to map messages that point to
+	 * configuration comments back to their original location in the Markdown.
+	 */
+	const commentLineMap = new Map();
+
+	if (block.commentInfos) {
+		let lineNumber = 1;
+
+		for (const commentInfo of block.commentInfos) {
+			// Each comment becomes `/*...*/\n` in the linted code
+			const commentText = wrapComment(commentInfo.text);
+			const commentLineCount = commentText.split("\n").length;
+
+			for (let i = 0; i < commentLineCount; i++) {
+				commentLineMap.set(lineNumber + i, commentInfo);
+			}
+
+			lineNumber += commentLineCount;
+		}
+	}
+
 	/**
 	 * Adjusts ESLint messages to point to the correct location in the Markdown.
 	 * @param {Message} message A message from ESLint.
-	 * @returns {Message} The same message, but adjusted to the correct location.
+	 * @returns {Message | null} The same message, but adjusted to the correct location.
 	 */
 	return function adjustMessage(message) {
 		if (!Number.isInteger(message.line)) {
@@ -408,7 +456,39 @@ function adjustBlock(block) {
 
 		const lineInCode = message.line - leadingCommentLines;
 
-		if (lineInCode < 1 || lineInCode >= block.rangeMap.length) {
+		/*
+		 * If the message points to a line before the actual code (i.e., in the
+		 * configuration comments), map it back to the original HTML comment
+		 * location in the Markdown.
+		 */
+		if (lineInCode < 1) {
+			const commentInfo = commentLineMap.get(message.line);
+
+			if (commentInfo) {
+				return {
+					...message,
+					line: commentInfo.position.start.line,
+					column: commentInfo.position.start.column,
+					endLine: undefined,
+					endColumn: undefined,
+					fix: undefined,
+					suggestions: undefined,
+				};
+			}
+
+			// If we can't find the comment info, fall back to the block start
+			return {
+				...message,
+				line: blockStart,
+				column: block.position.start.column,
+				endLine: undefined,
+				endColumn: undefined,
+				fix: undefined,
+				suggestions: undefined,
+			};
+		}
+
+		if (lineInCode >= block.rangeMap.length) {
 			return null;
 		}
 
