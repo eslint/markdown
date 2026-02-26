@@ -345,6 +345,50 @@ ruleTester.run("no-multiple-h1", rule, {
 			},
 		},
 		'<h1 class="title">Heading</h1>',
+		// This heading tag is invalid because there is a whitespace between `</` and `h1`.
+		// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#end-tags
+		dedent`
+			<h1>Heading</ h1>
+
+            ------------^^^--
+
+			# Another H1
+		`,
+		// This heading tag is invalid because there are whitespaces between `</` and `h1`.
+		// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#end-tags
+		dedent`
+			<h1>Heading</  h1>
+
+            ------------^^^^--
+
+			# Another H1
+		`,
+		// This heading tag is invalid because there are whitespaces between `</` and `h1`.
+		// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#end-tags
+		dedent`
+			<h1>Heading</   h1>
+
+            ------------^^^^^--
+
+			# Another H1
+		`,
+		// This heading tag is invalid because there is a newline whitespace between `</` and `h1`.
+		// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#end-tags
+		dedent`
+			<h1>Heading</
+            h1>
+
+			# Another H1
+		`,
+		// This heading tag is invalid because there are whitespaces around `h1`.
+		// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#end-tags
+		dedent`
+			<h1>Heading</ h1 >
+
+            ------------^^^^^^
+
+			# Another H1
+		`,
 		dedent`
 			# Heading 1
 
@@ -972,54 +1016,6 @@ ruleTester.run("no-multiple-h1", rule, {
 		},
 		{
 			code: dedent`
-				<h1>Heading</ h1>
-
-				# Another H1
-			`,
-			errors: [
-				{
-					messageId: "multipleH1",
-					line: 3,
-					column: 1,
-					endLine: 3,
-					endColumn: 13,
-				},
-			],
-		},
-		{
-			code: dedent`
-				<h1>Heading</  h1>
-
-				# Another H1
-			`,
-			errors: [
-				{
-					messageId: "multipleH1",
-					line: 3,
-					column: 1,
-					endLine: 3,
-					endColumn: 13,
-				},
-			],
-		},
-		{
-			code: dedent`
-				<h1>Heading</   h1>
-
-				# Another H1
-			`,
-			errors: [
-				{
-					messageId: "multipleH1",
-					line: 3,
-					column: 1,
-					endLine: 3,
-					endColumn: 13,
-				},
-			],
-		},
-		{
-			code: dedent`
 				<h1>Heading</h1 >
 
 				# Another H1
@@ -1068,16 +1064,17 @@ ruleTester.run("no-multiple-h1", rule, {
 		},
 		{
 			code: dedent`
-				<h1>Heading</ h1 >
+				<h1>Heading</h1
+                >
 
 				# Another H1
 			`,
 			errors: [
 				{
 					messageId: "multipleH1",
-					line: 3,
+					line: 4,
 					column: 1,
-					endLine: 3,
+					endLine: 4,
 					endColumn: 13,
 				},
 			],
