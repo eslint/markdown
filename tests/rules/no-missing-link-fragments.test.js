@@ -799,6 +799,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		},
 		{
 			// This heading tag is invalid because there is a whitespace between `<` and `h1`.
+			// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#start-tags
 			code: dedent`
 			< h1>heading 1</h1>
 
@@ -819,6 +820,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		},
 		{
 			// This heading tag is invalid because there are whitespaces between `<` and `h1`.
+			// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#start-tags
 			code: dedent`
 			<  h1>heading 1</h1>
 
