@@ -53,31 +53,6 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		`,
 
 		dedent`
-		<h1>heading 1</ h1>
-
-		[Link](#heading-1)
-		`,
-
-		dedent`
-		<h1>heading 1</  h1>
-
-		[Link](#heading-1)
-		`,
-
-		dedent`
-		<h1>heading 1</   h1>
-
-		[Link](#heading-1)
-		`,
-
-		dedent`
-        <h1>heading 1</
-        h1>
-
-		[Link](#heading-1)
-		`,
-
-		dedent`
 		<h1>heading 1</h1 >
 
 		[Link](#heading-1)
@@ -183,18 +158,6 @@ ruleTester.run("no-missing-link-fragments", rule, {
 
 		dedent`
 		<h1>heading <em>1</em  ></h1>
-
-		[Link](#heading-1)
-		`,
-
-		dedent`
-		<h1>heading <em>1</ em></h1>
-
-		[Link](#heading-1)
-		`,
-
-		dedent`
-		<h1>heading <em>1</  em></h1>
 
 		[Link](#heading-1)
 		`,
@@ -835,7 +798,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 			],
 		},
 		{
-			// This heading tag is invalid because there is a space between `<` and `h1`
+			// This heading tag is invalid because there is a whitespace between `<` and `h1`.
 			code: dedent`
 			< h1>heading 1</h1>
 
@@ -855,7 +818,7 @@ ruleTester.run("no-missing-link-fragments", rule, {
 			],
 		},
 		{
-			// This heading tag is invalid because there are spaces between `<` and `h1`
+			// This heading tag is invalid because there are whitespaces between `<` and `h1`.
 			code: dedent`
 			<  h1>heading 1</h1>
 
@@ -863,6 +826,143 @@ ruleTester.run("no-missing-link-fragments", rule, {
 
 			[Invalid](#heading-1)
 			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			// This heading tag is invalid because there is a whitespace between `</` and `h1`.
+			// Although GitHub's Markdown HTML engine (and some others) may still recognize this as a valid closing tag,
+			// it is technically invalid according to the HTML specification, which requires no whitespace between `</` and the tag name for end tags.
+			// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#end-tags
+			code: dedent`
+		    <h1>heading 1</ h1>
+
+            --------------^^^--
+
+		    [Invalid](#heading-1)
+		    `,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			// This heading tag is invalid because there are whitespaces between `</` and `h1`.
+			// Although GitHub's Markdown HTML engine (and some others) may still recognize this as a valid closing tag,
+			// it is technically invalid according to the HTML specification, which requires no whitespace between `</` and the tag name for end tags.
+			// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#end-tags
+			code: dedent`
+		    <h1>heading 1</  h1>
+
+            --------------^^^^--
+
+		    [Invalid](#heading-1)
+		    `,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			// This heading tag is invalid because there are three whitespaces between `</` and `h1`.
+			// Although GitHub's Markdown HTML engine (and some others) may still recognize this as a valid closing tag,
+			// it is technically invalid according to the HTML specification, which requires no whitespace between `</` and the tag name for end tags.
+			// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#end-tags
+			code: dedent`
+		    <h1>heading 1</   h1>
+
+            --------------^^^^^--
+
+		    [Invalid](#heading-1)
+            `,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			// This heading tag is invalid because there is a newline whitespace between `</` and `h1`.
+			// Although GitHub's Markdown HTML engine (and some others) may still recognize this as a valid closing tag,
+			// it is technically invalid according to the HTML specification, which requires no whitespace between `</` and the tag name for end tags.
+			// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#end-tags
+			code: dedent`
+            <h1>heading 1</
+            h1>
+
+		    [Invalid](#heading-1)
+            `,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 4,
+					column: 1,
+					endLine: 4,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			// This heading tag is invalid because there is a whitespace between `</` and `em`.
+			// Although GitHub's Markdown HTML engine (and some others) may still recognize this as a valid closing tag,
+			// it is technically invalid according to the HTML specification, which requires no whitespace between `</` and the tag name for end tags.
+			// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#end-tags
+			code: dedent`
+		    <h1>heading <em>1</ em></h1>
+
+            ------------------^^^-------
+
+    		[Invalid](#heading-1)
+	    	`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			// This heading tag is invalid because there are whitespaces between `</` and `em`.
+			// Although GitHub's Markdown HTML engine (and some others) may still recognize this as a valid closing tag,
+			// it is technically invalid according to the HTML specification, which requires no whitespace between `</` and the tag name for end tags.
+			// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#end-tags
+			code: dedent`
+		    <h1>heading <em>1</  em></h1>
+
+            ------------------^^^^------
+
+    		[Invalid](#heading-1)
+	     	`,
 			errors: [
 				{
 					messageId: "invalidFragment",

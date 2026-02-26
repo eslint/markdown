@@ -29,11 +29,11 @@ import { stripHtmlComments } from "../util.js";
 const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
 const customHeadingIdPattern = /\{#(?<id>[^}\s]+)\}\s*$/u;
 const htmlHeadingPattern =
-	/<h(?<depth>[1-6])[^>]*>(?<children>[\s\S]*?)<\/\s*h\k<depth>\s*>/giu;
+	/<h(?<depth>[1-6])[^>]*>(?<children>[\s\S]*?)<\/h\k<depth>\s*>/giu;
 const htmlIdNamePattern =
 	/(?<!<)<[^>]+\s(?:id|name)\s*=\s*["']?(?<id>[^"'\s>]+)["']?/giu;
 const htmlTagPattern =
-	/<(?:\/\s*)?[a-z0-9]+(?:-[a-z0-9]+)*(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?(?:\/\s*)?>/giu;
+	/<\/?[a-z0-9]+(?:-[a-z0-9]+)*(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?(?:\/\s*)?>/giu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
