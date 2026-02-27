@@ -6,7 +6,7 @@ Disallow URLs that match defined reference identifiers.
 
 In Markdown, you can create links using either inline syntax `[text](url)` or reference syntax `[text][id]` with a separate definition `[id]: url`. This rule encourages the use of reference syntax when a link's URL matches an existing reference identifier.
 
-For example, if you have a definition like `[mercury]: https://example.com/mercury/`, then using `[text](mercury)` should be written as `[text][mercury]` instead.
+For example, if you have a definition like `[mercury]: https://example.com/mercury/`, then using `[text](https://example.com/mercury/)` should be written as `[text][mercury]` instead.
 
 Please note that autofix is not performed for links or images that include a title. For example:
 
