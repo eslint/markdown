@@ -12,6 +12,7 @@ import path from "node:path";
 import fs from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { ESLint } from "eslint";
+import { LegacyESLint } from "eslint-v9.39/use-at-your-own-risk";
 import plugin from "../src/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -31,22 +32,12 @@ const pkg = JSON.parse(
 //-----------------------------------------------------------------------------
 
 /**
- * Gets the major version of the currently installed ESLint.
- * @returns {number} The major version.
- */
-function getESLintMajorVersion() {
-	return Number(ESLint.version.split(".")[0]);
-}
-
-/**
  * Helper function which creates ESLint instance with enabled/disabled autofix feature.
  * @param {string} fixtureConfigName ESLint JSON config fixture filename.
  * @param {Object} [options={}] Whether to enable autofix feature.
- * @returns {Promise<LegacyESLint>} ESLint instance to execute in tests.
+ * @returns {LegacyESLint} ESLint instance to execute in tests.
  */
-async function initLegacyESLint(fixtureConfigName, options = {}) {
-	const { LegacyESLint } = await import("eslint/use-at-your-own-risk");
-
+function initLegacyESLint(fixtureConfigName, options = {}) {
 	return new LegacyESLint({
 		cwd: path.resolve(__dirname, "./fixtures/"),
 		ignore: false,
@@ -94,10 +85,6 @@ describe("meta", () => {
 });
 
 describe("LegacyESLint", () => {
-	if (getESLintMajorVersion() >= 10) {
-		return; // Skip `LegacyESLint` tests on ESLint v10+
-	}
-
 	describe("recommended config", () => {
 		let eslint;
 		const shortText = [
@@ -107,8 +94,8 @@ describe("LegacyESLint", () => {
 			"```",
 		].join("\n");
 
-		before(async () => {
-			eslint = await initLegacyESLint("recommended.json");
+		before(() => {
+			eslint = initLegacyESLint("recommended.json");
 		});
 
 		it("should include the plugin", async () => {
@@ -153,8 +140,8 @@ describe("LegacyESLint", () => {
 		let eslint;
 		const shortText = ["```js", "console.log(42);", "```"].join("\n");
 
-		before(async () => {
-			eslint = await initLegacyESLint("eslintrc.json");
+		before(() => {
+			eslint = initLegacyESLint("eslintrc.json");
 		});
 
 		it("should run on .md files", async () => {
@@ -383,7 +370,7 @@ describe("LegacyESLint", () => {
 				"```",
 				"````",
 			].join("\n");
-			const recursiveCli = await initLegacyESLint("eslintrc.json", {
+			const recursiveCli = initLegacyESLint("eslintrc.json", {
 				extensions: [".js", ".markdown", ".md"],
 			});
 			const results = await recursiveCli.lintText(code, {
@@ -477,8 +464,8 @@ describe("LegacyESLint", () => {
 		});
 
 		describe("should fix code", () => {
-			before(async () => {
-				eslint = await initLegacyESLint("eslintrc.json", { fix: true });
+			before(() => {
+				eslint = initLegacyESLint("eslintrc.json", { fix: true });
 			});
 
 			it("in the simplest case", async () => {
@@ -1471,6 +1458,52 @@ describe("FlatESLint", () => {
 			);
 			assert.strictEqual(results[0].messages[0].line, 4);
 			assert.strictEqual(results[0].messages[0].column, 1);
+		});
+
+		// https://github.com/eslint/markdown/issues/181
+		it("should work when called on nested code blocks in the same file", async () => {
+			/*
+			 * As of this writing, the nested code block, though it uses the same
+			 * Markdown processor, must use a different extension or ESLint will not
+			 * re-apply the processor on the nested code block. To work around that,
+			 * a file named `test.md` contains a nested `markdown` code block in
+			 * this test.
+			 *
+			 * https://github.com/eslint/eslint/pull/14227/files#r602802758
+			 */
+			const code = [
+				"<!-- test.md -->",
+				"",
+				"````markdown",
+				"<!-- test.md/0_0.markdown -->",
+				"",
+				"This test only repros if the MD files have a different number of lines before code blocks.",
+				"",
+				"```js",
+				"// test.md/0_0.markdown/0_0.js",
+				"console.log('single quotes')",
+				"```",
+				"````",
+			].join("\n");
+			const recursiveCli = initLegacyESLint("eslintrc.json", {
+				extensions: [".js", ".markdown", ".md"],
+			});
+			const results = await recursiveCli.lintText(code, {
+				filePath: "test.md",
+			});
+
+			assert.strictEqual(results.length, 1);
+			assert.strictEqual(results[0].messages.length, 2);
+			assert.strictEqual(
+				results[0].messages[0].message,
+				"Unexpected console statement.",
+			);
+			assert.strictEqual(results[0].messages[0].line, 10);
+			assert.strictEqual(
+				results[0].messages[1].message,
+				"Strings must use doublequote.",
+			);
+			assert.strictEqual(results[0].messages[1].line, 10);
 		});
 
 		describe("configuration comments", () => {
