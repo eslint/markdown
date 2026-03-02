@@ -12,7 +12,7 @@ import path from "node:path";
 import fs from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { ESLint } from "eslint";
-import { LegacyESLint } from "eslint-v9.x/use-at-your-own-risk";
+import { LegacyESLint } from "eslint-v9/use-at-your-own-risk";
 import plugin from "../src/index.js";
 
 const __filename = fileURLToPath(import.meta.url);

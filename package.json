@@ -81,7 +81,7 @@
     "c8": "^11.0.0",
     "dedent": "^1.7.1",
     "eslint": "^9.39.3",
-    "eslint-v9.x": "npm:eslint@9.x",
+    "eslint-v9": "npm:eslint@9.x",
     "eslint-config-eslint": "^13.0.0",
     "eslint-plugin-eslint-plugin": "^6.5.0",
     "globals": "^17.1.0",
