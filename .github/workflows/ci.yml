@@ -48,14 +48,14 @@ jobs:
         strategy:
             matrix:
                 os: [ubuntu-latest]
-                eslint: [9]
+                eslint: [9.15.0, 9.x, 10.x]
                 node: [25.x, 24.x, 22.x, 20.x, "20.19.0"]
                 include:
                     - os: windows-latest
-                      eslint: 9
+                      eslint: latest
                       node: lts/*
                     - os: macOS-latest
-                      eslint: 9
+                      eslint: latest
                       node: lts/*
         runs-on: ${{ matrix.os }}
         steps:
@@ -69,8 +69,8 @@ jobs:
               run: npm install
               env:
                   CI: true
-            - name: Install ESLint@${{  matrix.eslint  }}
-              run: npm install eslint@${{  matrix.eslint  }}
+            - name: Install ESLint@${{ matrix.eslint }}
+              run: npm install -D eslint@${{ matrix.eslint }}
             - name: Test
               run: npm run test
 
