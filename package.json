@@ -82,7 +82,7 @@
     "dedent": "^1.7.1",
     "eslint": "^9.39.2",
     "eslint-config-eslint": "^13.0.0",
-    "eslint-plugin-eslint-plugin": "^6.5.0",
+    "eslint-plugin-eslint-plugin": "^7.3.2",
     "globals": "^17.1.0",
     "knip": "^5.82.1",
     "lint-staged": "^16.0.0",
