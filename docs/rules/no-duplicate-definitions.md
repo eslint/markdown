@@ -90,6 +90,17 @@ The following options are available on this rule:
     [^mercury]: Hello, Venus!
     ```
 
+- `checkFootnoteDefinitions: boolean` - When set to `false`, the rule will not report duplicate footnote definitions. (default: `true`)
+
+    Examples of **correct** code when configured as `"no-duplicate-definitions": ["error", { checkFootnoteDefinitions: false }]`:
+
+    ```markdown
+    <!-- eslint markdown/no-duplicate-definitions: ["error", { checkFootnoteDefinitions: false }] -->
+
+    [^mercury]: Hello, Mercury!
+    [^mercury]: Hello, Venus!
+    ```
+
 ## When Not to Use It
 
 If you are using a different style of definition comments, or not concerned with duplicate definitions, you can safely disable this rule.

@@ -81,8 +81,8 @@ export default {
 							},
 							messageId: "extraCells",
 							data: {
-								actualCells: String(actualCellsLength),
-								expectedCells: String(expectedCellsLength),
+								actualCells: actualCellsLength,
+								expectedCells: expectedCellsLength,
 							},
 						});
 					} else if (
@@ -101,8 +101,8 @@ export default {
 							},
 							messageId: "missingCells",
 							data: {
-								actualCells: String(actualCellsLength),
-								expectedCells: String(expectedCellsLength),
+								actualCells: actualCellsLength,
+								expectedCells: expectedCellsLength,
 							},
 						});
 					}

@@ -40,27 +40,19 @@ import type {
 } from "mdast";
 import { InlineMath, Math } from "mdast-util-math";
 import type {
-	CustomRuleDefinitionType,
-	CustomRuleTypeDefinitions,
 	LanguageContext,
 	LanguageOptions,
 	RuleVisitor,
 } from "@eslint/core";
+import type {
+	CustomRuleDefinitionType,
+	CustomRuleTypeDefinitions,
+	CustomRuleVisitorWithExit,
+} from "@eslint/plugin-kit";
 import type { MarkdownSourceCode } from "./index.js";
 
 //------------------------------------------------------------------------------
-// Helpers
-//------------------------------------------------------------------------------
-
-/** Adds matching `:exit` selectors for all properties of a `RuleVisitor`. */
-type WithExit<RuleVisitorType extends RuleVisitor> = {
-	[Key in keyof RuleVisitorType as
-		| Key
-		| `${Key & string}:exit`]: RuleVisitorType[Key];
-};
-
-//------------------------------------------------------------------------------
-// Exports: Processors
+// Exports
 //------------------------------------------------------------------------------
 
 export interface RangeMap {
@@ -146,7 +138,7 @@ export type MarkdownLanguageContext = LanguageContext<MarkdownLanguageOptions>;
 export interface MarkdownRuleVisitor
 	extends
 		RuleVisitor,
-		WithExit<
+		CustomRuleVisitorWithExit<
 			{
 				root?(node: Root): void;
 			} & {

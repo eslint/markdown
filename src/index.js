@@ -25,7 +25,7 @@ import rules from "./build/rules.js";
 // Exports
 //-----------------------------------------------------------------------------
 
-/** @type {Linter.RulesRecord} */
+/** @satisfies {Linter.RulesRecord} */
 const processorRulesConfig = {
 	// The Markdown parser automatically trims trailing
 	// newlines from code blocks.
