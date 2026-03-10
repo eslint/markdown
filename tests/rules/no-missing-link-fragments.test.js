@@ -3,8 +3,6 @@
  * @author Sweta Tanwar (@SwetaTanwar)
  */
 
-// TODO
-
 //------------------------------------------------------------------------------
 // Imports
 //------------------------------------------------------------------------------
@@ -40,6 +38,27 @@ ruleTester.run("no-missing-link-fragments", rule, {
 
 		[reference]: #heading-name
 		`,
+
+		// Basic heading match when `InlineMath` node is present
+		{
+			code: dedent`
+            # Heading Name $E=mc^2$
+            [Link](#heading-name-emc2)
+            `,
+			languageOptions: {
+				math: true,
+			},
+		},
+
+		{
+			code: dedent`
+            # Heading Name $(A \\cdot x)[i] = \\sum_{j=1}^{n} A[i][j] , x[j]$
+            [Link](#heading-name-a-cdot-xi--sum_j1n-aij--xj)
+            `,
+			languageOptions: {
+				math: true,
+			},
+		},
 
 		// Custom heading ID
 		dedent`

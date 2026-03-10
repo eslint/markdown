@@ -94,7 +94,6 @@ export default {
 				headingText = "";
 			},
 
-			// TODO: ???
 			"heading *:not(html)"({ value }) {
 				headingText += value ?? "";
 			},
