@@ -3,6 +3,8 @@
  * @author Nicholas C. Zakas
  */
 
+// TODO
+
 //------------------------------------------------------------------------------
 // Imports
 //------------------------------------------------------------------------------
@@ -28,12 +30,12 @@ ruleTester.run("no-duplicate-headings", rule, {
 		// Using emphasis in headings should not be considered a duplicate by default.
 		dedent`
 			# Heading 1
-			
+
 			# Heading *1*
 		`,
 		dedent`
 			# ***Heading 1***
-			
+
 			# Heading 1
 		`,
 		dedent`

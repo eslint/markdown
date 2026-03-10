@@ -38,7 +38,7 @@ import type {
 	// Extensions (front matter)
 	Yaml,
 } from "mdast";
-import { InlineMath, Math } from "mdast-util-math";
+import type { InlineMath, Math } from "mdast-util-math";
 import type {
 	LanguageContext,
 	LanguageOptions,
@@ -52,7 +52,7 @@ import type {
 import type { MarkdownSourceCode } from "./index.js";
 
 //------------------------------------------------------------------------------
-// Exports
+// Exports: Processor
 //------------------------------------------------------------------------------
 
 export interface RangeMap {

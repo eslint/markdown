@@ -46,7 +46,7 @@ import type {
 	// Extensions (front matter)
 	Yaml,
 } from "mdast";
-import { InlineMath, Math } from "mdast-util-math";
+import type { InlineMath, Math } from "mdast-util-math";
 
 // Test that `Block` extends `Code` and `BlockBase` correctly
 // `meta` property is optional and not required in `Block`
