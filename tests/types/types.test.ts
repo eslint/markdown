@@ -1,5 +1,6 @@
 import markdown from "@eslint/markdown";
 import type {
+	// MarkdownLanguageOptions, // TODO
 	MarkdownRuleDefinition,
 	MarkdownRuleVisitor,
 	MarkdownSourceCode,
