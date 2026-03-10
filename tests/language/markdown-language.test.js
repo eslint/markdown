@@ -404,8 +404,6 @@ describe("MarkdownLanguage", () => {
 	});
 
 	describe("createSourceCode()", () => {
-		// TODO: From here.
-
 		it("should create a MarkdownSourceCode instance for commonmark", () => {
 			const language = new MarkdownLanguage({ mode: "commonmark" });
 			const file = {
