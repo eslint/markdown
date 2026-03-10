@@ -341,8 +341,11 @@ describe("MarkdownLanguage", () => {
 			assert.strictEqual(result.ok, true);
 			assert.strictEqual(result.ast.type, "root");
 			assert.strictEqual(result.ast.children[0].type, "paragraph");
+			assert.strictEqual(result.ast.children[0].children[0].type, "text");
 			assert.strictEqual(result.ast.children[1].type, "paragraph");
+			assert.strictEqual(result.ast.children[1].children[0].type, "text");
 			assert.strictEqual(result.ast.children[2].type, "paragraph");
+			assert.strictEqual(result.ast.children[2].children[0].type, "text");
 		});
 
 		it("should parse math in commonmark mode when `math: true` is set", () => {
@@ -359,17 +362,50 @@ describe("MarkdownLanguage", () => {
 				},
 			);
 
-			// console.log(result.ast); // TODO: InlineMath is currently not supported.
+			assert.strictEqual(result.ok, true);
+			assert.strictEqual(result.ast.type, "root");
+			assert.strictEqual(result.ast.children[0].type, "paragraph");
+			assert.strictEqual(result.ast.children[0].children[0].type, "text");
+			assert.strictEqual(
+				result.ast.children[0].children[1].type,
+				"inlineMath",
+			);
+			assert.strictEqual(result.ast.children[1].type, "paragraph");
+			assert.strictEqual(result.ast.children[1].children[0].type, "text");
+			assert.strictEqual(result.ast.children[2].type, "math");
+		});
+
+		it("should parse math in gfm mode when `math: true` is set", () => {
+			const language = new MarkdownLanguage({ mode: "gfm" });
+			const result = language.parse(
+				{
+					body: "Inline math: $E=mc^2$\n\nBlock math:\n\n$$\nE=mc^2\n$$",
+					path: "test.md",
+				},
+				{
+					languageOptions: {
+						math: true,
+					},
+				},
+			);
 
 			assert.strictEqual(result.ok, true);
 			assert.strictEqual(result.ast.type, "root");
-			// assert.strictEqual(result.ast.children[0].type, "paragraph");
-			// assert.strictEqual(result.ast.children[1].type, "paragraph");
-			// assert.strictEqual(result.ast.children[2].type, "paragraph");
+			assert.strictEqual(result.ast.children[0].type, "paragraph");
+			assert.strictEqual(result.ast.children[0].children[0].type, "text");
+			assert.strictEqual(
+				result.ast.children[0].children[1].type,
+				"inlineMath",
+			);
+			assert.strictEqual(result.ast.children[1].type, "paragraph");
+			assert.strictEqual(result.ast.children[1].children[0].type, "text");
+			assert.strictEqual(result.ast.children[2].type, "math");
 		});
 	});
 
 	describe("createSourceCode()", () => {
+		// TODO: From here.
+
 		it("should create a MarkdownSourceCode instance for commonmark", () => {
 			const language = new MarkdownLanguage({ mode: "commonmark" });
 			const file = {
