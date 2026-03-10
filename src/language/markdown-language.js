@@ -57,7 +57,7 @@ const jsonFrontmatterConfig = {
  * Create parser options based on `mode` and `languageOptions`.
  * @param {ParserMode} mode The markdown parser mode.
  * @param {MarkdownLanguageOptions} languageOptions Language options.
- * @returns {{extensions: Extensions, mdastExtensions: MdastExtensions}} Parser options for micromark and mdast
+ * @returns {{extensions: Extensions, mdastExtensions: MdastExtensions}} Parser options for micromark and mdast.
  */
 function createParserOptions(mode, languageOptions) {
 	/** @type {Extensions} */
@@ -189,7 +189,7 @@ export class MarkdownLanguage {
 		}
 
 		const mathOption = languageOptions?.math;
-		const validMathOptions = new Set([true, false]);
+		const validMathOptions = new Set([true, false]); // TODO: Simplify using `typeof mathOption === "boolean"`?
 
 		if (mathOption !== undefined && !validMathOptions.has(mathOption)) {
 			throw new Error(
