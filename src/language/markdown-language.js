@@ -171,6 +171,7 @@ export class MarkdownLanguage {
 	 * @throws {Error} When the language options are invalid.
 	 */
 	validateLanguageOptions(languageOptions) {
+		// `frontmatter` option validation
 		const frontmatterOption = languageOptions?.frontmatter;
 		const validFrontmatterOptions = new Set([
 			false,
@@ -188,10 +189,10 @@ export class MarkdownLanguage {
 			);
 		}
 
+		// `math` option validation
 		const mathOption = languageOptions?.math;
-		const validMathOptions = new Set([true, false]); // TODO: Simplify using `typeof mathOption === "boolean"`?
 
-		if (mathOption !== undefined && !validMathOptions.has(mathOption)) {
+		if (mathOption !== undefined && typeof mathOption !== "boolean") {
 			throw new Error(
 				`Invalid language option value \`${mathOption}\` for math.`,
 			);
