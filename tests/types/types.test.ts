@@ -1,6 +1,6 @@
 import markdown from "@eslint/markdown";
 import type {
-	// MarkdownLanguageOptions, // TODO
+	MarkdownLanguageOptions,
 	MarkdownRuleDefinition,
 	MarkdownRuleVisitor,
 	MarkdownSourceCode,
@@ -137,6 +137,43 @@ typeof processorPlugins satisfies {};
 		end: { line: 1, column: 1, offset: 0 },
 	};
 }
+
+const validLanguageOptions1: MarkdownLanguageOptions = {
+	frontmatter: false,
+};
+const validLanguageOptions2: MarkdownLanguageOptions = {
+	frontmatter: "yaml",
+};
+const validLanguageOptions3: MarkdownLanguageOptions = {
+	frontmatter: "toml",
+};
+const validLanguageOptions4: MarkdownLanguageOptions = {
+	frontmatter: "json",
+};
+const validLanguageOptions5: MarkdownLanguageOptions = {
+	math: true,
+};
+const validLanguageOptions6: MarkdownLanguageOptions = {
+	math: false,
+};
+const validLanguageOptions7: MarkdownLanguageOptions = {
+	frontmatter: "yaml",
+	math: true,
+};
+const validLanguageOptions8: MarkdownLanguageOptions = {
+	frontmatter: "toml",
+	math: false,
+	unknownOption: "unknown", // Unknown options should be allowed
+};
+
+const invalidLanguageOptions1: MarkdownLanguageOptions = {
+	// @ts-expect-error Invalid value for `frontmatter`
+	frontmatter: "invalid",
+};
+const invalidLanguageOptions2: MarkdownLanguageOptions = {
+	// @ts-expect-error Invalid value for `math`
+	math: "invalid",
+};
 
 (): MarkdownRuleDefinition => ({
 	create({ sourceCode }): MarkdownRuleVisitor {
