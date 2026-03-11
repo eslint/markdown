@@ -91,7 +91,6 @@ export default {
 				}
 			},
 
-			// TODO: ???
 			"heading *"({ type, value }) {
 				if (value) {
 					headingChildrenSequence += `[${type},${value}]`; // We use a custom sequence representation to keep track of heading children.
