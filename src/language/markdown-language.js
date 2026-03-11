@@ -185,7 +185,7 @@ export class MarkdownLanguage {
 			!validFrontmatterOptions.has(frontmatterOption)
 		) {
 			throw new Error(
-				`Invalid language option value \`${frontmatterOption}\` for frontmatter.`,
+				`Invalid language option value \`${frontmatterOption}\` for frontmatter. Expected one of \`false\`, \`"yaml"\`, \`"toml"\`, or \`"json"\`.`,
 			);
 		}
 
@@ -194,7 +194,7 @@ export class MarkdownLanguage {
 
 		if (mathOption !== undefined && typeof mathOption !== "boolean") {
 			throw new Error(
-				`Invalid language option value \`${mathOption}\` for math.`,
+				`Invalid language option value \`${mathOption}\` for math. Expected a boolean.`,
 			);
 		}
 	}

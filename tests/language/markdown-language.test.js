@@ -46,7 +46,7 @@ describe("MarkdownLanguage", () => {
 				},
 				{
 					message:
-						"Invalid language option value `invalid` for frontmatter.",
+						'Invalid language option value `invalid` for frontmatter. Expected one of `false`, `"yaml"`, `"toml"`, or `"json"`.',
 				},
 			);
 			assert.throws(
@@ -55,7 +55,7 @@ describe("MarkdownLanguage", () => {
 				},
 				{
 					message:
-						"Invalid language option value `123` for frontmatter.",
+						'Invalid language option value `123` for frontmatter. Expected one of `false`, `"yaml"`, `"toml"`, or `"json"`.',
 				},
 			);
 		});
@@ -104,7 +104,7 @@ describe("MarkdownLanguage", () => {
 				},
 				{
 					message:
-						"Invalid language option value `invalid` for math.",
+						"Invalid language option value `invalid` for math. Expected a boolean.",
 				},
 			);
 			assert.throws(
@@ -112,7 +112,8 @@ describe("MarkdownLanguage", () => {
 					language.validateLanguageOptions({ math: 123 });
 				},
 				{
-					message: "Invalid language option value `123` for math.",
+					message:
+						"Invalid language option value `123` for math. Expected a boolean.",
 				},
 			);
 		});
