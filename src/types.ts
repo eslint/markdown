@@ -60,7 +60,7 @@ export interface RangeMap {
 	md: number;
 }
 
-export interface CommentInfo {
+export interface MappedCommentLocation {
 	text: string;
 	position: {
 		start: { line: number; column: number };
@@ -71,7 +71,7 @@ export interface CommentInfo {
 export interface BlockBase {
 	baseIndentText: string;
 	comments: string[];
-	commentInfos: CommentInfo[];
+	commentInfos: MappedCommentLocation[];
 	rangeMap: RangeMap[];
 }
 

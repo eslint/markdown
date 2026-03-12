@@ -16,11 +16,10 @@ import { fromMarkdown } from "mdast-util-from-markdown";
 /**
  * @import { Node, Parent, Code, Html } from "mdast";
  * @import { Linter, Rule, AST } from "eslint";
- * @import { Block, RangeMap } from "./types.js";
+ * @import { Block, MappedCommentLocation, RangeMap } from "./types.js";
  * @typedef {Linter.LintMessage} Message
  * @typedef {Rule.Fix} Fix
  * @typedef {AST.Range} Range
- * @typedef {{ text: string, position: { start: { line: number, column: number }, end?: { line: number, column: number } } }} CommentInfo
  */
 
 //-----------------------------------------------------------------------------
@@ -40,8 +39,8 @@ const SUPPORTS_AUTOFIX = true;
  * @returns {string} A JS block comment string.
  */
 function wrapComment(text) {
-	const prefix = /^[\s*]/u.test(text) ? "" : " ";
-	const suffix = /[\s*]$/u.test(text) ? "" : " ";
+	const prefix = /^\s/u.test(text) ? "" : " ";
+	const suffix = /\s$/u.test(text) ? "" : " ";
 
 	return `/*${prefix}${text}${suffix}*/`;
 }
@@ -295,7 +294,7 @@ function preprocess(sourceText, filename) {
 	 * block immediately follows such a sequence, insert the comments at the
 	 * top of the code block. Any non-ESLint comment or other node type breaks
 	 * and empties the sequence.
-	 * @type {CommentInfo[]}
+	 * @type {MappedCommentLocation[]}
 	 */
 	let htmlComments = [];
 
@@ -314,7 +313,7 @@ function preprocess(sourceText, filename) {
 				/** @type {string[]} */
 				const comments = [];
 
-				/** @type {CommentInfo[]} */
+				/** @type {MappedCommentLocation[]} */
 				const commentInfos = [];
 
 				for (const commentInfo of htmlComments) {
