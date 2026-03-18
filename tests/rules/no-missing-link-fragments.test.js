@@ -66,6 +66,353 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		[Link](#custom-name)
 		`,
 
+		// HTML `h1` tags
+		dedent`
+		<h1>heading 1</h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1</h1 >
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1</h1  >
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1</h1   >
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1</h1
+		>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<H1>heading 1</H1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>HEADING 1</h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>HeAdInG 1</h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>{ } scss-to-css</h1>
+
+		[Link](#--scss-to-css)
+		`, // https://github.com/eslint/markdown/issues/582
+
+		dedent`
+		<h1>scss-to-css</h1>
+
+		[Link](#scss-to-css)
+		`, // https://github.com/eslint/markdown/issues/582
+
+		// HTML `h1` tags with children
+		dedent`
+		<h1>heading <strong>1</strong></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <strong><em>1</em></strong></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading  <strong><em>1</em></strong></h1>
+
+		[Link](#heading--1)
+		`,
+
+		dedent`
+		<h1>heading  <strong><em> 1 </em></strong></h1>
+
+		[Link](#heading---1-)
+		`,
+
+		dedent`
+		<h1>heading <em>1</em></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em >1</em></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em  >1</em></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em>1</em ></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em>1</em  ></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em>1< /em></h1>
+
+		[Link](#heading-1-em)
+		`,
+
+		dedent`
+		<h1>heading < em>1</em></h1>
+
+		[Link](#heading--em1)
+		`,
+
+		dedent`
+		<h1>heading <  em>1</em></h1>
+
+		[Link](#heading---em1)
+		`,
+
+		dedent`
+		<h1>heading <EM>1</EM></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em data-test="test">1</em></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em data-test="test >">1</em></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em data-test='test >'>1</em></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em data-test="test <>">1</em></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em>1</em data-test="test"></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em>1</em data-test="test >"></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em>1</em data-test="test <>"></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em data-test="test">1</em data-test="test"></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em data-test="test >">1</em data-test="test >"></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading <em data-test="test <>">1</em data-test="test <>"></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1<br></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1< br></h1>
+
+		[Link](#heading-1-br)
+		`,
+
+		dedent`
+		<h1>heading 1<  br></h1>
+
+		[Link](#heading-1--br)
+		`,
+
+		dedent`
+		<h1>heading 1<   br></h1>
+
+		[Link](#heading-1---br)
+		`,
+
+		dedent`
+		<h1>heading 1<br ></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1<br  ></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1<br/></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1<br /></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1<br  /></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1<br/ ></h1>
+
+		[Link](#heading-1)
+		`,
+
+		dedent`
+		<h1>heading 1<br/  ></h1>
+
+		[Link](#heading-1)
+		`,
+
+		// HTML `h1` tag with `id` or `name` attributes
+		dedent`
+		<h1 id="foo">bar</h1>
+
+		[Link](#foo)
+		[Link](#bar)
+		`,
+
+		dedent`
+		<h1 name="foo">bar</h1>
+
+		[Link](#foo)
+		[Link](#bar)
+		`,
+
+		// HTML `h2` tags
+		dedent`
+		<h2>heading 2</h2>
+
+		[Link](#heading-2)
+		`,
+
+		dedent`
+		<H2>heading 2</H2>
+
+		[Link](#heading-2)
+		`,
+
+		// HTML `h3` tags
+		dedent`
+		<h3>heading 3</h3>
+
+		[Link](#heading-3)
+		`,
+
+		dedent`
+		<H3>heading 3</H3>
+
+		[Link](#heading-3)
+		`,
+
+		// HTML `h4` tags
+		dedent`
+		<h4>heading 4</h4>
+
+		[Link](#heading-4)
+		`,
+
+		dedent`
+		<H4>heading 4</H4>
+
+		[Link](#heading-4)
+		`,
+
+		// HTML `h5` tags
+		dedent`
+		<h5>heading 5</h5>
+
+		[Link](#heading-5)
+		`,
+
+		dedent`
+		<H5>heading 5</H5>
+
+		[Link](#heading-5)
+		`,
+
+		// HTML `h6` tags
+		dedent`
+		<h6>heading 6</h6>
+
+		[Link](#heading-6)
+		`,
+
+		dedent`
+		<H6>heading 6</H6>
+
+		[Link](#heading-6)
+		`,
+
 		// HTML anchor tags
 		dedent`
 		<a id="bookmark"></a>
@@ -320,6 +667,11 @@ ruleTester.run("no-missing-link-fragments", rule, {
 					[Link](#mix-héading-with---code)
 					`,
 					dedent`
+		            <h1>👍 scss-to-css</h1>
+
+            		[Link](#-scss-to-css)
+		            `, // https://github.com/eslint/markdown/issues/582
+					dedent`
 					# Hèading
 					[Link](#h%C3%A8ading)
 
@@ -444,6 +796,272 @@ ruleTester.run("no-missing-link-fragments", rule, {
 					column: 1,
 					endLine: 3,
 					endColumn: 27,
+				},
+			],
+		},
+
+		// Basic invalid case with HTML heading tags
+		{
+			code: dedent`
+			<h1>heading 1</h1>
+
+			[Invalid](#non-existent)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "non-existent" },
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 25,
+				},
+			],
+		},
+		{
+			// This heading tag is invalid because there is a whitespace between `<` and `h1`.
+			// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#start-tags
+			code: dedent`
+			< h1>heading 1</h1>
+
+            ^^^----------------
+
+			[Invalid](#heading-1)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			// This heading tag is invalid because there are whitespaces between `<` and `h1`.
+			// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#start-tags
+			code: dedent`
+			<  h1>heading 1</h1>
+
+            ^^^^----------------
+
+			[Invalid](#heading-1)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			// This heading tag is invalid because there is a whitespace between `</` and `h1`.
+			// Although GitHub's Markdown HTML engine (and some others) may still recognize this as a valid closing tag,
+			// it is technically invalid according to the HTML specification, which requires no whitespace between `</` and the tag name for end tags.
+			// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#end-tags
+			code: dedent`
+		    <h1>heading 1</ h1>
+
+            --------------^^^--
+
+		    [Invalid](#heading-1)
+		    `,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			// This heading tag is invalid because there are whitespaces between `</` and `h1`.
+			// Although GitHub's Markdown HTML engine (and some others) may still recognize this as a valid closing tag,
+			// it is technically invalid according to the HTML specification, which requires no whitespace between `</` and the tag name for end tags.
+			// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#end-tags
+			code: dedent`
+		    <h1>heading 1</  h1>
+
+            --------------^^^^--
+
+		    [Invalid](#heading-1)
+		    `,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			// This heading tag is invalid because there are three whitespaces between `</` and `h1`.
+			// Although GitHub's Markdown HTML engine (and some others) may still recognize this as a valid closing tag,
+			// it is technically invalid according to the HTML specification, which requires no whitespace between `</` and the tag name for end tags.
+			// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#end-tags
+			code: dedent`
+		    <h1>heading 1</   h1>
+
+            --------------^^^^^--
+
+		    [Invalid](#heading-1)
+            `,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			// This heading tag is invalid because there is a newline whitespace between `</` and `h1`.
+			// Although GitHub's Markdown HTML engine (and some others) may still recognize this as a valid closing tag,
+			// it is technically invalid according to the HTML specification, which requires no whitespace between `</` and the tag name for end tags.
+			// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#end-tags
+			code: dedent`
+            <h1>heading 1</
+            h1>
+
+		    [Invalid](#heading-1)
+            `,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 4,
+					column: 1,
+					endLine: 4,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			// This heading tag is invalid because there is a whitespace between `</` and `em`.
+			// Although GitHub's Markdown HTML engine (and some others) may still recognize this as a valid closing tag,
+			// it is technically invalid according to the HTML specification, which requires no whitespace between `</` and the tag name for end tags.
+			// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#end-tags
+			code: dedent`
+		    <h1>heading <em>1</ em></h1>
+
+            ------------------^^^-------
+
+    		[Invalid](#heading-1)
+	    	`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			// This heading tag is invalid because there are whitespaces between `</` and `em`.
+			// Although GitHub's Markdown HTML engine (and some others) may still recognize this as a valid closing tag,
+			// it is technically invalid according to the HTML specification, which requires no whitespace between `</` and the tag name for end tags.
+			// HTML Spec: https://html.spec.whatwg.org/multipage/syntax.html#end-tags
+			code: dedent`
+		    <h1>heading <em>1</  em></h1>
+
+            ------------------^^^^------
+
+    		[Invalid](#heading-1)
+	     	`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: dedent`
+			<h7>heading 1</h7>
+
+			[Invalid](#heading-1)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: dedent`
+			<h8>heading 1</h8>
+
+			[Invalid](#heading-1)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: dedent`
+			<h1>heading 1</h2>
+
+			[Invalid](#heading-1)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: dedent`
+			<h3>heading 1</h6>
+
+			[Invalid](#heading-1)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "heading-1" },
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 22,
 				},
 			],
 		},
