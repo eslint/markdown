@@ -91,8 +91,8 @@ export default {
 						loc: node.position,
 						messageId: "skippedHeading",
 						data: {
-							fromLevel: lastHeadingDepth.toString(),
-							toLevel: node.depth.toString(),
+							fromLevel: lastHeadingDepth,
+							toLevel: node.depth,
 						},
 					});
 				}

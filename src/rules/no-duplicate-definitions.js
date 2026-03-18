@@ -113,8 +113,7 @@ export default {
 						data: {
 							identifier: node.identifier,
 							label: node.label.trim(),
-							firstLine:
-								firstDefinitionNode.position.start.line.toString(),
+							firstLine: firstDefinitionNode.position.start.line,
 							firstLabel: firstDefinitionNode.label.trim(),
 						},
 					});
@@ -142,7 +141,7 @@ export default {
 							identifier: node.identifier,
 							label: node.label,
 							firstLine:
-								firstFootnoteDefinitionNode.position.start.line.toString(),
+								firstFootnoteDefinitionNode.position.start.line,
 							firstLabel: firstFootnoteDefinitionNode.label,
 						},
 					});

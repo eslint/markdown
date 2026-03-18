@@ -35,12 +35,12 @@ for (const example of examples) {
 		describe("examples", () => {
 			describe(example, () => {
 				it("reports errors on code blocks in .md files", async () => {
-					const { FlatESLint } = require(
-						require.resolve("eslint/use-at-your-own-risk", {
+					const { ESLint } = require(
+						require.resolve("eslint", {
 							paths: [cwd],
 						}),
 					);
-					const eslint = new FlatESLint({ cwd });
+					const eslint = new ESLint({ cwd });
 					const results = await eslint.lintFiles(["README.md"]);
 					const readme = results.find(
 						result => path.basename(result.filePath) == "README.md",
