@@ -60,9 +60,18 @@ export interface RangeMap {
 	md: number;
 }
 
+export interface MappedCommentLocation {
+	text: string;
+	position: {
+		start: { line: number; column: number };
+		end?: { line: number; column: number };
+	};
+}
+
 export interface BlockBase {
 	baseIndentText: string;
 	comments: string[];
+	commentInfos: MappedCommentLocation[];
 	rangeMap: RangeMap[];
 }
 
