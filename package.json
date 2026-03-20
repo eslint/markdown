@@ -75,7 +75,7 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
     "@eslint/js": "^10.0.1",
-    "@eslint/json": "^1.1.0",
+    "@eslint/json": "^1.2.0",
     "@types/mdast": "^4.0.4",
     "@types/unist": "^3.0.3",
     "c8": "^11.0.0",
