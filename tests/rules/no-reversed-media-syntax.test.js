@@ -98,6 +98,13 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 			`,
 			language: "markdown/gfm",
 		},
+		// InlineMath
+		{
+			code: "$(A \\cdot x)[i] = \\sum_{j=1}^{n} A[i][j] , x[j]$",
+			languageOptions: {
+				math: true,
+			},
+		},
 	],
 	invalid: [
 		{

@@ -13,8 +13,10 @@ import { MarkdownSourceCode } from "./markdown-source-code.js";
 import { fromMarkdown } from "mdast-util-from-markdown";
 import { frontmatterFromMarkdown } from "mdast-util-frontmatter";
 import { gfmFromMarkdown } from "mdast-util-gfm";
+import { mathFromMarkdown } from "mdast-util-math";
 import { frontmatter } from "micromark-extension-frontmatter";
 import { gfm } from "micromark-extension-gfm";
+import { math } from "micromark-extension-math";
 
 //-----------------------------------------------------------------------------
 // Types
@@ -55,7 +57,7 @@ const jsonFrontmatterConfig = {
  * Create parser options based on `mode` and `languageOptions`.
  * @param {ParserMode} mode The markdown parser mode.
  * @param {MarkdownLanguageOptions} languageOptions Language options.
- * @returns {{extensions: Extensions, mdastExtensions: MdastExtensions}} Parser options for micromark and mdast
+ * @returns {{extensions: Extensions, mdastExtensions: MdastExtensions}} Parser options for micromark and mdast.
  */
 function createParserOptions(mode, languageOptions) {
 	/** @type {Extensions} */
@@ -86,6 +88,15 @@ function createParserOptions(mode, languageOptions) {
 				frontmatterFromMarkdown(jsonFrontmatterConfig),
 			);
 		}
+	}
+
+	// 3. `languageOptions.math`: Handle math option
+	const mathOption = languageOptions?.math;
+
+	// Skip math entirely if false
+	if (mathOption === true) {
+		extensions.push(math());
+		mdastExtensions.push(mathFromMarkdown());
 	}
 
 	return {
@@ -133,6 +144,7 @@ export class MarkdownLanguage {
 	 */
 	defaultLanguageOptions = {
 		frontmatter: false,
+		math: false,
 	};
 
 	/**
@@ -159,6 +171,7 @@ export class MarkdownLanguage {
 	 * @throws {Error} When the language options are invalid.
 	 */
 	validateLanguageOptions(languageOptions) {
+		// `frontmatter` option validation
 		const frontmatterOption = languageOptions?.frontmatter;
 		const validFrontmatterOptions = new Set([
 			false,
@@ -172,7 +185,16 @@ export class MarkdownLanguage {
 			!validFrontmatterOptions.has(frontmatterOption)
 		) {
 			throw new Error(
-				`Invalid language option value \`${frontmatterOption}\` for frontmatter.`,
+				`Invalid language option value \`${frontmatterOption}\` for frontmatter. Expected one of \`false\`, \`"yaml"\`, \`"toml"\`, or \`"json"\`.`,
+			);
+		}
+
+		// `math` option validation
+		const mathOption = languageOptions?.math;
+
+		if (mathOption !== undefined && typeof mathOption !== "boolean") {
+			throw new Error(
+				`Invalid language option value \`${mathOption}\` for math. Expected a boolean.`,
 			);
 		}
 	}

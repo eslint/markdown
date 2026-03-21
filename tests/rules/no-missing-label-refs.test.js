@@ -130,6 +130,32 @@ ruleTester.run("no-missing-label-refs", rule, {
 			language: "markdown/gfm",
 			options: [{ allowLabels: ["-"] }],
 		},
+		{
+			code: dedent`
+            $(A \\cdot x)[i] = \\sum_{j=1}^{n} A[i][j] , x[j]$
+            `,
+			languageOptions: {
+				math: true,
+			},
+		},
+		{
+			code: dedent`
+            $[1, 2, 3, 4]$
+            `,
+			languageOptions: {
+				math: true,
+			},
+		},
+		{
+			code: dedent`
+            $$
+            [1, 2, 3, 4]
+            $$
+            `,
+			languageOptions: {
+				math: true,
+			},
+		},
 	],
 	invalid: [
 		{
