@@ -263,6 +263,18 @@ ruleTester.run("no-space-in-emphasis", rule, {
 		"Escaped tildes \\~ should \\~ be ignored.",
 		"Escaped tildes \\~~ should ~~ be ignored.",
 		"This is *\u00A0some\u00A0* text",
+		{
+			code: "$(f * g)(x) + (h * k)(x)$",
+			languageOptions: {
+				math: true,
+			},
+		},
+		{
+			code: "$$\n(f * g)(x) + (h * k)(x)\n$$",
+			languageOptions: {
+				math: true,
+			},
+		},
 	],
 	invalid: [
 		{
