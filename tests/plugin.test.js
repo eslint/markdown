@@ -1222,9 +1222,7 @@ describe("LegacyESLint", () => {
 			assert.strictEqual(results[0].messages.length, 2);
 
 			// First message should be the unused disable directive
-			assert.ok(
-				results[0].messages[0].message.includes("no-undef"),
-			);
+			assert.ok(results[0].messages[0].message.includes("no-undef"));
 			// Line should point to the HTML comment in Markdown (line 3)
 			assert.strictEqual(results[0].messages[0].line, 3);
 
@@ -1254,9 +1252,7 @@ describe("LegacyESLint", () => {
 			});
 
 			assert.strictEqual(results[0].messages.length, 1);
-			assert.ok(
-				results[0].messages[0].message.includes("no-undef"),
-			);
+			assert.ok(results[0].messages[0].message.includes("no-undef"));
 			// Line should point to the start of the multi-line HTML comment
 			assert.strictEqual(results[0].messages[0].line, 3);
 		});
