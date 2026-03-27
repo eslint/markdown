@@ -7,6 +7,7 @@ import type {
 	Toml,
 	Json,
 	RangeMap,
+	MappedCommentLocation,
 	Block,
 } from "@eslint/markdown";
 import type { Plugin, SourceLocation, SourceRange } from "@eslint/core";
@@ -59,6 +60,12 @@ const validBlock: Block = {
 	// `BlockBase` properties
 	baseIndentText: "  ",
 	comments: ["// A comment"],
+	commentInfos: [
+		{
+			text: "// A comment",
+			position: { start: { line: 1, column: 1 } },
+		},
+	],
 	rangeMap: [{ indent: 2, js: 0, md: 4 }],
 };
 
@@ -73,6 +80,7 @@ validBlock.data satisfies CodeData | undefined;
 // Verify `Block` has `BlockBase` properties
 validBlock.baseIndentText satisfies string;
 validBlock.comments satisfies string[];
+validBlock.commentInfos satisfies MappedCommentLocation[];
 validBlock.rangeMap satisfies RangeMap[];
 
 // Verify `RangeMap` structure
