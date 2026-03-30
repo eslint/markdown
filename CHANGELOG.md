@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.0.1](https://github.com/eslint/markdown/compare/v8.0.0...v8.0.1) (2026-03-30)
+
+
+### Bug Fixes
+
+* align no-reversed-media-syntax masking with UTF-16 offsets ([#640](https://github.com/eslint/markdown/issues/640)) ([7111e25](https://github.com/eslint/markdown/commit/7111e25284d8f73b9a7de4d926fb670ea482b5e9))
+
 ## [8.0.0](https://github.com/eslint/markdown/compare/v7.5.1...v8.0.0) (2026-03-24)
 
 
