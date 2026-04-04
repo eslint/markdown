@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.0.2](https://github.com/eslint/markdown/compare/v8.0.1...v8.0.2) (2026-04-04)
+
+
+### Bug Fixes
+
+* update eslint ([#642](https://github.com/eslint/markdown/issues/642)) ([55dc070](https://github.com/eslint/markdown/commit/55dc07006e27adf9e96ae78ff77d13c722d65382))
+
 ## [8.0.1](https://github.com/eslint/markdown/compare/v8.0.0...v8.0.1) (2026-03-30)
 
 
