@@ -8,6 +8,9 @@
     "target": "ES2022",
     "moduleResolution": "NodeNext",
     "module": "NodeNext",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "strictNullChecks": false,
+    "useUnknownInCatchVariables": false,
+    "types": ["mdast", "unist"]
   }
 }

@@ -5,6 +5,8 @@
     "noEmit": true,
     "rootDir": "../..",
     "strict": true,
+    "strictNullChecks": true,
+    "useUnknownInCatchVariables": true,
     "exactOptionalPropertyTypes": true
   },
   "files": [],
