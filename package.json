@@ -1,6 +1,6 @@
 {
   "name": "@eslint/markdown",
-  "version": "7.5.1",
+  "version": "8.0.1",
   "description": "The official ESLint language plugin for Markdown",
   "license": "MIT",
   "author": {
@@ -88,14 +88,14 @@
     "knip": "^6.0.0",
     "lint-staged": "^16.0.0",
     "mocha": "^11.7.5",
-    "prettier": "3.8.1",
+    "prettier": "3.8.2",
     "semver": "^7.7.3",
     "typescript": "^5.9.3",
     "yorkie": "^2.0.0"
   },
   "dependencies": {
-    "@eslint/core": "^1.1.1",
-    "@eslint/plugin-kit": "^0.6.1",
+    "@eslint/core": "^1.2.1",
+    "@eslint/plugin-kit": "^0.7.1",
     "github-slugger": "^2.0.0",
     "mdast-util-from-markdown": "^2.0.2",
     "mdast-util-frontmatter": "^2.0.1",

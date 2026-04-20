@@ -59,8 +59,8 @@ export default {
 			"heading, paragraph, tableCell"(
 				/** @type {Heading | Paragraph | TableCell} */ node,
 			) {
-				// Initialize `buffer` with the full character array of the node text.
-				buffer = Array.from(sourceCode.getText(node));
+				// Use UTF-16 code units so the buffer stays aligned with source offsets.
+				buffer = sourceCode.getText(node).split("");
 
 				// Store the start offset of the node for later calculations.
 				nodeStartOffset = node.position.start.offset;
