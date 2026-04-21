@@ -10,7 +10,7 @@ import type {
 	Block,
 } from "@eslint/markdown";
 import type { Plugin, SourceLocation, SourceRange } from "@eslint/core";
-import type { Linter } from "eslint";
+import type { ESLint, Linter } from "eslint";
 import type { Position } from "unist";
 import type {
 	// Nodes (abstract)
@@ -92,6 +92,7 @@ const invalidBlock: Block = {
 };
 
 markdown satisfies Plugin;
+markdown satisfies ESLint.Plugin; // This type check verifies that the plugin is compatible with ESLint v9.15.0, v9.x, and v10.x.
 markdown.meta.name satisfies string;
 markdown.meta.version satisfies string;
 
