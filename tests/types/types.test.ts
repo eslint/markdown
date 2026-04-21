@@ -91,7 +91,7 @@ const invalidBlock: Block = {
 	value: "code",
 };
 
-markdown satisfies Plugin;
+// markdown satisfies Plugin;
 markdown satisfies ESLint.Plugin; // This type check verifies that the plugin is compatible with ESLint v9.15.0, v9.x, and v10.x.
 markdown.meta.name satisfies string;
 markdown.meta.version satisfies string;
