@@ -51,7 +51,7 @@ console.log("Recommended rules generated successfully.");
 const rulesOutput = `
 ${rules.map((id, index) => `import rule${index} from "../rules/${id}";`).join("\n")}
 
-export default /** @type {Record<string, any>} */ ({
+export default /** @type {Record<${rules.map(id => `"${id.slice(0, -3)}"`).join("|")}, any>} */ ({
     ${rules.map((id, index) => `"${id.slice(0, -3)}": rule${index},`).join("\n    ")}
 });
 `.trim();

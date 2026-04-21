@@ -14,12 +14,9 @@ import { fromMarkdown } from "mdast-util-from-markdown";
 //-----------------------------------------------------------------------------
 
 /**
+ * @import { LintMessage, RuleTextEdit, SourceRange } from "@eslint/core";
  * @import { Node, Parent, Code, Html } from "mdast";
- * @import { Linter, Rule, AST } from "eslint";
  * @import { Block, RangeMap } from "./types.js";
- * @typedef {Linter.LintMessage} Message
- * @typedef {Rule.Fix} Fix
- * @typedef {AST.Range} Range
  */
 
 //-----------------------------------------------------------------------------
@@ -352,12 +349,12 @@ function preprocess(sourceText, filename) {
 /**
  * Adjusts a fix in a code block.
  * @param {Block} block A code block.
- * @param {Fix} fix A fix to adjust.
- * @returns {Fix} The fix with adjusted ranges.
+ * @param {RuleTextEdit} fix A fix to adjust.
+ * @returns {RuleTextEdit} The fix with adjusted ranges.
  */
 function adjustFix(block, fix) {
 	return {
-		range: /** @type {Range} */ (
+		range: /** @type {SourceRange} */ (
 			fix.range.map(range => {
 				// Advance through the block's range map to find the last
 				// matching range by finding the first range too far and
@@ -382,7 +379,7 @@ function adjustFix(block, fix) {
 /**
  * Creates a map function that adjusts messages in a code block.
  * @param {Block} block A code block.
- * @returns {(message: Message) => Message} A function that adjusts messages in a code block.
+ * @returns {(message: LintMessage) => LintMessage} A function that adjusts messages in a code block.
  */
 function adjustBlock(block) {
 	const leadingCommentLines = block.comments.reduce(
@@ -394,8 +391,8 @@ function adjustBlock(block) {
 
 	/**
 	 * Adjusts ESLint messages to point to the correct location in the Markdown.
-	 * @param {Message} message A message from ESLint.
-	 * @returns {Message} The same message, but adjusted to the correct location.
+	 * @param {LintMessage} message A message from ESLint.
+	 * @returns {LintMessage} The same message, but adjusted to the correct location.
 	 */
 	return function adjustMessage(message) {
 		if (!Number.isInteger(message.line)) {
@@ -440,7 +437,7 @@ function adjustBlock(block) {
 
 /**
  * Excludes unsatisfiable rules from the list of messages.
- * @param {Message} message A message from the linter.
+ * @param {LintMessage} message A message from the linter.
  * @returns {boolean} True if the message should be included in output.
  */
 function excludeUnsatisfiableRules(message) {
@@ -449,10 +446,10 @@ function excludeUnsatisfiableRules(message) {
 
 /**
  * Transforms generated messages for output.
- * @param {Array<Message[]>} messages An array containing one array of messages
+ * @param {Array<LintMessage[]>} messages An array containing one array of messages
  *     for each code block returned from `preprocess`.
  * @param {string} filename The filename of the file
- * @returns {Message[]} A flattened array of messages with mapped locations.
+ * @returns {LintMessage[]} A flattened array of messages with mapped locations.
  */
 function postprocess(messages, filename) {
 	const blocks = blocksCache.get(filename);
