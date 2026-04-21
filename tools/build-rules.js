@@ -51,9 +51,9 @@ console.log("Recommended rules generated successfully.");
 const rulesOutput = `
 ${rules.map((id, index) => `import rule${index} from "../rules/${id}";`).join("\n")}
 
-export default /** @type {Record<string, any>} */ ({
+export default {
     ${rules.map((id, index) => `"${id.slice(0, -3)}": rule${index},`).join("\n    ")}
-});
+};
 `.trim();
 
 fs.writeFileSync(path.resolve(thisDir, "../src/build/rules.js"), rulesOutput);
