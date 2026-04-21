@@ -77,8 +77,42 @@ jobs:
     test_types:
         name: Test Types
         strategy:
+            fail-fast: false
             matrix:
-                eslint: [9.15.0, 9.x, 10.x]
+                eslint:
+                    [
+                        9.15.x,
+                        9.16.x,
+                        9.17.x,
+                        9.18.x,
+                        9.19.x,
+                        9.20.x,
+                        9.21.x,
+                        9.22.x,
+                        9.23.x,
+                        9.24.x,
+                        9.25.x,
+                        9.26.x,
+                        9.27.x,
+                        9.28.x,
+                        9.29.x,
+                        9.30.x,
+                        9.31.x,
+                        9.32.x,
+                        9.33.x,
+                        9.34.x,
+                        9.35.x,
+                        9.36.x,
+                        9.37.x,
+                        9.38.x,
+                        9.39.0,
+                        9.39.1,
+                        9.39.2,
+                        9.39.3,
+                        9.39.4,
+                        9.x,
+                        10.x,
+                    ]
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v6
