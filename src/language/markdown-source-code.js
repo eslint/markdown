@@ -21,7 +21,7 @@ import { lineEndingPattern } from "../util.js";
 
 /**
  * @import { Position } from "unist";
- * @import { Root, Node, Html } from "mdast";
+ * @import { Parent, Root, Node, Html } from "mdast";
  * @import { TraversalStep, FileProblem, DirectiveType, RulesConfig } from "@eslint/core";
  * @import { MarkdownLanguageOptions } from "../types.js";
  */
@@ -77,7 +77,7 @@ function extractInlineConfigCommentsFromHTML(node, sourceCode) {
 	/** @type {Array<InlineConfigComment>} */
 	const comments = [];
 
-	/** @type {RegExpExecArray} */
+	/** @type {RegExpExecArray | null} */
 	let match;
 
 	while ((match = htmlComment.exec(node.value))) {
@@ -124,7 +124,7 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 
 	/**
 	 * Cache of parent nodes.
-	 * @type {WeakMap<Node, Node>}
+	 * @type {WeakMap<Node, Parent|undefined>}
 	 */
 	#parents = new WeakMap();
 
@@ -163,7 +163,7 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 	/**
 	 * Returns the parent of the given node.
 	 * @param {Node} node The node to get the parent of.
-	 * @returns {Node|undefined} The parent of the node.
+	 * @returns {Parent|undefined} The parent of the node.
 	 */
 	getParent(node) {
 		return this.#parents.get(node);
@@ -303,6 +303,12 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 		/** @type {Array<VisitNodeStep>} */
 		const steps = (this.#steps = []);
 
+		/**
+		 * Recursively visits a node and its children.
+		 * @param {Node} node The node to visit.
+		 * @param {Parent} [parent] The parent of the node.
+		 * @returns {void}
+		 */
 		const visit = (node, parent) => {
 			// first set the parent
 			this.#parents.set(node, parent);
@@ -318,13 +324,15 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 
 			// save HTML nodes
 			if (node.type === "html") {
-				this.#htmlNodes.push(node);
+				this.#htmlNodes.push(/** @type {Html} */ (node));
 			}
 
 			// then visit the children
-			if (node.children) {
-				node.children.forEach(child => {
-					visit(child, node);
+			if ("children" in node) {
+				const parentNode = /** @type {Parent} */ (node);
+
+				parentNode.children.forEach(child => {
+					visit(child, parentNode);
 				});
 			}
 

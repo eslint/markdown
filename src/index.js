@@ -129,8 +129,8 @@ const plugin = {
 	},
 };
 
-// @ts-expect-error
-recommendedPlugins.markdown = processorPlugins.markdown = plugin;
+Object.assign(recommendedPlugins, { markdown: plugin });
+Object.assign(processorPlugins, { markdown: plugin });
 
 export default plugin;
 export { MarkdownSourceCode };
