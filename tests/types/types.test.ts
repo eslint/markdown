@@ -10,7 +10,7 @@ import type {
 	Block,
 } from "@eslint/markdown";
 import type { Plugin, SourceLocation, SourceRange } from "@eslint/core";
-import type { Linter } from "eslint";
+import type { ESLint, Linter } from "eslint";
 import type { Position } from "unist";
 import type {
 	// Nodes (abstract)
@@ -92,6 +92,9 @@ const invalidBlock: Block = {
 };
 
 markdown satisfies Plugin;
+// This type check verifies that the plugin is compatible with ESLint v9.39.0, v9.x, and v10.x.
+// See: https://github.com/eslint/markdown/pull/648
+markdown satisfies ESLint.Plugin;
 markdown.meta.name satisfies string;
 markdown.meta.version satisfies string;
 
@@ -101,6 +104,30 @@ markdown.processors.markdown satisfies object;
 // Check that these languages are defined:
 markdown.languages.commonmark satisfies object;
 markdown.languages.gfm satisfies object;
+
+declare const ruleName: keyof typeof markdown.rules;
+markdown.rules[ruleName] satisfies MarkdownRuleDefinition;
+markdown.rules["fenced-code-language"] satisfies MarkdownRuleDefinition;
+markdown.rules["fenced-code-meta"] satisfies MarkdownRuleDefinition;
+markdown.rules["heading-increment"] satisfies MarkdownRuleDefinition;
+markdown.rules["no-bare-urls"] satisfies MarkdownRuleDefinition;
+markdown.rules["no-duplicate-definitions"] satisfies MarkdownRuleDefinition;
+markdown.rules["no-duplicate-headings"] satisfies MarkdownRuleDefinition;
+markdown.rules["no-empty-definitions"] satisfies MarkdownRuleDefinition;
+markdown.rules["no-empty-images"] satisfies MarkdownRuleDefinition;
+markdown.rules["no-empty-links"] satisfies MarkdownRuleDefinition;
+markdown.rules["no-html"] satisfies MarkdownRuleDefinition;
+markdown.rules["no-invalid-label-refs"] satisfies MarkdownRuleDefinition;
+markdown.rules["no-missing-atx-heading-space"] satisfies MarkdownRuleDefinition;
+markdown.rules["no-missing-label-refs"] satisfies MarkdownRuleDefinition;
+markdown.rules["no-missing-link-fragments"] satisfies MarkdownRuleDefinition;
+markdown.rules["no-multiple-h1"] satisfies MarkdownRuleDefinition;
+markdown.rules["no-reference-like-urls"] satisfies MarkdownRuleDefinition;
+markdown.rules["no-reversed-media-syntax"] satisfies MarkdownRuleDefinition;
+markdown.rules["no-space-in-emphasis"] satisfies MarkdownRuleDefinition;
+markdown.rules["no-unused-definitions"] satisfies MarkdownRuleDefinition;
+markdown.rules["require-alt-text"] satisfies MarkdownRuleDefinition;
+markdown.rules["table-column-count"] satisfies MarkdownRuleDefinition;
 
 markdown.configs["recommended-legacy"] satisfies Linter.LegacyConfig;
 markdown.configs.recommended satisfies Linter.Config[];
