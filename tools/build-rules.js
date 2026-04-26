@@ -21,7 +21,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const thisDir = path.dirname(fileURLToPath(import.meta.url));
 const rulesPath = path.resolve(thisDir, "../src/rules");
-const rules = fs.readdirSync(rulesPath);
+const rules = fs.readdirSync(rulesPath).sort();
 const ruleIds = rules.map(id => id.slice(0, -3));
 const recommended = [];
 

@@ -379,7 +379,7 @@ function adjustFix(block, fix) {
 /**
  * Creates a map function that adjusts messages in a code block.
  * @param {Block} block A code block.
- * @returns {(message: LintMessage) => LintMessage} A function that adjusts messages in a code block.
+ * @returns {(message: LintMessage) => LintMessage | null} A function that adjusts messages in a code block.
  */
 function adjustBlock(block) {
 	const leadingCommentLines = block.comments.reduce(
