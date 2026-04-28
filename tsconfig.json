@@ -11,6 +11,6 @@
     "rootDir": "./src",
     "strictNullChecks": false,
     "useUnknownInCatchVariables": false,
-    "types": ["mdast", "unist"]
+    "types": []
   }
 }
