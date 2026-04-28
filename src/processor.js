@@ -413,7 +413,7 @@ function adjustBlock(block) {
 			return null;
 		}
 
-		/** @type {Pick<Message, "line" | "column" | "endLine" | "suggestions">} */
+		/** @type {Pick<LintMessage, "line" | "column" | "endLine" | "suggestions">} */
 		const out = {
 			line: lineInCode + blockStart,
 			column: message.column + block.rangeMap[lineInCode].indent,
