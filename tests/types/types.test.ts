@@ -221,6 +221,7 @@ const invalidLanguageOptions2: MarkdownLanguageOptions = {
 			sourceCode.getIndexFromLoc({ line: 1, column: 1 }) satisfies number;
 			sourceCode.getRange(node) satisfies SourceRange;
 			sourceCode.getParent(node) satisfies Node | undefined;
+			sourceCode.getParent(node) satisfies Parent | undefined;
 			sourceCode.getAncestors(node) satisfies Node[];
 			sourceCode.getText(node) satisfies string;
 			sourceCode.applyInlineConfig().configs[0].loc.start

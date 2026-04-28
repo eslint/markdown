@@ -39,14 +39,14 @@ const blocksCache = new Map();
 /**
  * Performs a depth-first traversal of the Markdown AST.
  * @param {Node} node A Markdown AST node.
- * @param {{[key: string]: (node?: Node) => void}} callbacks A map of node types to callbacks.
+ * @param {{[key: string]: (() => void) | ((node: Code) => void) | ((node: Html) => void)}} callbacks A map of node types to callbacks.
  * @returns {void}
  */
 function traverse(node, callbacks) {
 	if (callbacks[node.type]) {
-		callbacks[node.type](node);
+		/** @type {(node: Node) => void} */ (callbacks[node.type])(node);
 	} else {
-		callbacks["*"]();
+		/** @type {() => void} */ (callbacks["*"])();
 	}
 
 	const parent = /** @type {Parent} */ (node);
@@ -336,7 +336,11 @@ function preprocess(sourceText, filename) {
 	return blocks.map((block, index) => {
 		const [language] = block.lang.trim().split(" ");
 		const fileExtension = Object.hasOwn(languageToFileExtension, language)
-			? languageToFileExtension[language]
+			? languageToFileExtension[
+					/** @type {keyof typeof languageToFileExtension} */ (
+						language
+					)
+				]
 			: language;
 
 		return {
@@ -409,6 +413,7 @@ function adjustBlock(block) {
 			return null;
 		}
 
+		/** @type {Pick<Message, "line" | "column" | "endLine" | "suggestions">} */
 		const out = {
 			line: lineInCode + blockStart,
 			column: message.column + block.rangeMap[lineInCode].indent,
