@@ -24,7 +24,7 @@ Examples of **incorrect** code for this rule:
 ![Image](#)
 ```
 
-Exmaples of correct code:
+Examples of **correct** code:
 
 ```markdown
 <!-- eslint markdown/no-empty-images: "error" -->
