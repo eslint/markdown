@@ -1,5 +1,14 @@
 # Changelog
 
+## [8.0.2](https://github.com/eslint/markdown/compare/v8.0.1...v8.0.2) (2026-05-03)
+
+
+### Bug Fixes
+
+* update eslint ([#642](https://github.com/eslint/markdown/issues/642)) ([55dc070](https://github.com/eslint/markdown/commit/55dc07006e27adf9e96ae78ff77d13c722d65382))
+* update eslint ([#644](https://github.com/eslint/markdown/issues/644)) ([d09ea4a](https://github.com/eslint/markdown/commit/d09ea4a3f4b84a654270baa85a70040bd3f4e6a9))
+* update TypeScript to v6 and tighten the return type of `getParent` ([#637](https://github.com/eslint/markdown/issues/637)) ([2573a54](https://github.com/eslint/markdown/commit/2573a5494dc68bcc3c579fc905e0e1bde8ea2169))
+
 ## [8.0.1](https://github.com/eslint/markdown/compare/v8.0.0...v8.0.1) (2026-03-30)
 
 
