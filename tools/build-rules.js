@@ -21,7 +21,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const thisDir = path.dirname(fileURLToPath(import.meta.url));
 const rulesPath = path.resolve(thisDir, "../src/rules");
-const rules = fs.readdirSync(rulesPath);
+const rules = fs.readdirSync(rulesPath).sort();
+const ruleIds = rules.map(id => id.slice(0, -3));
 const recommended = [];
 
 for (const ruleId of rules) {
@@ -51,9 +52,19 @@ console.log("Recommended rules generated successfully.");
 const rulesOutput = `
 ${rules.map((id, index) => `import rule${index} from "../rules/${id}";`).join("\n")}
 
-export default {
-    ${rules.map((id, index) => `"${id.slice(0, -3)}": rule${index},`).join("\n    ")}
-};
+/**
+ * @typedef {(
+ *    ${ruleIds
+		.map(
+			(id, index) => `"${id}"${index === ruleIds.length - 1 ? "" : " |"}`,
+		)
+		.join("\n *    ")}
+ * )} RuleId
+ */
+
+export default /** @type {Record<RuleId, any>} */ ({
+    ${ruleIds.map((id, index) => `"${id}": rule${index},`).join("\n    ")}
+});
 `.trim();
 
 fs.writeFileSync(path.resolve(thisDir, "../src/build/rules.js"), rulesOutput);
