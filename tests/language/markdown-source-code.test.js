@@ -296,9 +296,9 @@ describe("MarkdownSourceCode", () => {
 
 	describe("getInlineConfigNodes()", () => {
 		it("should return `InlineConfigComment` instances", () => {
-			const nodes = sourceCode.getInlineConfigNodes();
+			const inlineConfigNodes = sourceCode.getInlineConfigNodes();
 
-			for (const node of nodes) {
+			for (const node of inlineConfigNodes) {
 				assert.ok(node instanceof InlineConfigComment);
 			}
 		});
