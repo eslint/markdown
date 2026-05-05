@@ -372,3 +372,21 @@ const invalidLanguageOptions2: MarkdownLanguageOptions = {
 		},
 	},
 });
+
+// `context.report` should accept nodes returned by `getInlineConfigNodes`
+(): MarkdownRuleDefinition => ({
+	create(context) {
+		const inlineConfigNodes = context.sourceCode.getInlineConfigNodes();
+
+		return {
+			"root:exit"() {
+				for (const node of inlineConfigNodes) {
+					context.report({
+						node,
+						messageId: "message",
+					});
+				}
+			},
+		};
+	},
+});
