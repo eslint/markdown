@@ -49,7 +49,7 @@ jobs:
             matrix:
                 os: [ubuntu-latest]
                 eslint: [9.15.0, 9.x, 10.x]
-                node: [25.x, 24.x, 22.x, 20.x, "20.19.0"]
+                node: [26.x, 25.x, 24.x, 22.x, 20.x, "20.19.0"]
                 include:
                     - os: windows-latest
                       eslint: latest
