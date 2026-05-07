@@ -8,26 +8,17 @@
 //-----------------------------------------------------------------------------
 
 import assert from "node:assert";
-import api from "eslint";
-import unsupportedAPI from "eslint/use-at-your-own-risk";
 import path from "node:path";
-import plugin from "../src/index.js";
 import fs from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { ESLint } from "eslint";
+import { LegacyESLint } from "eslint-v9/use-at-your-own-risk";
+import plugin from "../src/index.js";
+import pkg from "../package.json" with { type: "json" };
 
-const ESLint = api.ESLint;
-const LegacyESLint = unsupportedAPI.LegacyESLint;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rulesDir = path.resolve(__dirname, "../src/rules");
-
-//-----------------------------------------------------------------------------
-// Data
-//-----------------------------------------------------------------------------
-
-const pkg = JSON.parse(
-	fs.readFileSync(path.resolve(__dirname, "../package.json"), "utf8"),
-);
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -1717,7 +1708,7 @@ describe("FlatESLint", () => {
 
 		describe("should fix code", () => {
 			before(() => {
-				eslint = initLegacyESLint("eslintrc.json", { fix: true });
+				eslint = initFlatESLint("eslint.config.js", { fix: true });
 			});
 
 			it("in the simplest case", async () => {

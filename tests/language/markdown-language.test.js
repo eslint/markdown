@@ -16,18 +16,7 @@ import assert from "node:assert";
 
 describe("MarkdownLanguage", () => {
 	describe("validateLanguageOptions()", () => {
-		it("should throw an error if `frontmatter` is not `false`, `'yaml'`, `'toml'`, or `'json'`", () => {
-			const language = new MarkdownLanguage();
-
-			assert.throws(() => {
-				language.validateLanguageOptions({ frontmatter: "invalid" });
-			}, /Invalid language option value/u);
-			assert.throws(() => {
-				language.validateLanguageOptions({ frontmatter: 123 });
-			}, /Invalid language option value/u);
-		});
-
-		it("should not throw an error when `frontmatter` is not provided", () => {
+		it("should not throw an error when `frontmatter` or `math` is not provided", () => {
 			const language = new MarkdownLanguage();
 
 			assert.doesNotThrow(() => {
@@ -38,11 +27,37 @@ describe("MarkdownLanguage", () => {
 			});
 		});
 
-		it("should not throw an error when `frontmatter` is not provided and other keys are present", () => {
+		it("should not throw an error when `frontmatter` or `math` is not provided and other keys are present", () => {
 			const language = new MarkdownLanguage();
 			assert.doesNotThrow(() => {
 				language.validateLanguageOptions({ foo: "bar" });
 			});
+		});
+
+		// Validation tests for the `frontmatter` option
+		it("should throw an error if `frontmatter` is not `false`, `'yaml'`, `'toml'`, or `'json'`", () => {
+			const language = new MarkdownLanguage();
+
+			assert.throws(
+				() => {
+					language.validateLanguageOptions({
+						frontmatter: "invalid",
+					});
+				},
+				{
+					message:
+						'Invalid language option value `invalid` for frontmatter. Expected one of `false`, `"yaml"`, `"toml"`, or `"json"`.',
+				},
+			);
+			assert.throws(
+				() => {
+					language.validateLanguageOptions({ frontmatter: 123 });
+				},
+				{
+					message:
+						'Invalid language option value `123` for frontmatter. Expected one of `false`, `"yaml"`, `"toml"`, or `"json"`.',
+				},
+			);
 		});
 
 		it("should not throw an error when `frontmatter` has a correct value in commonmark mode", () => {
@@ -76,6 +91,52 @@ describe("MarkdownLanguage", () => {
 			});
 			assert.doesNotThrow(() => {
 				language.validateLanguageOptions({ frontmatter: "json" });
+			});
+		});
+
+		// Validation tests for the `math` option
+		it("should throw an error if `math` is not `true` or `false`", () => {
+			const language = new MarkdownLanguage();
+
+			assert.throws(
+				() => {
+					language.validateLanguageOptions({ math: "invalid" });
+				},
+				{
+					message:
+						"Invalid language option value `invalid` for math. Expected a boolean.",
+				},
+			);
+			assert.throws(
+				() => {
+					language.validateLanguageOptions({ math: 123 });
+				},
+				{
+					message:
+						"Invalid language option value `123` for math. Expected a boolean.",
+				},
+			);
+		});
+
+		it("should not throw an error when `math` has a correct value in commonmark mode", () => {
+			const language = new MarkdownLanguage({ mode: "commonmark" });
+
+			assert.doesNotThrow(() => {
+				language.validateLanguageOptions({ math: true });
+			});
+			assert.doesNotThrow(() => {
+				language.validateLanguageOptions({ math: false });
+			});
+		});
+
+		it("should not throw an error when `math` has a correct value in gfm mode", () => {
+			const language = new MarkdownLanguage({ mode: "gfm" });
+
+			assert.doesNotThrow(() => {
+				language.validateLanguageOptions({ math: true });
+			});
+			assert.doesNotThrow(() => {
+				language.validateLanguageOptions({ math: false });
 			});
 		});
 	});
@@ -269,6 +330,77 @@ describe("MarkdownLanguage", () => {
 			);
 			assert.strictEqual(result.ast.children[1].type, "heading");
 			assert.strictEqual(result.ast.children[2].type, "paragraph");
+		});
+
+		it("should not parse math by default", () => {
+			const language = new MarkdownLanguage();
+			const result = language.parse({
+				body: "Inline math: $E=mc^2$\n\nBlock math:\n\n$$\nE=mc^2\n$$",
+				path: "test.md",
+			});
+
+			assert.strictEqual(result.ok, true);
+			assert.strictEqual(result.ast.type, "root");
+			assert.strictEqual(result.ast.children[0].type, "paragraph");
+			assert.strictEqual(result.ast.children[0].children[0].type, "text");
+			assert.strictEqual(result.ast.children[1].type, "paragraph");
+			assert.strictEqual(result.ast.children[1].children[0].type, "text");
+			assert.strictEqual(result.ast.children[2].type, "paragraph");
+			assert.strictEqual(result.ast.children[2].children[0].type, "text");
+		});
+
+		it("should parse math in commonmark mode when `math: true` is set", () => {
+			const language = new MarkdownLanguage({ mode: "commonmark" });
+			const result = language.parse(
+				{
+					body: "Inline math: $E=mc^2$\n\nBlock math:\n\n$$\nE=mc^2\n$$",
+					path: "test.md",
+				},
+				{
+					languageOptions: {
+						math: true,
+					},
+				},
+			);
+
+			assert.strictEqual(result.ok, true);
+			assert.strictEqual(result.ast.type, "root");
+			assert.strictEqual(result.ast.children[0].type, "paragraph");
+			assert.strictEqual(result.ast.children[0].children[0].type, "text");
+			assert.strictEqual(
+				result.ast.children[0].children[1].type,
+				"inlineMath",
+			);
+			assert.strictEqual(result.ast.children[1].type, "paragraph");
+			assert.strictEqual(result.ast.children[1].children[0].type, "text");
+			assert.strictEqual(result.ast.children[2].type, "math");
+		});
+
+		it("should parse math in gfm mode when `math: true` is set", () => {
+			const language = new MarkdownLanguage({ mode: "gfm" });
+			const result = language.parse(
+				{
+					body: "Inline math: $E=mc^2$\n\nBlock math:\n\n$$\nE=mc^2\n$$",
+					path: "test.md",
+				},
+				{
+					languageOptions: {
+						math: true,
+					},
+				},
+			);
+
+			assert.strictEqual(result.ok, true);
+			assert.strictEqual(result.ast.type, "root");
+			assert.strictEqual(result.ast.children[0].type, "paragraph");
+			assert.strictEqual(result.ast.children[0].children[0].type, "text");
+			assert.strictEqual(
+				result.ast.children[0].children[1].type,
+				"inlineMath",
+			);
+			assert.strictEqual(result.ast.children[1].type, "paragraph");
+			assert.strictEqual(result.ast.children[1].children[0].type, "text");
+			assert.strictEqual(result.ast.children[2].type, "math");
 		});
 	});
 

@@ -134,9 +134,18 @@ export default defineConfig([
 		},
 	},
 	{
+		name: "json/json",
 		plugins: { json },
 		files: ["**/*.json", ".c8rc"],
 		language: "json/json",
+		extends: ["json/recommended"],
+	},
+	{
+		name: "json/jsonc",
+		plugins: { json },
+		files: ["**/*.jsonc", "**/tsconfig*.json"],
+		language: "json/jsonc",
+		languageOptions: { allowTrailingCommas: true },
 		extends: ["json/recommended"],
 	},
 ]);

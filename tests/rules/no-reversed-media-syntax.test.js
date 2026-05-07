@@ -68,6 +68,9 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 		`(foo)[bar${"\\".repeat(7)}]`,
 		"text [foo](bar) text [foo](bar) text",
 		"text [foo](bar)[foo](bar) text",
+		"🎉 [foo](bar)",
+		"text 🎉🎉 [foo](bar) text",
+		"🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉 `(foo)[bar]`",
 		"text [foo](bar)[foo](bar)[foo](bar) text",
 		"text (text `func()[index]`) text",
 		'hi <span class="foo(bar)[baz]">hi</span>',
@@ -97,6 +100,13 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 			| [ESLint](https://eslint.org/) | ![A beautiful sunset](sunset.png) |
 			`,
 			language: "markdown/gfm",
+		},
+		// InlineMath
+		{
+			code: "$(A \\cdot x)[i] = \\sum_{j=1}^{n} A[i][j] , x[j]$",
+			languageOptions: {
+				math: true,
+			},
 		},
 	],
 	invalid: [
@@ -460,6 +470,45 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 					column: 5,
 					endLine: 2,
 					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: "🎉 (foo)[bar]",
+			output: "🎉 [foo](bar)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 4,
+					endLine: 1,
+					endColumn: 14,
+				},
+			],
+		},
+		{
+			code: "text 🎉🎉 (foo)[bar] text",
+			output: "text 🎉🎉 [foo](bar) text",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 11,
+					endLine: 1,
+					endColumn: 21,
+				},
+			],
+		},
+		{
+			code: "🎉🎉🎉🎉🎉🎉🎉🎉 `a` (foo)[bar]",
+			output: "🎉🎉🎉🎉🎉🎉🎉🎉 `a` [foo](bar)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 22,
+					endLine: 1,
+					endColumn: 32,
 				},
 			],
 		},

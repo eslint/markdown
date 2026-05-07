@@ -28,8 +28,12 @@ import { stripHtmlComments } from "../util.js";
 
 const githubLineReferencePattern = /^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$/u;
 const customHeadingIdPattern = /\{#(?<id>[^}\s]+)\}\s*$/u;
+const htmlHeadingPattern =
+	/<h(?<depth>[1-6])[^>]*>(?<children>[\s\S]*?)<\/h\k<depth>\s*>/giu;
 const htmlIdNamePattern =
 	/(?<!<)<[^>]+\s(?:id|name)\s*=\s*["']?(?<id>[^"'\s>]+)["']?/giu;
+const htmlTagPattern =
+	/<\/?[a-z0-9]+(?:-[a-z0-9]+)*(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?(?:\/\s*)?>/giu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -116,6 +120,18 @@ export default {
 					htmlIdNamePattern,
 				)) {
 					const { id } = match.groups;
+
+					fragmentIds.add(slugger.slug(id));
+				}
+
+				// 3. Finally, look for headings in the HTML
+				for (const match of htmlTextWithoutComments.matchAll(
+					htmlHeadingPattern,
+				)) {
+					const { children } = match.groups;
+
+					// Remove any HTML tags within the heading content to get plain text
+					const id = children.replace(htmlTagPattern, "");
 
 					fragmentIds.add(slugger.slug(id));
 				}

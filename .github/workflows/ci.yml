@@ -48,14 +48,14 @@ jobs:
         strategy:
             matrix:
                 os: [ubuntu-latest]
-                eslint: [9]
-                node: [25.x, 24.x, 22.x, 20.x, "20.19.0"]
+                eslint: [9.15.0, 9.x, 10.x]
+                node: [26.x, 25.x, 24.x, 22.x, 20.x, "20.19.0"]
                 include:
                     - os: windows-latest
-                      eslint: 9
+                      eslint: latest
                       node: lts/*
                     - os: macOS-latest
-                      eslint: 9
+                      eslint: latest
                       node: lts/*
         runs-on: ${{ matrix.os }}
         steps:
@@ -69,8 +69,8 @@ jobs:
               run: npm install
               env:
                   CI: true
-            - name: Install ESLint@${{  matrix.eslint  }}
-              run: npm install eslint@${{  matrix.eslint  }}
+            - name: Install ESLint@${{ matrix.eslint }}
+              run: npm install -D eslint@${{ matrix.eslint }} @eslint/js@${{ matrix.eslint }}
             - name: Test
               run: npm run test
 
@@ -87,6 +87,10 @@ jobs:
               run: npm install
             - name: Check Types
               run: npm run test:types
+            - name: Check Types (TypeScript 5.x)
+              run: npm run test:types:5.x
+            - name: Check Types (TypeScript 5.3)
+              run: npm run test:types:5.3
 
     are_the_types_wrong:
         name: Are the types wrong?

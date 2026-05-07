@@ -46,13 +46,14 @@ To enable the Markdown processor, use the `processor` configuration, which conta
 
 ```js
 // eslint.config.js
+import { defineConfig } from "eslint/config";
 import markdown from "@eslint/markdown";
 
-export default [
-    ...markdown.configs.processor
+export default defineConfig([
+    markdown.configs.processor
 
     // your other configs here
-];
+]);
 ```
 
 ## Advanced Configuration
@@ -76,9 +77,10 @@ Here's an example:
 
 ```js
 // eslint.config.js
+import { defineConfig } from "eslint/config";
 import markdown from "@eslint/markdown";
 
-export default [
+export default defineConfig([
     {
         // 1. Add the plugin
         plugins: {
@@ -101,7 +103,7 @@ export default [
     }
 
     // your other configs here
-];
+]);
 ```
 
 ## Frequently-Disabled Rules
@@ -119,9 +121,10 @@ Use glob patterns to disable more rules just for Markdown code blocks:
 
 ```js
 // / eslint.config.js
+import { defineConfig } from "eslint/config";
 import markdown from "@eslint/markdown";
 
-export default [
+export default defineConfig([
     {
         plugins: {
             markdown
@@ -142,7 +145,7 @@ export default [
     }
 
     // your other configs here
-];
+]);
 ```
 
 ## Additional Notes

@@ -8,21 +8,12 @@
 //-----------------------------------------------------------------------------
 
 import assert from "node:assert";
-import path from "node:path";
 import { processor } from "../src/processor.js";
-import fs from "node:fs";
-import { fileURLToPath } from "node:url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import pkg from "../package.json" with { type: "json" };
 
 //-----------------------------------------------------------------------------
 // Data
 //-----------------------------------------------------------------------------
-
-const pkg = JSON.parse(
-	fs.readFileSync(path.resolve(__dirname, "../package.json"), "utf8"),
-);
 
 const BOM = "\uFEFF";
 

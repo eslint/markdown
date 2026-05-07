@@ -53,7 +53,7 @@ let recommendedPlugins, processorPlugins;
 const plugin = {
 	meta: {
 		name: "@eslint/markdown",
-		version: "7.5.1", // x-release-please-version
+		version: "8.0.1", // x-release-please-version
 	},
 	processors: {
 		markdown: processor,
@@ -129,8 +129,8 @@ const plugin = {
 	},
 };
 
-// @ts-expect-error
-recommendedPlugins.markdown = processorPlugins.markdown = plugin;
+Object.assign(recommendedPlugins, { markdown: plugin });
+Object.assign(processorPlugins, { markdown: plugin });
 
 export default plugin;
 export { MarkdownSourceCode };

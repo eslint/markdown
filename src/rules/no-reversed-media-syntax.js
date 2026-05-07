@@ -9,6 +9,7 @@
 
 /**
  * @import { Heading, Paragraph, TableCell, Html, Image, ImageReference, InlineCode, LinkReference } from "mdast";
+ * @import { InlineMath } from "mdast-util-math";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"reversedSyntax"} NoReversedMediaSyntaxMessageIds
  * @typedef {[]} NoReversedMediaSyntaxOptions
@@ -58,19 +59,19 @@ export default {
 			"heading, paragraph, tableCell"(
 				/** @type {Heading | Paragraph | TableCell} */ node,
 			) {
-				// Initialize `buffer` with the full character array of the node text.
-				buffer = Array.from(sourceCode.getText(node));
+				// Use UTF-16 code units so the buffer stays aligned with source offsets.
+				buffer = sourceCode.getText(node).split("");
 
 				// Store the start offset of the node for later calculations.
 				nodeStartOffset = node.position.start.offset;
 			},
 
-			":matches(heading, paragraph, tableCell) :matches(html, image, imageReference, inlineCode, linkReference)"(
-				/** @type {Html | Image | ImageReference | InlineCode | LinkReference} */ node,
+			":matches(heading, paragraph, tableCell) :matches(html, image, imageReference, inlineCode, linkReference, inlineMath)"(
+				/** @type {Html | Image | ImageReference | InlineCode | LinkReference | InlineMath} */ node,
 			) {
 				const [startOffset, endOffset] = sourceCode.getRange(node);
 
-				// Mask the content of `html`, `image`, `imageReference`, `inlineCode`, and `linkReference` nodes with whitespaces.
+				// Mask the content of `html`, `image`, `imageReference`, `inlineCode`, `linkReference`, and `inlineMath` nodes with whitespaces.
 				for (let i = startOffset; i < endOffset; i++) {
 					buffer[i - nodeStartOffset] = " ";
 				}
