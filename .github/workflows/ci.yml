@@ -87,10 +87,12 @@ jobs:
               run: npm install
             - name: Check Types
               run: npm run test:types
-            - name: Check Types (TypeScript 5.x)
-              run: npm run test:types:5.x
             - name: Check Types (TypeScript 5.3)
               run: npm run test:types:5.3
+            - name: Check Types (TypeScript 5.x)
+              run: npm run test:types:5.x
+            - name: Check Types (TypeScript 7 preview)
+              run: npm run test:types:7.x
 
     are_the_types_wrong:
         name: Are the types wrong?
