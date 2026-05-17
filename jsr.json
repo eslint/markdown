@@ -1,6 +1,6 @@
 {
   "name": "@eslint/markdown",
-  "version": "8.0.1",
+  "version": "8.0.2",
   "exports": "./dist/index.js",
   "publish": {
     "include": [
