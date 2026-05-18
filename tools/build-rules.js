@@ -53,10 +53,9 @@ ${rules.map((id, index) => `import rule${index} from "../rules/${id}";`).join("\
 
 export default {
     ${rules
-		.map(id => id.slice(0, -3))
 		.map(
 			(id, index) =>
-				`"${id}": /** @type {{meta: typeof rule${index}.meta; create: (context: unknown) => any}} */ (rule${index}),`,
+				`"${id.slice(0, -3)}": /** @type {{meta: typeof rule${index}.meta; create: (context: unknown) => any}} */ (rule${index}),`,
 		)
 		.join("\n    ")}
 };
