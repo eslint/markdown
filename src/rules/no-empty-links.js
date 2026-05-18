@@ -17,8 +17,7 @@
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoEmptyLinksRuleDefinition} */
-export default {
+export default /** @satisfies {NoEmptyLinksRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 
@@ -45,4 +44,4 @@ export default {
 			},
 		};
 	},
-};
+});

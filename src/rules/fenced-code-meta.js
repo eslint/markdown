@@ -18,8 +18,7 @@
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {FencedCodeMetaRuleDefinition} */
-export default {
+export default /** @satisfies {FencedCodeMetaRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 
@@ -99,4 +98,4 @@ export default {
 			},
 		};
 	},
-};
+});

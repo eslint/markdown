@@ -28,8 +28,7 @@ const reversedPattern =
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoReversedMediaSyntaxRuleDefinition} */
-export default {
+export default /** @satisfies {NoReversedMediaSyntaxRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 
@@ -111,4 +110,4 @@ export default {
 			},
 		};
 	},
-};
+});
