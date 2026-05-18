@@ -22,7 +22,7 @@ Examples of **incorrect** code for this rule:
 Goodbye World!
 --------------
 
-#EEE Goodbye World!
+#### Goodbye World!
 ```
 
 ## Options

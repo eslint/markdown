@@ -49,7 +49,10 @@ import type {
 	CustomRuleTypeDefinitions,
 	CustomRuleVisitorWithExit,
 } from "@eslint/plugin-kit";
-import type { MarkdownSourceCode } from "./index.js";
+import type {
+	InlineConfigComment,
+	MarkdownSourceCode,
+} from "./language/markdown-source-code.js";
 
 //------------------------------------------------------------------------------
 // Exports: Processor
@@ -135,6 +138,11 @@ export interface MarkdownLanguageOptions extends LanguageOptions {
  */
 export type MarkdownLanguageContext = LanguageContext<MarkdownLanguageOptions>;
 
+/**
+ * A Markdown syntax element, including nodes and comments.
+ */
+type MarkdownSyntaxElement = Node | InlineConfigComment;
+
 export interface MarkdownRuleVisitor
 	extends
 		RuleVisitor,
@@ -187,7 +195,7 @@ export type MarkdownRuleDefinition<
 		LangOptions: MarkdownLanguageOptions;
 		Code: MarkdownSourceCode;
 		Visitor: MarkdownRuleVisitor;
-		Node: Node;
+		Node: MarkdownSyntaxElement;
 	},
 	Options
 >;

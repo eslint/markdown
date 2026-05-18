@@ -4,7 +4,7 @@ Disallow duplicate headings in the same document.
 
 ## Background
 
-Headings in Markdown documents are often used in a variety ways:
+Headings in Markdown documents are often used in a variety of ways:
 
 1. To generate in-document links
 1. To generate a table of contents

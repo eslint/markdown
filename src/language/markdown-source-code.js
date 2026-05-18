@@ -38,7 +38,7 @@ const htmlComment = /<!--(.*?)-->/gsu;
 /**
  * Represents an inline config comment in the source code.
  */
-class InlineConfigComment {
+export class InlineConfigComment {
 	/**
 	 * The comment text.
 	 * @type {string}

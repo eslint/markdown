@@ -8,7 +8,10 @@
 //------------------------------------------------------------------------------
 
 import assert from "node:assert";
-import { MarkdownSourceCode } from "../../src/language/markdown-source-code.js";
+import {
+	InlineConfigComment,
+	MarkdownSourceCode,
+} from "../../src/language/markdown-source-code.js";
 import { fromMarkdown } from "mdast-util-from-markdown";
 
 //------------------------------------------------------------------------------
@@ -292,6 +295,14 @@ describe("MarkdownSourceCode", () => {
 	});
 
 	describe("getInlineConfigNodes()", () => {
+		it("should return `InlineConfigComment` instances", () => {
+			const inlineConfigNodes = sourceCode.getInlineConfigNodes();
+
+			for (const node of inlineConfigNodes) {
+				assert.ok(node instanceof InlineConfigComment);
+			}
+		});
+
 		it("should return the inline config nodes", () => {
 			const nodes = sourceCode.getInlineConfigNodes();
 			assert.strictEqual(nodes.length, 10);

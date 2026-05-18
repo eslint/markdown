@@ -13,7 +13,7 @@ Markdown allows you to specify a label as a placeholder for a URL in both links 
 
 [ESLint][^eslint]
 
-[^eslint]: Find and fix problmes in your JavaScript code
+[^eslint]: Find and fix problems in your JavaScript code
 ```
 
 Definitions with an empty URL or only an empty fragment (`#`), as well as footnote definitions with no content, are usually mistakes and do not provide useful information.
