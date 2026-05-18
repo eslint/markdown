@@ -31,8 +31,7 @@ const h1TagPattern = /<h1[^>]*>[\s\S]*?<\/h1\s*>/giu;
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoMultipleH1RuleDefinition} */
-export default {
+export default /** @satisfies {NoMultipleH1RuleDefinition} */ ({
 	meta: {
 		type: "problem",
 
@@ -117,4 +116,4 @@ export default {
 			},
 		};
 	},
-};
+});

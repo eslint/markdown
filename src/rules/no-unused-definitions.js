@@ -25,8 +25,7 @@ import { normalizeIdentifier } from "micromark-util-normalize-identifier";
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoUnusedDefinitionsRuleDefinition} */
-export default {
+export default /** @satisfies {NoUnusedDefinitionsRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 
@@ -165,4 +164,4 @@ export default {
 			},
 		};
 	},
-};
+});

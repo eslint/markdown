@@ -66,8 +66,7 @@ function parseHtmlTag(tagText) {
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoBareUrlsRuleDefinition} */
-export default {
+export default /** @satisfies {NoBareUrlsRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 
@@ -177,4 +176,4 @@ export default {
 			},
 		};
 	},
-};
+});
