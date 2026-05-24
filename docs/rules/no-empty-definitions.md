@@ -88,4 +88,5 @@ If you aren't concerned with empty definitions, you can safely disable this rule
 
 ## Prior Art
 
+* [MD042 - no-empty-links](https://github.com/DavidAnson/markdownlint/blob/main/doc/md042.md)
 * [remark-lint-no-empty-url](https://github.com/remarkjs/remark-lint/tree/main/packages/remark-lint-no-empty-url)
