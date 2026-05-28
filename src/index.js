@@ -93,7 +93,7 @@ const plugin = {
 			{
 				name: "markdown/recommended",
 				files: ["**/*.md"],
-				language: "markdown/commonmark",
+				language: "markdown/commonmark", // TODO: `table-column-count` rule cannot be enabled for CommonMark.
 				plugins: (recommendedPlugins = {}),
 				rules: recommendedRules,
 			},

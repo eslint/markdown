@@ -72,6 +72,7 @@ describe("meta", () => {
 	it("should export meta property", () => {
 		assert.deepStrictEqual(plugin.meta, {
 			name: "@eslint/markdown",
+			namespace: "markdown",
 			version: pkg.version,
 		});
 	});
