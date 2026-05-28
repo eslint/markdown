@@ -2396,6 +2396,19 @@ describe("FlatESLint", () => {
 	});
 
 	describe("Languages", () => {
+		/*
+		Object.keys(plugin.configs).forEach(configName => {
+			it(`Using "${configName}" config should not throw`, async () => {
+				const eslint = new ESLint({
+					overrideConfigFile: true,
+					overrideConfig: plugin.configs[configName],
+				});
+
+				await eslint.lintText("Foo Bar Baz", { filePath: "test.md" });
+			});
+		});
+        */ // TODO
+
 		it("rules should work when the plugin is registered under a custom namespace", async () => {
 			for (const language of ["commonmark", "gfm"]) {
 				const eslint = new ESLint({
