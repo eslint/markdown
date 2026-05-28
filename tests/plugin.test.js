@@ -2394,4 +2394,39 @@ describe("FlatESLint", () => {
 			assert.strictEqual(results[0].messages.length, 0);
 		});
 	});
+
+	describe("Languages", () => {
+		it("rules should work when the plugin is registered under a custom namespace", async () => {
+			for (const language of ["commonmark", "gfm"]) {
+				const eslint = new ESLint({
+					overrideConfigFile: true,
+					overrideConfig: {
+						files: ["**/*.md"],
+						plugins: {
+							eslintmarkdown: plugin,
+						},
+						language: `eslintmarkdown/${language}`,
+						rules: {
+							"eslintmarkdown/no-empty-images": "error",
+						},
+					},
+				});
+
+				const results = await eslint.lintText("![alt]()", {
+					filePath: "test.md",
+				});
+
+				assert.strictEqual(results.length, 1);
+				assert.strictEqual(results[0].messages.length, 1);
+				assert.strictEqual(
+					results[0].messages[0].ruleId,
+					"eslintmarkdown/no-empty-images",
+				);
+				assert.strictEqual(
+					results[0].messages[0].messageId,
+					"emptyImage",
+				);
+			}
+		});
+	});
 });
