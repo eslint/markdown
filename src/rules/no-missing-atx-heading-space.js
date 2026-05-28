@@ -31,11 +31,13 @@ const trailingAtxHeadingHashPattern =
 export default {
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			recommended: true,
 			description:
 				"Disallow headings without a space after the hash characters",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-missing-atx-heading-space.md",
 		},
 

@@ -37,6 +37,14 @@ describe("Package exports", () => {
 		]);
 	});
 
+	it("has meta information with name, namespace, and version", () => {
+		assert.deepStrictEqual(Object.keys(exports.default.meta), [
+			"name",
+			"namespace",
+			"version",
+		]);
+	});
+
 	it("has all available rules exported in the ESLint plugin", async () => {
 		const allRules = (await fs.readdir(rulesDir))
 			.filter(name => name.endsWith(".js"))

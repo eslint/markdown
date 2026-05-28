@@ -44,10 +44,12 @@ function isOnlyComments(value) {
 export default {
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			recommended: true,
 			description: "Disallow empty definitions",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-empty-definitions.md",
 		},
 

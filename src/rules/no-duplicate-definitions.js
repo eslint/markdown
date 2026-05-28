@@ -29,10 +29,12 @@ import { normalizeIdentifier } from "micromark-util-normalize-identifier";
 export default {
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			recommended: true,
 			description: "Disallow duplicate definitions",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-duplicate-definitions.md",
 		},
 

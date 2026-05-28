@@ -35,10 +35,12 @@ const h1TagPattern = /<h1[^>]*>[\s\S]*?<\/h1\s*>/giu;
 export default {
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			recommended: true,
 			description: "Disallow multiple H1 headings in the same document",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-multiple-h1.md",
 		},
 

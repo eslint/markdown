@@ -93,6 +93,7 @@ const invalidBlock: Block = {
 
 markdown satisfies Plugin;
 markdown.meta.name satisfies string;
+markdown.meta.namespace satisfies string;
 markdown.meta.version satisfies string;
 
 // Check that the processor is defined:

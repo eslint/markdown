@@ -22,9 +22,11 @@
 export default {
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			description: "Disallow duplicate headings in the same document",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-duplicate-headings.md",
 		},
 

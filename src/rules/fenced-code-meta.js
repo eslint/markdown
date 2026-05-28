@@ -22,10 +22,12 @@
 export default {
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			recommended: false,
 			description: "Require or disallow metadata for fenced code blocks",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/fenced-code-meta.md",
 		},
 

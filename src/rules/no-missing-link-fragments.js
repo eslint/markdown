@@ -43,11 +43,13 @@ const htmlTagPattern =
 export default {
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			recommended: true,
 			description:
 				"Disallow link fragments that do not reference valid headings",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-missing-link-fragments.md",
 		},
 
