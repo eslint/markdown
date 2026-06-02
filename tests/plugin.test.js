@@ -1569,6 +1569,73 @@ describe("FlatESLint", () => {
 				);
 				assert.strictEqual(results[0].messages[0].line, 5);
 			});
+
+			describe("unused disable directives", () => {
+				let unusedDisableESLint;
+
+				beforeEach(() => {
+					unusedDisableESLint = initFlatESLint("eslint.config.js", {
+						overrideConfig: {
+							linterOptions: {
+								reportUnusedDisableDirectives: "error",
+							},
+						},
+					});
+				});
+
+				it("reports unused disable directives", async () => {
+					const code = [
+						"<!-- eslint-disable no-console -->",
+						"",
+						"```js",
+						"const answer = 42;",
+						"```",
+					].join("\n");
+
+					const results = await unusedDisableESLint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results.length, 1);
+					assert.strictEqual(results[0].messages.length, 1);
+					assert.strictEqual(
+						results[0].messages[0].message,
+						"Unused eslint-disable directive (no problems were reported from 'no-console').",
+					);
+					assert.strictEqual(results[0].messages[0].line, 1);
+					assert.strictEqual(results[0].messages[0].column, 1);
+					assert.deepStrictEqual(results[0].messages[0].fix, {
+						range: [0, 34],
+						text: " ",
+					});
+				});
+
+				it("reports unused disable directives correctly among multiple comments", async () => {
+					const code = [
+						"# Title",
+						"",
+						"<!-- eslint-disable quotes -->",
+						"<!-- eslint-disable no-console -->",
+						"",
+						"```js",
+						"const message = 'single quotes';",
+						"```",
+					].join("\n");
+
+					const results = await unusedDisableESLint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results.length, 1);
+					assert.strictEqual(results[0].messages.length, 1);
+					assert.strictEqual(
+						results[0].messages[0].message,
+						"Unused eslint-disable directive (no problems were reported from 'no-console').",
+					);
+					assert.strictEqual(results[0].messages[0].line, 4);
+					assert.strictEqual(results[0].messages[0].column, 1);
+				});
+			});
 		});
 
 		describe("should fix code", () => {
