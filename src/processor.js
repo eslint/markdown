@@ -255,43 +255,36 @@ function isUnusedDirectiveMessage(message) {
 }
 
 /**
- * Finds the inserted comment that contains the given generated line.
- * @param {Block} block The code block to search.
- * @param {number} line The generated JS line number.
- * @returns {Comment | undefined} The matching inserted comment location.
- */
-function findCommentLocation(block, line) {
-	let currentJsLine = 1;
-	let foundComment;
-
-	for (const comment of block.comments) {
-		const commentLines = comment.text.split("\n").length;
-
-		if (line >= currentJsLine && line < currentJsLine + commentLines) {
-			foundComment = comment;
-			break;
-		}
-
-		currentJsLine += commentLines;
-	}
-
-	return foundComment;
-}
-
-/**
  * Adjusts an unused directive message in an inserted JS comment.
  * @param {Block} block The code block containing the inserted comment.
  * @param {Message} message The message to adjust.
  * @returns {Message} The adjusted message, if it can be mapped.
  */
 function adjustCommentMessage(block, message) {
-	const comment = findCommentLocation(block, message.line);
+	let currentLine = 1;
+	let jsOffset = 0;
+	let foundComment;
 
-	if (!comment) {
+	for (const comment of block.comments) {
+		const commentLines = comment.text.split("\n").length;
+
+		if (
+			message.line >= currentLine &&
+			message.line < currentLine + commentLines
+		) {
+			foundComment = comment;
+			break;
+		}
+
+		currentLine += commentLines;
+		jsOffset += comment.text.length + 1;
+	}
+
+	if (!foundComment) {
 		return message;
 	}
 
-	const { start, end } = comment.position;
+	const { start, end } = foundComment.position;
 	const { fix, ...messageWithoutFix } = message;
 
 	const adjustedMessage = /** @type {Message} */ ({
@@ -301,10 +294,23 @@ function adjustCommentMessage(block, message) {
 	});
 
 	if (fix) {
-		adjustedMessage.fix = {
-			range: [start.offset, end.offset],
-			text: fix.text,
-		};
+		const isFullRemoval =
+			fix.range[0] <= jsOffset &&
+			fix.range[1] >= jsOffset + foundComment.text.length;
+
+		if (isFullRemoval) {
+			adjustedMessage.fix = {
+				range: [start.offset, end.offset],
+				text: fix.text,
+			};
+		} else {
+			const offsetDelta = start.offset + 4 - (jsOffset + 2);
+
+			adjustedMessage.fix = {
+				range: [fix.range[0] + offsetDelta, fix.range[1] + offsetDelta],
+				text: fix.text,
+			};
+		}
 	}
 
 	return adjustedMessage;
