@@ -304,6 +304,7 @@ function adjustCommentMessage(block, message) {
 				text: fix.text,
 			};
 		} else {
+			// '4' is the length of '<!--' and '2' is the length of '/*'.
 			const offsetDelta = start.offset + 4 - (jsOffset + 2);
 
 			adjustedMessage.fix = {
