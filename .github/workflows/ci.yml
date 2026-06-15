@@ -91,7 +91,7 @@ jobs:
                   node-version: "lts/*"
             - name: Install dependencies
               run: npm install
-            - name: Install ESLint@${{ matrix.eslint }}
+            - name: Install ESLint v${{ matrix.eslint }}
               run: npm install -D eslint@${{ matrix.eslint }} @eslint/js@${{ matrix.eslint }}
             - name: Check Types
               run: npm run test:types
