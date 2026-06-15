@@ -18,8 +18,7 @@
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoDuplicateHeadingsRuleDefinition} */
-export default {
+export default /** @satisfies {NoDuplicateHeadingsRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 
@@ -118,4 +117,4 @@ export default {
 			},
 		};
 	},
-};
+});

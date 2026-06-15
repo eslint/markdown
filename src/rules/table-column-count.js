@@ -18,8 +18,7 @@
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {TableColumnCountRuleDefinition} */
-export default {
+export default /** @satisfies {TableColumnCountRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 
@@ -110,4 +109,4 @@ export default {
 			},
 		};
 	},
-};
+});

@@ -27,8 +27,7 @@ const trailingAtxHeadingHashPattern =
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoMissingAtxHeadingSpaceRuleDefinition} */
-export default {
+export default /** @satisfies {NoMissingAtxHeadingSpaceRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 
@@ -135,4 +134,4 @@ export default {
 			},
 		};
 	},
-};
+});

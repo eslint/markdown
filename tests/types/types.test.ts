@@ -10,7 +10,7 @@ import type {
 	Block,
 } from "@eslint/markdown";
 import type { Plugin, SourceLocation, SourceRange } from "@eslint/core";
-import type { Linter } from "eslint";
+import type { ESLint, Linter } from "eslint";
 import type { Position } from "unist";
 import type {
 	// Nodes (abstract)
@@ -92,6 +92,9 @@ const invalidBlock: Block = {
 };
 
 markdown satisfies Plugin;
+// This type check verifies that the plugin is compatible with ESLint v9.39.0, v9.x, and v10.x.
+// See: https://github.com/eslint/markdown/pull/648
+markdown satisfies ESLint.Plugin;
 markdown.meta.name satisfies string;
 markdown.meta.version satisfies string;
 
@@ -101,6 +104,9 @@ markdown.processors.markdown satisfies object;
 // Check that these languages are defined:
 markdown.languages.commonmark satisfies object;
 markdown.languages.gfm satisfies object;
+
+declare const ruleName: keyof typeof markdown.rules;
+markdown.rules[ruleName] satisfies MarkdownRuleDefinition;
 
 markdown.configs["recommended-legacy"] satisfies Linter.LegacyConfig;
 markdown.configs.recommended satisfies Linter.Config[];
