@@ -95,8 +95,7 @@ function findMissingReferences(node, sourceCode) {
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoMissingLabelRefsRuleDefinition} */
-export default {
+export default /** @satisfies {NoMissingLabelRefsRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 
@@ -179,4 +178,4 @@ export default {
 			},
 		};
 	},
-};
+});
