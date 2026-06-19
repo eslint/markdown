@@ -96,6 +96,7 @@ markdown satisfies Plugin;
 // See: https://github.com/eslint/markdown/pull/648
 markdown satisfies ESLint.Plugin;
 markdown.meta.name satisfies string;
+markdown.meta.namespace satisfies string;
 markdown.meta.version satisfies string;
 
 // Check that the processor is defined:

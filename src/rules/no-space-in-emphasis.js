@@ -40,10 +40,12 @@ function createMarkerPattern(checkStrikethrough) {
 export default /** @satisfies {NoSpaceInEmphasisRuleDefinition} */ ({
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			recommended: true,
 			description: "Disallow spaces around emphasis markers",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-space-in-emphasis.md",
 		},
 

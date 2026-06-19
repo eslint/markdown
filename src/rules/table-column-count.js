@@ -21,11 +21,13 @@
 export default /** @satisfies {TableColumnCountRuleDefinition} */ ({
 	meta: {
 		type: "problem",
+		languages: ["markdown/gfm"],
 
 		docs: {
 			recommended: true,
 			description:
 				"Disallow data rows in a GitHub Flavored Markdown table from having more cells than the header row",
+			dialects: ["GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/table-column-count.md",
 		},
 

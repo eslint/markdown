@@ -69,9 +69,11 @@ function parseHtmlTag(tagText) {
 export default /** @satisfies {NoBareUrlsRuleDefinition} */ ({
 	meta: {
 		type: "problem",
+		languages: ["markdown/gfm"],
 
 		docs: {
 			description: "Disallow bare URLs",
+			dialects: ["GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-bare-urls.md",
 		},
 
