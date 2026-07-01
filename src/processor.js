@@ -471,7 +471,7 @@ function postprocess(messages, filename) {
 export const processor = {
 	meta: {
 		name: "@eslint/markdown/markdown",
-		version: "8.0.2", // x-release-please-version
+		version: "8.0.3", // x-release-please-version
 	},
 	preprocess,
 	postprocess,
