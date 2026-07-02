@@ -8,6 +8,7 @@ import type {
 	Json,
 	RangeMap,
 	Block,
+	Comment,
 } from "@eslint/markdown";
 import type { Plugin, SourceLocation, SourceRange } from "@eslint/core";
 import type { ESLint, Linter } from "eslint";
@@ -58,7 +59,15 @@ const validBlock: Block = {
 
 	// `BlockBase` properties
 	baseIndentText: "  ",
-	comments: ["// A comment"],
+	comments: [
+		{
+			text: "eslint-disable",
+			position: {
+				start: { line: 1, column: 1, offset: 0 },
+				end: { line: 1, column: 15, offset: 14 },
+			},
+		},
+	],
 	rangeMap: [{ indent: 2, js: 0, md: 4 }],
 };
 
@@ -72,7 +81,9 @@ validBlock.data satisfies CodeData | undefined;
 
 // Verify `Block` has `BlockBase` properties
 validBlock.baseIndentText satisfies string;
-validBlock.comments satisfies string[];
+validBlock.comments satisfies Comment[];
+validBlock.comments[0].text satisfies string;
+validBlock.comments[0].position satisfies Position;
 validBlock.rangeMap satisfies RangeMap[];
 
 // Verify `RangeMap` structure

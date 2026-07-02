@@ -454,6 +454,277 @@ describe("LegacyESLint", () => {
 				);
 				assert.strictEqual(results[0].messages[0].line, 5);
 			});
+
+			describe("unused disable directives", () => {
+				let unusedDisableESLint;
+
+				beforeEach(() => {
+					unusedDisableESLint = initLegacyESLint("eslintrc.json", {
+						reportUnusedDisableDirectives: "error",
+					});
+				});
+
+				it("reports unused disable directives", async () => {
+					const code = [
+						"<!-- eslint-disable no-console -->",
+						"",
+						"```js",
+						"var answer = 42;",
+						"```",
+					].join("\n");
+
+					const results = await unusedDisableESLint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results.length, 1);
+					assert.strictEqual(results[0].messages.length, 1);
+					assert.strictEqual(
+						results[0].messages[0].message,
+						"Unused eslint-disable directive (no problems were reported from 'no-console').",
+					);
+					assert.strictEqual(results[0].messages[0].line, 1);
+					assert.strictEqual(results[0].messages[0].column, 1);
+					assert.deepStrictEqual(results[0].messages[0].fix, {
+						range: [0, 34],
+						text: " ",
+					});
+				});
+
+				it("reports unused disable directives correctly among multiple comments", async () => {
+					const code = [
+						"# Title",
+						"",
+						"<!-- eslint-disable quotes -->",
+						"<!-- eslint-disable no-console -->",
+						"",
+						"```js",
+						"var message = 'single quotes';",
+						"```",
+					].join("\n");
+
+					const results = await unusedDisableESLint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results.length, 1);
+					assert.strictEqual(results[0].messages.length, 1);
+					assert.strictEqual(
+						results[0].messages[0].message,
+						"Unused eslint-disable directive (no problems were reported from 'no-console').",
+					);
+					assert.strictEqual(results[0].messages[0].line, 4);
+					assert.strictEqual(results[0].messages[0].column, 1);
+				});
+
+				it("reports unused disable-next-line directives", async () => {
+					const code = [
+						"<!-- eslint-disable-next-line no-console -->",
+						"",
+						"```js",
+						"var answer = 42;",
+						"```",
+					].join("\n");
+
+					const results = await unusedDisableESLint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results.length, 1);
+					assert.strictEqual(results[0].messages.length, 1);
+					assert.strictEqual(
+						results[0].messages[0].message,
+						"Unused eslint-disable directive (no problems were reported from 'no-console').",
+					);
+					assert.strictEqual(results[0].messages[0].line, 1);
+					assert.strictEqual(results[0].messages[0].column, 1);
+				});
+
+				it("reports unused disable directives when paired with eslint-enable", async () => {
+					const code = [
+						"<!-- eslint-disable no-console -->",
+						"<!-- eslint-enable no-console -->",
+						"",
+						"```js",
+						"var answer = 42;",
+						"```",
+					].join("\n");
+
+					const results = await unusedDisableESLint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results.length, 1);
+					assert.strictEqual(results[0].messages.length, 1);
+					assert.strictEqual(
+						results[0].messages[0].message,
+						"Unused eslint-disable directive (no problems were reported from 'no-console').",
+					);
+					assert.strictEqual(results[0].messages[0].line, 1);
+					assert.strictEqual(results[0].messages[0].column, 1);
+				});
+
+				it("reports unused disable directives spanning multiple lines", async () => {
+					const code = [
+						"<!--",
+						"eslint-disable",
+						"no-console",
+						"-->",
+						"",
+						"```js",
+						"var answer = 42;",
+						"```",
+					].join("\n");
+
+					const results = await unusedDisableESLint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results.length, 1);
+					assert.strictEqual(results[0].messages.length, 1);
+					assert.strictEqual(
+						results[0].messages[0].message,
+						"Unused eslint-disable directive (no problems were reported from 'no-console').",
+					);
+					assert.strictEqual(results[0].messages[0].line, 1);
+					assert.strictEqual(results[0].messages[0].column, 1);
+				});
+			});
+
+			describe("autofixing unused disable directives", () => {
+				let fixUnusedEslint;
+
+				beforeEach(() => {
+					fixUnusedEslint = initLegacyESLint("eslintrc.json", {
+						fix: true,
+						reportUnusedDisableDirectives: "error",
+					});
+				});
+
+				it("removes the entire HTML comment when all rules are unused", async () => {
+					const code = [
+						"<!-- eslint-disable no-console -->",
+						"",
+						"```js",
+						"var answer = 42;",
+						"```",
+					].join("\n");
+
+					const expected = [
+						" ",
+						"",
+						"```js",
+						"var answer = 42;",
+						"```",
+					].join("\n");
+
+					const results = await fixUnusedEslint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results[0].output, expected);
+				});
+
+				it("partially removes unused rules from the end of an HTML comment", async () => {
+					const code = [
+						"<!-- eslint-disable no-undef, no-console -->",
+						"",
+						"```js",
+						"var answer = missingVariable;",
+						"```",
+					].join("\n");
+
+					const expected = [
+						"<!-- eslint-disable no-undef -->",
+						"",
+						"```js",
+						"var answer = missingVariable;",
+						"```",
+					].join("\n");
+
+					const results = await fixUnusedEslint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results[0].output, expected);
+				});
+
+				it("partially removes unused rules from the beginning of an HTML comment", async () => {
+					const code = [
+						"<!-- eslint-disable no-console, no-undef -->",
+						"",
+						"```js",
+						"var answer = missingVariable;",
+						"```",
+					].join("\n");
+
+					const expected = [
+						"<!-- eslint-disable no-undef -->",
+						"",
+						"```js",
+						"var answer = missingVariable;",
+						"```",
+					].join("\n");
+
+					const results = await fixUnusedEslint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results[0].output, expected);
+				});
+
+				it("partially removes unused rules from the middle of an HTML comment", async () => {
+					const code = [
+						"<!-- eslint-disable no-console, no-alert, no-undef -->",
+						"",
+						"```js",
+						"console.log(missingVariable);",
+						"```",
+					].join("\n");
+
+					const expected = [
+						"<!-- eslint-disable no-console, no-undef -->",
+						"",
+						"```js",
+						"console.log(missingVariable);",
+						"```",
+					].join("\n");
+
+					const results = await fixUnusedEslint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results[0].output, expected);
+				});
+
+				it("removes unused rules from a multiline HTML comment", async () => {
+					const code = [
+						"<!--",
+						"eslint-disable no-console, no-alert, no-undef",
+						"-->",
+						"",
+						"```js",
+						"console.log(missingVariable);",
+						"```",
+					].join("\n");
+
+					const expected = [
+						"<!--",
+						"eslint-disable no-console, no-undef",
+						"-->",
+						"",
+						"```js",
+						"console.log(missingVariable);",
+						"```",
+					].join("\n");
+
+					const results = await fixUnusedEslint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results[0].output, expected);
+				});
+			});
 		});
 
 		describe("should fix code", () => {
@@ -1568,6 +1839,285 @@ describe("FlatESLint", () => {
 					'Unexpected newline before "use strict" directive.',
 				);
 				assert.strictEqual(results[0].messages[0].line, 5);
+			});
+
+			describe("unused disable directives", () => {
+				let unusedDisableESLint;
+
+				beforeEach(() => {
+					unusedDisableESLint = initFlatESLint("eslint.config.js", {
+						overrideConfig: {
+							linterOptions: {
+								reportUnusedDisableDirectives: "error",
+							},
+						},
+					});
+				});
+
+				it("reports unused disable directives", async () => {
+					const code = [
+						"<!-- eslint-disable no-console -->",
+						"",
+						"```js",
+						"const answer = 42;",
+						"```",
+					].join("\n");
+
+					const results = await unusedDisableESLint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results.length, 1);
+					assert.strictEqual(results[0].messages.length, 1);
+					assert.strictEqual(
+						results[0].messages[0].message,
+						"Unused eslint-disable directive (no problems were reported from 'no-console').",
+					);
+					assert.strictEqual(results[0].messages[0].line, 1);
+					assert.strictEqual(results[0].messages[0].column, 1);
+					assert.deepStrictEqual(results[0].messages[0].fix, {
+						range: [0, 34],
+						text: " ",
+					});
+				});
+
+				it("reports unused disable directives correctly among multiple comments", async () => {
+					const code = [
+						"# Title",
+						"",
+						"<!-- eslint-disable quotes -->",
+						"<!-- eslint-disable no-console -->",
+						"",
+						"```js",
+						"const message = 'single quotes';",
+						"```",
+					].join("\n");
+
+					const results = await unusedDisableESLint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results.length, 1);
+					assert.strictEqual(results[0].messages.length, 1);
+					assert.strictEqual(
+						results[0].messages[0].message,
+						"Unused eslint-disable directive (no problems were reported from 'no-console').",
+					);
+					assert.strictEqual(results[0].messages[0].line, 4);
+					assert.strictEqual(results[0].messages[0].column, 1);
+				});
+
+				it("reports unused disable-next-line directives", async () => {
+					const code = [
+						"<!-- eslint-disable-next-line no-console -->",
+						"",
+						"```js",
+						"const answer = 42;",
+						"```",
+					].join("\n");
+
+					const results = await unusedDisableESLint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results.length, 1);
+					assert.strictEqual(results[0].messages.length, 1);
+					assert.strictEqual(
+						results[0].messages[0].message,
+						"Unused eslint-disable directive (no problems were reported from 'no-console').",
+					);
+					assert.strictEqual(results[0].messages[0].line, 1);
+					assert.strictEqual(results[0].messages[0].column, 1);
+				});
+
+				it("reports unused disable directives when paired with eslint-enable", async () => {
+					const code = [
+						"<!-- eslint-disable no-console -->",
+						"<!-- eslint-enable no-console -->",
+						"",
+						"```js",
+						"const answer = 42;",
+						"```",
+					].join("\n");
+
+					const results = await unusedDisableESLint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results.length, 1);
+					assert.strictEqual(results[0].messages.length, 1);
+					assert.strictEqual(
+						results[0].messages[0].message,
+						"Unused eslint-disable directive (no problems were reported from 'no-console').",
+					);
+					assert.strictEqual(results[0].messages[0].line, 1);
+					assert.strictEqual(results[0].messages[0].column, 1);
+				});
+
+				it("reports unused disable directives spanning multiple lines", async () => {
+					const code = [
+						"<!--",
+						"eslint-disable",
+						"no-console",
+						"-->",
+						"",
+						"```js",
+						"const answer = 42;",
+						"```",
+					].join("\n");
+
+					const results = await unusedDisableESLint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results.length, 1);
+					assert.strictEqual(results[0].messages.length, 1);
+					assert.strictEqual(
+						results[0].messages[0].message,
+						"Unused eslint-disable directive (no problems were reported from 'no-console').",
+					);
+					assert.strictEqual(results[0].messages[0].line, 1);
+					assert.strictEqual(results[0].messages[0].column, 1);
+				});
+			});
+
+			describe("autofixing unused disable directives", () => {
+				let fixUnusedEslint;
+
+				beforeEach(() => {
+					fixUnusedEslint = initFlatESLint("eslint.config.js", {
+						fix: true,
+						overrideConfig: {
+							linterOptions: {
+								reportUnusedDisableDirectives: "error",
+							},
+						},
+					});
+				});
+
+				it("removes the entire HTML comment when all rules are unused", async () => {
+					const code = [
+						"<!-- eslint-disable no-console -->",
+						"",
+						"```js",
+						"const answer = 42;",
+						"```",
+					].join("\n");
+
+					const expected = [
+						" ",
+						"",
+						"```js",
+						"const answer = 42;",
+						"```",
+					].join("\n");
+
+					const results = await fixUnusedEslint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results[0].output, expected);
+				});
+
+				it("partially removes unused rules from the end of an HTML comment", async () => {
+					const code = [
+						"<!-- eslint-disable no-undef, no-console -->",
+						"",
+						"```js",
+						"const answer = missingVariable;",
+						"```",
+					].join("\n");
+
+					const expected = [
+						"<!-- eslint-disable no-undef -->",
+						"",
+						"```js",
+						"const answer = missingVariable;",
+						"```",
+					].join("\n");
+
+					const results = await fixUnusedEslint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results[0].output, expected);
+				});
+
+				it("partially removes unused rules from the beginning of an HTML comment", async () => {
+					const code = [
+						"<!-- eslint-disable no-console, no-undef -->",
+						"",
+						"```js",
+						"const answer = missingVariable;",
+						"```",
+					].join("\n");
+
+					const expected = [
+						"<!-- eslint-disable no-undef -->",
+						"",
+						"```js",
+						"const answer = missingVariable;",
+						"```",
+					].join("\n");
+
+					const results = await fixUnusedEslint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results[0].output, expected);
+				});
+
+				it("partially removes unused rules from the middle of an HTML comment", async () => {
+					const code = [
+						"<!-- eslint-disable no-console, no-alert, no-undef -->",
+						"",
+						"```js",
+						"console.log(missingVariable);",
+						"```",
+					].join("\n");
+
+					const expected = [
+						"<!-- eslint-disable no-console, no-undef -->",
+						"",
+						"```js",
+						"console.log(missingVariable);",
+						"```",
+					].join("\n");
+
+					const results = await fixUnusedEslint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results[0].output, expected);
+				});
+
+				it("removes unused rules from a multiline HTML comment", async () => {
+					const code = [
+						"<!--",
+						"eslint-disable no-console, no-alert, no-undef",
+						"-->",
+						"",
+						"```js",
+						"console.log(missingVariable);",
+						"```",
+					].join("\n");
+
+					const expected = [
+						"<!--",
+						"eslint-disable no-console, no-undef",
+						"-->",
+						"",
+						"```js",
+						"console.log(missingVariable);",
+						"```",
+					].join("\n");
+
+					const results = await fixUnusedEslint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results[0].output, expected);
+				});
 			});
 		});
 

@@ -16,7 +16,7 @@ import { fromMarkdown } from "mdast-util-from-markdown";
 /**
  * @import { LintMessage, RuleTextEdit, SourceRange } from "@eslint/core";
  * @import { Node, Parent, Code, Html } from "mdast";
- * @import { Block, RangeMap } from "./types.js";
+ * @import { Block, Comment, RangeMap } from "./types.js";
  */
 
 //-----------------------------------------------------------------------------
@@ -30,6 +30,8 @@ const UNSATISFIABLE_RULES = new Set([
 const SUPPORTS_AUTOFIX = true;
 
 const BOM = "\uFEFF";
+const unusedDirectiveMessagePattern =
+	/^Unused eslint-(?:disable|enable) directive/u;
 
 /**
  * @type {Map<string, Block[]>}
@@ -138,7 +140,7 @@ function getIndentText(text, node) {
  * delta at the beginning of each line.
  * @param {string} text The text of the file.
  * @param {Code} node A Markdown code block AST node.
- * @param {string[]} comments List of configuration comment strings that will be
+ * @param {Comment[]} comments List of configuration comment objects that will be
  *     inserted at the beginning of the code block.
  * @returns {RangeMap[]} A list of offset-based adjustments, where lookups are
  *     done based on the `js` key, which represents the range in the linted JS,
@@ -176,7 +178,7 @@ function getBlockRangeMap(text, node, comments) {
 	 * of the linted JS and start the JS offset lookup keys at this index.
 	 */
 	const commentLength = comments.reduce(
-		(len, comment) => len + comment.length + 1,
+		(len, comment) => len + comment.text.length + 1,
 		0,
 	);
 
@@ -237,6 +239,81 @@ function getBlockRangeMap(text, node, comments) {
 	return rangeMap;
 }
 
+/**
+ * Determines whether a message reports an unused directive.
+ * @param {LintMessage} message The message to check.
+ * @returns {boolean} True if the message reports an unused directive.
+ */
+function isUnusedDirectiveMessage(message) {
+	return (
+		message.ruleId === null &&
+		unusedDirectiveMessagePattern.test(message.message)
+	);
+}
+
+/**
+ * Adjusts an unused directive message in an inserted JS comment.
+ * @param {Block} block The code block containing the inserted comment.
+ * @param {LintMessage} message The message to adjust.
+ * @returns {LintMessage} The adjusted message, if it can be mapped.
+ */
+function adjustCommentMessage(block, message) {
+	let currentLine = 1;
+	let jsOffset = 0;
+	let foundComment;
+
+	for (const comment of block.comments) {
+		const commentLines = comment.text.split("\n").length;
+
+		if (
+			message.line >= currentLine &&
+			message.line < currentLine + commentLines
+		) {
+			foundComment = comment;
+			break;
+		}
+
+		currentLine += commentLines;
+		jsOffset += comment.text.length + 1;
+	}
+
+	if (!foundComment) {
+		return message;
+	}
+
+	const { start, end } = foundComment.position;
+	const { fix, ...messageWithoutFix } = message;
+
+	const adjustedMessage = /** @type {LintMessage} */ ({
+		...messageWithoutFix,
+		line: start.line,
+		column: start.column,
+	});
+
+	if (fix) {
+		const isFullRemoval =
+			fix.range[0] <= jsOffset &&
+			fix.range[1] >= jsOffset + foundComment.text.length;
+
+		if (isFullRemoval) {
+			adjustedMessage.fix = {
+				range: [start.offset, end.offset],
+				text: fix.text,
+			};
+		} else {
+			// '4' is the length of '<!--' and '2' is the length of '/*'.
+			const offsetDelta = start.offset + 4 - (jsOffset + 2);
+
+			adjustedMessage.fix = {
+				range: [fix.range[0] + offsetDelta, fix.range[1] + offsetDelta],
+				text: fix.text,
+			};
+		}
+	}
+
+	return adjustedMessage;
+}
+
 const codeBlockFileNameRegex = /filename=(?<quote>["'])(?<filename>.*?)\1/u;
 
 /**
@@ -278,7 +355,7 @@ function preprocess(sourceText, filename) {
 	 * block immediately follows such a sequence, insert the comments at the
 	 * top of the code block. Any non-ESLint comment or other node type breaks
 	 * and empties the sequence.
-	 * @type {string[]}
+	 * @type {Comment[]}
 	 */
 	let htmlComments = [];
 
@@ -294,16 +371,19 @@ function preprocess(sourceText, filename) {
 		 */
 		code(node) {
 			if (node.lang) {
-				/** @type {string[]} */
+				/** @type {Comment[]} */
 				const comments = [];
 
 				for (const comment of htmlComments) {
-					if (comment.trim() === "eslint-skip") {
+					if (comment.text.trim() === "eslint-skip") {
 						htmlComments = [];
 						return;
 					}
 
-					comments.push(`/*${comment}*/`);
+					comments.push({
+						text: `/*${comment.text}*/`,
+						position: comment.position,
+					});
 				}
 
 				htmlComments = [];
@@ -326,7 +406,7 @@ function preprocess(sourceText, filename) {
 			const comment = getComment(node.value);
 
 			if (comment) {
-				htmlComments.push(comment);
+				htmlComments.push({ text: comment, position: node.position });
 			} else {
 				htmlComments = [];
 			}
@@ -345,7 +425,9 @@ function preprocess(sourceText, filename) {
 
 		return {
 			filename: fileNameFromMeta(block) ?? `${index}.${fileExtension}`,
-			text: [...block.comments, block.value, ""].join("\n"),
+			text: [...block.comments.map(c => c.text), block.value, ""].join(
+				"\n",
+			),
 		};
 	});
 }
@@ -387,7 +469,7 @@ function adjustFix(block, fix) {
  */
 function adjustBlock(block) {
 	const leadingCommentLines = block.comments.reduce(
-		(count, comment) => count + comment.split("\n").length,
+		(count, comment) => count + comment.text.split("\n").length,
 		0,
 	);
 
@@ -410,7 +492,9 @@ function adjustBlock(block) {
 		const lineInCode = message.line - leadingCommentLines;
 
 		if (lineInCode < 1 || lineInCode >= block.rangeMap.length) {
-			return null;
+			return isUnusedDirectiveMessage(message)
+				? adjustCommentMessage(block, message)
+				: null;
 		}
 
 		/** @type {Pick<LintMessage, "line" | "column" | "endLine" | "suggestions">} */
