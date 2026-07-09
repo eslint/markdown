@@ -37,8 +37,7 @@ function createMarkerPattern(checkStrikethrough) {
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoSpaceInEmphasisRuleDefinition} */
-export default {
+export default /** @satisfies {NoSpaceInEmphasisRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 		languages: ["markdown/commonmark", "markdown/gfm"],
@@ -174,4 +173,4 @@ export default {
 			},
 		};
 	},
-};
+});

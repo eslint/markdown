@@ -18,8 +18,7 @@
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoEmptyImagesRuleDefinition} */
-export default {
+export default /** @satisfies {NoEmptyImagesRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 		languages: ["markdown/commonmark", "markdown/gfm"],
@@ -48,4 +47,4 @@ export default {
 			},
 		};
 	},
-};
+});

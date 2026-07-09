@@ -24,8 +24,7 @@ const fencedCodeCharacters = new Set(["`", "~"]);
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {FencedCodeLanguageRuleDefinition} */
-export default {
+export default /** @satisfies {FencedCodeLanguageRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 		languages: ["markdown/commonmark", "markdown/gfm"],
@@ -137,4 +136,4 @@ export default {
 			},
 		};
 	},
-};
+});

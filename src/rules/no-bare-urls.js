@@ -66,8 +66,7 @@ function parseHtmlTag(tagText) {
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoBareUrlsRuleDefinition} */
-export default {
+export default /** @satisfies {NoBareUrlsRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 		languages: ["markdown/gfm"],
@@ -179,4 +178,4 @@ export default {
 			},
 		};
 	},
-};
+});

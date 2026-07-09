@@ -40,8 +40,7 @@ function getHtmlAttributeRe(name) {
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {RequireAltTextRuleDefinition} */
-export default {
+export default /** @satisfies {RequireAltTextRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 		languages: ["markdown/commonmark", "markdown/gfm"],
@@ -115,4 +114,4 @@ export default {
 			},
 		};
 	},
-};
+});

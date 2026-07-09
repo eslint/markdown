@@ -150,39 +150,38 @@ export interface MarkdownRuleVisitor
 			{
 				root?(node: Root): void;
 			} & {
-				[NodeType in
-					| Blockquote // Nodes
-					| Break
-					| Code
-					| Definition
-					| Emphasis
-					| Heading
-					| Html
-					| Image
-					| ImageReference
-					| InlineCode
-					| Link
-					| LinkReference
-					| List
-					| ListItem
-					| Paragraph
-					| Strong
-					| Text
-					| ThematicBreak
-					| Delete // Extensions (GFM)
-					| FootnoteDefinition
-					| FootnoteReference
-					| Table
-					| TableCell
-					| TableRow
-					| Yaml // Extensions (front matter)
-					| Toml
-					| Json
-					| InlineMath // Extensions (math)
-					| Math as NodeType["type"]]?: (
-					node: NodeType,
-					parent?: Parent,
-				) => void;
+				[
+					NodeType in
+						| Blockquote // Nodes
+						| Break
+						| Code
+						| Definition
+						| Emphasis
+						| Heading
+						| Html
+						| Image
+						| ImageReference
+						| InlineCode
+						| Link
+						| LinkReference
+						| List
+						| ListItem
+						| Paragraph
+						| Strong
+						| Text
+						| ThematicBreak
+						| Delete // Extensions (GFM)
+						| FootnoteDefinition
+						| FootnoteReference
+						| Table
+						| TableCell
+						| TableRow
+						| Yaml // Extensions (front matter)
+						| Toml
+						| Json
+						| InlineMath // Extensions (math)
+						| Math as NodeType["type"]
+				]?: (node: NodeType, parent?: Parent) => void;
 			}
 		> {}
 
