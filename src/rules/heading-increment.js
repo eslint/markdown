@@ -24,8 +24,7 @@ import { frontmatterHasTitle } from "../util.js";
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {HeadingIncrementRuleDefinition} */
-export default {
+export default /** @satisfies {HeadingIncrementRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 		languages: ["markdown/commonmark", "markdown/gfm"],
@@ -103,4 +102,4 @@ export default {
 			},
 		};
 	},
-};
+});

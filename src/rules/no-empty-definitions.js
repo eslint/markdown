@@ -40,8 +40,7 @@ function isOnlyComments(value) {
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoEmptyDefinitionsRuleDefinition} */
-export default {
+export default /** @satisfies {NoEmptyDefinitionsRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 		languages: ["markdown/commonmark", "markdown/gfm"],
@@ -148,4 +147,4 @@ export default {
 			},
 		};
 	},
-};
+});

@@ -31,8 +31,7 @@ const htmlTagPattern =
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoHtmlRuleDefinition} */
-export default {
+export default /** @satisfies {NoHtmlRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 		languages: ["markdown/commonmark", "markdown/gfm"],
@@ -126,4 +125,4 @@ export default {
 			},
 		};
 	},
-};
+});

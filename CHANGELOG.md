@@ -1,5 +1,13 @@
 # Changelog
 
+## [8.0.3](https://github.com/eslint/markdown/compare/v8.0.2...v8.0.3) (2026-07-01)
+
+
+### Bug Fixes
+
+* type compatibility issue between Markdown v8 and ESLint v9.39.x ([#648](https://github.com/eslint/markdown/issues/648)) ([3986839](https://github.com/eslint/markdown/commit/3986839466936d73f529ebfd6db6985a1e8c1e77))
+* update dependency @eslint/plugin-kit to ^0.7.2 ([#665](https://github.com/eslint/markdown/issues/665)) ([645b0c3](https://github.com/eslint/markdown/commit/645b0c35b28841e5f37c2d4818a776a393519324))
+
 ## [8.0.2](https://github.com/eslint/markdown/compare/v8.0.1...v8.0.2) (2026-05-19)
 
 

@@ -18,8 +18,7 @@
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoDuplicateHeadingsRuleDefinition} */
-export default {
+export default /** @satisfies {NoDuplicateHeadingsRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 		languages: ["markdown/commonmark", "markdown/gfm"],
@@ -120,4 +119,4 @@ export default {
 			},
 		};
 	},
-};
+});

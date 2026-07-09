@@ -21,7 +21,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const thisDir = path.dirname(fileURLToPath(import.meta.url));
 const rulesPath = path.resolve(thisDir, "../src/rules");
-const rules = fs.readdirSync(rulesPath);
+const rules = fs.readdirSync(rulesPath).sort();
 const recommended = [];
 
 for (const ruleId of rules) {
@@ -52,7 +52,12 @@ const rulesOutput = `
 ${rules.map((id, index) => `import rule${index} from "../rules/${id}";`).join("\n")}
 
 export default {
-    ${rules.map((id, index) => `"${id.slice(0, -3)}": rule${index},`).join("\n    ")}
+    ${rules
+		.map(
+			(id, index) =>
+				`"${id.slice(0, -3)}": /** @type {{meta: typeof rule${index}.meta; create: (context: unknown) => any}} */ (rule${index}),`,
+		)
+		.join("\n    ")}
 };
 `.trim();
 

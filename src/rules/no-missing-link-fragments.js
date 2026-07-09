@@ -39,8 +39,7 @@ const htmlTagPattern =
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoMissingLinkFragmentsRuleDefinition} */
-export default {
+export default /** @satisfies {NoMissingLinkFragmentsRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 		languages: ["markdown/commonmark", "markdown/gfm"],
@@ -184,4 +183,4 @@ export default {
 			},
 		};
 	},
-};
+});

@@ -105,8 +105,7 @@ function findInvalidLabelReferences(node, sourceCode) {
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoInvalidLabelRefsRuleDefinition} */
-export default {
+export default /** @satisfies {NoInvalidLabelRefsRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 		languages: ["markdown/commonmark", "markdown/gfm"],
@@ -146,4 +145,4 @@ export default {
 			},
 		};
 	},
-};
+});

@@ -18,14 +18,14 @@ import rules from "./build/rules.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Linter } from "eslint";
+ * @import { ConfigObject, RulesConfig } from "@eslint/core";
  */
 
 //-----------------------------------------------------------------------------
 // Exports
 //-----------------------------------------------------------------------------
 
-/** @satisfies {Linter.RulesRecord} */
+/** @satisfies {RulesConfig} */
 const processorRulesConfig = {
 	// The Markdown parser automatically trims trailing
 	// newlines from code blocks.
@@ -54,7 +54,7 @@ const plugin = {
 	meta: {
 		name: "@eslint/markdown",
 		namespace: "markdown",
-		version: "8.0.2", // x-release-please-version
+		version: "8.0.3", // x-release-please-version
 	},
 	processors: {
 		markdown: processor,
@@ -98,7 +98,7 @@ const plugin = {
 				rules: recommendedRules,
 			},
 		],
-		processor: /** @type {Linter.Config[]} */ ([
+		processor: /** @type {ConfigObject[]} */ ([
 			{
 				name: "markdown/recommended/plugin",
 				plugins: (processorPlugins = {}),

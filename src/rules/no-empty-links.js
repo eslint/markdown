@@ -17,8 +17,7 @@
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoEmptyLinksRuleDefinition} */
-export default {
+export default /** @satisfies {NoEmptyLinksRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 		languages: ["markdown/commonmark", "markdown/gfm"],
@@ -47,4 +46,4 @@ export default {
 			},
 		};
 	},
-};
+});

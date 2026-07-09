@@ -18,8 +18,7 @@
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {TableColumnCountRuleDefinition} */
-export default {
+export default /** @satisfies {TableColumnCountRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 		languages: ["markdown/gfm"],
@@ -112,4 +111,4 @@ export default {
 			},
 		};
 	},
-};
+});

@@ -33,8 +33,7 @@ const linkOrImagePattern =
 // Rule Definition
 //-----------------------------------------------------------------------------
 
-/** @type {NoReferenceLikeUrlsRuleDefinition} */
-export default {
+export default /** @satisfies {NoReferenceLikeUrlsRuleDefinition} */ ({
 	meta: {
 		type: "problem",
 		languages: ["markdown/commonmark", "markdown/gfm"],
@@ -109,4 +108,4 @@ export default {
 			},
 		};
 	},
-};
+});
