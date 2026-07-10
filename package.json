@@ -73,8 +73,8 @@
     "test:types": "tsc -p tests/types/tsconfig.json",
     "test:types:5.3": "npx -p typescript@5.3 -y -- tsc -p tests/types/tsconfig.legacy.json",
     "test:types:5.x": "npx -p typescript@5.x -y -- tsc -p tests/types/tsconfig.json",
-    "test:types:7.x": "npx -p @typescript/native-preview@latest -y -- tsgo -p tests/types/tsconfig.json",
-    "test:types:all": "npm run test:types && npm run test:types:5.3 && npm run test:types:5.x && npm run test:types:7.x"
+    "test:types:6.x": "npx -p typescript@6.x -y -- tsc -p tests/types/tsconfig.json",
+    "test:types:all": "npm run test:types && npm run test:types:5.3 && npm run test:types:5.x && npm run test:types:6.x"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.3",
@@ -94,7 +94,7 @@
     "mocha": "^11.7.5",
     "prettier": "3.9.4",
     "semver": "^7.7.3",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "yorkie": "^2.0.0"
   },
   "dependencies": {
