@@ -16,7 +16,9 @@ import { fromMarkdown } from "mdast-util-from-markdown";
 /**
  * @import { LintMessage, RuleTextEdit, SourceRange } from "@eslint/core";
  * @import { Node, Parent, Code, Html } from "mdast";
- * @import { Block, Comment, RangeMap } from "./types.js";
+ * @import { Block, RangeMap } from "./types.js";
+ * @typedef { Block['comments'][number] } Comment
+ * @typedef {{ comment: Comment, startLine: number, endLine: number, jsOffset: number }} CommentMapping
  */
 
 //-----------------------------------------------------------------------------
@@ -253,34 +255,20 @@ function isUnusedDirectiveMessage(message) {
 
 /**
  * Adjusts an unused directive message in an inserted JS comment.
- * @param {Block} block The code block containing the inserted comment.
  * @param {LintMessage} message The message to adjust.
+ * @param {CommentMapping[]} commentMappings Precomputed comment line ranges and offsets.
  * @returns {LintMessage} The adjusted message, if it can be mapped.
  */
-function adjustCommentMessage(block, message) {
-	let currentLine = 1;
-	let jsOffset = 0;
-	let foundComment;
+function adjustCommentMessage(message, commentMappings) {
+	const mapping = commentMappings.find(
+		m => message.line >= m.startLine && message.line < m.endLine,
+	);
 
-	for (const comment of block.comments) {
-		const commentLines = comment.text.split("\n").length;
-
-		if (
-			message.line >= currentLine &&
-			message.line < currentLine + commentLines
-		) {
-			foundComment = comment;
-			break;
-		}
-
-		currentLine += commentLines;
-		jsOffset += comment.text.length + 1;
-	}
-
-	if (!foundComment) {
+	if (!mapping) {
 		return message;
 	}
 
+	const { comment: foundComment, jsOffset } = mapping;
 	const { start, end } = foundComment.position;
 	const { fix, ...messageWithoutFix } = message;
 
@@ -468,10 +456,24 @@ function adjustFix(block, fix) {
  * @returns {(message: LintMessage) => LintMessage | null} A function that adjusts messages in a code block.
  */
 function adjustBlock(block) {
-	const leadingCommentLines = block.comments.reduce(
-		(count, comment) => count + comment.text.split("\n").length,
-		0,
-	);
+	/** @type {CommentMapping[]} */
+	const commentMappings = [];
+	let currentLine = 1;
+	let jsOffset = 0;
+
+	for (const comment of block.comments) {
+		const commentLines = comment.text.split("\n").length;
+		commentMappings.push({
+			comment,
+			startLine: currentLine,
+			endLine: currentLine + commentLines,
+			jsOffset,
+		});
+		currentLine += commentLines;
+		jsOffset += comment.text.length + 1;
+	}
+
+	const leadingCommentLines = currentLine - 1;
 
 	const blockStart = block.position.start.line;
 
@@ -493,7 +495,7 @@ function adjustBlock(block) {
 
 		if (lineInCode < 1 || lineInCode >= block.rangeMap.length) {
 			return isUnusedDirectiveMessage(message)
-				? adjustCommentMessage(block, message)
+				? adjustCommentMessage(message, commentMappings)
 				: null;
 		}
 

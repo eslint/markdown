@@ -8,7 +8,6 @@ import type {
 	Json,
 	RangeMap,
 	Block,
-	Comment,
 } from "@eslint/markdown";
 import type { Plugin, SourceLocation, SourceRange } from "@eslint/core";
 import type { ESLint, Linter } from "eslint";
@@ -81,7 +80,7 @@ validBlock.data satisfies CodeData | undefined;
 
 // Verify `Block` has `BlockBase` properties
 validBlock.baseIndentText satisfies string;
-validBlock.comments satisfies Comment[];
+validBlock.comments satisfies { text: string; position: Position }[];
 validBlock.comments[0].text satisfies string;
 validBlock.comments[0].position satisfies Position;
 validBlock.rangeMap satisfies RangeMap[];
