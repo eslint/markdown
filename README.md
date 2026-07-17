@@ -19,7 +19,19 @@ Lint Markdown with ESLint, as well JS, JSX, TypeScript, and more inside Markdown
 
 Install the plugin alongside ESLint v9.15.0 or greater. Type compatibility is guaranteed with ESLint v9.39.0 or greater.
 
-For Node.js and compatible runtimes:
+You can install ESLint using npm or other package managers:
+
+```sh
+npm install eslint -D
+# or
+yarn add eslint -D
+# or
+pnpm install eslint -D
+# or
+bun add eslint -D
+```
+
+Then, for Node.js and compatible runtimes:
 
 ```sh
 npm install @eslint/markdown -D
