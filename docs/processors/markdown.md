@@ -112,10 +112,10 @@ Some rules that catch mistakes in regular code are less helpful in documentation
 For example, `no-undef` would flag variables that are declared outside of a code snippet because they aren't relevant to the example.
 The `markdown.configs.processor` config disables these rules in Markdown files:
 
-- [`no-undef`](https://eslint.org/docs/rules/no-undef)
-- [`no-unused-expressions`](https://eslint.org/docs/rules/no-unused-expressions)
-- [`no-unused-vars`](https://eslint.org/docs/rules/no-unused-vars)
-- [`padded-blocks`](https://eslint.org/docs/rules/padded-blocks)
+- [`no-undef`](https://eslint.org/docs/latest/rules/no-undef)
+- [`no-unused-expressions`](https://eslint.org/docs/latest/rules/no-unused-expressions)
+- [`no-unused-vars`](https://eslint.org/docs/latest/rules/no-unused-vars)
+- [`padded-blocks`](https://eslint.org/docs/latest/rules/padded-blocks)
 
 Use glob patterns to disable more rules just for Markdown code blocks:
 
