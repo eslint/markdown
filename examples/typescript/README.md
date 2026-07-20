@@ -1,6 +1,6 @@
 # TypeScript Example
 
-The `@typescript-eslint` parser and the `recommended` config's rules will work in `ts` code blocks. However, [type-aware rules](https://github.com/typescript-eslint/typescript-eslint/blob/main/docs/getting-started/Typed_Linting.mdx) will not work because the code blocks are not part of a compilable `tsconfig.json` project.
+The `@typescript-eslint` parser and the `recommended` config's rules will work in `ts` code blocks. However, [type-aware rules](https://typescript-eslint.io/troubleshooting/typed-linting) will not work because the code blocks are not part of a compilable `tsconfig.json` project.
 
 ```ts
 function hello(name: String) {
