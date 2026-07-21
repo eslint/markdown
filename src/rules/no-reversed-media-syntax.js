@@ -20,9 +20,13 @@
 // Helpers
 //-----------------------------------------------------------------------------
 
-/** Matches reversed link/image syntax like `(text)[url]`, ignoring escaped characters like `\(text\)[url]`. */
+/**
+ * Matches reversed link/image syntax like `(text)[url]`, ignoring escaped characters like `\(text\)[url]`.
+ * The nested group is `\([^()]*\)`, not `\([\s\S]*\)`, so that it cannot overlap the
+ * other alternatives. Overlapping alternatives cause catastrophic backtracking.
+ */
 const reversedPattern =
-	/(?<=(?<!\\)(?:\\{2})*)\((?<label>(?:\\.|[^()\\]|\([\s\S]*\))*)\)\[(?<url>(?:\\.|[^\]\\\r\n])*)\](?!\()/gu;
+	/(?<=(?<!\\)(?:\\{2})*)\((?<label>(?:\\.|[^()\\]|\([^()]*\))*)\)\[(?<url>(?:\\.|[^\]\\\r\n])*)\](?!\()/gu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition

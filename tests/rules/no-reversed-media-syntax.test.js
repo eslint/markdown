@@ -108,6 +108,11 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 				math: true,
 			},
 		},
+		// https://github.com/eslint/markdown/issues/690
+		`Text (unclosed ${"and (x) ".repeat(30)}end`,
+		"(".repeat(10000),
+		// A label may contain at most one level of nested parentheses.
+		"(x (a (b)) y)[url]",
 	],
 	invalid: [
 		{
