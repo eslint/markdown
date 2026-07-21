@@ -76,6 +76,9 @@
     "test:types:7.x": "npx -p @typescript/native-preview@latest -y -- tsgo -p tests/types/tsconfig.json",
     "test:types:all": "npm run test:types && npm run test:types:5.3 && npm run test:types:5.x && npm run test:types:7.x"
   },
+  "allowScripts": {
+    "yorkie": true
+  },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.3",
     "@eslint/js": "^10.0.1",
