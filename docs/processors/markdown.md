@@ -38,7 +38,7 @@ This is plain text and doesn't get linted.
 
 Unless a fenced code block's syntax appears as a file extension in file patterns in your config file, it will be ignored.
 
-**Important:** You cannot combine this processor and Markdown-specific linting rules. You can either lint the code blocks or lint the Markdown, but not both. This is an ESLint limitation.
+**Important:** You cannot combine this processor and Markdown-specific linting rules. When the processor is applied to a file, ESLint lints only the code blocks that the processor extracts — the Markdown content itself is not linted, and any Markdown rules configured for the file are silently ignored without an error or warning. This is an ESLint limitation. See [Workarounds](#workarounds) for ways to lint both.
 
 ## Basic Configuration
 
@@ -238,3 +238,18 @@ highlighting. Skip the block to prevent warnings about invalid syntax.
 console.log("This code block is linted normally.");
 ```
 ````
+
+## Workarounds
+
+You can't lint both in a single run, but there's more than one way to get full coverage anyway:
+
+- **Run two configs.** Keep your existing config with the `markdown` processor for code blocks, and add a second config with the Markdown language and rules for content. Then run ESLint twice:
+
+  ```sh
+  eslint .                              # lints fenced code blocks
+  eslint -c eslint.config-content.js .  # lints Markdown content
+  ```
+
+  This works well in CI and git hooks. The catch is that most editor integrations only load the default config file, so you won't see the content-linting results while you type. (This repository takes exactly this approach.)
+
+- **Hand content-linting off to another tool.** Keep the `markdown` processor for code blocks, and let a dedicated tool such as [`markdownlint-cli2`](https://github.com/DavidAnson/markdownlint-cli2) handle the Markdown content instead. It ships with editor extensions, so either way you still get real-time feedback.
