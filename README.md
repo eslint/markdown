@@ -271,7 +271,7 @@ export default defineConfig([
 | ------------------------------------------- | ----------------------------------------------------------------------------------- |
 | [`markdown`](./docs/processors/markdown.md) | Extract fenced code blocks from the Markdown code so they can be linted separately. |
 
-**Important:** You cannot lint a file's Markdown content and its fenced code blocks in the same run. When the `markdown` processor is applied to a file, only the extracted code blocks are linted — any Markdown rules (such as `markdown/heading-increment`) configured for that file are silently ignored. This is an ESLint limitation, not something this plugin can work around. See [Workarounds](./docs/processors/markdown.md#workarounds) for ways to lint both.
+**Important:** You cannot lint a file's Markdown content and its fenced code blocks in a single ESLint run. When the `markdown` processor is applied to a file, only the extracted code blocks are linted; any Markdown-specific rules configured for the original file, such as `markdown/heading-increment`, are silently ignored. This is a current limitation of ESLint processors. See [Workarounds](./docs/processors/markdown.md#workarounds) for ways to lint both.
 
 ## Migration from `eslint-plugin-markdown`
 
