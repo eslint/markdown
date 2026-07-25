@@ -141,7 +141,7 @@ export type MarkdownLanguageContext = LanguageContext<MarkdownLanguageOptions>;
 /**
  * A Markdown syntax element, including nodes and comments.
  */
-type MarkdownSyntaxElement = Node | InlineConfigComment;
+export type MarkdownSyntaxElement = Node | InlineConfigComment;
 
 export interface MarkdownRuleVisitor
 	extends
