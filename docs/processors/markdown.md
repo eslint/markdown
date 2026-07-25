@@ -38,7 +38,7 @@ This is plain text and doesn't get linted.
 
 Unless a fenced code block's syntax appears as a file extension in file patterns in your config file, it will be ignored.
 
-**Important:** You cannot combine this processor and Markdown-specific linting rules in a single ESLint run. When the processor is applied to a file, ESLint lints only the code blocks that the processor extracts; any Markdown-specific rules configured for the original file are silently ignored. This is a current limitation of ESLint processors. See [Workarounds](#workarounds) for ways to lint both.
+**Important:** You cannot combine this processor with Markdown-specific linting rules in a single ESLint run. When the processor is applied, ESLint only lints the code blocks it extracts. This is a current limitation of ESLint processors. See [Linting Markdown Content and Code Blocks](#linting-markdown-content-and-code-blocks) for a way to lint both.
 
 ## Basic Configuration
 
@@ -239,17 +239,15 @@ console.log("This code block is linted normally.");
 ```
 ````
 
-## Workarounds
+## Linting Markdown Content and Code Blocks
 
-You can't lint both in a single ESLint run, but you can use one of the following approaches:
+To lint Markdown content and fenced code blocks, use two configuration files: `eslint.config.js` with the [`processor` configuration](#basic-configuration) for fenced code blocks and `eslint.config-content.js` with the [`recommended` configuration](../../README.md#configurations) for Markdown content.
 
-- **Run ESLint with two configuration files.** Keep your existing configuration with the `markdown` processor for code blocks, and add a second configuration with the Markdown language and rules for content. Then run ESLint twice:
+Run ESLint once with each configuration:
 
-  ```sh
-  eslint .                              # lints fenced code blocks
-  eslint -c eslint.config-content.js .  # lints Markdown content
-  ```
+```sh
+eslint .                              # lints fenced code blocks
+eslint -c eslint.config-content.js .  # lints Markdown content
+```
 
-  This works well in CI and git hooks. However, most editor integrations use only one ESLint configuration at a time, so Markdown content errors may not appear in the editor. This repository uses this approach in its lint scripts and git hooks.
-
-- **Use a separate Markdown linter.** Keep the `markdown` processor for code blocks, and use a dedicated tool such as [`markdownlint-cli2`](https://github.com/DavidAnson/markdownlint-cli2) to lint the Markdown content. An editor extension such as [`vscode-markdownlint`](https://github.com/DavidAnson/vscode-markdownlint) can provide real-time feedback while you type. The tradeoff is having another tool and configuration to maintain.
+This approach works well in CI and git hooks. Editor integrations may run only the default configuration, so they might not report Markdown content errors from `eslint.config-content.js` while you type. This repository uses the same two-configuration setup in its lint scripts and git hooks.
