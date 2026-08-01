@@ -7,22 +7,14 @@
 // Imports
 //------------------------------------------------------------------------------
 
+import ruleTester from "./_utils/rule-tester.js";
 import rule from "../../src/rules/no-duplicate-definitions.js";
-import markdown from "../../src/index.js";
-import { RuleTester } from "eslint";
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-const ruleTester = new RuleTester({
-	plugins: {
-		markdown,
-	},
-	language: "markdown/gfm",
-});
-
-ruleTester.run("no-duplicate-definitions", rule, {
+ruleTester("no-duplicate-definitions", rule, {
 	valid: [
 		`
 [mercury]: https://example.com/mercury/
@@ -348,6 +340,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 [^mercury]: Hello, Mercury!
 [^mercury]: Hello, Venus!
 `,
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "duplicateFootnoteDefinition",
@@ -372,6 +365,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 [^mercury]: Hello, Earth!
 [^mercury]: Hello, Mars!
 `,
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "duplicateFootnoteDefinition",
@@ -420,6 +414,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 [^mercury]: Hello, Mercury!
 [^Mercury]: Hello, Venus!
 `, // case insensitive
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "duplicateFootnoteDefinition",
@@ -442,6 +437,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 [^mercury]: Hello, Mercury!
 [^mercury]: Hello, Venus!
 `,
+			language: "markdown/gfm",
 			options: [
 				{
 					allowDefinitions: ["mercury"],
@@ -471,6 +467,7 @@ ruleTester.run("no-duplicate-definitions", rule, {
 [^mercury]: Hello, Mercury!
 [^mercury]: Hello, Venus!
 `,
+			language: "markdown/gfm",
 			options: [
 				{
 					checkFootnoteDefinitions: true,

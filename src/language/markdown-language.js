@@ -145,6 +145,7 @@ export class MarkdownLanguage {
 	defaultLanguageOptions = {
 		frontmatter: false,
 		math: false,
+		// TODO
 	};
 
 	/**
@@ -216,11 +217,25 @@ export class MarkdownLanguage {
 		 * problem that ESLint identified just like any other.
 		 */
 		try {
-			const options = createParserOptions(
-				this.#mode,
-				context?.languageOptions,
-			);
-			const root = fromMarkdown(text, options);
+			const parser = context?.languageOptions?.parser ?? fromMarkdown;
+
+			/** @type {Root} */
+			let root;
+
+			if (parser !== fromMarkdown) {
+				// @ts-expect-error -- TODO
+				root = parser(text, {
+					mode: this.#mode,
+					...context?.languageOptions,
+					...context?.languageOptions?.parserOptions,
+					// TODO: consider https://github.com/eslint/eslint/pull/20926.
+				});
+			} else {
+				root = fromMarkdown(
+					text,
+					createParserOptions(this.#mode, context?.languageOptions),
+				);
+			}
 
 			return {
 				ok: true,

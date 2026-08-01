@@ -42,6 +42,7 @@ import type { InlineMath, Math } from "mdast-util-math";
 import type {
 	LanguageContext,
 	LanguageOptions,
+	ObjectMetaProperties,
 	RuleVisitor,
 } from "@eslint/core";
 import type {
@@ -118,19 +119,64 @@ export interface JsonData extends Data {}
 // Exports: Language and Source Code
 //------------------------------------------------------------------------------
 
+type NonMdastParser = ObjectMetaProperties &
+	(
+		| {
+				parse(text: string, options?: any): unknown;
+		  }
+		| {
+				parseForESLint(
+					text: string,
+					options?: any,
+				): {
+					ast: unknown;
+				};
+		  }
+	);
+
+type MdastParser = ObjectMetaProperties & {
+	parse(text: string, options?: any): Root;
+
+	parseForESLint(
+		text: string,
+		options?: any,
+	): {
+		ast: Root;
+	};
+};
+
+type Parser = NonMdastParser | MdastParser;
+
 /**
  * Language options provided for Markdown files.
  */
 export interface MarkdownLanguageOptions extends LanguageOptions {
 	/**
 	 * The options for parsing frontmatter.
+	 * @default false
 	 */
 	frontmatter?: false | "yaml" | "toml" | "json";
 
 	/**
 	 * The options for parsing math.
+	 * @default false
 	 */
 	math?: boolean;
+
+	/**
+	 * An object containing a `parse()` or `parseForESLint()` method.
+	 * If not configured, the default ESLint Markdown parser
+	 * (`mdast-util-from-markdown`) will be used.
+	 */
+	parser?: Parser;
+
+	/**
+	 * An object specifying additional options that are passed directly to the
+	 * `parser()` method on the parser. The available options are parser-dependent.
+	 */
+	parserOptions?: {
+		[key: string]: any;
+	};
 }
 
 /**
