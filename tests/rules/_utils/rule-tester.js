@@ -24,9 +24,9 @@ import markdown from "../../../src/index.js";
 //------------------------------------------------------------------------------
 
 /**
- * Creates a new `RuleTester` instance with the `mdast-util-from-markdown` JS parser.
+ * Creates a new `RuleTester` instance with the `mdast-util-from-markdown` JS parser and CommonMark syntax.
  */
-const ruleTesterJS = new RuleTester({
+const ruleTesterJSCommonMark = new RuleTester({
 	plugins: {
 		markdown,
 	},
@@ -34,13 +34,36 @@ const ruleTesterJS = new RuleTester({
 });
 
 /**
- * Creates a new `RuleTester` instance with the `@eslint-markdown/parser` Rust parser.
+ * Creates a new `RuleTester` instance with the `mdast-util-from-markdown` JS parser and GFM syntax.
  */
-const ruleTesterRust = new RuleTester({
+const ruleTesterJSGFM = new RuleTester({
+	plugins: {
+		markdown,
+	},
+	language: "markdown/gfm",
+});
+
+/**
+ * Creates a new `RuleTester` instance with the `@eslint-markdown/parser` Rust parser and CommonMark syntax.
+ */
+const ruleTesterRustCommonMark = new RuleTester({
 	plugins: {
 		markdown,
 	},
 	language: "markdown/commonmark",
+	languageOptions: {
+		parser: parse,
+	},
+});
+
+/**
+ * Creates a new `RuleTester` instance with the `@eslint-markdown/parser` Rust parser and GFM syntax.
+ */
+const ruleTesterRustGFM = new RuleTester({
+	plugins: {
+		markdown,
+	},
+	language: "markdown/gfm",
 	languageOptions: {
 		parser: parse,
 	},
@@ -59,10 +82,20 @@ const ruleTesterRust = new RuleTester({
  */
 export default function ruleTester(ruleName, rule, tests) {
 	describe("JS: mdast-util-from-markdown", () => {
-		ruleTesterJS.run(ruleName, rule, tests);
+		describe("CommonMark", () => {
+			ruleTesterJSCommonMark.run(ruleName, rule, tests);
+		});
+		describe("GFM", () => {
+			ruleTesterJSGFM.run(ruleName, rule, tests);
+		});
 	});
 
 	describe("Rust: @eslint-markdown/parser", () => {
-		ruleTesterRust.run(ruleName, rule, tests);
+		describe("CommonMark", () => {
+			ruleTesterRustCommonMark.run(ruleName, rule, tests);
+		});
+		describe("GFM", () => {
+			ruleTesterRustGFM.run(ruleName, rule, tests);
+		});
 	});
 }

@@ -7,33 +7,27 @@
 // Imports
 //------------------------------------------------------------------------------
 
-import rule from "../../src/rules/no-duplicate-headings.js";
-import markdown from "../../src/index.js";
-import { Linter, RuleTester } from "eslint";
+import { Linter } from "eslint";
 import dedent from "dedent";
+import ruleTester from "./_utils/rule-tester.js";
+import markdown from "../../src/index.js";
+import rule from "../../src/rules/no-duplicate-headings.js";
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-const ruleTester = new RuleTester({
-	plugins: {
-		markdown,
-	},
-	language: "markdown/commonmark",
-});
-
-ruleTester.run("no-duplicate-headings", rule, {
+ruleTester("no-duplicate-headings", rule, {
 	valid: [
 		// Using emphasis in headings should not be considered a duplicate by default.
 		dedent`
 			# Heading 1
-			
+
 			# Heading *1*
 		`,
 		dedent`
 			# ***Heading 1***
-			
+
 			# Heading 1
 		`,
 		dedent`

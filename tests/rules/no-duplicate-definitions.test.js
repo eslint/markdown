@@ -25,20 +25,29 @@ ruleTester("no-duplicate-definitions", rule, {
 [venus]: https://example.com/venus/
 `,
 
-		`
+		{
+			code: `
 [^mercury]: Hello, Mercury!
 `,
+			language: "markdown/gfm",
+		},
 
-		`
+		{
+			code: `
 [^mercury]: Hello, Mercury!
 [^venus]: Hello, Venus!
 `,
+			language: "markdown/gfm",
+		},
 
-		`
+		{
+			code: `
 [alpha]: bravo
 
 [^alpha]: bravo
 `,
+			language: "markdown/gfm",
+		},
 
 		`
 [//]: # (This is a comment 1)
@@ -62,6 +71,7 @@ ruleTester("no-duplicate-definitions", rule, {
 [^mercury]: Hello, Mercury!
 [^mercury]: Hello, Venus!
 `,
+			language: "markdown/gfm",
 			options: [
 				{
 					allowFootnoteDefinitions: ["mercury"],
@@ -128,6 +138,7 @@ ruleTester("no-duplicate-definitions", rule, {
 [^MERCURY]: Hello, Mercury!
 [^mercury]: Hello, Venus!
 `,
+			language: "markdown/gfm",
 			options: [
 				{
 					allowFootnoteDefinitions: ["MERCURY"],
@@ -139,6 +150,7 @@ ruleTester("no-duplicate-definitions", rule, {
 [^mercury]: Hello, Mercury!
 [^MERCURY]: Hello, Venus!
 `,
+			language: "markdown/gfm",
 			options: [
 				{
 					allowFootnoteDefinitions: ["mercury"],
@@ -150,6 +162,7 @@ ruleTester("no-duplicate-definitions", rule, {
 [^mercury]: Hello, Mercury!
 [^mercury]: Hello, Venus!
 `,
+			language: "markdown/gfm",
 			options: [
 				{
 					checkFootnoteDefinitions: false,
@@ -161,6 +174,7 @@ ruleTester("no-duplicate-definitions", rule, {
 [^mercury]: Hello, Mercury!
 [^mercury]: Hello, Venus!
 `,
+			language: "markdown/gfm",
 			options: [
 				{
 					checkFootnoteDefinitions: true,
@@ -183,6 +197,7 @@ ruleTester("no-duplicate-definitions", rule, {
 						[^Grüsse]: Grüsse
 						[^Grüsse]: Grüsse
 						`,
+						language: "markdown/gfm",
 						options: [{ allowFootnoteDefinitions: ["GRÜẞE"] }],
 					},
 				]

@@ -23,6 +23,8 @@ const ruleTester = new RuleTester({
 	language: "markdown/gfm",
 });
 
+// TODO
+
 ruleTester.run("no-bare-urls", rule, {
 	valid: [
 		"<https://www.google.com/>",
@@ -173,12 +175,12 @@ ruleTester.run("no-bare-urls", rule, {
 		{
 			code: dedent`
             [link that [is-a-valid] link](https://example.com)
-            
+
             [is-a-valid]: https://example.com
             `,
 			output: dedent`
             [link that [is-a-valid] link](<https://example.com>)
-            
+
             [is-a-valid]: https://example.com
             `,
 			errors: [
@@ -316,12 +318,12 @@ ruleTester.run("no-bare-urls", rule, {
 		{
 			code: dedent`
             <div>
-            
+
             https://example.com
             </div>`,
 			output: dedent`
             <div>
-            
+
             <https://example.com>
             </div>`,
 			errors: [
@@ -337,13 +339,13 @@ ruleTester.run("no-bare-urls", rule, {
 		{
 			code: dedent`
             <div>
-            
+
             https://example.com
 
             </div>`,
 			output: dedent`
             <div>
-            
+
             <https://example.com>
 
             </div>`,

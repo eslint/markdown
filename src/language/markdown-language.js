@@ -198,6 +198,8 @@ export class MarkdownLanguage {
 				`Invalid language option value \`${mathOption}\` for math. Expected a boolean.`,
 			);
 		}
+
+		// TODO
 	}
 
 	/**
