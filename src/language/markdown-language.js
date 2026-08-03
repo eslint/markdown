@@ -227,7 +227,8 @@ export class MarkdownLanguage {
 			if (parser) {
 				root = /** @type {MdastParser} */ (parser).parse(text, {
 					mode: this.#mode,
-					...context?.languageOptions,
+					frontmatter: context?.languageOptions?.frontmatter,
+					math: context?.languageOptions?.math,
 					...context?.languageOptions?.parserOptions,
 					// TODO: consider https://github.com/eslint/eslint/pull/20926.
 				});
