@@ -26,7 +26,7 @@ import { math } from "micromark-extension-math";
  * @import { Language, File, ParseResult, OkParseResult } from "@eslint/core";
  * @import { Root } from "mdast";
  * @import { Options } from "mdast-util-from-markdown";
- * @import { MarkdownLanguageOptions, MarkdownLanguageContext } from "../types.js";
+ * @import { MarkdownLanguageOptions, MarkdownLanguageContext, MdastParser } from "../types.js";
  * @typedef {Options['extensions']} Extensions
  * @typedef {Options['mdastExtensions']} MdastExtensions
  * @typedef {"commonmark"|"gfm"} ParserMode
@@ -219,14 +219,13 @@ export class MarkdownLanguage {
 		 * problem that ESLint identified just like any other.
 		 */
 		try {
-			const parser = context?.languageOptions?.parser ?? fromMarkdown;
+			const parser = context?.languageOptions?.parser;
 
 			/** @type {Root} */
 			let root;
 
-			if (parser !== fromMarkdown) {
-				// @ts-expect-error -- TODO
-				root = parser(text, {
+			if (parser) {
+				root = /** @type {MdastParser} */ (parser).parse(text, {
 					mode: this.#mode,
 					...context?.languageOptions,
 					...context?.languageOptions?.parserOptions,

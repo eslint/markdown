@@ -7,7 +7,7 @@
 // Imports
 // --------------------------------------------------------------------------------
 
-import { parse } from "@eslint-markdown/parser";
+import parser from "@eslint-markdown/parser";
 import { RuleTester } from "eslint";
 import markdown from "../../../src/index.js";
 
@@ -52,7 +52,7 @@ const ruleTesterRustCommonMark = new RuleTester({
 	},
 	language: "markdown/commonmark",
 	languageOptions: {
-		parser: parse,
+		parser,
 	},
 });
 
@@ -65,7 +65,7 @@ const ruleTesterRustGFM = new RuleTester({
 	},
 	language: "markdown/gfm",
 	languageOptions: {
-		parser: parse,
+		parser,
 	},
 });
 
