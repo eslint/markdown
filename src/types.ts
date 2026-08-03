@@ -127,7 +127,7 @@ export type MdastParser = ObjectMetaProperties & {
 	parse(text: string, options?: any): Root;
 };
 
-export type Parser = NonMdastParser | MdastParser;
+export type MarkdownParser = NonMdastParser | MdastParser;
 
 /**
  * Language options provided for Markdown files.
@@ -149,15 +149,13 @@ export interface MarkdownLanguageOptions extends LanguageOptions {
 	 * An object containing a `parse()` method. If not configured,
 	 * the default ESLint Markdown parser (`mdast-util-from-markdown`) will be used.
 	 */
-	parser?: Parser;
+	parser?: MarkdownParser;
 
 	/**
 	 * An object specifying additional options that are passed directly to the
 	 * `parse()` method on the parser. The available options are parser-dependent.
 	 */
-	parserOptions?: {
-		[key: string]: any;
-	};
+	parserOptions?: Record<string, unknown>;
 }
 
 /**
