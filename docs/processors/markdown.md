@@ -38,7 +38,7 @@ This is plain text and doesn't get linted.
 
 Unless a fenced code block's syntax appears as a file extension in file patterns in your config file, it will be ignored.
 
-**Important:** You cannot combine this processor and Markdown-specific linting rules. You can either lint the code blocks or lint the Markdown, but not both. This is an ESLint limitation.
+**Important:** You cannot combine this processor with Markdown-specific linting rules in a single ESLint run. When the processor is applied, ESLint only lints the code blocks it extracts. This is a current limitation of ESLint processors. See [Linting Markdown Content and Code Blocks](#linting-markdown-content-and-code-blocks) for a way to lint both.
 
 ## Basic Configuration
 
@@ -112,10 +112,10 @@ Some rules that catch mistakes in regular code are less helpful in documentation
 For example, `no-undef` would flag variables that are declared outside of a code snippet because they aren't relevant to the example.
 The `markdown.configs.processor` config disables these rules in Markdown files:
 
-- [`no-undef`](https://eslint.org/docs/rules/no-undef)
-- [`no-unused-expressions`](https://eslint.org/docs/rules/no-unused-expressions)
-- [`no-unused-vars`](https://eslint.org/docs/rules/no-unused-vars)
-- [`padded-blocks`](https://eslint.org/docs/rules/padded-blocks)
+- [`no-undef`](https://eslint.org/docs/latest/rules/no-undef)
+- [`no-unused-expressions`](https://eslint.org/docs/latest/rules/no-unused-expressions)
+- [`no-unused-vars`](https://eslint.org/docs/latest/rules/no-unused-vars)
+- [`padded-blocks`](https://eslint.org/docs/latest/rules/padded-blocks)
 
 Use glob patterns to disable more rules just for Markdown code blocks:
 
@@ -179,7 +179,7 @@ eslint --fix .
 
 The processor will convert HTML comments immediately preceding a code block into JavaScript block comments and insert them at the beginning of the source code that it passes to ESLint.
 This permits configuring ESLint via configuration comments while keeping the configuration comments themselves hidden when the markdown is rendered.
-Comment bodies are passed through unmodified, so the plugin supports any [configuration comments](http://eslint.org/docs/user-guide/configuring) supported by ESLint itself.
+Comment bodies are passed through unmodified, so the plugin supports any [configuration comments](https://eslint.org/docs/latest/use/configure) supported by ESLint itself.
 
 This example enables the `alert` global variable, disables the `no-alert` rule, and configures the `quotes` rule to prefer single quotes:
 
@@ -242,3 +242,16 @@ highlighting. Skip the block to prevent warnings about invalid syntax.
 console.log("This code block is linted normally.");
 ```
 ````
+
+## Linting Markdown Content and Code Blocks
+
+To lint Markdown content and fenced code blocks, use two configuration files: `eslint.config.js` with the [`processor` configuration](#basic-configuration) for fenced code blocks and `eslint.config-content.js` with the [`recommended` configuration](../../README.md#configurations) for Markdown content.
+
+Run ESLint once with each configuration:
+
+```sh
+eslint .                              # lints fenced code blocks
+eslint -c eslint.config-content.js .  # lints Markdown content
+```
+
+This approach works well in CI and git hooks. Editor integrations may run only the default configuration, so they might not report Markdown content errors from `eslint.config-content.js` while you type. This repository uses the same two-configuration setup in its lint scripts and git hooks.

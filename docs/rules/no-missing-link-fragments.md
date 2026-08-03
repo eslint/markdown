@@ -94,7 +94,7 @@ This rule supports the following options:
 * `allowPattern: string` -
     A regular expression string. If a link fragment matches this pattern, it will be ignored by the rule. This is useful for fragments that are dynamically generated or handled by other tools. (default: `""`)
 
-    Examples of **correct** code when configured as `"no-missing-link-fragments": ["error", { allowPattern: "" }]`:
+    Examples of **correct** code when configured as `"no-missing-link-fragments": ["error", { allowPattern: "^figure-" }]`:
 
     ```markdown
     <!-- eslint markdown/no-missing-link-fragments: ["error", { allowPattern: "^figure-" }] -->

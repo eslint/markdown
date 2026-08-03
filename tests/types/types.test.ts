@@ -4,6 +4,7 @@ import type {
 	MarkdownRuleDefinition,
 	MarkdownRuleVisitor,
 	MarkdownSourceCode,
+	MarkdownSyntaxElement,
 	Toml,
 	Json,
 	RangeMap,
@@ -406,3 +407,9 @@ const invalidLanguageOptions2: MarkdownLanguageOptions = {
 		};
 	},
 });
+
+({}) as MarkdownSyntaxElement satisfies
+	Node | { value: string; position: Position };
+
+// @ts-expect-error Invalid type for `MarkdownSyntaxElement`
+({}) as MarkdownSyntaxElement satisfies { unknown: string };
