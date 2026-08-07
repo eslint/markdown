@@ -43,10 +43,12 @@ function getHtmlAttributeRe(name) {
 export default /** @satisfies {RequireAltTextRuleDefinition} */ ({
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			recommended: true,
 			description: "Require alternative text for images",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/require-alt-text.md",
 		},
 

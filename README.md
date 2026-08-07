@@ -53,7 +53,7 @@ deno add jsr:@eslint/markdown
 
 | **Configuration Name** | **Description**                                                                                            |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `recommended`          | Lints all `.md` files with the recommended rules and assumes [CommonMark](https://commonmark.org/) format. |
+| `recommended`          | Lints all `.md` files with the recommended rules and assumes [GFM](https://github.github.com/gfm/) format. |
 | `processor`            | Enables extracting code blocks from all `.md` files so code blocks can be individually linted.             |
 
 In your `eslint.config.js` file, import `@eslint/markdown` and include the recommended config to enable Markdown parsing and linting:

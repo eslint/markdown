@@ -53,6 +53,7 @@ let recommendedPlugins, processorPlugins;
 const plugin = {
 	meta: {
 		name: "@eslint/markdown",
+		namespace: "markdown",
 		version: "8.0.3", // x-release-please-version
 	},
 	processors: {
@@ -92,7 +93,7 @@ const plugin = {
 			{
 				name: "markdown/recommended",
 				files: ["**/*.md"],
-				language: "markdown/commonmark",
+				language: "markdown/gfm",
 				plugins: (recommendedPlugins = {}),
 				rules: recommendedRules,
 			},
