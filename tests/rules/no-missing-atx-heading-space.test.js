@@ -7,21 +7,9 @@
 // Imports
 //------------------------------------------------------------------------------
 
-import rule from "../../src/rules/no-missing-atx-heading-space.js";
-import markdown from "../../src/index.js";
-import { RuleTester } from "eslint";
 import dedent from "dedent";
-
-//------------------------------------------------------------------------------
-// Tests
-//------------------------------------------------------------------------------
-
-const ruleTester = new RuleTester({
-	plugins: {
-		markdown,
-	},
-	language: "markdown/gfm",
-});
+import ruleTester from "./_utils/rule-tester.js";
+import rule from "../../src/rules/no-missing-atx-heading-space.js";
 
 //------------------------------------------------------------------------------
 // Valid Test Cases
@@ -44,7 +32,7 @@ const validHeadings = [
 	dedent`# Heading 1
 
 	## Heading 2
-	
+
 	### Heading 3`,
 
 	// 3. Variations on spacing
@@ -77,7 +65,7 @@ const validHeadings = [
 
 	// 7.4 Code block after paragraph
 	dedent`This is a paragraph followed by code.
-	
+
 	\`\`\`
 	#This is in a code block
 	\`\`\``,
@@ -159,7 +147,7 @@ const validHeadings = [
 		code: dedent`# Heading 1 #
 
 		## Heading 2 ##
-		
+
 		### Heading 3 ###`,
 		options: [{ checkClosedHeadings: true }],
 	},
@@ -333,12 +321,12 @@ const invalidTests = [
 		code: dedent`# Heading 1
 
 		##Heading 2
-		
+
 		### Heading 3`,
 		output: dedent`# Heading 1
 
 		## Heading 2
-		
+
 		### Heading 3`,
 		errors: [
 			{
@@ -510,18 +498,18 @@ const invalidTests = [
 	// 5.2 Multiple incorrect headings in one file
 	{
 		code: dedent`#First heading
-		
+
 		Some text
-		
+
 		##Second heading
-		
+
 		###Third heading`,
 		output: dedent`# First heading
-		
+
 		Some text
-		
+
 		## Second heading
-		
+
 		### Third heading`,
 		errors: [
 			{
@@ -889,12 +877,12 @@ const invalidTests = [
 		code: dedent`# Heading 1
 
 		## Heading 2##
-		
+
 		### Heading 3 ###`,
 		output: dedent`# Heading 1
 
 		## Heading 2 ##
-		
+
 		### Heading 3 ###`,
 		options: [{ checkClosedHeadings: true }],
 		errors: [
@@ -1005,18 +993,18 @@ const invalidTests = [
 	},
 	{
 		code: dedent`# First heading#
-		
+
 		Some text
-		
+
 		## Second heading##
-		
+
 		### Third heading###`,
 		output: dedent`# First heading #
-		
+
 		Some text
-		
+
 		## Second heading ##
-		
+
 		### Third heading ###`,
 		options: [{ checkClosedHeadings: true }],
 		errors: [
@@ -1170,7 +1158,7 @@ const invalidTests = [
 	},
 ];
 
-ruleTester.run("no-missing-atx-heading-space", rule, {
+ruleTester("no-missing-atx-heading-space", rule, {
 	valid: validHeadings,
 	invalid: invalidTests,
 });

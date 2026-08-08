@@ -26,7 +26,7 @@ import { math } from "micromark-extension-math";
  * @import { Language, File, ParseResult, OkParseResult } from "@eslint/core";
  * @import { Root } from "mdast";
  * @import { Options } from "mdast-util-from-markdown";
- * @import { MarkdownLanguageOptions, MarkdownLanguageContext } from "../types.js";
+ * @import { MarkdownLanguageOptions, MarkdownLanguageContext, MdastParser } from "../types.js";
  * @typedef {Options['extensions']} Extensions
  * @typedef {Options['mdastExtensions']} MdastExtensions
  * @typedef {"commonmark"|"gfm"} ParserMode
@@ -145,6 +145,7 @@ export class MarkdownLanguage {
 	defaultLanguageOptions = {
 		frontmatter: false,
 		math: false,
+		// TODO
 	};
 
 	/**
@@ -197,6 +198,8 @@ export class MarkdownLanguage {
 				`Invalid language option value \`${mathOption}\` for math. Expected a boolean.`,
 			);
 		}
+
+		// TODO
 	}
 
 	/**
@@ -216,11 +219,25 @@ export class MarkdownLanguage {
 		 * problem that ESLint identified just like any other.
 		 */
 		try {
-			const options = createParserOptions(
-				this.#mode,
-				context?.languageOptions,
-			);
-			const root = fromMarkdown(text, options);
+			const parser = context?.languageOptions?.parser;
+
+			/** @type {Root} */
+			let root;
+
+			if (parser) {
+				root = /** @type {MdastParser} */ (parser).parse(text, {
+					mode: this.#mode,
+					frontmatter: context?.languageOptions?.frontmatter,
+					math: context?.languageOptions?.math,
+					...context?.languageOptions?.parserOptions,
+					// TODO: consider https://github.com/eslint/eslint/pull/20926.
+				});
+			} else {
+				root = fromMarkdown(
+					text,
+					createParserOptions(this.#mode, context?.languageOptions),
+				);
+			}
 
 			return {
 				ok: true,

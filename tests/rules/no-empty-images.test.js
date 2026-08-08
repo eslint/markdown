@@ -7,22 +7,14 @@
 // Imports
 //------------------------------------------------------------------------------
 
+import ruleTester from "./_utils/rule-tester.js";
 import rule from "../../src/rules/no-empty-images.js";
-import markdown from "../../src/index.js";
-import { RuleTester } from "eslint";
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-const ruleTester = new RuleTester({
-	plugins: {
-		markdown,
-	},
-	language: "markdown/commonmark",
-});
-
-ruleTester.run("no-empty-images", rule, {
+ruleTester("no-empty-images", rule, {
 	valid: ["![foo](bar)", "![foo](#bar)", "![foo](http://bar.com/image.png)"],
 	invalid: [
 		{
