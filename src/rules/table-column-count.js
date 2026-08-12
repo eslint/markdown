@@ -24,7 +24,6 @@ export default /** @satisfies {TableColumnCountRuleDefinition} */ ({
 		languages: ["markdown/gfm"],
 
 		docs: {
-			recommended: true,
 			description:
 				"Disallow data rows in a GitHub Flavored Markdown table from having more cells than the header row",
 			dialects: ["GFM"],

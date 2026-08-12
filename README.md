@@ -53,7 +53,7 @@ deno add jsr:@eslint/markdown
 
 | **Configuration Name** | **Description**                                                                                            |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `recommended`          | Lints all `.md` files with the recommended rules and assumes [GFM](https://github.github.com/gfm/) format. |
+| `recommended`          | Lints all `.md` files with the recommended rules and assumes [CommonMark](https://commonmark.org/) format. |
 | `processor`            | Enables extracting code blocks from all `.md` files so code blocks can be individually linted.             |
 
 In your `eslint.config.js` file, import `@eslint/markdown` and include the recommended config to enable Markdown parsing and linting:
@@ -125,7 +125,7 @@ export default defineConfig([
 | [`no-space-in-emphasis`](./docs/rules/no-space-in-emphasis.md)                 | Disallow spaces around emphasis markers                                                           |       yes       |
 | [`no-unused-definitions`](./docs/rules/no-unused-definitions.md)               | Disallow unused definitions                                                                       |       yes       |
 | [`require-alt-text`](./docs/rules/require-alt-text.md)                         | Require alternative text for images                                                               |       yes       |
-| [`table-column-count`](./docs/rules/table-column-count.md)                     | Disallow data rows in a GitHub Flavored Markdown table from having more cells than the header row |       yes       |
+| [`table-column-count`](./docs/rules/table-column-count.md)                     | Disallow data rows in a GitHub Flavored Markdown table from having more cells than the header row |       no        |
 
 <!-- Rule Table End -->
 

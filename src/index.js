@@ -93,7 +93,7 @@ const plugin = {
 			{
 				name: "markdown/recommended",
 				files: ["**/*.md"],
-				language: "markdown/gfm",
+				language: "markdown/commonmark",
 				plugins: (recommendedPlugins = {}),
 				rules: recommendedRules,
 			},
