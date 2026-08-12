@@ -4,6 +4,7 @@ import type {
 	MarkdownRuleDefinition,
 	MarkdownRuleVisitor,
 	MarkdownSourceCode,
+	MarkdownSyntaxElement,
 	Toml,
 	Json,
 	RangeMap,
@@ -46,6 +47,15 @@ import type {
 	TableRow,
 	// Extensions (front matter)
 	Yaml,
+	// Contents
+	BlockContent,
+	BlockContentMap,
+	FrontmatterContent,
+	FrontmatterContentMap,
+	PhrasingContent,
+	PhrasingContentMap,
+	RootContent,
+	RootContentMap,
 } from "mdast";
 import type { InlineMath, Math } from "mdast-util-math";
 
@@ -144,6 +154,30 @@ typeof processorPlugins satisfies {};
 		end: { line: 1, column: 1, offset: 0 },
 	};
 }
+
+// Check that `Toml` is registered as mdast front matter and root content.
+({}) as Toml satisfies FrontmatterContent;
+({}) as Toml satisfies FrontmatterContentMap["toml"];
+({}) as Toml satisfies RootContent;
+({}) as Toml satisfies RootContentMap["toml"];
+
+// Check that `Json` is registered as mdast front matter and root content.
+({}) as Json satisfies FrontmatterContent;
+({}) as Json satisfies FrontmatterContentMap["json"];
+({}) as Json satisfies RootContent;
+({}) as Json satisfies RootContentMap["json"];
+
+// Check that `InlineMath` is registered as mdast phrasing and root content.
+({}) as InlineMath satisfies PhrasingContent;
+({}) as InlineMath satisfies PhrasingContentMap["inlineMath"];
+({}) as InlineMath satisfies RootContent;
+({}) as InlineMath satisfies RootContentMap["inlineMath"];
+
+// Check that `Math` is registered as mdast block and root content.
+({}) as Math satisfies BlockContent;
+({}) as Math satisfies BlockContentMap["math"];
+({}) as Math satisfies RootContent;
+({}) as Math satisfies RootContentMap["math"];
 
 const validLanguageOptions1: MarkdownLanguageOptions = {
 	frontmatter: false,
@@ -397,3 +431,9 @@ const invalidLanguageOptions2: MarkdownLanguageOptions = {
 		};
 	},
 });
+
+({}) as MarkdownSyntaxElement satisfies
+	Node | { value: string; position: Position };
+
+// @ts-expect-error Invalid type for `MarkdownSyntaxElement`
+({}) as MarkdownSyntaxElement satisfies { unknown: string };

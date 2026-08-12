@@ -114,6 +114,21 @@ export interface Json extends Literal {
  */
 export interface JsonData extends Data {}
 
+/**
+ * Registers additional mdast nodes as valid front matter and root content.
+ */
+declare module "mdast" {
+	interface FrontmatterContentMap {
+		toml: Toml;
+		json: Json;
+	}
+
+	interface RootContentMap {
+		toml: Toml;
+		json: Json;
+	}
+}
+
 //------------------------------------------------------------------------------
 // Exports: Language and Source Code
 //------------------------------------------------------------------------------
@@ -141,7 +156,7 @@ export type MarkdownLanguageContext = LanguageContext<MarkdownLanguageOptions>;
 /**
  * A Markdown syntax element, including nodes and comments.
  */
-type MarkdownSyntaxElement = Node | InlineConfigComment;
+export type MarkdownSyntaxElement = Node | InlineConfigComment;
 
 export interface MarkdownRuleVisitor
 	extends
