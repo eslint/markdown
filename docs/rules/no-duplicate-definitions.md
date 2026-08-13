@@ -32,7 +32,7 @@ Examples of **incorrect** code:
 [mercury]: https://example.com/venus/
 
 [earth]: https://example.com/earth/
-[Earth]: https://example.com/mars/ 
+[Earth]: https://example.com/mars/
 
 <!-- footnote definition -->
 
