@@ -119,15 +119,21 @@ export interface JsonData extends Data {}
 // Exports: Language and Source Code
 //------------------------------------------------------------------------------
 
-export type NonMdastParser = ObjectMetaProperties & {
-	parse(text: string, options?: any): unknown;
+/**
+ * A parser that converts Markdown source text into an mdast syntax tree.
+ */
+export type MarkdownParser = ObjectMetaProperties & {
+	/**
+	 * Parses Markdown source text into an mdast syntax tree.
+	 * @param text The Markdown source text to parse.
+	 * @param options The parser-specific options.
+	 * @returns The root of the mdast syntax tree.
+	 */
+	parse(
+		text: string,
+		options?: Omit<MarkdownLanguageOptions, "parser">,
+	): Root;
 };
-
-export type MdastParser = ObjectMetaProperties & {
-	parse(text: string, options?: any): Root;
-};
-
-export type MarkdownParser = NonMdastParser | MdastParser;
 
 /**
  * Language options provided for Markdown files.
@@ -150,12 +156,6 @@ export interface MarkdownLanguageOptions extends LanguageOptions {
 	 * the default ESLint Markdown parser (`mdast-util-from-markdown`) will be used.
 	 */
 	parser?: MarkdownParser;
-
-	/**
-	 * An object specifying additional options that are passed directly to the
-	 * `parse()` method on the parser. The available options are parser-dependent.
-	 */
-	parserOptions?: Record<string, unknown>;
 }
 
 /**
