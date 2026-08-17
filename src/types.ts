@@ -135,6 +135,12 @@ declare module "mdast" {
 //------------------------------------------------------------------------------
 
 /**
+ * The mode of the Markdown parser to use.
+ * @default "commonmark"
+ */
+export type MarkdownMode = "commonmark" | "gfm";
+
+/**
  * A parser that converts Markdown source text into an mdast syntax tree.
  */
 export type MarkdownParser = ObjectMetaProperties & {
@@ -146,7 +152,13 @@ export type MarkdownParser = ObjectMetaProperties & {
 	 */
 	parse(
 		text: string,
-		options?: Omit<MarkdownLanguageOptions, "parser">,
+		options?: Omit<MarkdownLanguageOptions, "parser"> & {
+			/**
+			 * The mode of the Markdown parser to use.
+			 * @default "commonmark"
+			 */
+			mode?: MarkdownMode;
+		},
 	): Root;
 };
 

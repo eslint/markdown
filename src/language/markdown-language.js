@@ -145,7 +145,14 @@ export class MarkdownLanguage {
 	defaultLanguageOptions = {
 		frontmatter: false,
 		math: false,
-		// TODO
+		parser: {
+			parse(text, { mode, ...languageOptions }) {
+				return fromMarkdown(
+					text,
+					createParserOptions(mode, languageOptions),
+				);
+			},
+		},
 	};
 
 	/**
@@ -199,7 +206,16 @@ export class MarkdownLanguage {
 			);
 		}
 
-		// TODO
+		// `parser` option validation
+		const parserOption = languageOptions?.parser;
+
+		if (parserOption !== undefined && typeof parserOption !== "object") {
+			throw new Error(
+				`Invalid language option value \`${parserOption}\` for parser. Expected an object.`,
+			);
+
+			// TODO: stricter validation for parser object shape (e.g., check for `parse` method)
+		}
 	}
 
 	/**
@@ -211,6 +227,10 @@ export class MarkdownLanguage {
 	parse(file, context) {
 		// Note: BOM already removed
 		const text = /** @type {string} */ (file.body);
+		const languageOptions = {
+			...this.defaultLanguageOptions,
+			...context?.languageOptions,
+		};
 
 		/*
 		 * Check for parsing errors first. If there's a parsing error, nothing
@@ -219,24 +239,10 @@ export class MarkdownLanguage {
 		 * problem that ESLint identified just like any other.
 		 */
 		try {
-			/** @type {Root} */
-			let root;
-
-			// TODO: use destructuring and consider `__proto__` and rest properties?
-			const parser = context?.languageOptions?.parser;
-
-			if (parser) {
-				root = parser.parse(text, {
-					mode: this.#mode,
-					frontmatter: context?.languageOptions?.frontmatter,
-					math: context?.languageOptions?.math,
-				});
-			} else {
-				root = fromMarkdown(
-					text,
-					createParserOptions(this.#mode, context?.languageOptions),
-				);
-			}
+			const root = languageOptions.parser.parse(text, {
+				mode: this.#mode,
+				...languageOptions,
+			});
 
 			return {
 				ok: true,
