@@ -26,6 +26,8 @@ import { stripHtmlComments } from "../util.js";
 //-----------------------------------------------------------------------------
 
 const imgTagPattern = /<img(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?\/?>/giu;
+const ariaHiddenTruePattern =
+	/\saria-hidden\s*=\s*(?:"true"|'true'|true)(?=\s|\/?>)/iu;
 
 /**
  * Creates a regex to match HTML attributes
@@ -78,14 +80,8 @@ export default /** @satisfies {RequireAltTextRuleDefinition} */ ({
 
 				while ((match = imgTagPattern.exec(text)) !== null) {
 					const imgTag = match[0];
-					const ariaHiddenMatch = imgTag.match(
-						getHtmlAttributeRe("aria-hidden"),
-					);
-					if (
-						ariaHiddenMatch &&
-						ariaHiddenMatch[1] &&
-						ariaHiddenMatch[1].toLowerCase() === "true"
-					) {
+
+					if (ariaHiddenTruePattern.test(imgTag)) {
 						continue;
 					}
 

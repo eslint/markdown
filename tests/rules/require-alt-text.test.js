@@ -63,6 +63,12 @@ ruleTester.run("require-alt-text", rule, {
 		'<img src="image.png" aria-hidden alt="alt">',
 		'<img src="image.png" aria-hidden="true"/>',
 		'<img src="image.png" ARIA-HIDDEN="TRUE" />',
+
+		// Unquoted aria-hidden values
+		'<img src="image.png" aria-hidden=true/>',
+		'<img src="image.png" aria-hidden = true/>',
+		'<img src="image.png" ARIA-HIDDEN=TRUE />',
+
 		'<p><img src="image.png" alt="Descriptive text" /></p>',
 		'<!-- <img src="image.png" /> -->',
 		'Some text <!-- <img src="image.png" /> --> more text.',
@@ -380,6 +386,30 @@ ruleTester.run("require-alt-text", rule, {
 					column: 1,
 					endLine: 1,
 					endColumn: 43,
+				},
+			],
+		},
+		{
+			code: '<img src="image.png" aria-hidden=false/>',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 41,
+				},
+			],
+		},
+		{
+			code: '<img src="image.png" aria-hidden=falsefoo/>',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 44,
 				},
 			],
 		},
