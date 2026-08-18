@@ -402,14 +402,14 @@ ruleTester.run("require-alt-text", rule, {
 			],
 		},
 		{
-			code: '<img src="image.png" aria-hidden=falsefoo/>',
+			code: '<img src="image.png" aria-hidden=truefoo/>',
 			errors: [
 				{
 					messageId: "altTextRequired",
 					line: 1,
 					column: 1,
 					endLine: 1,
-					endColumn: 44,
+					endColumn: 43,
 				},
 			],
 		},
