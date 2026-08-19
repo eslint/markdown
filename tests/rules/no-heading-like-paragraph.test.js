@@ -56,6 +56,20 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 
 		// Paragraph continuation line
 		"Installation\n####### Configuration",
+
+		// GFM
+		{
+			code: "###### Installation",
+			language: "markdown/gfm",
+		},
+		{
+			code: "#######Installation",
+			language: "markdown/gfm",
+		},
+		{
+			code: "| ####### Installation |\n| --- |",
+			language: "markdown/gfm",
+		},
 	],
 
 	invalid: [
@@ -119,6 +133,7 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 			errors: [
 				{
 					messageId: "headingLikeParagraph",
+					data: { count: "7" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -126,6 +141,10 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 					suggestions: [
 						{
 							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
 							output: "######\tInstallation",
 						},
 						{
@@ -141,6 +160,7 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 			errors: [
 				{
 					messageId: "headingLikeParagraph",
+					data: { count: "7" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -148,6 +168,10 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 					suggestions: [
 						{
 							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
 							output: "######",
 						},
 						{
@@ -163,6 +187,7 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 			errors: [
 				{
 					messageId: "headingLikeParagraph",
+					data: { count: "7" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -170,6 +195,10 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 					suggestions: [
 						{
 							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
 							output: "###### ",
 						},
 						{
@@ -185,6 +214,7 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 			errors: [
 				{
 					messageId: "headingLikeParagraph",
+					data: { count: "7" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -192,6 +222,10 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 					suggestions: [
 						{
 							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
 							output: "######\nInstallation",
 						},
 						{
@@ -207,6 +241,7 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 			errors: [
 				{
 					messageId: "headingLikeParagraph",
+					data: { count: "7" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -214,6 +249,10 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 					suggestions: [
 						{
 							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
 							output: "######\r\nInstallation",
 						},
 						{
@@ -229,6 +268,7 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 			errors: [
 				{
 					messageId: "headingLikeParagraph",
+					data: { count: "7" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -236,6 +276,10 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 					suggestions: [
 						{
 							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
 							output: "###### Installation #######",
 						},
 						{
@@ -251,6 +295,7 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 			errors: [
 				{
 					messageId: "headingLikeParagraph",
+					data: { count: "7" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -258,6 +303,10 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 					suggestions: [
 						{
 							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
 							output: "###### **Installation**",
 						},
 						{
@@ -273,6 +322,7 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 			errors: [
 				{
 					messageId: "headingLikeParagraph",
+					data: { count: "7" },
 					line: 1,
 					column: 1,
 					endLine: 1,
@@ -280,6 +330,10 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 					suggestions: [
 						{
 							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
 							output: "###### Installation\nRun the following command.",
 						},
 						{
@@ -305,6 +359,10 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 					suggestions: [
 						{
 							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
 							output: "###### Installation\n\n######## Configuration",
 						},
 						{
@@ -323,6 +381,10 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 					suggestions: [
 						{
 							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "########",
+								maxDepthHashes: "######",
+							},
 							output: "####### Installation\n\n###### Configuration",
 						},
 						{
@@ -340,6 +402,7 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 			errors: [
 				{
 					messageId: "headingLikeParagraph",
+					data: { count: "7" },
 					line: 1,
 					column: 4,
 					endLine: 1,
@@ -347,6 +410,10 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 					suggestions: [
 						{
 							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
 							output: "   ###### Installation",
 						},
 						{
@@ -364,6 +431,7 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 			errors: [
 				{
 					messageId: "headingLikeParagraph",
+					data: { count: "7" },
 					line: 1,
 					column: 3,
 					endLine: 1,
@@ -371,6 +439,10 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 					suggestions: [
 						{
 							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
 							output: "> ###### Installation",
 						},
 						{
@@ -386,6 +458,7 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 			errors: [
 				{
 					messageId: "headingLikeParagraph",
+					data: { count: "7" },
 					line: 1,
 					column: 5,
 					endLine: 1,
@@ -393,6 +466,10 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 					suggestions: [
 						{
 							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
 							output: "> > ###### Installation",
 						},
 						{
@@ -410,6 +487,7 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 			errors: [
 				{
 					messageId: "headingLikeParagraph",
+					data: { count: "7" },
 					line: 1,
 					column: 3,
 					endLine: 1,
@@ -417,6 +495,10 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 					suggestions: [
 						{
 							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
 							output: "- ###### Installation",
 						},
 						{
@@ -432,6 +514,7 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 			errors: [
 				{
 					messageId: "headingLikeParagraph",
+					data: { count: "7" },
 					line: 3,
 					column: 3,
 					endLine: 3,
@@ -439,6 +522,10 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 					suggestions: [
 						{
 							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
 							output: "- Installation\n\n  ###### Configuration",
 						},
 						{
@@ -449,30 +536,11 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 				},
 			],
 		},
-	],
-});
 
-//------------------------------------------------------------------------------
-// GFM Tests
-//------------------------------------------------------------------------------
-
-const gfmRuleTester = new RuleTester({
-	plugins: {
-		markdown,
-	},
-	language: "markdown/gfm",
-});
-
-gfmRuleTester.run("no-heading-like-paragraph", rule, {
-	valid: [
-		"###### Installation",
-		"#######Installation",
-		"| ####### Installation |\n| --- |",
-	],
-
-	invalid: [
+		// GFM
 		{
 			code: "####### Installation",
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "headingLikeParagraph",
@@ -484,6 +552,10 @@ gfmRuleTester.run("no-heading-like-paragraph", rule, {
 					suggestions: [
 						{
 							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
 							output: "###### Installation",
 						},
 						{
@@ -498,9 +570,11 @@ gfmRuleTester.run("no-heading-like-paragraph", rule, {
 			code: dedent`[^note]: ####### Installation
 
 			Text[^note]`,
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "headingLikeParagraph",
+					data: { count: "7" },
 					line: 1,
 					column: 10,
 					endLine: 1,
@@ -508,6 +582,10 @@ gfmRuleTester.run("no-heading-like-paragraph", rule, {
 					suggestions: [
 						{
 							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
 							output: "[^note]: ###### Installation\n\nText[^note]",
 						},
 						{

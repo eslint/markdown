@@ -38,7 +38,6 @@ export default /** @satisfies {NoHeadingLikeParagraphRuleDefinition} */ ({
 		type: "problem",
 
 		docs: {
-			recommended: false,
 			description: "Disallow paragraphs that look like ATX headings",
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-heading-like-paragraph.md",
 		},
@@ -48,7 +47,8 @@ export default /** @satisfies {NoHeadingLikeParagraphRuleDefinition} */ ({
 		messages: {
 			headingLikeParagraph:
 				"Unexpected paragraph starting with {{count}} hash characters. ATX headings support at most 6.",
-			useMaxDepthHashes: 'Replace "{{hashes}}" with "{{maxDepthHashes}}".',
+			useMaxDepthHashes:
+				'Replace "{{hashes}}" with "{{maxDepthHashes}}".',
 			escapeLeadingHash: "Escape the leading hash character.",
 		},
 	},
@@ -84,11 +84,6 @@ export default /** @satisfies {NoHeadingLikeParagraphRuleDefinition} */ ({
 					},
 					messageId: "headingLikeParagraph",
 					data: { count: hashes.length },
-
-					/*
-					 * There's no autofix, because the number of hash characters alone
-					 * doesn't reveal which of the two corrections the author intended.
-					 */
 					suggest: [
 						{
 							messageId: "useMaxDepthHashes",
