@@ -46,6 +46,20 @@ Examples of **correct** code for this rule:
 | [ESLint](https://eslint.org/) | ![A beautiful sunset](sunset.png) |
 ```
 
+## Known Limitations
+
+This rule uses a regular expression to find reversed syntax, and JavaScript regular expressions cannot match arbitrarily nested parentheses. A label may contain at most one level of nested parentheses, so `(ESLint (the linter))[https://eslint.org/]` is reported, while labels nesting two or more levels deep are not.
+
+Examples of reversed syntax that this rule **does not** report:
+
+```markdown
+<!-- eslint markdown/no-reversed-media-syntax: "error" -->
+
+(ESLint (the (JavaScript) linter))[https://eslint.org/]
+
+!(A sunset (over (the) sea))[sunset.png]
+```
+
 ## When Not To Use It
 
 If you don't need to enforce correct link and image syntax, you can safely disable this rule.
