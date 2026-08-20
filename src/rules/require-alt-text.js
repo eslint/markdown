@@ -27,7 +27,7 @@ import { stripHtmlComments } from "../util.js";
 
 const imgTagPattern = /<img(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?\/?>/giu;
 const ariaHiddenTruePattern =
-	/\saria-hidden\s*=\s*(?:"true"|'true'|true)(?=\s|\/?>)/iu;
+	/[\s"']aria-hidden\s*=\s*(?:"true"|'true'|true(?=\s|\/?>))/iu;
 
 /**
  * Creates a regex to match HTML attributes

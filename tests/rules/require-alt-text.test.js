@@ -68,6 +68,8 @@ ruleTester.run("require-alt-text", rule, {
 		'<img src="image.png" aria-hidden=true/>',
 		'<img src="image.png" aria-hidden = true/>',
 		'<img src="image.png" ARIA-HIDDEN=TRUE />',
+		'<img before="true"aria-hidden="true"after="true">',
+		"<img before='true'aria-hidden='true'after='true'>",
 
 		'<p><img src="image.png" alt="Descriptive text" /></p>',
 		'<!-- <img src="image.png" /> -->',
