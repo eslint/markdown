@@ -1,5 +1,18 @@
 # Changelog
 
+## [8.1.0](https://github.com/eslint/markdown/compare/v8.0.3...v8.1.0) (2026-08-20)
+
+
+### Features
+
+* export `MarkdownSyntaxElement` ([#698](https://github.com/eslint/markdown/issues/698)) ([ee9830a](https://github.com/eslint/markdown/commit/ee9830a0902b15317ed9c11c49b06121fa8f41c2))
+
+
+### Bug Fixes
+
+* add `mdast` type augmentation for TOML and JSON nodes ([#708](https://github.com/eslint/markdown/issues/708)) ([dd42f9e](https://github.com/eslint/markdown/commit/dd42f9e900581c5660d8a4f4794f11d8087c5827))
+* support unquoted aria-hidden value in require-alt-text ([#719](https://github.com/eslint/markdown/issues/719)) ([c4a148b](https://github.com/eslint/markdown/commit/c4a148bc3c9e6bc2a54a66d06e18a9e77feeca28))
+
 ## [8.0.3](https://github.com/eslint/markdown/compare/v8.0.2...v8.0.3) (2026-07-01)
 
 
