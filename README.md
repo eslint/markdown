@@ -111,6 +111,7 @@ export default defineConfig([
 | [`no-bare-urls`](./docs/rules/no-bare-urls.md)                                 | Disallow bare URLs                                                                                |       no        |
 | [`no-duplicate-definitions`](./docs/rules/no-duplicate-definitions.md)         | Disallow duplicate definitions                                                                    |       yes       |
 | [`no-duplicate-headings`](./docs/rules/no-duplicate-headings.md)               | Disallow duplicate headings in the same document                                                  |       no        |
+| [`no-emphasis-as-heading`](./docs/rules/no-emphasis-as-heading.md)             | Disallow using fully bolded paragraphs as headings                                                |       yes       |
 | [`no-empty-definitions`](./docs/rules/no-empty-definitions.md)                 | Disallow empty definitions                                                                        |       yes       |
 | [`no-empty-images`](./docs/rules/no-empty-images.md)                           | Disallow empty images                                                                             |       yes       |
 | [`no-empty-links`](./docs/rules/no-empty-links.md)                             | Disallow empty links                                                                              |       yes       |
