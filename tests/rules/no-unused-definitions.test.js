@@ -7,22 +7,14 @@
 // Imports
 //------------------------------------------------------------------------------
 
+import ruleTester from "./_utils/rule-tester.js";
 import rule from "../../src/rules/no-unused-definitions.js";
-import markdown from "../../src/index.js";
-import { RuleTester } from "eslint";
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-const ruleTester = new RuleTester({
-	plugins: {
-		markdown,
-	},
-	language: "markdown/gfm",
-});
-
-ruleTester.run("no-unused-definitions", rule, {
+ruleTester("no-unused-definitions", rule, {
 	valid: [
 		"",
 		"   ",
@@ -68,34 +60,46 @@ ruleTester.run("no-unused-definitions", rule, {
 
 [venus]: https://example.com/venus.jpg
 `, // Image - shortcut
-		`
+		{
+			code: `
 Mercury[^mercury]
 
 [^mercury]: Hello, Mercury!
 `,
-		`
+			language: "markdown/gfm",
+		},
+		{
+			code: `
 Mercury[^mercury]
 
 [^mercury]: Hello, Mercury!
 [^Mercury]: Hello, Venus!
 `, // case insensitive
-		`
+			language: "markdown/gfm",
+		},
+		{
+			code: `
 Mercury[^mercury]
 
 [^mercury]: https://example.com/mercury/
 [    ^mercury       ]: https://example.com/venus/
 `, // with extra spaces
+			language: "markdown/gfm",
+		},
 		`
 [//]: # (This is a comment 1)
 [//]: <> (This is a comment 2)
 `,
-		`
+		{
+			code: `
 [Alpha][alpha] and [Alpha][^alpha]
 
 [alpha]: bravo
 
 [^alpha]: bravo
 `,
+			language: "markdown/gfm",
+		},
 		{
 			code: `
 [mercury]: https://example.com/mercury/
@@ -113,6 +117,7 @@ Mercury[^mercury]
 [^mercury]: Hello, Mercury!
 [^mercury]: Hello, Venus!
 `,
+			language: "markdown/gfm",
 			options: [
 				{
 					allowFootnoteDefinitions: ["mercury"],
@@ -169,6 +174,7 @@ Mercury[^mercury]
 		},
 		{
 			code: "[^MERCURY]: Hello, Mercury!",
+			language: "markdown/gfm",
 			options: [
 				{
 					allowFootnoteDefinitions: ["MERCURY"],
@@ -177,6 +183,7 @@ Mercury[^mercury]
 		},
 		{
 			code: "[^mercury]: Hello, Mercury!",
+			language: "markdown/gfm",
 			options: [
 				{
 					allowFootnoteDefinitions: ["MERCURY"],
@@ -185,6 +192,7 @@ Mercury[^mercury]
 		},
 		{
 			code: "[^MERCURY]: Hello, Mercury!",
+			language: "markdown/gfm",
 			options: [
 				{
 					allowFootnoteDefinitions: ["mercury"],
@@ -193,6 +201,7 @@ Mercury[^mercury]
 		},
 		{
 			code: "[^mercury]: Hello, Mercury!",
+			language: "markdown/gfm",
 			options: [
 				{
 					allowFootnoteDefinitions: ["   mercury   "],
@@ -201,6 +210,7 @@ Mercury[^mercury]
 		},
 		{
 			code: "[^mercury]: Hello, Mercury!",
+			language: "markdown/gfm",
 			options: [
 				{
 					checkFootnoteDefinitions: false,
@@ -209,6 +219,7 @@ Mercury[^mercury]
 		},
 		{
 			code: "[^mercury]: Hello, Mercury!",
+			language: "markdown/gfm",
 			options: [
 				{
 					checkFootnoteDefinitions: true,
@@ -229,6 +240,7 @@ Mercury[^mercury]
 					},
 					{
 						code: "[^Grüsse]: Grüsse",
+						language: "markdown/gfm",
 						options: [
 							{
 								allowFootnoteDefinitions: ["GRÜẞE"],
@@ -349,6 +361,7 @@ Mercury[^mercury]
 			code: `
 [^mercury]: Hello, Mercury!
 `,
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "unusedFootnoteDefinition",
@@ -365,6 +378,7 @@ Mercury[^mercury]
 			code: `
 [^Mercury]: Hello, Mercury!
 `,
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "unusedFootnoteDefinition",
@@ -383,6 +397,7 @@ Mercury[^mercury]
 [^mercury]: Hello, Venus!
 [^mercury]: Hello, Earth!
 `,
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "unusedFootnoteDefinition",
@@ -415,6 +430,7 @@ Mercury[^mercury]
 			code: `
 [^mercury]: Hello, Mercury!
 `,
+			language: "markdown/gfm",
 			options: [
 				{
 					allowDefinitions: ["mercury"],
@@ -438,6 +454,7 @@ Mercury[^mercury]
 			code: `
 [^mercury]: Hello, Mercury!
 `,
+			language: "markdown/gfm",
 			options: [
 				{
 					checkFootnoteDefinitions: true,

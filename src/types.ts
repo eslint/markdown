@@ -42,6 +42,7 @@ import type { InlineMath, Math } from "mdast-util-math";
 import type {
 	LanguageContext,
 	LanguageOptions,
+	ObjectMetaProperties,
 	RuleVisitor,
 } from "@eslint/core";
 import type {
@@ -134,6 +135,34 @@ declare module "mdast" {
 //------------------------------------------------------------------------------
 
 /**
+ * The mode of the Markdown parser to use.
+ * @default "commonmark"
+ */
+export type MarkdownMode = "commonmark" | "gfm";
+
+/**
+ * A parser that converts Markdown source text into an mdast syntax tree.
+ */
+export type MarkdownParser = ObjectMetaProperties & {
+	/**
+	 * Parses Markdown source text into an mdast syntax tree.
+	 * @param text The Markdown source text to parse.
+	 * @param options The parser-specific options.
+	 * @returns The root of the mdast syntax tree.
+	 */
+	parse(
+		text: string,
+		options?: Omit<MarkdownLanguageOptions, "parser"> & {
+			/**
+			 * The mode of the Markdown parser to use.
+			 * @default "commonmark"
+			 */
+			mode?: MarkdownMode;
+		},
+	): Root;
+};
+
+/**
  * Language options provided for Markdown files.
  */
 export interface MarkdownLanguageOptions extends LanguageOptions {
@@ -148,6 +177,12 @@ export interface MarkdownLanguageOptions extends LanguageOptions {
 	 * @default false
 	 */
 	math?: boolean;
+
+	/**
+	 * An object containing a `parse()` method. If not configured,
+	 * the default ESLint Markdown parser (`mdast-util-from-markdown`) will be used.
+	 */
+	parser?: MarkdownParser;
 }
 
 /**
