@@ -7,25 +7,17 @@
 // Imports
 //------------------------------------------------------------------------------
 
-import rule from "../../src/rules/no-missing-label-refs.js";
-import markdown from "../../src/index.js";
-import { Linter, RuleTester } from "eslint";
 import dedent from "dedent";
+import { Linter } from "eslint";
+import ruleTester from "./_utils/rule-tester.js";
+import markdown from "../../src/index.js";
+import rule from "../../src/rules/no-missing-label-refs.js";
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-// TODO
-
-const ruleTester = new RuleTester({
-	plugins: {
-		markdown,
-	},
-	language: "markdown/commonmark",
-});
-
-ruleTester.run("no-missing-label-refs", rule, {
+ruleTester("no-missing-label-refs", rule, {
 	valid: [
 		"[*foo*]",
 		"[foo]\n\n[foo]: http://bar.com",
