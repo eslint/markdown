@@ -125,7 +125,7 @@ export default defineConfig([
 | [`no-space-in-emphasis`](./docs/rules/no-space-in-emphasis.md)                 | Disallow spaces around emphasis markers                                                           |       yes       |
 | [`no-unused-definitions`](./docs/rules/no-unused-definitions.md)               | Disallow unused definitions                                                                       |       yes       |
 | [`require-alt-text`](./docs/rules/require-alt-text.md)                         | Require alternative text for images                                                               |       yes       |
-| [`table-column-count`](./docs/rules/table-column-count.md)                     | Disallow data rows in a GitHub Flavored Markdown table from having more cells than the header row |       yes       |
+| [`table-column-count`](./docs/rules/table-column-count.md)                     | Disallow data rows in a GitHub Flavored Markdown table from having more cells than the header row |       no        |
 
 <!-- Rule Table End -->
 
