@@ -168,15 +168,15 @@ export default /** @satisfies {NoBareUrlsRuleDefinition} */ ({
 							node: linkNode,
 							messageId: "bareUrl",
 							fix(fixer) {
-								let replacementUrl = `<${text}>`;
+								let replacementText = `<${text}>`;
 
 								if (url === `http://${text}`) {
-									replacementUrl = `[${text}](${url})`;
+									replacementText = `[${text}](${url})`;
 								}
 
 								return fixer.replaceText(
 									linkNode,
-									replacementUrl,
+									replacementText,
 								);
 							},
 						});
