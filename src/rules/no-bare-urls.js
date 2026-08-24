@@ -168,7 +168,16 @@ export default /** @satisfies {NoBareUrlsRuleDefinition} */ ({
 							node: linkNode,
 							messageId: "bareUrl",
 							fix(fixer) {
-								return fixer.replaceText(linkNode, `<${text}>`);
+								let replacementUrl = `<${text}>`;
+
+								if (url === `http://${text}`) {
+									replacementUrl = `[${text}](${url})`;
+								}
+
+								return fixer.replaceText(
+									linkNode,
+									replacementUrl,
+								);
 							},
 						});
 					}

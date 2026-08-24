@@ -74,6 +74,19 @@ ruleTester.run("no-bare-urls", rule, {
 	],
 	invalid: [
 		{
+			code: "Visit www.example.com for details.",
+			output: "Visit [www.example.com](http://www.example.com) for details.",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 7,
+					endLine: 1,
+					endColumn: 22,
+				},
+			],
+		},
+		{
 			code: "https://www.example.com/",
 			output: "<https://www.example.com/>",
 			errors: [
