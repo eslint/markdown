@@ -169,7 +169,7 @@ export default /** @satisfies {NoBareUrlsRuleDefinition} */ ({
 							messageId: "bareUrl",
 							fix(fixer) {
 								let replacementText = `<${text}>`;
-
+								// GFM parses `www` autolinks with an `http://` URL.
 								if (url === `http://${text}`) {
 									replacementText = `[${text}](${url})`;
 								}
