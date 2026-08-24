@@ -34,9 +34,11 @@ const htmlTagPattern =
 export default /** @satisfies {NoHtmlRuleDefinition} */ ({
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			description: "Disallow HTML tags",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-html.md",
 		},
 
