@@ -126,6 +126,19 @@ ruleTester.run("no-bare-urls", rule, {
 			],
 		},
 		{
+			code: "www.example.com/a[b",
+			output: "[www.example.com/a\\[b](http://www.example.com/a[b)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 20,
+				},
+			],
+		},
+		{
 			code: "www.example.com/a*b*c",
 			output: "[www.example.com/a\\*b\\*c](http://www.example.com/a*b*c)",
 			errors: [
@@ -141,6 +154,19 @@ ruleTester.run("no-bare-urls", rule, {
 		{
 			code: "www.example.com/a~b~c",
 			output: "[www.example.com/a\\~b\\~c](http://www.example.com/a~b~c)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: "www.example.com/a`b`c",
+			output: "[www.example.com/a\\`b\\`c](http://www.example.com/a`b`c)",
 			errors: [
 				{
 					messageId: "bareUrl",
