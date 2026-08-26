@@ -171,7 +171,12 @@ export default /** @satisfies {NoBareUrlsRuleDefinition} */ ({
 								let replacementText = `<${text}>`;
 								// GFM parses `www` autolinks with an `http://` URL.
 								if (url === `http://${text}`) {
-									replacementText = `[${text}](${url})`;
+									const escapedLinkDestination = url.replace(
+										/[\\()]/gu,
+										"\\$&",
+									);
+
+									replacementText = `[${text}](${escapedLinkDestination})`;
 								}
 
 								return fixer.replaceText(

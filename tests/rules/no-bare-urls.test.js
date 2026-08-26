@@ -87,6 +87,71 @@ ruleTester.run("no-bare-urls", rule, {
 			],
 		},
 		{
+			code: "www.google.com/search?q=(business))+ok",
+			output: "[www.google.com/search?q=(business))+ok](http://www.google.com/search?q=\\(business\\)\\)+ok)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 39,
+				},
+			],
+		},
+		{
+			code: "www.example.com/a\\*b",
+			output: "[www.example.com/a\\\\\\*b](http://www.example.com/a\\\\*b)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 21,
+				},
+			],
+		},
+		{
+			code: "www.example.com/a]b",
+			output: "[www.example.com/a\\]b](http://www.example.com/a]b)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: "www.example.com/a*b*c",
+			output: "[www.example.com/a\\*b\\*c](http://www.example.com/a*b*c)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: "www.example.com/a~b~c",
+			output: "[www.example.com/a\\~b\\~c](http://www.example.com/a~b~c)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 22,
+				},
+			],
+		},
+		{
 			code: "https://www.example.com/",
 			output: "<https://www.example.com/>",
 			errors: [
