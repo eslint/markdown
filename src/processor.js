@@ -260,7 +260,7 @@ const languageToFileExtension = {
 /**
  * Extracts lintable code blocks from Markdown text.
  * @param {string} sourceText The text of the file.
- * @param {string} [filename] The filename of the file.
+ * @param {string} filename The filename of the file.
  * @returns {Array<{ filename: string, text: string }>} Source code blocks to lint.
  */
 function preprocess(sourceText, filename) {
@@ -453,7 +453,7 @@ function excludeUnsatisfiableRules(message) {
  * Transforms generated messages for output.
  * @param {Array<LintMessage[]>} messages An array containing one array of messages
  *     for each code block returned from `preprocess`.
- * @param {string} [filename] The filename of the file.
+ * @param {string} filename The filename of the file.
  * @returns {LintMessage[]} A flattened array of messages with mapped locations.
  */
 function postprocess(messages, filename) {
