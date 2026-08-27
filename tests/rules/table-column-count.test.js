@@ -44,7 +44,10 @@ ruleTester("table-column-count", rule, {
         `,
 			language: "markdown/gfm",
 		},
-		`Just some text. | not a table |`,
+		{
+			code: `Just some text. | not a table |`,
+			language: "markdown/gfm",
+		},
 		{
 			code: dedent`
             | Header | Header |
