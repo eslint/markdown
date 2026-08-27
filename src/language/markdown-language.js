@@ -24,7 +24,7 @@ import { math } from "micromark-extension-math";
 
 /**
  * @import { Language, File, ParseResult, OkParseResult } from "@eslint/core";
- * @import { Root, Node } from "mdast";
+ * @import { Node, Root } from "mdast";
  * @import { Options } from "mdast-util-from-markdown";
  * @import { MarkdownLanguageOptions, MarkdownLanguageContext } from "../types.js";
  * @typedef {Options['extensions']} Extensions
