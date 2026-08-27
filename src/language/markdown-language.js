@@ -26,7 +26,7 @@ import { math } from "micromark-extension-math";
  * @import { Language, File, ParseResult, OkParseResult } from "@eslint/core";
  * @import { Root } from "mdast";
  * @import { Options } from "mdast-util-from-markdown";
- * @import { MarkdownLanguageOptions, MarkdownLanguageContext, MarkdownParserMode, MarkdownParser } from "../types.js";
+ * @import { MarkdownLanguageOptions, MarkdownLanguageContext, MarkdownParserMode } from "../types.js";
  * @typedef {Options['extensions']} Extensions
  * @typedef {Options['mdastExtensions']} MdastExtensions
  */
@@ -220,16 +220,16 @@ export class MarkdownLanguage {
 	/**
 	 * Parses the given file into an AST.
 	 * @param {File} file The virtual file to parse.
-	 * @param {MarkdownLanguageContext} context The options to use for parsing.
+	 * @param {MarkdownLanguageContext} [context] The options to use for parsing.
 	 * @returns {ParseResult<Root>} The result of parsing.
 	 */
 	parse(file, context) {
 		// Note: BOM already removed
 		const text = /** @type {string} */ (file.body);
-		const languageOptions = {
-			...this.defaultLanguageOptions,
-			...context?.languageOptions,
-		};
+		const {
+			parser = this.defaultLanguageOptions.parser,
+			...restLanguageOptions
+		} = context?.languageOptions ?? {};
 
 		/*
 		 * Check for parsing errors first. If there's a parsing error, nothing
@@ -238,9 +238,9 @@ export class MarkdownLanguage {
 		 * problem that ESLint identified just like any other.
 		 */
 		try {
-			const root = languageOptions.parser.parse(text, {
+			const root = parser.parse(text, {
 				mode: this.#mode,
-				...languageOptions,
+				...restLanguageOptions,
 			});
 
 			return {

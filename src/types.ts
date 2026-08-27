@@ -159,12 +159,22 @@ export type MarkdownParser = ObjectMetaProperties & {
 	 */
 	parse(
 		text: string,
-		options: Omit<MarkdownLanguageOptions, "parser"> & {
+		options: MarkdownLanguageOptions & {
 			/**
 			 * The mode of the Markdown parser to use.
 			 * @default "commonmark"
 			 */
 			mode: MarkdownParserMode;
+
+			/*
+			 * Don't use `Omit<MarkdownLanguageOptions, "parser">` here.
+			 * Because `MarkdownLanguageOptions` has a string index signature,
+			 * `Omit` would lose its named option properties.
+			 */
+			/**
+			 * Parsers cannot override the `parser` used by the language.
+			 */
+			parser?: never;
 		},
 	): Root;
 };
