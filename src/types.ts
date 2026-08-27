@@ -159,12 +159,12 @@ export type MarkdownParser = ObjectMetaProperties & {
 	 */
 	parse(
 		text: string,
-		options?: Omit<MarkdownLanguageOptions, "parser"> & {
+		options: Omit<MarkdownLanguageOptions, "parser"> & {
 			/**
 			 * The mode of the Markdown parser to use.
 			 * @default "commonmark"
 			 */
-			mode?: MarkdownParserMode;
+			mode: MarkdownParserMode;
 		},
 	): Root;
 };
