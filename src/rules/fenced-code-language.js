@@ -27,10 +27,12 @@ const fencedCodeCharacters = new Set(["`", "~"]);
 export default /** @satisfies {FencedCodeLanguageRuleDefinition} */ ({
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			recommended: true,
 			description: "Require languages for fenced code blocks",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/fenced-code-language.md",
 		},
 

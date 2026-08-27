@@ -65,6 +65,14 @@ ruleTester.run("require-alt-text", rule, {
 		'<img src="image.png" aria-hidden alt="alt">',
 		'<img src="image.png" aria-hidden="true"/>',
 		'<img src="image.png" ARIA-HIDDEN="TRUE" />',
+
+		// Unquoted aria-hidden values
+		'<img src="image.png" aria-hidden=true/>',
+		'<img src="image.png" aria-hidden = true/>',
+		'<img src="image.png" ARIA-HIDDEN=TRUE />',
+		'<img before="true"aria-hidden="true"after="true">',
+		"<img before='true'aria-hidden='true'after='true'>",
+
 		'<p><img src="image.png" alt="Descriptive text" /></p>',
 		'<!-- <img src="image.png" /> -->',
 		'Some text <!-- <img src="image.png" /> --> more text.',
@@ -375,6 +383,30 @@ ruleTester.run("require-alt-text", rule, {
 		},
 		{
 			code: '<img src="image.png" aria-hidden="false"/>',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 43,
+				},
+			],
+		},
+		{
+			code: '<img src="image.png" aria-hidden=false/>',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 41,
+				},
+			],
+		},
+		{
+			code: '<img src="image.png" aria-hidden=truefoo/>',
 			errors: [
 				{
 					messageId: "altTextRequired",
