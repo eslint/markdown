@@ -145,6 +145,9 @@ export class MarkdownLanguage {
 		frontmatter: false,
 		math: false,
 		parser: {
+			meta: {
+				name: "mdast-util-from-markdown",
+			},
 			parse(text, { mode, ...languageOptions }) {
 				return fromMarkdown(
 					text,

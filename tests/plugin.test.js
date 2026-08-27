@@ -1228,6 +1228,25 @@ describe("FlatESLint", () => {
 				.map(([name]) => `markdown/${name}`);
 			assert.deepStrictEqual(actualRuleIds, expectedRuleIds);
 		});
+
+		it("should serialize the default Markdown parser", async () => {
+			const markdownESLint = new ESLint({
+				overrideConfigFile: true,
+				overrideConfig: {
+					files: ["**/*.md"],
+					plugins: { markdown: plugin },
+					language: "markdown/commonmark",
+				},
+			});
+			const config =
+				await markdownESLint.calculateConfigForFile("test.md");
+			const serializedConfig = JSON.parse(JSON.stringify(config));
+
+			assert.strictEqual(
+				serializedConfig.languageOptions.parser,
+				"mdast-util-from-markdown",
+			);
+		});
 	});
 
 	describe("plugin", () => {
