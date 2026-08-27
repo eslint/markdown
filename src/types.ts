@@ -135,17 +135,22 @@ declare module "mdast" {
 //------------------------------------------------------------------------------
 
 /**
+ * @deprecated Use `MarkdownParserMode` instead.
+ */
+export type ParserMode = MarkdownParserMode;
+
+/**
  * The mode of the Markdown parser to use.
  * @default "commonmark"
  */
-export type MarkdownMode = "commonmark" | "gfm";
+export type MarkdownParserMode = "commonmark" | "gfm";
 
 /**
  * A parser that converts Markdown source text into an mdast syntax tree.
  */
 export type MarkdownParser = ObjectMetaProperties & {
 	/**
-	 * Parses Markdown source text into an mdast syntax tree.
+	 * Parses Markdown source text into an [mdast](https://github.com/syntax-tree/mdast#readme) syntax tree.
 	 * @param text The Markdown source text to parse.
 	 * @param options The parser-specific options.
 	 * @returns The root of the mdast syntax tree.
@@ -157,7 +162,7 @@ export type MarkdownParser = ObjectMetaProperties & {
 			 * The mode of the Markdown parser to use.
 			 * @default "commonmark"
 			 */
-			mode?: MarkdownMode;
+			mode?: MarkdownParserMode;
 		},
 	): Root;
 };
@@ -179,8 +184,8 @@ export interface MarkdownLanguageOptions extends LanguageOptions {
 	math?: boolean;
 
 	/**
-	 * An object containing a `parse()` method. If not configured,
-	 * the default ESLint Markdown parser (`mdast-util-from-markdown`) will be used.
+	 * An object with a `parse()` method and optional metadata properties.
+	 * If not configured, the default ESLint Markdown parser (`mdast-util-from-markdown`) will be used.
 	 */
 	parser?: MarkdownParser;
 }

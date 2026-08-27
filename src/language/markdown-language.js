@@ -26,10 +26,9 @@ import { math } from "micromark-extension-math";
  * @import { Language, File, ParseResult, OkParseResult } from "@eslint/core";
  * @import { Root } from "mdast";
  * @import { Options } from "mdast-util-from-markdown";
- * @import { MarkdownLanguageOptions, MarkdownLanguageContext, MarkdownParser } from "../types.js";
+ * @import { MarkdownLanguageOptions, MarkdownLanguageContext, MarkdownParserMode, MarkdownParser } from "../types.js";
  * @typedef {Options['extensions']} Extensions
  * @typedef {Options['mdastExtensions']} MdastExtensions
- * @typedef {"commonmark"|"gfm"} ParserMode
  */
 
 //-----------------------------------------------------------------------------
@@ -55,7 +54,7 @@ const jsonFrontmatterConfig = {
 
 /**
  * Create parser options based on `mode` and `languageOptions`.
- * @param {ParserMode} mode The markdown parser mode.
+ * @param {MarkdownParserMode} mode The markdown parser mode.
  * @param {MarkdownLanguageOptions} languageOptions Language options.
  * @returns {{extensions: Extensions, mdastExtensions: MdastExtensions}} Parser options for micromark and mdast.
  */
@@ -157,14 +156,14 @@ export class MarkdownLanguage {
 
 	/**
 	 * The Markdown parser mode.
-	 * @type {ParserMode}
+	 * @type {MarkdownParserMode}
 	 */
 	#mode = "commonmark";
 
 	/**
 	 * Creates a new instance.
 	 * @param {Object} options The options to use for this instance.
-	 * @param {ParserMode} [options.mode] The Markdown parser mode to use.
+	 * @param {MarkdownParserMode} [options.mode] The Markdown parser mode to use.
 	 */
 	constructor({ mode } = {}) {
 		if (mode) {
