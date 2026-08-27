@@ -162,7 +162,7 @@ export class MarkdownLanguage {
 
 	/**
 	 * Creates a new instance.
-	 * @param {Object} options The options to use for this instance.
+	 * @param {Object} [options] The options to use for this instance.
 	 * @param {MarkdownParserMode} [options.mode] The Markdown parser mode to use.
 	 */
 	constructor({ mode } = {}) {
@@ -173,7 +173,7 @@ export class MarkdownLanguage {
 
 	/**
 	 * Validates the language options.
-	 * @param {MarkdownLanguageOptions} languageOptions The language options to validate.
+	 * @param {MarkdownLanguageOptions} [languageOptions] The language options to validate.
 	 * @returns {void}
 	 * @throws {Error} When the language options are invalid.
 	 */
@@ -208,12 +208,18 @@ export class MarkdownLanguage {
 		// `parser` option validation
 		const parserOption = languageOptions?.parser;
 
-		if (parserOption !== undefined && typeof parserOption !== "object") {
-			throw new Error(
-				`Invalid language option value \`${parserOption}\` for parser. Expected an object.`,
-			);
+		if (parserOption !== undefined) {
+			if (typeof parserOption !== "object" || parserOption === null) {
+				throw new Error(
+					`Invalid language option value \`${parserOption}\` for parser. Expected a non-null object.`,
+				);
+			}
 
-			// TODO: stricter validation for parser object shape (e.g., check for `parse` method)
+			if (typeof parserOption.parse !== "function") {
+				throw new Error(
+					"Invalid language option `parser`. Expected an object with a `parse` method.",
+				);
+			}
 		}
 	}
 
