@@ -139,6 +139,22 @@ describe("MarkdownLanguage", () => {
 				language.validateLanguageOptions({ math: false });
 			});
 		});
+
+		it("should throw the expected error when `parser` is a symbol", () => {
+			const language = new MarkdownLanguage();
+
+			assert.throws(
+				() => {
+					language.validateLanguageOptions({
+						parser: Symbol("parser"),
+					});
+				},
+				{
+					message:
+						"Invalid language option value `Symbol(parser)` for parser. Expected a non-null object.",
+				},
+			);
+		});
 	});
 
 	describe("parse()", () => {

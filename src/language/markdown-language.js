@@ -214,7 +214,7 @@ export class MarkdownLanguage {
 		if (parserOption !== undefined) {
 			if (typeof parserOption !== "object" || parserOption === null) {
 				throw new Error(
-					`Invalid language option value \`${parserOption}\` for parser. Expected a non-null object.`,
+					`Invalid language option value \`${String(parserOption)}\` for parser. Expected a non-null object.`,
 				);
 			}
 
