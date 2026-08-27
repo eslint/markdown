@@ -146,11 +146,13 @@ export type ParserMode = MarkdownParserMode;
 export type MarkdownParserMode = "commonmark" | "gfm";
 
 /**
- * A parser that converts Markdown source text into an mdast syntax tree.
+ * A parser that converts Markdown source text into an
+ * [mdast](https://github.com/syntax-tree/mdast#readme) syntax tree.
  */
 export type MarkdownParser = ObjectMetaProperties & {
 	/**
-	 * Parses Markdown source text into an [mdast](https://github.com/syntax-tree/mdast#readme) syntax tree.
+	 * Parses Markdown source text into an
+	 * [mdast](https://github.com/syntax-tree/mdast#readme) syntax tree.
 	 * @param text The Markdown source text to parse.
 	 * @param options The parser-specific options.
 	 * @returns The root of the mdast syntax tree.
