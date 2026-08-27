@@ -226,6 +226,7 @@ export class MarkdownLanguage {
 	parse(file, context) {
 		// Note: BOM already removed
 		const text = /** @type {string} */ (file.body);
+
 		const {
 			parser = this.defaultLanguageOptions.parser,
 			...restLanguageOptions
