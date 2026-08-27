@@ -418,6 +418,26 @@ describe("MarkdownLanguage", () => {
 			assert.strictEqual(result.ast.children[1].children[0].type, "text");
 			assert.strictEqual(result.ast.children[2].type, "math");
 		});
+
+		it("should not allow language options to override commonmark mode", () => {
+			const language = new MarkdownLanguage({
+				mode: "commonmark",
+			});
+			const result = language.parse(
+				{
+					body: "| Column 1 | Column 2 |\n| -------- | -------- |\n| Cell 1   | Cell 2   |",
+					path: "test.md",
+				},
+				{
+					languageOptions: {
+						mode: "gfm",
+					},
+				},
+			);
+
+			assert.strictEqual(result.ok, true);
+			assert.strictEqual(result.ast.children[0].type, "paragraph");
+		});
 	});
 
 	describe("createSourceCode()", () => {

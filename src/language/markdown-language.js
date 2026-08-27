@@ -249,8 +249,8 @@ export class MarkdownLanguage {
 		 */
 		try {
 			const root = parser.parse(text, {
-				mode: this.#mode,
 				...restLanguageOptions,
+				mode: this.#mode,
 			});
 
 			return {
