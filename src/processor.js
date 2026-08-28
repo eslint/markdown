@@ -453,7 +453,7 @@ function excludeUnsatisfiableRules(message) {
  * Transforms generated messages for output.
  * @param {Array<LintMessage[]>} messages An array containing one array of messages
  *     for each code block returned from `preprocess`.
- * @param {string} filename The filename of the file.
+ * @param {string} filename The filename of the file
  * @returns {LintMessage[]} A flattened array of messages with mapped locations.
  */
 function postprocess(messages, filename) {
