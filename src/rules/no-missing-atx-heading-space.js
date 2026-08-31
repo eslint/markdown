@@ -75,7 +75,7 @@ export default /** @satisfies {NoMissingAtxHeadingSpaceRuleDefinition} */ ({
 				const text = sourceCode.getText(node);
 				const match = trailingAtxHeadingHashPattern.exec(text);
 
-				if (match === null) {
+				if (match === null || match.index === 0) {
 					return;
 				}
 
