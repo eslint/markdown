@@ -485,6 +485,8 @@ describe("LegacyESLint", () => {
 					);
 					assert.strictEqual(results[0].messages[0].line, 1);
 					assert.strictEqual(results[0].messages[0].column, 1);
+					assert.strictEqual(results[0].messages[0].endLine, 1);
+					assert.strictEqual(results[0].messages[0].endColumn, 35);
 					assert.deepStrictEqual(results[0].messages[0].fix, {
 						range: [0, 34],
 						text: " ",
@@ -515,6 +517,8 @@ describe("LegacyESLint", () => {
 					);
 					assert.strictEqual(results[0].messages[0].line, 4);
 					assert.strictEqual(results[0].messages[0].column, 1);
+					assert.strictEqual(results[0].messages[0].endLine, 4);
+					assert.strictEqual(results[0].messages[0].endColumn, 35);
 				});
 
 				it("reports unused disable-next-line directives", async () => {
@@ -538,6 +542,8 @@ describe("LegacyESLint", () => {
 					);
 					assert.strictEqual(results[0].messages[0].line, 1);
 					assert.strictEqual(results[0].messages[0].column, 1);
+					assert.strictEqual(results[0].messages[0].endLine, 1);
+					assert.strictEqual(results[0].messages[0].endColumn, 45);
 				});
 
 				it("reports unused disable directives when paired with eslint-enable", async () => {
@@ -562,6 +568,8 @@ describe("LegacyESLint", () => {
 					);
 					assert.strictEqual(results[0].messages[0].line, 1);
 					assert.strictEqual(results[0].messages[0].column, 1);
+					assert.strictEqual(results[0].messages[0].endLine, 1);
+					assert.strictEqual(results[0].messages[0].endColumn, 35);
 				});
 
 				it("reports unused disable directives spanning multiple lines", async () => {
@@ -588,6 +596,8 @@ describe("LegacyESLint", () => {
 					);
 					assert.strictEqual(results[0].messages[0].line, 1);
 					assert.strictEqual(results[0].messages[0].column, 1);
+					assert.strictEqual(results[0].messages[0].endLine, 4);
+					assert.strictEqual(results[0].messages[0].endColumn, 4);
 				});
 			});
 
@@ -1875,6 +1885,8 @@ describe("FlatESLint", () => {
 					);
 					assert.strictEqual(results[0].messages[0].line, 1);
 					assert.strictEqual(results[0].messages[0].column, 1);
+					assert.strictEqual(results[0].messages[0].endLine, 1);
+					assert.strictEqual(results[0].messages[0].endColumn, 35);
 					assert.deepStrictEqual(results[0].messages[0].fix, {
 						range: [0, 34],
 						text: " ",
@@ -1905,6 +1917,8 @@ describe("FlatESLint", () => {
 					);
 					assert.strictEqual(results[0].messages[0].line, 4);
 					assert.strictEqual(results[0].messages[0].column, 1);
+					assert.strictEqual(results[0].messages[0].endLine, 4);
+					assert.strictEqual(results[0].messages[0].endColumn, 35);
 				});
 
 				it("reports unused disable-next-line directives", async () => {
@@ -1928,6 +1942,8 @@ describe("FlatESLint", () => {
 					);
 					assert.strictEqual(results[0].messages[0].line, 1);
 					assert.strictEqual(results[0].messages[0].column, 1);
+					assert.strictEqual(results[0].messages[0].endLine, 1);
+					assert.strictEqual(results[0].messages[0].endColumn, 45);
 				});
 
 				it("reports unused disable directives when paired with eslint-enable", async () => {
@@ -1952,6 +1968,8 @@ describe("FlatESLint", () => {
 					);
 					assert.strictEqual(results[0].messages[0].line, 1);
 					assert.strictEqual(results[0].messages[0].column, 1);
+					assert.strictEqual(results[0].messages[0].endLine, 1);
+					assert.strictEqual(results[0].messages[0].endColumn, 35);
 				});
 
 				it("reports unused disable directives spanning multiple lines", async () => {
@@ -1978,6 +1996,8 @@ describe("FlatESLint", () => {
 					);
 					assert.strictEqual(results[0].messages[0].line, 1);
 					assert.strictEqual(results[0].messages[0].column, 1);
+					assert.strictEqual(results[0].messages[0].endLine, 4);
+					assert.strictEqual(results[0].messages[0].endColumn, 4);
 				});
 			});
 

@@ -18,7 +18,7 @@ import { fromMarkdown } from "mdast-util-from-markdown";
  * @import { Node, Parent, Code, Html } from "mdast";
  * @import { Block, RangeMap } from "./types.js";
  * @typedef { Block['comments'][number] } Comment
- * @typedef {{ comment: Comment, startLine: number, endLine: number, jsOffset: number }} CommentMapping
+ * @typedef {{ comment: Comment, jsOffset: number }} CommentMapping
  */
 
 //-----------------------------------------------------------------------------
@@ -256,13 +256,11 @@ function isUnusedDirectiveMessage(message) {
 /**
  * Adjusts an unused directive message in an inserted JS comment.
  * @param {LintMessage} message The message to adjust.
- * @param {CommentMapping[]} commentMappings Precomputed comment line ranges and offsets.
+ * @param {Map<number, CommentMapping>} commentMappings Precomputed comment mappings, keyed by generated line.
  * @returns {LintMessage} The adjusted message, if it can be mapped.
  */
 function adjustCommentMessage(message, commentMappings) {
-	const mapping = commentMappings.find(
-		m => message.line >= m.startLine && message.line < m.endLine,
-	);
+	const mapping = commentMappings.get(message.line);
 
 	if (!mapping) {
 		return message;
@@ -276,6 +274,8 @@ function adjustCommentMessage(message, commentMappings) {
 		...messageWithoutFix,
 		line: start.line,
 		column: start.column,
+		endLine: end.line,
+		endColumn: end.column,
 	});
 
 	if (fix) {
@@ -456,19 +456,19 @@ function adjustFix(block, fix) {
  * @returns {(message: LintMessage) => LintMessage | null} A function that adjusts messages in a code block.
  */
 function adjustBlock(block) {
-	/** @type {CommentMapping[]} */
-	const commentMappings = [];
+	/** @type {Map<number, CommentMapping>} */
+	const commentMappings = new Map();
 	let currentLine = 1;
 	let jsOffset = 0;
 
 	for (const comment of block.comments) {
 		const commentLines = comment.text.split("\n").length;
-		commentMappings.push({
-			comment,
-			startLine: currentLine,
-			endLine: currentLine + commentLines,
-			jsOffset,
-		});
+		const mapping = { comment, jsOffset };
+
+		for (let i = 0; i < commentLines; i++) {
+			commentMappings.set(currentLine + i, mapping);
+		}
+
 		currentLine += commentLines;
 		jsOffset += comment.text.length + 1;
 	}
