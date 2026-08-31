@@ -26,6 +26,8 @@ import { stripHtmlComments } from "../util.js";
 //-----------------------------------------------------------------------------
 
 const imgTagPattern = /<img(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?\/?>/giu;
+const ariaHiddenTruePattern =
+	/[\s"']aria-hidden\s*=\s*(?:"true"|'true'|true(?=\s|\/?>))/iu;
 
 /**
  * Creates a regex to match HTML attributes
@@ -43,10 +45,12 @@ function getHtmlAttributeRe(name) {
 export default /** @satisfies {RequireAltTextRuleDefinition} */ ({
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			recommended: true,
 			description: "Require alternative text for images",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/require-alt-text.md",
 		},
 
@@ -78,14 +82,8 @@ export default /** @satisfies {RequireAltTextRuleDefinition} */ ({
 
 				while ((match = imgTagPattern.exec(text)) !== null) {
 					const imgTag = match[0];
-					const ariaHiddenMatch = imgTag.match(
-						getHtmlAttributeRe("aria-hidden"),
-					);
-					if (
-						ariaHiddenMatch &&
-						ariaHiddenMatch[1] &&
-						ariaHiddenMatch[1].toLowerCase() === "true"
-					) {
+
+					if (ariaHiddenTruePattern.test(imgTag)) {
 						continue;
 					}
 

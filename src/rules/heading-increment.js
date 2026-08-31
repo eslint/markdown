@@ -27,10 +27,12 @@ import { frontmatterHasTitle } from "../util.js";
 export default /** @satisfies {HeadingIncrementRuleDefinition} */ ({
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			recommended: true,
 			description: "Enforce heading levels increment by one",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/heading-increment.md",
 		},
 

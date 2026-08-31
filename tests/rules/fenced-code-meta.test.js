@@ -120,7 +120,7 @@ ruleTester.run("fenced-code-meta", rule, {
 			],
 		},
 		{
-			code: dedent`\`\`\` js  
+			code: dedent`\`\`\` js
 			console.log("Hello, world!");
 			\`\`\``,
 			errors: [
@@ -134,7 +134,7 @@ ruleTester.run("fenced-code-meta", rule, {
 			],
 		},
 		{
-			code: dedent`~~~ js  
+			code: dedent`~~~ js
 			console.log("Hello, world!");
 			~~~`,
 			errors: [
