@@ -24,7 +24,7 @@ import { math } from "micromark-extension-math";
 
 /**
  * @import { Language, File, ParseResult, OkParseResult } from "@eslint/core";
- * @import { Root } from "mdast";
+ * @import { Node, Root } from "mdast";
  * @import { Options } from "mdast-util-from-markdown";
  * @import { MarkdownLanguageOptions, MarkdownLanguageContext } from "../types.js";
  * @typedef {Options['extensions']} Extensions
@@ -111,7 +111,7 @@ function createParserOptions(mode, languageOptions) {
 
 /**
  * Markdown Language Object
- * @implements {Language}
+ * @implements {Language<{ LangOptions: MarkdownLanguageOptions; Code: MarkdownSourceCode; RootNode: Root; Node: Node }>}
  */
 export class MarkdownLanguage {
 	/**
