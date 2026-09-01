@@ -19,12 +19,21 @@
 //-----------------------------------------------------------------------------
 
 /**
- * Matches seven or more hash characters at the start of a paragraph, followed by a
- * space, a tab, a line ending, or the end of the paragraph. This mirrors the way
- * CommonMark delimits the opening sequence of an ATX heading, so a no-break space
- * doesn't count as a delimiter.
+ * Matches seven or more hash characters at the start of a line within a paragraph,
+ * followed by a space, a tab, a line ending, or the end of the paragraph. This mirrors
+ * the way CommonMark delimits the opening sequence of an ATX heading, so a no-break
+ * space doesn't count as a delimiter.
+ *
+ * This pattern avoids the `m` flag, which would also treat U+2028 and U+2029 as line
+ * boundaries even though Markdown doesn't. `(?:^|(?<=[\r\n]))` starts a new line only
+ * after an actual carriage return or line feed.
+ *
+ * Block quote markers and up to three spaces of indentation may precede the hash
+ * characters, because a heading with six or fewer hash characters would still open in
+ * that position.
  */
-const headingLikeParagraphPattern = /^#{7,}(?=[ \t\r\n]|$)/u;
+const headingLikeParagraphPattern =
+	/(?:^|(?<=[\r\n]))(?: {0,3}>[ \t]?)* {0,3}(?<hashes>#{7,})(?=[ \t\r\n]|$)/gu;
 
 /** The longest opening sequence an ATX heading allows. */
 const maxDepthHashes = "######";
@@ -65,47 +74,52 @@ export default /** @satisfies {NoHeadingLikeParagraphRuleDefinition} */ ({
 				 * paragraph whose text starts with seven hash characters, but in each case
 				 * the author escaped the leading hash on purpose.
 				 */
-				const match = headingLikeParagraphPattern.exec(
-					sourceCode.getText(node),
-				);
+				const text = sourceCode.getText(node);
 
-				if (match === null) {
-					return;
+				/** @type {RegExpExecArray | null} */
+				let match;
+
+				while (
+					(match = headingLikeParagraphPattern.exec(text)) !== null
+				) {
+					const { hashes } = match.groups;
+					const startOffset =
+						node.position.start.offset +
+						match.index +
+						match[0].length -
+						hashes.length;
+					const endOffset = startOffset + hashes.length;
+
+					context.report({
+						loc: {
+							start: sourceCode.getLocFromIndex(startOffset),
+							end: sourceCode.getLocFromIndex(endOffset),
+						},
+						messageId: "headingLikeParagraph",
+						data: { count: hashes.length },
+						suggest: [
+							{
+								messageId: "useMaxDepthHashes",
+								data: { hashes, maxDepthHashes },
+								fix(fixer) {
+									return fixer.replaceTextRange(
+										[startOffset, endOffset],
+										maxDepthHashes,
+									);
+								},
+							},
+							{
+								messageId: "escapeLeadingHash",
+								fix(fixer) {
+									return fixer.insertTextBeforeRange(
+										[startOffset, startOffset + 1],
+										"\\",
+									);
+								},
+							},
+						],
+					});
 				}
-
-				const [hashes] = match;
-				const startOffset = node.position.start.offset;
-				const endOffset = startOffset + hashes.length;
-
-				context.report({
-					loc: {
-						start: sourceCode.getLocFromIndex(startOffset),
-						end: sourceCode.getLocFromIndex(endOffset),
-					},
-					messageId: "headingLikeParagraph",
-					data: { count: hashes.length },
-					suggest: [
-						{
-							messageId: "useMaxDepthHashes",
-							data: { hashes, maxDepthHashes },
-							fix(fixer) {
-								return fixer.replaceTextRange(
-									[startOffset, endOffset],
-									maxDepthHashes,
-								);
-							},
-						},
-						{
-							messageId: "escapeLeadingHash",
-							fix(fixer) {
-								return fixer.insertTextBeforeRange(
-									[startOffset, startOffset + 1],
-									"\\",
-								);
-							},
-						},
-					],
-				});
 			},
 		};
 	},

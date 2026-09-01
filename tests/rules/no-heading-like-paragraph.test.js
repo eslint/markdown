@@ -49,13 +49,24 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 		// Code
 		"```md\n####### Installation\n```",
 		"    ####### Installation",
+
+		// InlineCode
 		"`####### Installation`",
 
 		// HTML
 		"<div>\n####### Installation\n</div>",
 
-		// Paragraph continuation line
-		"Installation\n####### Configuration",
+		// Continuation line that can't open a heading
+		"foo\n    ####### bar", // four spaces of indentation are too many for a heading
+		"> foo\n>     ####### bar", // the block quote marker eats one space, leaving four
+
+		// Line separator (U+2028) and paragraph separator (U+2029) aren't Markdown line
+		// endings, so the hash characters stay in the middle of a line
+		"Installation\u2028####### Configuration",
+		"Installation\u2029####### Configuration",
+
+		// Block quote
+		"> foo\n> ###### hi\n> bar",
 
 		// GFM
 		{
@@ -425,6 +436,165 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 			],
 		},
 
+		// Continuation line
+		{
+			code: "Some paragraph text.\n####### Installation",
+			errors: [
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 8,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: "Some paragraph text.\n###### Installation",
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: "Some paragraph text.\n\\####### Installation",
+						},
+					],
+				},
+			],
+		},
+		{
+			code: "Some paragraph\r\n####### Heading",
+			errors: [
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 8,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: "Some paragraph\r\n###### Heading",
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: "Some paragraph\r\n\\####### Heading",
+						},
+					],
+				},
+			],
+		},
+		{
+			code: "Some paragraph\r####### Heading",
+			errors: [
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 8,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: "Some paragraph\r###### Heading",
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: "Some paragraph\r\\####### Heading",
+						},
+					],
+				},
+			],
+		},
+		{
+			code: "Some paragraph text.\n   ####### Installation",
+			errors: [
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 2,
+					column: 4,
+					endLine: 2,
+					endColumn: 11,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: "Some paragraph text.\n   ###### Installation",
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: "Some paragraph text.\n   \\####### Installation",
+						},
+					],
+				},
+			],
+		},
+		{
+			code: "Some paragraph text.\n####### Installation\n####### Configuration",
+			errors: [
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 8,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: "Some paragraph text.\n###### Installation\n####### Configuration",
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: "Some paragraph text.\n\\####### Installation\n####### Configuration",
+						},
+					],
+				},
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 8,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: "Some paragraph text.\n####### Installation\n###### Configuration",
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: "Some paragraph text.\n####### Installation\n\\####### Configuration",
+						},
+					],
+				},
+			],
+		},
+
 		// Blockquote
 		{
 			code: "> ####### Installation",
@@ -475,6 +645,88 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 						{
 							messageId: "escapeLeadingHash",
 							output: "> > \\####### Installation",
+						},
+					],
+				},
+			],
+		},
+
+		{
+			code: "> foo\n> ####### hi\n> bar",
+			errors: [
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 2,
+					column: 3,
+					endLine: 2,
+					endColumn: 10,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: "> foo\n> ###### hi\n> bar",
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: "> foo\n> \\####### hi\n> bar",
+						},
+					],
+				},
+			],
+		},
+		{
+			code: "> > foo\n> > ####### hi",
+			errors: [
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 2,
+					column: 5,
+					endLine: 2,
+					endColumn: 12,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: "> > foo\n> > ###### hi",
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: "> > foo\n> > \\####### hi",
+						},
+					],
+				},
+			],
+		},
+		{
+			code: "> foo\n####### hi",
+			errors: [
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 8,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: "> foo\n###### hi",
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: "> foo\n\\####### hi",
 						},
 					],
 				},
