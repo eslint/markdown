@@ -47,7 +47,7 @@ jobs:
             - run: npx @humanwhocodes/social-changelog --org ${{ github.repository_owner }} --repo ${{ github.event.repository.name }} --tag ${{ steps.release.outputs.tag_name }} > social-post.txt
               if: ${{ steps.release.outputs.release_created }}
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
             - name: Post release announcement
               run: npx @humanwhocodes/crosspost -t -b -m --discord-webhook --file social-post.txt
