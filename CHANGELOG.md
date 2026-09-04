@@ -1,5 +1,27 @@
 # Changelog
 
+## [9.0.0](https://github.com/eslint/markdown/compare/v8.0.3...v9.0.0) (2026-09-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* add `meta.languages` to rules and update `recommended` config ([#664](https://github.com/eslint/markdown/issues/664))
+
+### Features
+
+* add `meta.languages` to rules and update `recommended` config ([#664](https://github.com/eslint/markdown/issues/664)) ([9e4b429](https://github.com/eslint/markdown/commit/9e4b429d06cb2446a546c270fd0b2ab5783f11d7))
+* export `MarkdownSyntaxElement` ([#698](https://github.com/eslint/markdown/issues/698)) ([ee9830a](https://github.com/eslint/markdown/commit/ee9830a0902b15317ed9c11c49b06121fa8f41c2))
+
+
+### Bug Fixes
+
+* add `mdast` type augmentation for TOML and JSON nodes ([#708](https://github.com/eslint/markdown/issues/708)) ([dd42f9e](https://github.com/eslint/markdown/commit/dd42f9e900581c5660d8a4f4794f11d8087c5827))
+* handle `symbol` in `validateLanguageOptions` ([#722](https://github.com/eslint/markdown/issues/722)) ([8128f67](https://github.com/eslint/markdown/commit/8128f6733f7de51226e47f3808805253286c76dd))
+* handle empty ATX headings in `no-missing-atx-heading-space` ([#726](https://github.com/eslint/markdown/issues/726)) ([b87c8fb](https://github.com/eslint/markdown/commit/b87c8fb94604b58822f2e00dea4406e1cbc79c14))
+* prevent ReDoS in no-reversed-media-syntax ([#693](https://github.com/eslint/markdown/issues/693)) ([63542f5](https://github.com/eslint/markdown/commit/63542f53151ef6560d2f70bb0b5683542ff319bb))
+* support unquoted aria-hidden value in require-alt-text ([#719](https://github.com/eslint/markdown/issues/719)) ([c4a148b](https://github.com/eslint/markdown/commit/c4a148bc3c9e6bc2a54a66d06e18a9e77feeca28))
+* update dependency @eslint/plugin-kit to ^0.7.3 ([#730](https://github.com/eslint/markdown/issues/730)) ([186ad3e](https://github.com/eslint/markdown/commit/186ad3ee58982d006e63d3bbe046d69d8ee36e33))
+
 ## [8.0.3](https://github.com/eslint/markdown/compare/v8.0.2...v8.0.3) (2026-07-01)
 
 
