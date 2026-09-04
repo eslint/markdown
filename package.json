@@ -102,7 +102,7 @@
   },
   "dependencies": {
     "@eslint/core": "^1.2.1",
-    "@eslint/plugin-kit": "^0.7.2",
+    "@eslint/plugin-kit": "^0.7.3",
     "github-slugger": "^2.0.0",
     "mdast-util-from-markdown": "^2.0.2",
     "mdast-util-frontmatter": "^2.0.1",
