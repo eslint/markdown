@@ -7,21 +7,9 @@
 // Imports
 //------------------------------------------------------------------------------
 
-import rule from "../../src/rules/no-missing-atx-heading-space.js";
-import markdown from "../../src/index.js";
-import { RuleTester } from "eslint";
 import dedent from "dedent";
-
-//------------------------------------------------------------------------------
-// Tests
-//------------------------------------------------------------------------------
-
-const ruleTester = new RuleTester({
-	plugins: {
-		markdown,
-	},
-	language: "markdown/gfm",
-});
+import ruleTester from "./_utils/rule-tester.js";
+import rule from "../../src/rules/no-missing-atx-heading-space.js";
 
 //------------------------------------------------------------------------------
 // Valid Test Cases
@@ -1188,7 +1176,7 @@ const invalidTests = [
 	},
 ];
 
-ruleTester.run("no-missing-atx-heading-space", rule, {
+ruleTester("no-missing-atx-heading-space", rule, {
 	valid: validHeadings,
 	invalid: invalidTests,
 });

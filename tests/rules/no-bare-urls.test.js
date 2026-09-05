@@ -23,6 +23,8 @@ const ruleTester = new RuleTester({
 	language: "markdown/gfm",
 });
 
+// TODO
+
 ruleTester.run("no-bare-urls", rule, {
 	valid: [
 		"<https://www.google.com/>",
