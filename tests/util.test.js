@@ -76,33 +76,6 @@ describe("util", () => {
 		});
 	});
 
-	describe("stripHtmlComments()", () => {
-		it("should replace single-line HTML comments with spaces", () => {
-			const input = "Hello<!--1234567-->World";
-			const result = stripHtmlComments(input);
-			assert.strictEqual(input.length, result.length);
-			assert.strictEqual(result, `Hello${" ".repeat(14)}World`);
-		});
-
-		it("should replace multi-line HTML comments with spaces", () => {
-			const input = "Hello<!--\r\nmulti\nline\rcomment\r\n-->World";
-			const result = stripHtmlComments(input);
-			assert.strictEqual(input.length, result.length);
-			assert.strictEqual(
-				result,
-				`Hello${" ".repeat(4)}\r\n${" ".repeat(5)}\n${" ".repeat(4)}\r${" ".repeat(7)}\r\n${" ".repeat(3)}World`,
-			);
-		});
-
-		it("should handle surrogate pairs like emojis correctly", () => {
-			// NOTE: 👍's length is 2, 🚀's length is 2, 🙇‍♂️'s length is 5.
-			const input = "Hello<!--👍🚀🙇‍♂️-->World";
-			const result = stripHtmlComments(input);
-			assert.strictEqual(input.length, result.length);
-			assert.strictEqual(result, `Hello${" ".repeat(16)}World`);
-		});
-	});
-
 	describe("normalizeIdentifier()", () => {
 		it("should preserve an already normalized identifier", () => {
 			const input = "example";
@@ -144,6 +117,33 @@ describe("util", () => {
 			const input = " \t\r\n ";
 			const result = normalizeIdentifier(input);
 			assert.strictEqual(result, "");
+		});
+	});
+
+	describe("stripHtmlComments()", () => {
+		it("should replace single-line HTML comments with spaces", () => {
+			const input = "Hello<!--1234567-->World";
+			const result = stripHtmlComments(input);
+			assert.strictEqual(input.length, result.length);
+			assert.strictEqual(result, `Hello${" ".repeat(14)}World`);
+		});
+
+		it("should replace multi-line HTML comments with spaces", () => {
+			const input = "Hello<!--\r\nmulti\nline\rcomment\r\n-->World";
+			const result = stripHtmlComments(input);
+			assert.strictEqual(input.length, result.length);
+			assert.strictEqual(
+				result,
+				`Hello${" ".repeat(4)}\r\n${" ".repeat(5)}\n${" ".repeat(4)}\r${" ".repeat(7)}\r\n${" ".repeat(3)}World`,
+			);
+		});
+
+		it("should handle surrogate pairs like emojis correctly", () => {
+			// NOTE: 👍's length is 2, 🚀's length is 2, 🙇‍♂️'s length is 5.
+			const input = "Hello<!--👍🚀🙇‍♂️-->World";
+			const result = stripHtmlComments(input);
+			assert.strictEqual(input.length, result.length);
+			assert.strictEqual(result, `Hello${" ".repeat(16)}World`);
 		});
 	});
 });
