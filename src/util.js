@@ -55,6 +55,15 @@ export function frontmatterHasTitle(value, pattern) {
 }
 
 /**
+ * Normalizes a Markdown reference identifier.
+ * @param {string} identifier The identifier to normalize.
+ * @returns {string} The normalized lowercase identifier.
+ */
+export function normalizeIdentifier(identifier) {
+	return micromarkUtilNormalizeIdentifier(identifier).toLowerCase();
+}
+
+/**
  * Replaces all HTML comments with whitespace.
  * This preserves offsets and locations of characters
  * outside HTML comments by keeping line breaks and replacing
@@ -69,13 +78,4 @@ export function stripHtmlComments(value) {
 		*/
 		match.replace(/[^\r\n]/g, " "),
 	);
-}
-
-/**
- * Normalizes a Markdown reference identifier.
- * @param {string} identifier The identifier to normalize.
- * @returns {string} The normalized lowercase identifier.
- */
-export function normalizeIdentifier(identifier) {
-	return micromarkUtilNormalizeIdentifier(identifier).toLowerCase();
 }
