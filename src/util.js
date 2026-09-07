@@ -66,6 +66,7 @@ export function stripHtmlComments(value) {
 		match.replace(/[^\r\n]/g, " "),
 	);
 }
+
 /**
  * Normalizes a Markdown reference identifier.
  * @param {string} identifier The identifier to normalize.
