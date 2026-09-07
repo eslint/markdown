@@ -1,9 +1,13 @@
-import { normalizeIdentifier as micromarkUtilNormalizeIdentifier } from "micromark-util-normalize-identifier";
-
 /**
  * @fileoverview Utility Library
  * @author Nicholas C. Zakas
  */
+
+//------------------------------------------------------------------------------
+// Imports
+//------------------------------------------------------------------------------
+
+import { normalizeIdentifier as micromarkUtilNormalizeIdentifier } from "micromark-util-normalize-identifier";
 
 //-----------------------------------------------------------------------------
 // Regex Patterns
