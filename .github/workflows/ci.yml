@@ -99,8 +99,8 @@ jobs:
               run: npm run test:types:5.3
             - name: Check Types (TypeScript 5.x)
               run: npm run test:types:5.x
-            - name: Check Types (TypeScript 7 preview)
-              run: npm run test:types:7.x
+            - name: Check Types (TypeScript 6.x)
+              run: npm run test:types:6.x
 
     are_the_types_wrong:
         name: Are the types wrong?
