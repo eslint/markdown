@@ -160,6 +160,10 @@ ruleTester.run("no-reference-like-urls", rule, {
 		`${"\\".repeat(3)}[Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
 		`${"\\".repeat(5)}[Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
 		`${"\\".repeat(7)}[Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
+		// ReDoS regression test
+		`[${"()".repeat(30)}](http://example.com "a\\"b")`,
+		// A label may contain at most one level of nested parentheses.
+		"[a (b (c)) d](x)\n\n[x]: y",
 	],
 	invalid: [
 		{
