@@ -26,20 +26,24 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 	valid: [
 		"",
 		"  ",
+		"foo\nbar\nbaz",
 		"foo\n\nbar\n\nbaz\n\nqux",
+		"`*foo*`",
+
 		"*foo*\nbar\nbaz",
 		"_foo_\nbar\nbaz",
 		"**foo**\nbar\nbaz",
 		"__foo__\nbar\nbaz",
 		"***foo***\nbar\nbaz",
 		"___foo___\nbar\nbaz",
-		"foo\nbar\nbaz",
+
 		"foo\n*bar*\nbaz",
 		"foo\n_bar_\nbaz",
 		"foo\n**bar**\nbaz",
 		"foo\n__bar__\nbaz",
 		"foo\n***bar***\nbaz",
 		"foo\n___bar___\nbaz",
+
 		"**foo** bar\n\nfoo **bar**",
 		"**foo** **bar**",
 		"** foo **", // This is not a `strong` node.
@@ -159,6 +163,43 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 |   ---   |   ---   |
 | __baz__ | __qux__ |`,
 			language: "markdown/gfm",
+		},
+
+		// `footnoteDefinition` is not checked by this rule.
+		// This behavior aligns with `markdownlint`.
+		{
+			code: "[^1]: *foo*",
+			language: "markdown/gfm",
+		},
+		{
+			code: "[^1]: _foo_",
+			language: "markdown/gfm",
+		},
+		{
+			code: "[^1]: **foo**",
+			language: "markdown/gfm",
+		},
+		{
+			code: "[^1]: __foo__",
+			language: "markdown/gfm",
+		},
+
+		// Options
+		{
+			code: "*foo)*",
+			options: [
+				{
+					punctuation: [")"],
+				},
+			],
+		},
+		{
+			code: "*foo$*",
+			options: [
+				{
+					punctuation: ["$"],
+				},
+			],
 		},
 
 		// TODO:
@@ -290,6 +331,152 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 					column: 1,
 					endLine: 1,
 					endColumn: 10,
+				},
+			],
+		},
+
+		// Punctuation
+		{
+			code: "*foo.b*",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 8,
+				},
+			],
+		},
+		{
+			code: "*foo,b*",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 8,
+				},
+			],
+		},
+		{
+			code: "*foo;b*",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 8,
+				},
+			],
+		},
+		{
+			code: "*foo:b*",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 8,
+				},
+			],
+		},
+		{
+			code: "*foo!b*",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 8,
+				},
+			],
+		},
+		{
+			code: "*foo?b*",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 8,
+				},
+			],
+		},
+		{
+			code: "*foo。b*",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 8,
+				},
+			],
+		},
+		{
+			code: "*foo\uFF0Cb*", // `，`
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 8,
+				},
+			],
+		},
+		{
+			code: "*foo\uFF1Bb*", // `；`
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 8,
+				},
+			],
+		},
+		{
+			code: "*foo\uFF1Ab*", // `：`
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 8,
+				},
+			],
+		},
+		{
+			code: "*foo\uFF01b*", // `！`
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 8,
+				},
+			],
+		},
+		{
+			code: "*foo\uFF1Fb*", // `？`
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 8,
 				},
 			],
 		},

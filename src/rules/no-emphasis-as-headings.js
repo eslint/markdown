@@ -80,6 +80,7 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 		const [{ punctuation }] = context.options;
 
 		let isInBlockquote = false;
+		let isInFootnoteDefinition = false;
 		let isInListItem = false;
 
 		return {
@@ -87,12 +88,16 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 				isInBlockquote = true;
 			},
 
+			footnoteDefinition() {
+				isInFootnoteDefinition = true;
+			},
+
 			listItem() {
 				isInListItem = true;
 			},
 
 			"emphasis, strong"(/** @type {Emphasis | Strong} */ node) {
-				if (isInBlockquote || isInListItem) {
+				if (isInBlockquote || isInFootnoteDefinition || isInListItem) {
 					// Early return if inside a blockquote or list item.
 					return;
 				}
@@ -124,6 +129,10 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 
 			"blockquote:exit"() {
 				isInBlockquote = false;
+			},
+
+			"footnoteDefinition:exit"() {
+				isInFootnoteDefinition = false;
 			},
 
 			"listItem:exit"() {
