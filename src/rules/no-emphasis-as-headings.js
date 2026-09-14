@@ -11,7 +11,7 @@
  * @import { Emphasis, Strong } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"noEmphasisAsHeadings"} NoEmphasisAsHeadingsMessageIds
- * @typedef {[]} NoEmphasisAsHeadingsOptions
+ * @typedef {[{ punctuation?: string[] }]} NoEmphasisAsHeadingsOptions
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoEmphasisAsHeadingsOptions, MessageIds: NoEmphasisAsHeadingsMessageIds }>} NoEmphasisAsHeadingsRuleDefinition
  */
 
@@ -36,11 +36,48 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 				"Unexpected emphasis or strong used as a heading.",
 		},
 
-		// option: TODO
+		schema: [
+			{
+				type: "object",
+				properties: {
+					punctuation: {
+						type: "array",
+						items: {
+							type: "string",
+							minLength: 1,
+							maxLength: 1,
+						},
+						minItems: 1,
+						uniqueItems: true,
+					},
+				},
+				additionalProperties: false,
+			},
+		],
+
+		defaultOptions: [
+			{
+				punctuation: [
+					".",
+					",",
+					";",
+					":",
+					"!",
+					"?",
+					"。",
+					"\uFF0C", // `，`
+					"\uFF1B", // `；`
+					"\uFF1A", // `：`
+					"\uFF01", // `！`
+					"\uFF1F", // `？`
+				],
+			},
+		],
 	},
 
 	create(context) {
 		const { sourceCode } = context;
+		const [{ punctuation }] = context.options;
 
 		let isInBlockquote = false;
 		let isInListItem = false;
@@ -57,6 +94,13 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 			"emphasis, strong"(/** @type {Emphasis | Strong} */ node) {
 				if (isInBlockquote || isInListItem) {
 					// Early return if inside a blockquote or list item.
+					return;
+				}
+
+				const count = node.type === "emphasis" ? 1 : 2;
+				const text = sourceCode.getText(node, -count, -count);
+
+				if (punctuation.includes(text.at(-1))) {
 					return;
 				}
 

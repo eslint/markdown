@@ -76,4 +76,6 @@ No options are available for this rule.
 
 ## Prior Art
 
+- [MD036 - no-emphasis-as-heading](https://github.com/DavidAnson/markdownlint/blob/main/doc/md036.md#md036---emphasis-used-instead-of-a-heading)
+- [remark-lint-no-emphasis-as-heading](https://github.com/remarkjs/remark-lint/tree/main/packages/remark-lint-no-emphasis-as-heading#remark-lint-no-emphasis-as-heading)
 - [textlint-rule-no-bold-paragraph](https://github.com/aborazmeh/textlint-rule-no-bold-paragraph)

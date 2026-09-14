@@ -44,6 +44,20 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 		"**foo** **bar**",
 		"** foo **", // This is not a `strong` node.
 
+		// Punctuation
+		"*foo.*",
+		"*foo,*",
+		"*foo;*",
+		"*foo:*",
+		"*foo!*",
+		"*foo?*",
+		"*foo。*",
+		"*foo\uFF0C*", // `，`
+		"*foo\uFF1B*", // `；`
+		"*foo\uFF1A*", // `：`
+		"*foo\uFF01*", // `！`
+		"*foo\uFF1F*", // `？`
+
 		// Multiline
 		"*foo\nbar*",
 		"_foo\nbar_",
