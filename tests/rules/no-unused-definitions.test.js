@@ -48,7 +48,7 @@ ruleTester.run("no-unused-definitions", rule, {
 [Mercury]: https://example.com/venus/
 `, // case insensitive
 		`
-[Mercury][mercury]        
+[Mercury][mercury]
 
 [mercury]: https://example.com/mercury/
 [   mercury       ]: https://example.com/venus/
@@ -56,7 +56,7 @@ ruleTester.run("no-unused-definitions", rule, {
 		`
 ![Venus Image][venus]
 
-[venus]: https://example.com/venus.jpg        
+[venus]: https://example.com/venus.jpg
 `, // Image - full
 		`
 ![venus][]
@@ -458,7 +458,7 @@ Mercury[^mercury]
 
 		{
 			code: `
-Hello, [Mercury][mercury]! 
+Hello, [Mercury][mercury]!
 I am living on [Earth][earth] and I am going to [Mars][mars].
 
 [mercury]: https://example.com/mercury/

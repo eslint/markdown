@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { normalizeIdentifier } from "micromark-util-normalize-identifier";
+import { normalizeIdentifier } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -28,10 +28,12 @@ import { normalizeIdentifier } from "micromark-util-normalize-identifier";
 export default /** @satisfies {NoUnusedDefinitionsRuleDefinition} */ ({
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			recommended: true,
 			description: "Disallow unused definitions",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-unused-definitions.md",
 		},
 
@@ -79,13 +81,11 @@ export default /** @satisfies {NoUnusedDefinitionsRuleDefinition} */ ({
 
 	create(context) {
 		const allowDefinitions = new Set(
-			context.options[0].allowDefinitions.map(identifier =>
-				normalizeIdentifier(identifier).toLowerCase(),
-			),
+			context.options[0].allowDefinitions.map(normalizeIdentifier),
 		);
 		const allowFootnoteDefinitions = new Set(
-			context.options[0].allowFootnoteDefinitions.map(identifier =>
-				normalizeIdentifier(identifier).toLowerCase(),
+			context.options[0].allowFootnoteDefinitions.map(
+				normalizeIdentifier,
 			),
 		);
 		const [{ checkFootnoteDefinitions }] = context.options;

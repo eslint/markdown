@@ -7,8 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { normalizeIdentifier } from "micromark-util-normalize-identifier";
-import { htmlCommentPattern } from "../util.js";
+import { htmlCommentPattern, normalizeIdentifier } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -43,10 +42,12 @@ function isOnlyComments(value) {
 export default /** @satisfies {NoEmptyDefinitionsRuleDefinition} */ ({
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			recommended: true,
 			description: "Disallow empty definitions",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-empty-definitions.md",
 		},
 
@@ -94,13 +95,11 @@ export default /** @satisfies {NoEmptyDefinitionsRuleDefinition} */ ({
 
 	create(context) {
 		const allowDefinitions = new Set(
-			context.options[0].allowDefinitions.map(identifier =>
-				normalizeIdentifier(identifier).toLowerCase(),
-			),
+			context.options[0].allowDefinitions.map(normalizeIdentifier),
 		);
 		const allowFootnoteDefinitions = new Set(
-			context.options[0].allowFootnoteDefinitions.map(identifier =>
-				normalizeIdentifier(identifier).toLowerCase(),
+			context.options[0].allowFootnoteDefinitions.map(
+				normalizeIdentifier,
 			),
 		);
 		const [{ checkFootnoteDefinitions }] = context.options;

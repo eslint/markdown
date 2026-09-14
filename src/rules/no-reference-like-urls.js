@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { normalizeIdentifier } from "micromark-util-normalize-identifier";
+import { normalizeIdentifier } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -36,11 +36,13 @@ const linkOrImagePattern =
 export default /** @satisfies {NoReferenceLikeUrlsRuleDefinition} */ ({
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			recommended: true,
 			description:
 				"Disallow URLs that match defined reference identifiers",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-reference-like-urls.md",
 		},
 
@@ -77,8 +79,7 @@ export default /** @satisfies {NoReferenceLikeUrlsRuleDefinition} */ ({
 						const { label, destination } = match.groups;
 						const { type, title } = node;
 						const prefix = type === "image" ? "!" : "";
-						const url =
-							normalizeIdentifier(destination).toLowerCase();
+						const url = normalizeIdentifier(destination);
 
 						if (definitionIdentifiers.has(url)) {
 							context.report({

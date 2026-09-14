@@ -992,13 +992,13 @@ ruleTester.run("no-reference-like-urls", rule, {
 			code: dedent`
 				[Click Me
 				](test)
-				
+
 				[test]: https://abc.com
 			`,
 			output: dedent`
 				[Click Me
 				][test]
-				
+
 				[test]: https://abc.com
 			`,
 			errors: [
@@ -1016,13 +1016,13 @@ ruleTester.run("no-reference-like-urls", rule, {
 			code: dedent`
 				![Click Me
 				](test)
-				
+
 				[test]: https://abc.com
 			`,
 			output: dedent`
 				![Click Me
 				][test]
-				
+
 				[test]: https://abc.com
 			`,
 			errors: [
@@ -1320,12 +1320,12 @@ ruleTester.run("no-reference-like-urls", rule, {
 					{
 						code: dedent`
 						[link](GRÜẞE)
-						
+
 						[Grüsse]: https://example.com/
 					`,
 						output: dedent`
 						[link][GRÜẞE]
-						
+
 						[Grüsse]: https://example.com/
 					`,
 						errors: [

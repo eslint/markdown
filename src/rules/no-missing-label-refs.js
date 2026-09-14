@@ -98,10 +98,12 @@ function findMissingReferences(node, sourceCode) {
 export default /** @satisfies {NoMissingLabelRefsRuleDefinition} */ ({
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			recommended: true,
 			description: "Disallow missing label references",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-missing-label-refs.md",
 		},
 

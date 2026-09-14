@@ -76,4 +76,4 @@ You might want to turn this rule off if you're working with a Markdown variant t
 ## Further Reading
 
 - [Markdown Syntax: Headings](https://daringfireball.net/projects/markdown/syntax#header)
-- [CommonMark Spec: ATX Headings](https://spec.commonmark.org/0.30/#atx-headings) 
+- [CommonMark Spec: ATX Headings](https://spec.commonmark.org/0.30/#atx-headings)

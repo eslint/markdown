@@ -3,6 +3,12 @@
  * @author Nicholas C. Zakas
  */
 
+//------------------------------------------------------------------------------
+// Imports
+//------------------------------------------------------------------------------
+
+import { normalizeIdentifier as micromarkUtilNormalizeIdentifier } from "micromark-util-normalize-identifier";
+
 //-----------------------------------------------------------------------------
 // Regex Patterns
 //-----------------------------------------------------------------------------
@@ -46,6 +52,15 @@ export function frontmatterHasTitle(value, pattern) {
 		}
 	}
 	return false;
+}
+
+/**
+ * Normalizes a Markdown reference identifier.
+ * @param {string} identifier The identifier to normalize.
+ * @returns {string} The normalized lowercase identifier.
+ */
+export function normalizeIdentifier(identifier) {
+	return micromarkUtilNormalizeIdentifier(identifier).toLowerCase();
 }
 
 /**

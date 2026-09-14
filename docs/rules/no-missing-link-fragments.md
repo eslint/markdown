@@ -11,7 +11,7 @@ This rule uses GitHub's heading algorithm for generating heading IDs, implemente
 ```markdown
 # Introduction
 
-[Link](#introduction) 
+[Link](#introduction)
 ```
 
 ## Rule Details
@@ -75,7 +75,7 @@ This rule supports the following options:
 
     ```markdown
     <!-- eslint markdown/no-missing-link-fragments: ["error", { ignoreCase: false }] -->
-    
+
     # Case Test
 
     [Invalid Link with different case](#CASE-TEST)
@@ -85,7 +85,7 @@ This rule supports the following options:
 
     ```markdown
     <!-- eslint markdown/no-missing-link-fragments: ["error", { ignoreCase: false }] -->
-    
+
     # Case Test
 
     [Valid Link with matching case](#case-test)

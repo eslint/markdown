@@ -139,11 +139,13 @@ declare module "mdast" {
 export interface MarkdownLanguageOptions extends LanguageOptions {
 	/**
 	 * The options for parsing frontmatter.
+	 * @default false
 	 */
 	frontmatter?: false | "yaml" | "toml" | "json";
 
 	/**
 	 * The options for parsing math.
+	 * @default false
 	 */
 	math?: boolean;
 }

@@ -108,10 +108,12 @@ function findInvalidLabelReferences(node, sourceCode) {
 export default /** @satisfies {NoInvalidLabelRefsRuleDefinition} */ ({
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			recommended: true,
 			description: "Disallow invalid label references",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-invalid-label-refs.md",
 		},
 
