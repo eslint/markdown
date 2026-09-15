@@ -60,6 +60,10 @@ Examples of reversed syntax that this rule **does not** report:
 !(A sunset (over (the) sea))[sunset.png]
 ```
 
+## Options
+
+This rule has no options.
+
 ## When Not To Use It
 
 If you don't need to enforce correct link and image syntax, you can safely disable this rule.
