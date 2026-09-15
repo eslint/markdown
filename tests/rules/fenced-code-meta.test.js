@@ -7,23 +7,15 @@
 // Imports
 //------------------------------------------------------------------------------
 
-import rule from "../../src/rules/fenced-code-meta.js";
-import markdown from "../../src/index.js";
-import { RuleTester } from "eslint";
 import dedent from "dedent";
+import ruleTester from "./_utils/rule-tester.js";
+import rule from "../../src/rules/fenced-code-meta.js";
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-const ruleTester = new RuleTester({
-	plugins: {
-		markdown,
-	},
-	language: "markdown/commonmark",
-});
-
-ruleTester.run("fenced-code-meta", rule, {
+ruleTester("fenced-code-meta", rule, {
 	valid: [
 		dedent`\`\`\`
 		console.log("Hello, world!");

@@ -26,10 +26,9 @@ import { math } from "micromark-extension-math";
  * @import { Language, File, ParseResult, OkParseResult } from "@eslint/core";
  * @import { Node, Root } from "mdast";
  * @import { Options } from "mdast-util-from-markdown";
- * @import { MarkdownLanguageOptions, MarkdownLanguageContext } from "../types.js";
+ * @import { MarkdownLanguageOptions, MarkdownLanguageContext, MarkdownParserMode } from "../types.js";
  * @typedef {Options['extensions']} Extensions
  * @typedef {Options['mdastExtensions']} MdastExtensions
- * @typedef {"commonmark"|"gfm"} ParserMode
  */
 
 //-----------------------------------------------------------------------------
@@ -55,7 +54,7 @@ const jsonFrontmatterConfig = {
 
 /**
  * Create parser options based on `mode` and `languageOptions`.
- * @param {ParserMode} mode The markdown parser mode.
+ * @param {MarkdownParserMode} mode The markdown parser mode.
  * @param {MarkdownLanguageOptions} languageOptions Language options.
  * @returns {{extensions: Extensions, mdastExtensions: MdastExtensions}} Parser options for micromark and mdast.
  */
@@ -145,18 +144,29 @@ export class MarkdownLanguage {
 	defaultLanguageOptions = {
 		frontmatter: false,
 		math: false,
+		parser: {
+			meta: {
+				name: "mdast-util-from-markdown",
+			},
+			parse(text, { mode, ...languageOptions }) {
+				return fromMarkdown(
+					text,
+					createParserOptions(mode, languageOptions),
+				);
+			},
+		},
 	};
 
 	/**
 	 * The Markdown parser mode.
-	 * @type {ParserMode}
+	 * @type {MarkdownParserMode}
 	 */
 	#mode = "commonmark";
 
 	/**
 	 * Creates a new instance.
-	 * @param {Object} options The options to use for this instance.
-	 * @param {ParserMode} [options.mode] The Markdown parser mode to use.
+	 * @param {Object} [options] The options to use for this instance.
+	 * @param {MarkdownParserMode} [options.mode] The Markdown parser mode to use.
 	 */
 	constructor({ mode } = {}) {
 		if (mode) {
@@ -166,7 +176,7 @@ export class MarkdownLanguage {
 
 	/**
 	 * Validates the language options.
-	 * @param {MarkdownLanguageOptions} languageOptions The language options to validate.
+	 * @param {MarkdownLanguageOptions} [languageOptions] The language options to validate.
 	 * @returns {void}
 	 * @throws {Error} When the language options are invalid.
 	 */
@@ -197,17 +207,39 @@ export class MarkdownLanguage {
 				`Invalid language option value \`${String(mathOption)}\` for math. Expected a boolean.`,
 			);
 		}
+
+		// `parser` option validation
+		const parserOption = languageOptions?.parser;
+
+		if (parserOption !== undefined) {
+			if (typeof parserOption !== "object" || parserOption === null) {
+				throw new Error(
+					`Invalid language option value \`${String(parserOption)}\` for parser. Expected a non-null object.`,
+				);
+			}
+
+			if (typeof parserOption.parse !== "function") {
+				throw new Error(
+					"Invalid language option `parser`. Expected an object with a `parse` method.",
+				);
+			}
+		}
 	}
 
 	/**
 	 * Parses the given file into an AST.
 	 * @param {File} file The virtual file to parse.
-	 * @param {MarkdownLanguageContext} context The options to use for parsing.
+	 * @param {MarkdownLanguageContext} [context] The options to use for parsing.
 	 * @returns {ParseResult<Root>} The result of parsing.
 	 */
 	parse(file, context) {
 		// Note: BOM already removed
 		const text = /** @type {string} */ (file.body);
+
+		const {
+			parser = this.defaultLanguageOptions.parser,
+			...restLanguageOptions
+		} = context?.languageOptions ?? {};
 
 		/*
 		 * Check for parsing errors first. If there's a parsing error, nothing
@@ -216,11 +248,10 @@ export class MarkdownLanguage {
 		 * problem that ESLint identified just like any other.
 		 */
 		try {
-			const options = createParserOptions(
-				this.#mode,
-				context?.languageOptions,
-			);
-			const root = fromMarkdown(text, options);
+			const root = parser.parse(text, {
+				...restLanguageOptions,
+				mode: this.#mode,
+			});
 
 			return {
 				ok: true,
