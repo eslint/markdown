@@ -34,6 +34,10 @@ Examples of **correct** code:
 ![ESLint Logo](https://eslint.org/image.png)
 ```
 
+## Options
+
+This rule has no options.
+
 ## When Not to Use It
 
 If you aren't concerned with empty images, you can safely disable this rule.
