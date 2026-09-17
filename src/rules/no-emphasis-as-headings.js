@@ -94,7 +94,7 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 				const count = node.type === "emphasis" ? 1 : 2;
 				const text = sourceCode.getText(node, -count, -count);
 
-				if (punctuation.includes(text.at(-1))) {
+				if (punctuation.some(character => text.endsWith(character))) {
 					return;
 				}
 

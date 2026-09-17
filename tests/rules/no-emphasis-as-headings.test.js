@@ -220,6 +220,38 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 				},
 			],
 		},
+		{
+			code: "*foo👍*",
+			options: [
+				{
+					punctuation: ["👍"],
+				},
+			],
+		},
+		{
+			code: "**foo👍**",
+			options: [
+				{
+					punctuation: ["👍"],
+				},
+			],
+		},
+		{
+			code: "*foo💥*",
+			options: [
+				{
+					punctuation: ["💥"],
+				},
+			],
+		},
+		{
+			code: "**foo💥**",
+			options: [
+				{
+					punctuation: ["💥"],
+				},
+			],
+		},
 
 		// TODO:
 		// "*foo _bar_ baz*",
