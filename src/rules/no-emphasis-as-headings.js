@@ -94,6 +94,10 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 				ignoredContainerDepth += 1;
 			},
 
+			"blockquote, footnoteDefinition, listItem:exit"() {
+				ignoredContainerDepth -= 1;
+			},
+
 			"emphasis, strong"() {
 				emphasisStrongTextStack.push("");
 			},
@@ -142,10 +146,6 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 						messageId: "noEmphasisAsHeadings",
 					});
 				}
-			},
-
-			"blockquote, footnoteDefinition, listItem:exit"() {
-				ignoredContainerDepth -= 1;
 			},
 		};
 	},
