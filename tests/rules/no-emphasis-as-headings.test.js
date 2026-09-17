@@ -91,6 +91,11 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 		"> - ***foo***",
 		"> - ___foo___",
 
+		`
+> > *inner*
+>
+> *outer sibling*`,
+
 		// `heading` is not checked by this rule.
 		// This behavior aligns with `markdownlint`.
 		"# *foo*",
@@ -122,6 +127,12 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 		"- > __foo__",
 		"- > ***foo***",
 		"- > ___foo___",
+
+		`
+- outer
+  - *inner*
+
+  *outer sibling*`,
 
 		// `strikethrough` is not checked by this rule.
 		// This behavior aligns with `markdownlint`.
@@ -181,6 +192,14 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 		},
 		{
 			code: "[^1]: __foo__",
+			language: "markdown/gfm",
+		},
+		{
+			code: `
+[^outer]:
+    > [^inner]: *inner*
+
+    *outer sibling*`,
 			language: "markdown/gfm",
 		},
 

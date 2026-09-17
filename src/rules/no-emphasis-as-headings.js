@@ -79,26 +79,16 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 		const { sourceCode } = context;
 		const [{ punctuation }] = context.options;
 
-		let isInBlockquote = false;
-		let isInFootnoteDefinition = false;
-		let isInListItem = false;
+		let ignoredContainerDepth = 0;
 
 		return {
-			blockquote() {
-				isInBlockquote = true;
-			},
-
-			footnoteDefinition() {
-				isInFootnoteDefinition = true;
-			},
-
-			listItem() {
-				isInListItem = true;
+			"blockquote, footnoteDefinition, listItem"() {
+				ignoredContainerDepth += 1;
 			},
 
 			"emphasis, strong"(/** @type {Emphasis | Strong} */ node) {
-				if (isInBlockquote || isInFootnoteDefinition || isInListItem) {
-					// Early return if inside a blockquote or list item.
+				if (ignoredContainerDepth > 0) {
+					// Early return if inside an ignored container.
 					return;
 				}
 
@@ -127,16 +117,8 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 				}
 			},
 
-			"blockquote:exit"() {
-				isInBlockquote = false;
-			},
-
-			"footnoteDefinition:exit"() {
-				isInFootnoteDefinition = false;
-			},
-
-			"listItem:exit"() {
-				isInListItem = false;
+			"blockquote, footnoteDefinition, listItem:exit"() {
+				ignoredContainerDepth -= 1;
 			},
 		};
 	},
