@@ -21,9 +21,9 @@ import { stripHtmlComments } from "../util.js";
  * @typedef {MarkdownRuleDefinition<{ RuleOptions: NoEmphasisAsHeadingsOptions, MessageIds: NoEmphasisAsHeadingsMessageIds }>} NoEmphasisAsHeadingsRuleDefinition
  */
 
-// --------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Rule Definition
-// --------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 	meta: {
