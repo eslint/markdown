@@ -8,12 +8,16 @@ body:
     - type: markdown
       attributes:
           value: By opening an issue, you agree to abide by the [OpenJS Foundation Code of Conduct](https://eslint.org/conduct).
-    - type: textarea
+    - type: input
       attributes:
           label: Rule details
           description: What should the new rule do?
       validations:
           required: true
+    - type: textarea
+      attributes:
+          label: Additional rule details
+          description: Please provide any additional details about how the proposed rule should work.
     - type: dropdown
       attributes:
           label: What type of rule is this?
