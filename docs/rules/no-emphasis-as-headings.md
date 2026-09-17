@@ -1,81 +1,85 @@
-# no-emphasis-as-heading
+# no-emphasis-as-headings
 
-TODO
+Disallow using emphasis or strong text as headings.
+
+## Background
+
+Authors sometimes use a paragraph containing only italic or bold text to visually separate sections. Although this may look like a heading, Markdown processors treat it as a paragraph. As a result, tools such as screen readers, document outline generators, and table-of-contents generators cannot recognize it as part of the document structure.
+
+Use a Markdown heading when text introduces a section, and reserve emphasis and strong text for content within a paragraph.
 
 ## Rule Details
 
-This rule disallows using fully bolded paragraphs as headings. The use of fully bolded paragraphs as headings is a common anti-pattern that reduces document semantics and accessibility. Instead, proper heading elements (`#`, `##`, etc.) should be used.
+This rule warns when a single-line paragraph consists entirely of emphasized (`*text*` or `_text_`) or strong (`**text**` or `__text__`) content. Combined emphasis and strong content, such as `***text***`, is also reported.
 
-### Why This Is Important
+The rule does not warn when:
 
-Using proper headings instead of bolded paragraphs:
-
-- Improves document structure and semantics
-- Enhances accessibility for screen readers
-- Creates proper document outline
-- Makes navigation of the document easier
-
-### What This Rule Checks
-
-This rule identifies paragraphs that:
-
-- Consist entirely of a bold element (`**text**` or `__text__`)
-- Are contained on a single line
-- Are not within list items
-- Have bold markup that spans the entire paragraph content
-
-## Examples
-
-### :x: Incorrect
+- The emphasized text ends with a configured punctuation character
+- The paragraph spans multiple lines
+- The emphasis is only part of a paragraph
+- The emphasis appears inside a blockquote, list item, footnote definition, heading, or GFM table cell
 
 Examples of **incorrect** code for this rule:
 
-```md /**First Chapter**/ /__Second Chapter__/
-<!-- eslint md/no-bold-paragraph: "error" -->
+```markdown
+<!-- eslint markdown/no-emphasis-as-headings: "error" -->
 
-# Book
+# Planetary guide
 
-**First Chapter**
+**Inner planets**
 
-Content of the first chapter
+Mercury, Venus, Earth, and Mars are the inner planets.
 
-__Second Chapter__
+_Outer planets_
 
-Content of the second chapter
+Jupiter, Saturn, Uranus, and Neptune are the outer planets.
+
+***Dwarf planets***
+
+Pluto is classified as a dwarf planet.
 ```
-
-### :white_check_mark: Correct
 
 Examples of **correct** code for this rule:
 
-```md
-<!-- eslint md/no-bold-paragraph: "error" -->
+```markdown
+<!-- eslint markdown/no-emphasis-as-headings: "error" -->
 
-# Book
+# Planetary guide
 
-## First Chapter
+## Inner planets
 
-Content of the first chapter
+Mercury, Venus, Earth, and Mars are the inner planets.
 
-## Second Chapter
+**Mercury** is the closest planet to the Sun.
 
-Content of the second chapter
+*Is Pluto a planet?*
 
----
+> **Note**
+>
+> Pluto is classified as a dwarf planet.
 
-**Bold text** with normal text in the paragraph.
-
-Text with **bold parts** is fine.
-
-- **Bold text in a list item** is allowed.
+- **Inner planets**: Mercury, Venus, Earth, and Mars
 ```
 
 ## Options
 
-No options are available for this rule.
+The following option is available on this rule:
+
+- `punctuation: string[]` - Characters that may end a fully emphasized paragraph without triggering a warning. Each array item must be a single, unique character. The default is `[".", ",", ";", ":", "!", "?", "。", "，", "；", "：", "！", "？"]`.
+
+Examples of **correct** code for this rule with `punctuation: [")"]`:
+
+```markdown
+<!-- eslint markdown/no-emphasis-as-headings: ["error", { punctuation: [")"] }] -->
+
+*Appendix A)*
+```
+
+## When Not to Use It
+
+If standalone emphasized paragraphs are an intentional part of your document style and you do not need them represented in the document outline, you can safely disable this rule.
 
 ## Prior Art
 
-- [MD036 - no-emphasis-as-heading](https://github.com/DavidAnson/markdownlint/blob/main/doc/md036.md#md036---emphasis-used-instead-of-a-heading)
+- [MD036 - Emphasis used instead of a heading](https://github.com/DavidAnson/markdownlint/blob/main/doc/md036.md#md036---emphasis-used-instead-of-a-heading)
 - [remark-lint-no-emphasis-as-heading](https://github.com/remarkjs/remark-lint/tree/main/packages/remark-lint-no-emphasis-as-heading#remark-lint-no-emphasis-as-heading)
-- [textlint-rule-no-bold-paragraph](https://github.com/aborazmeh/textlint-rule-no-bold-paragraph)
