@@ -61,6 +61,10 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 		"*foo\uFF1A*", // `：`
 		"*foo\uFF01*", // `！`
 		"*foo\uFF1F*", // `？`
+		"**foo.**",
+		"***foo.***",
+		"*[foo.](https://example.com/)*",
+		"*`foo.`*",
 
 		// Multiline
 		"*foo\nbar*",
@@ -581,7 +585,6 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 				},
 			],
 		},
-
 		{
 			code: "foo\n\n**bar**\n\nbaz\n\n__qux__",
 			errors: [
@@ -598,6 +601,18 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 					column: 1,
 					endLine: 7,
 					endColumn: 8,
+				},
+			],
+		},
+		{
+			code: "*Heading&nbsp;*",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 16,
 				},
 			],
 		},

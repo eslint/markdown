@@ -84,6 +84,9 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 		const { sourceCode } = context;
 		const [{ punctuation }] = context.options;
 
+		/** @type {string[]} */
+		const emphasisStrongTextStack = [];
+
 		let ignoredContainerDepth = 0;
 
 		return {
@@ -91,17 +94,31 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 				ignoredContainerDepth += 1;
 			},
 
-			"emphasis, strong"(/** @type {Emphasis | Strong} */ node) {
+			"emphasis, strong"() {
+				emphasisStrongTextStack.push("");
+			},
+
+			":matches(emphasis, strong) *:not(html)"({ value }) {
+				// TODO: handle `inlineCode` and `inlineMath`?
+				for (
+					let index = 0;
+					index < emphasisStrongTextStack.length;
+					index++
+				) {
+					emphasisStrongTextStack[index] += value ?? "";
+				}
+			},
+
+			"emphasis, strong:exit"(/** @type {Emphasis | Strong} */ node) {
+				const text = emphasisStrongTextStack.pop();
+
 				if (ignoredContainerDepth > 0) {
 					// Early return if inside an ignored container.
 					return;
 				}
 
-				const count = node.type === "emphasis" ? 1 : 2;
-				const text = sourceCode.getText(node, -count, -count);
-
 				if (punctuation.some(character => text.endsWith(character))) {
-					return; // TODO: this case does not handle emphasis inside emphasis pattern.
+					return;
 				}
 
 				const parentNode = sourceCode.getParent(node);
