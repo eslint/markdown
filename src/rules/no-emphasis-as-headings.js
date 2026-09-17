@@ -4,6 +4,12 @@
  */
 
 //-----------------------------------------------------------------------------
+// Imports
+//-----------------------------------------------------------------------------
+
+import { stripHtmlComments } from "../util.js";
+
+//-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
@@ -95,19 +101,24 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 				const text = sourceCode.getText(node, -count, -count);
 
 				if (punctuation.some(character => text.endsWith(character))) {
-					return;
+					return; // TODO: this case does not handle emphasis inside emphasis pattern.
 				}
 
 				const parentNode = sourceCode.getParent(node);
 
 				if (
-					parentNode.type === "paragraph" &&
-					parentNode.position.start.line ===
-						parentNode.position.end.line && // Should be a single line.
-					parentNode.position.start.offset ===
-						node.position.start.offset && // Should have the same start offset.
-					parentNode.position.end.offset === node.position.end.offset // Should have the same end offset.
+					parentNode.type !== "paragraph" ||
+					parentNode.position.start.line !==
+						parentNode.position.end.line
 				) {
+					return;
+				}
+
+				const parentText = stripHtmlComments(
+					sourceCode.getText(parentNode),
+				).trim(); // TODO: `trim()` is not markdown spec compliant.
+
+				if (parentText === sourceCode.getText(node)) {
 					context.report({
 						node,
 

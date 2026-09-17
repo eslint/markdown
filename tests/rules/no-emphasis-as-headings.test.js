@@ -308,6 +308,56 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 			],
 		},
 		{
+			// `markdownlint` does not flag emphasis with trailing spaces as a heading, but this rule does.
+			code: "*foo* ",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
+			// `markdownlint` does not flag emphasis with trailing tabs as a heading, but this rule does.
+			code: "*foo*\t",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
+			code: "*foo* <!-- comment -->",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
+			code: "*foo* <!-- comment --> <!-- comment -->",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
 			// `markdownlint` does not flag triple emphasis as a heading, but this rule does.
 			code: "***foo***",
 			errors: [
