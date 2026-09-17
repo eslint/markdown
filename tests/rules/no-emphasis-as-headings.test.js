@@ -48,6 +48,24 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 		"**foo** **bar**",
 		"** foo **", // This is not a `strong` node.
 
+		// Other whitespace must not be trimmed.
+		"\u00A0*foo*",
+		"*foo*\u00A0",
+		"\u00A0*foo*\u00A0", // Non-breaking space
+		"*foo*\v", // Vertical tab
+		"*foo*\f", // Form feed
+		"*foo*\u1680", // Ogham space mark
+		"*foo*\u2003", // Em space
+		"*foo*\u2028", // Line separator
+		"*foo*\u2029", // Paragraph separator
+		"*foo*\u202F", // Narrow non-breaking space
+		"*foo*\u3000", // Ideographic space
+		"*foo*\uFEFF", // Zero width non-breaking space
+
+		// Indented code blocks are not checked by this rule.
+		"\t*foo*",
+		"    *foo*",
+
 		// Punctuation
 		"*foo.*",
 		"*foo,*",

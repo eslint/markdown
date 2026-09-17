@@ -114,12 +114,12 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 			},
 
 			"emphasis, strong:exit"(/** @type {Emphasis | Strong} */ node) {
-				const text = emphasisStrongTextStack.pop();
-
 				if (ignoredContainerDepth > 0) {
 					// Early return if inside an ignored container.
 					return;
 				}
+
+				const text = emphasisStrongTextStack.pop();
 
 				if (punctuation.some(character => text.endsWith(character))) {
 					return;
@@ -137,7 +137,7 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 
 				const parentText = stripHtmlComments(
 					sourceCode.getText(parentNode),
-				).trim(); // TODO: `trim()` is not markdown spec compliant.
+				).replace(/^[\t\n\r ]+|[\t\n\r ]+$/gu, "");
 
 				if (parentText === sourceCode.getText(node)) {
 					context.report({
