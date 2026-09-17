@@ -47,7 +47,6 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 							minLength: 1,
 							maxLength: 1,
 						},
-						minItems: 1,
 						uniqueItems: true,
 					},
 				},

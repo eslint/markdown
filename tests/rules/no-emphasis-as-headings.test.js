@@ -519,5 +519,24 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 				},
 			],
 		},
+
+		// Options
+		{
+			code: "*foo.*",
+			options: [
+				{
+					punctuation: [],
+				},
+			],
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 7,
+				},
+			],
+		},
 	],
 });
