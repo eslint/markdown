@@ -123,12 +123,12 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 				// accumulate and make later text processing quadratic.
 				const text = emphasisStrongTextStack.pop();
 
-				if (containerDepth > 0) {
-					// Early return if inside a container.
-					return;
-				}
-
-				if (punctuation.some(character => text.endsWith(character))) {
+				if (
+					containerDepth > 0 ||
+					punctuation.some(character => text.endsWith(character))
+				) {
+					// Early return if inside a container or
+					// if the text ends with specified punctuation.
 					return;
 				}
 
