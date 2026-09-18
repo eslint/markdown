@@ -48,6 +48,8 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 		"**foo** **bar**",
 		"** foo **", // This is not a `strong` node.
 
+		"*<!-- comment -->*",
+
 		// Other whitespace must not be trimmed.
 		"\u00A0*foo*",
 		"*foo*\u00A0",
@@ -911,6 +913,42 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 					column: 1,
 					endLine: 1,
 					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: "*![alt](image.png)*",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: "*Overview.![new](badge.svg)*",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 29,
+				},
+			],
+		},
+		{
+			code: "*Overview. ![new](badge.svg)*",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 30,
 				},
 			],
 		},

@@ -90,8 +90,8 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 		const { sourceCode } = context;
 		const [{ punctuation }] = context.options;
 
-		/** @type {string} */
-		let lastText;
+		/** @type {string | null} */
+		let lastText = null;
 		let containerDepth = 0;
 		let emphasisOrStrongDepth = 0;
 
@@ -106,7 +106,7 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 
 			"emphasis, strong"() {
 				if (emphasisOrStrongDepth === 0) {
-					lastText = undefined;
+					lastText = null;
 				}
 
 				emphasisOrStrongDepth += 1;
@@ -116,7 +116,7 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 				lastText = value;
 			},
 
-			":matches(emphasis, strong) :matches(inlineCode, inlineMath)"() {
+			":matches(emphasis, strong) :matches(image, inlineCode, inlineMath)"() {
 				// Inline code and inline math are content, but their punctuation is ignored.
 				lastText = "";
 			},
@@ -127,14 +127,14 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 				if (
 					containerDepth > 0 ||
 					emphasisOrStrongDepth > 0 ||
-					(lastText !== undefined &&
-						punctuation.some(character =>
-							lastText.endsWith(character),
-						))
+					lastText === null ||
+					punctuation.some(character => lastText.endsWith(character))
 				) {
-					// Early return if inside a container,
-					// inside another emphasis or strong,
-					// or if the text ends with specified punctuation.
+					// Early return if:
+					// 1. The node is inside a container.
+					// 2. The node is inside another emphasis or strong node.
+					// 3. The node does not contain text.
+					// 4. The text ends with specified punctuation.
 					return;
 				}
 
