@@ -163,6 +163,8 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 		"- > ***foo***",
 		"- > ___foo___",
 
+		`- ${"*item* ".repeat(10_000)}`, // To prevent inefficient algorithm (O(n²)) in emphasis handling.
+
 		`
 - outer
   - *inner*

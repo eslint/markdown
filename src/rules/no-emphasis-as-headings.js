@@ -119,12 +119,14 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 			},
 
 			"emphasis, strong:exit"(/** @type {Emphasis | Strong} */ node) {
+				// Always pop before ignoring containers so tracked entries do not
+				// accumulate and make later text processing quadratic.
+				const text = emphasisStrongTextStack.pop();
+
 				if (containerDepth > 0) {
 					// Early return if inside a container.
 					return;
 				}
-
-				const text = emphasisStrongTextStack.pop();
 
 				if (punctuation.some(character => text.endsWith(character))) {
 					return;
