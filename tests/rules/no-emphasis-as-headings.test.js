@@ -274,10 +274,6 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 				},
 			],
 		},
-
-		// TODO:
-		// "*foo _bar_ baz*",
-		// "_foo *bar* baz_",
 	],
 
 	invalid: [
@@ -329,8 +325,9 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 				},
 			],
 		},
+
+		// `markdownlint` does not flag emphasis with trailing spaces as a heading, but this rule does.
 		{
-			// `markdownlint` does not flag emphasis with trailing spaces as a heading, but this rule does.
 			code: "*foo* ",
 			errors: [
 				{
@@ -343,7 +340,18 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 			],
 		},
 		{
-			// `markdownlint` does not flag emphasis with trailing tabs as a heading, but this rule does.
+			code: "*foo*  ",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
 			code: "*foo*\t",
 			errors: [
 				{
@@ -352,6 +360,138 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 					column: 1,
 					endLine: 1,
 					endColumn: 6,
+				},
+			],
+		},
+		{
+			code: "*foo*\t\t",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
+			code: "*foo* \t",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
+			code: "*foo*\t ",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
+			code: "*foo*\n",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
+			code: "*foo*\r",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
+			code: "*foo*\r\n",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
+			code: "*foo* \n",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
+			code: "*foo*\t\r",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
+			code: "*foo* \t\r\n",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 6,
+				},
+			],
+		},
+		{
+			code: " *foo*",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 7,
+				},
+			],
+		},
+		{
+			code: "   *foo* \t",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 4,
+					endLine: 1,
+					endColumn: 9,
 				},
 			],
 		},
@@ -379,8 +519,9 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 				},
 			],
 		},
+
+		// `markdownlint` does not flag triple emphasis as a heading, but this rule does.
 		{
-			// `markdownlint` does not flag triple emphasis as a heading, but this rule does.
 			code: "***foo***",
 			errors: [
 				{
@@ -393,7 +534,6 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 			],
 		},
 		{
-			// `markdownlint` does not flag triple emphasis as a heading, but this rule does.
 			code: "___foo___",
 			errors: [
 				{
@@ -406,7 +546,6 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 			],
 		},
 		{
-			// `markdownlint` does not flag triple emphasis as a heading, but this rule does.
 			code: "*__foo__*",
 			errors: [
 				{
@@ -419,7 +558,6 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 			],
 		},
 		{
-			// `markdownlint` does not flag triple emphasis as a heading, but this rule does.
 			code: "__*foo*__",
 			errors: [
 				{
@@ -432,7 +570,6 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 			],
 		},
 		{
-			// `markdownlint` does not flag triple emphasis as a heading, but this rule does.
 			code: "_**foo**_",
 			errors: [
 				{
@@ -445,7 +582,6 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 			],
 		},
 		{
-			// `markdownlint` does not flag triple emphasis as a heading, but this rule does.
 			code: "**_foo_**",
 			errors: [
 				{
@@ -454,6 +590,32 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 					column: 1,
 					endLine: 1,
 					endColumn: 10,
+				},
+			],
+		},
+
+		// `markdownlint` does not flag emphasis with nested emphasis as a heading, but this rule does.
+		{
+			code: "*foo _bar_ baz*",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: "_foo *bar* baz_",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 16,
 				},
 			],
 		},
@@ -650,6 +812,40 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 					column: 1,
 					endLine: 1,
 					endColumn: 7,
+				},
+			],
+		},
+		{
+			code: "_foo._",
+			options: [
+				{
+					punctuation: ["!"],
+				},
+			],
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 7,
+				},
+			],
+		},
+		{
+			code: "**foo.**",
+			options: [
+				{
+					punctuation: ["?"],
+				},
+			],
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 9,
 				},
 			],
 		},
