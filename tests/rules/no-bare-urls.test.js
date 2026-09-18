@@ -189,7 +189,7 @@ ruleTester.run("no-bare-urls", rule, {
 					line: 1,
 					column: 1,
 					endLine: 1,
-					endColumn: 25,
+					endColumn: 23,
 				},
 			],
 		},

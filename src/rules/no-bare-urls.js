@@ -172,11 +172,11 @@ export default /** @satisfies {NoBareUrlsRuleDefinition} */ ({
 								// GFM parses `www` autolinks with an `http://` URL.
 								if (url === `http://${text}`) {
 									const escapedLinkText = text.replace(
-										/[[\]\\*_~`]/gu,
+										/[[\]\\*_~`$&]/gu,
 										"\\$&",
 									);
 									const escapedLinkDestination = url.replace(
-										/[\\()]/gu,
+										/[\\()&]/gu,
 										"\\$&",
 									);
 
