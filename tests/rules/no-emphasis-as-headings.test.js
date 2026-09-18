@@ -541,6 +541,30 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 				},
 			],
 		},
+		{
+			code: "*foo<!-- comment -->*",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: "**foo<!-- comment -->**",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 24,
+				},
+			],
+		},
 
 		// `markdownlint` does not flag triple emphasis as a heading, but this rule does.
 		{

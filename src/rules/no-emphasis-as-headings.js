@@ -142,11 +142,12 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 					return;
 				}
 
+				const nodeText = stripHtmlComments(sourceCode.getText(node));
 				const parentText = stripHtmlComments(
 					sourceCode.getText(parentNode),
 				).replace(leadingOrTrailingWhitespacePattern, "");
 
-				if (parentText === sourceCode.getText(node)) {
+				if (nodeText === parentText) {
 					context.report({
 						node,
 
