@@ -14,7 +14,7 @@ import { stripHtmlComments } from "../util.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Emphasis, Strong } from "mdast";
+ * @import { Emphasis, Strong, Text } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"noEmphasisAsHeadings"} NoEmphasisAsHeadingsMessageIds
  * @typedef {[{ punctuation?: string[] }]} NoEmphasisAsHeadingsOptions
@@ -90,10 +90,10 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 		const { sourceCode } = context;
 		const [{ punctuation }] = context.options;
 
-		/** @type {Array<string | undefined>} */
-		const lastTextStack = [];
-
+		/** @type {string} */
+		let lastText;
 		let containerDepth = 0;
+		let emphasisOrStrongDepth = 0;
 
 		return {
 			"blockquote, footnoteDefinition, listItem"() {
@@ -105,37 +105,36 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 			},
 
 			"emphasis, strong"() {
-				lastTextStack.push(undefined);
+				if (emphasisOrStrongDepth === 0) {
+					lastText = undefined;
+				}
+
+				emphasisOrStrongDepth += 1;
 			},
 
-			":matches(emphasis, strong) text"({ value }) {
-				lastTextStack[lastTextStack.length - 1] = value;
+			":matches(emphasis, strong) text"(/** @type {Text} */ { value }) {
+				lastText = value;
 			},
 
 			":matches(emphasis, strong) :matches(inlineCode, inlineMath)"() {
 				// Inline code and inline math are content, but their punctuation is ignored.
-				lastTextStack[lastTextStack.length - 1] = "";
+				lastText = "";
 			},
 
 			"emphasis, strong:exit"(/** @type {Emphasis | Strong} */ node) {
-				// Always pop before ignoring containers so tracked entries do not
-				// accumulate and make later text processing quadratic.
-				const lastText = lastTextStack.pop();
-
-				if (lastText !== undefined && lastTextStack.length > 0) {
-					// Propagate the last plain-text descendant to the parent.
-					lastTextStack[lastTextStack.length - 1] = lastText;
-				}
+				emphasisOrStrongDepth -= 1;
 
 				if (
 					containerDepth > 0 ||
+					emphasisOrStrongDepth > 0 ||
 					(lastText !== undefined &&
 						punctuation.some(character =>
 							lastText.endsWith(character),
 						))
 				) {
-					// Early return if inside a container or
-					// if the text ends with specified punctuation.
+					// Early return if inside a container,
+					// inside another emphasis or strong,
+					// or if the text ends with specified punctuation.
 					return;
 				}
 
