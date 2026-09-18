@@ -14,6 +14,10 @@ body:
           description: What should the new rule do?
       validations:
           required: true
+    - type: textarea
+      attributes:
+          label: Additional rule details
+          description: If there are any additional details about how the proposed rule should work, please provide them.
     - type: dropdown
       attributes:
           label: What type of rule is this?
