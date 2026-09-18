@@ -41,6 +41,8 @@
 //-----------------------------------------------------------------------------
 
 const htmlTagNamePattern = /^<(?<tagName>[^!>][^/\s>]*)/u;
+const linkTextSpecialCharacterPattern = /[[\]\\*_~`$&|]/gu;
+const linkDestinationSpecialCharacterPattern = /[\\()&|]/gu;
 
 /**
  * Parses an HTML tag to extract its name and closing status
@@ -170,7 +172,25 @@ export default /** @satisfies {NoBareUrlsRuleDefinition} */ ({
 							node: linkNode,
 							messageId: "bareUrl",
 							fix(fixer) {
-								return fixer.replaceText(linkNode, `<${text}>`);
+								let replacementText = `<${text}>`;
+								// GFM parses `www` autolinks with an `http://` URL.
+								if (url === `http://${text}`) {
+									const escapedLinkText = text.replace(
+										linkTextSpecialCharacterPattern,
+										"\\$&",
+									);
+									const escapedLinkDestination = url.replace(
+										linkDestinationSpecialCharacterPattern,
+										"\\$&",
+									);
+
+									replacementText = `[${escapedLinkText}](${escapedLinkDestination})`;
+								}
+
+								return fixer.replaceText(
+									linkNode,
+									replacementText,
+								);
 							},
 						});
 					}

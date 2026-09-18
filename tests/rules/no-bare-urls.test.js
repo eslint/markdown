@@ -74,6 +74,171 @@ ruleTester.run("no-bare-urls", rule, {
 	],
 	invalid: [
 		{
+			code: "Visit www.example.com for details.",
+			output: "Visit [www.example.com](http://www.example.com) for details.",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 7,
+					endLine: 1,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: "www.google.com/search?q=(business))+ok",
+			output: "[www.google.com/search?q=(business))+ok](http://www.google.com/search?q=\\(business\\)\\)+ok)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 39,
+				},
+			],
+		},
+		{
+			code: "www.example.com/a\\*b",
+			output: "[www.example.com/a\\\\\\*b](http://www.example.com/a\\\\*b)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 21,
+				},
+			],
+		},
+		{
+			code: "www.example.com/a]b",
+			output: "[www.example.com/a\\]b](http://www.example.com/a]b)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: "www.example.com/a[b",
+			output: "[www.example.com/a\\[b](http://www.example.com/a[b)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: "www.example.com/a*b*c",
+			output: "[www.example.com/a\\*b\\*c](http://www.example.com/a*b*c)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: "www.example.com/a~b~c",
+			output: "[www.example.com/a\\~b\\~c](http://www.example.com/a~b~c)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: "www.example.com/a`b`c",
+			output: "[www.example.com/a\\`b\\`c](http://www.example.com/a`b`c)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 22,
+				},
+			],
+		},
+		{
+			code: "www.example.com/$a$b$c",
+			output: "[www.example.com/\\$a\\$b\\$c](http://www.example.com/$a$b$c)",
+			languageOptions: {
+				math: true,
+			},
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 23,
+				},
+			],
+		},
+		{
+			code: dedent`
+            | URL |
+            | --- |
+            | www.example.com/a\|b |`,
+			output: dedent`
+            | URL |
+            | --- |
+            | [www.example.com/a\\\|b](http://www.example.com/a\\\|b) |`,
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 3,
+					column: 3,
+					endLine: 3,
+					endColumn: 23,
+				},
+			],
+		},
+		{
+			code: "www.example.com/a&amp;b",
+			output: "[www.example.com/a\\&amp;b](http://www.example.com/a\\&amp;b)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 24,
+				},
+			],
+		},
+		{
+			code: "www.example.com/a&#38;b",
+			output: "[www.example.com/a\\&#38;b](http://www.example.com/a\\&#38;b)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 24,
+				},
+			],
+		},
+		{
 			code: "https://www.example.com/",
 			output: "<https://www.example.com/>",
 			errors: [
