@@ -82,7 +82,20 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 		"**foo.**",
 		"***foo.***",
 		"*[foo.](https://example.com/)*",
-		"*`foo.`*",
+		"*foo `bar`.*",
+		"**`foo`?**",
+		{
+			code: "*foo $bar$.*",
+			languageOptions: {
+				math: true,
+			},
+		},
+		{
+			code: "**$foo$?**",
+			languageOptions: {
+				math: true,
+			},
+		},
 
 		// Multiline
 		"*foo\nbar*",
@@ -195,6 +208,13 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 |   foo   |   bar   |
 |   ---   |   ---   |
 | __baz__ | __qux__ |`,
+			language: "markdown/gfm",
+		},
+		{
+			code: `
+*foo* | bar
+----- | ---
+ baz  | qux`,
 			language: "markdown/gfm",
 		},
 
@@ -793,6 +813,74 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 					column: 1,
 					endLine: 1,
 					endColumn: 16,
+				},
+			],
+		},
+
+		// Punctuation inside inline code and inline math is ignored.
+		{
+			code: "*`foo.`*",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: "*foo `bar.`*",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: "**`foo?`**",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 11,
+				},
+			],
+		},
+		{
+			code: "*$foo.$*",
+			languageOptions: {
+				math: true,
+			},
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 9,
+				},
+			],
+		},
+		{
+			code: "**foo $bar?$**",
+			languageOptions: {
+				math: true,
+			},
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 15,
 				},
 			],
 		},

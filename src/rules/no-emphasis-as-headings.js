@@ -22,6 +22,12 @@ import { stripHtmlComments } from "../util.js";
  */
 
 //-----------------------------------------------------------------------------
+// Helpers
+//-----------------------------------------------------------------------------
+
+const leadingOrTrailingWhitespacePattern = /^[ \t\r\n]+|[ \t\r\n]+$/gu;
+
+//-----------------------------------------------------------------------------
 // Rule Definition
 //-----------------------------------------------------------------------------
 
@@ -87,35 +93,34 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 		/** @type {string[]} */
 		const emphasisStrongTextStack = [];
 
-		let ignoredContainerDepth = 0;
+		let containerDepth = 0;
 
 		return {
 			"blockquote, footnoteDefinition, listItem"() {
-				ignoredContainerDepth += 1;
+				containerDepth += 1;
 			},
 
 			"blockquote, footnoteDefinition, listItem:exit"() {
-				ignoredContainerDepth -= 1;
+				containerDepth -= 1;
 			},
 
 			"emphasis, strong"() {
 				emphasisStrongTextStack.push("");
 			},
 
-			":matches(emphasis, strong) *:not(html)"({ value }) {
-				// TODO: handle `inlineCode` and `inlineMath`?
+			":matches(emphasis, strong) text"({ value }) {
 				for (
 					let index = 0;
 					index < emphasisStrongTextStack.length;
 					index++
 				) {
-					emphasisStrongTextStack[index] += value ?? "";
+					emphasisStrongTextStack[index] += value;
 				}
 			},
 
 			"emphasis, strong:exit"(/** @type {Emphasis | Strong} */ node) {
-				if (ignoredContainerDepth > 0) {
-					// Early return if inside an ignored container.
+				if (containerDepth > 0) {
+					// Early return if inside a container.
 					return;
 				}
 
@@ -137,7 +142,7 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 
 				const parentText = stripHtmlComments(
 					sourceCode.getText(parentNode),
-				).replace(/^[\t\n\r ]+|[\t\n\r ]+$/gu, "");
+				).replace(leadingOrTrailingWhitespacePattern, "");
 
 				if (parentText === sourceCode.getText(node)) {
 					context.report({
