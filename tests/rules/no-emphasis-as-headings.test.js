@@ -84,6 +84,8 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 		"*[foo.](https://example.com/)*",
 		"*foo `bar`.*",
 		"**`foo`?**",
+		"*foo.**<!-- comment -->***",
+		"**foo.*<!-- comment -->***",
 		{
 			code: "*foo $bar$.*",
 			languageOptions: {
@@ -163,7 +165,11 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 		"- > ***foo***",
 		"- > ___foo___",
 
-		`- ${"*item* ".repeat(10_000)}`, // To prevent inefficient algorithm (O(n²)) in emphasis handling.
+		// To prevent inefficient algorithm (O(n²)) in emphasis handling.
+		{
+			name: "large list with repeated emphasis",
+			code: `- ${"*item* ".repeat(10_000)}`,
+		},
 
 		`
 - outer
