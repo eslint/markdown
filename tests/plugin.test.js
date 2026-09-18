@@ -8,6 +8,7 @@
 //-----------------------------------------------------------------------------
 
 import assert from "node:assert";
+import { spawnSync } from "node:child_process";
 import path from "node:path";
 import fs from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -1228,6 +1229,25 @@ describe("FlatESLint", () => {
 				.map(([name]) => `markdown/${name}`);
 			assert.deepStrictEqual(actualRuleIds, expectedRuleIds);
 		});
+
+		it("should serialize the default Markdown parser", async () => {
+			const markdownESLint = new ESLint({
+				overrideConfigFile: true,
+				overrideConfig: {
+					files: ["**/*.md"],
+					plugins: { markdown: plugin },
+					language: "markdown/commonmark",
+				},
+			});
+			const config =
+				await markdownESLint.calculateConfigForFile("test.md");
+			const serializedConfig = JSON.parse(JSON.stringify(config));
+
+			assert.strictEqual(
+				serializedConfig.languageOptions.parser,
+				"mdast-util-from-markdown",
+			);
+		});
 	});
 
 	describe("plugin", () => {
@@ -2438,6 +2458,55 @@ describe("FlatESLint", () => {
 					"emptyImage",
 				);
 			}
+		});
+	});
+
+	describe("CLI", () => {
+		it("should override the Markdown parser with `--parser @eslint-markdown/parser`", () => {
+			const eslintPath = fileURLToPath(
+				new URL(
+					"bin/eslint.js",
+					import.meta.resolve("eslint/package.json"),
+				),
+			);
+			const args = [
+				eslintPath,
+				"--config=parser.js",
+				"--stdin",
+				"--stdin-filename=test.md",
+				"--format=json",
+			];
+			const options = {
+				cwd: path.resolve(__dirname, "fixtures"),
+				input: "# Hello\n\n### Skipped level\n",
+				encoding: "utf8",
+			};
+
+			const withoutParser = spawnSync(process.execPath, args, options);
+
+			assert.strictEqual(withoutParser.status, 1);
+			const [configuredResult] = JSON.parse(withoutParser.stdout);
+
+			assert.strictEqual(configuredResult.messages.length, 1);
+			assert.strictEqual(
+				configuredResult.messages[0].message,
+				"Parsing error: The configured Markdown parser was called.",
+			);
+
+			const withParser = spawnSync(
+				process.execPath,
+				[...args, "--parser", "@eslint-markdown/parser"],
+				options,
+			);
+
+			assert.strictEqual(withParser.status, 1);
+			const [overriddenResult] = JSON.parse(withParser.stdout);
+
+			assert.strictEqual(overriddenResult.messages.length, 1);
+			assert.strictEqual(
+				overriddenResult.messages[0].ruleId,
+				"markdown/heading-increment",
+			);
 		});
 	});
 });
