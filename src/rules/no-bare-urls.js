@@ -41,6 +41,8 @@
 //-----------------------------------------------------------------------------
 
 const htmlTagNamePattern = /^<(?<tagName>[^!>][^/\s>]*)/u;
+const linkTextSpecialCharacterPattern = /[[\]\\*_~`$&|]/gu;
+const linkDestinationSpecialCharacterPattern = /[\\()&|]/gu;
 
 /**
  * Parses an HTML tag to extract its name and closing status
@@ -172,11 +174,11 @@ export default /** @satisfies {NoBareUrlsRuleDefinition} */ ({
 								// GFM parses `www` autolinks with an `http://` URL.
 								if (url === `http://${text}`) {
 									const escapedLinkText = text.replace(
-										/[[\]\\*_~`$&]/gu,
+										linkTextSpecialCharacterPattern,
 										"\\$&",
 									);
 									const escapedLinkDestination = url.replace(
-										/[\\()&]/gu,
+										linkDestinationSpecialCharacterPattern,
 										"\\$&",
 									);
 
