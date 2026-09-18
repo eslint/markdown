@@ -953,6 +953,56 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 			],
 		},
 		{
+			code: "*Overview.![new][badge]*\n\n[badge]: badge.svg",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 25,
+				},
+			],
+		},
+		{
+			code: "*Overview. ![new][badge]*\n\n[badge]: badge.svg",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 26,
+				},
+			],
+		},
+		{
+			code: "*Overview.[^badge]*\n\n[^badge]: Badge details",
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: "*Overview. [^badge]*\n\n[^badge]: Badge details",
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 21,
+				},
+			],
+		},
+		{
 			code: "*foo.**`bar`***",
 			errors: [
 				{

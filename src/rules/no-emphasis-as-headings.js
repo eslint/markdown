@@ -116,8 +116,8 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 				lastText = value;
 			},
 
-			":matches(emphasis, strong) :matches(image, inlineCode, inlineMath)"() {
-				// Inline code and inline math are content, but their punctuation is ignored.
+			":matches(emphasis, strong) :matches(footnoteReference, image, imageReference, inlineCode, inlineMath)"() {
+				// These nodes are content, but their punctuation is ignored.
 				lastText = "";
 			},
 
