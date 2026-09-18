@@ -178,6 +178,67 @@ ruleTester.run("no-bare-urls", rule, {
 			],
 		},
 		{
+			code: "www.example.com/$a$b$c",
+			output: "[www.example.com/\\$a\\$b\\$c](http://www.example.com/$a$b$c)",
+			languageOptions: {
+				math: true,
+			},
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 25,
+				},
+			],
+		},
+		{
+			code: dedent`
+            | URL |
+            | --- |
+            | www.example.com/a\|b |`,
+			output: dedent`
+            | URL |
+            | --- |
+            | [www.example.com/a\\\|b](http://www.example.com/a\\\|b) |`,
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 3,
+					column: 3,
+					endLine: 3,
+					endColumn: 23,
+				},
+			],
+		},
+		{
+			code: "www.example.com/a&amp;b",
+			output: "[www.example.com/a\\&amp;b](http://www.example.com/a\\&amp;b)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 24,
+				},
+			],
+		},
+		{
+			code: "www.example.com/a&#38;b",
+			output: "[www.example.com/a\\&#38;b](http://www.example.com/a\\&#38;b)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 24,
+				},
+			],
+		},
+		{
 			code: "https://www.example.com/",
 			output: "<https://www.example.com/>",
 			errors: [
