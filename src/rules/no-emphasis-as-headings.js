@@ -90,8 +90,8 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 		const { sourceCode } = context;
 		const [{ punctuation }] = context.options;
 
-		/** @type {string[]} */
-		const emphasisStrongTextStack = [];
+		/** @type {Array<string | undefined>} */
+		const lastTextStack = [];
 
 		let containerDepth = 0;
 
@@ -105,27 +105,34 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 			},
 
 			"emphasis, strong"() {
-				emphasisStrongTextStack.push("");
+				lastTextStack.push(undefined);
 			},
 
 			":matches(emphasis, strong) text"({ value }) {
-				for (
-					let index = 0;
-					index < emphasisStrongTextStack.length;
-					index++
-				) {
-					emphasisStrongTextStack[index] += value;
-				}
+				lastTextStack[lastTextStack.length - 1] = value;
+			},
+
+			":matches(emphasis, strong) :matches(inlineCode, inlineMath)"() {
+				// Inline code and inline math are content, but their punctuation is ignored.
+				lastTextStack[lastTextStack.length - 1] = "";
 			},
 
 			"emphasis, strong:exit"(/** @type {Emphasis | Strong} */ node) {
 				// Always pop before ignoring containers so tracked entries do not
 				// accumulate and make later text processing quadratic.
-				const text = emphasisStrongTextStack.pop();
+				const lastText = lastTextStack.pop();
+
+				if (lastText !== undefined && lastTextStack.length > 0) {
+					// Propagate the last plain-text descendant to the parent.
+					lastTextStack[lastTextStack.length - 1] = lastText;
+				}
 
 				if (
 					containerDepth > 0 ||
-					punctuation.some(character => text.endsWith(character))
+					(lastText !== undefined &&
+						punctuation.some(character =>
+							lastText.endsWith(character),
+						))
 				) {
 					// Early return if inside a container or
 					// if the text ends with specified punctuation.

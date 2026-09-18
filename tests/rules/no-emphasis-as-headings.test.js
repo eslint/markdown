@@ -842,8 +842,6 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 				},
 			],
 		},
-
-		// Punctuation inside inline code and inline math is ignored.
 		{
 			code: "*`foo.`*",
 			errors: [
@@ -907,6 +905,33 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 					column: 1,
 					endLine: 1,
 					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: "*foo.**`bar`***",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: "**foo.*$bar$***",
+			languageOptions: {
+				math: true,
+			},
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 16,
 				},
 			],
 		},
