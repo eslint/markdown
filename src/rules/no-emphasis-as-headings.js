@@ -150,7 +150,6 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 				if (nodeText === parentText) {
 					context.report({
 						node,
-
 						messageId: "noEmphasisAsHeadings",
 					});
 				}
