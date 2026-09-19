@@ -125,15 +125,15 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 				emphasisOrStrongDepth -= 1;
 
 				if (
+					lastText === null ||
 					containerDepth > 0 ||
 					emphasisOrStrongDepth > 0 ||
-					lastText === null ||
 					punctuation.some(character => lastText.endsWith(character))
 				) {
 					// Early return if:
-					// 1. The node is inside a container.
-					// 2. The node is inside another emphasis or strong node.
-					// 3. The node does not contain text.
+					// 1. The node does not contain text.
+					// 2. The node is inside a container.
+					// 3. The node is inside another emphasis or strong node.
 					// 4. The text ends with specified punctuation.
 					return;
 				}
