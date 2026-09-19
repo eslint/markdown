@@ -65,9 +65,7 @@ Mercury, Venus, Earth, and Mars are the inner planets.
 
 The following option is available on this rule:
 
-- `punctuation: Array<string>` - Characters that may end a fully emphasized paragraph without triggering a warning. Each array item must be a single, unique character. The default is `[".", ",", ";", ":", "!", "?", "。", "，", "；", "：", "！", "？"]`.
-
-NOTE: Set `punctuation` to an empty array (`[]`) to disable this behavior.
+- `punctuation: Array<string>` - Characters that may end a fully emphasized paragraph without triggering a warning. Each array item must be a single, unique character. Set `punctuation` to an empty array (`[]`) to disable this behavior. The default is `[".", ",", ";", ":", "!", "?", "。", "，", "；", "：", "！", "？"]`.
 
 Examples of **correct** code for this rule with `punctuation: [")"]`:
 
