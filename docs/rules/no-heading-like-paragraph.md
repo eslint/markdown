@@ -12,7 +12,7 @@ This is almost always a typo, and it's easy to miss in review because the source
 
 This rule flags a line of a paragraph that begins with seven or more hash characters followed by a space, a tab, a line ending, or the end of the paragraph. It checks continuation lines as well as the first line, because six or fewer hash characters in the same position would open a real heading. Block quote markers and up to three spaces of indentation may precede the hash characters, the same positions where an ATX heading is allowed to start. Indentation that belongs to an enclosing container, such as the content indentation of a list item or a footnote definition, doesn't count toward those three spaces.
 
-This rule ignores anything that can't open an ATX heading. `#######Installation` has no whitespace to delimit the hash characters, `\####### Installation` and `&#35;###### Installation` escape their leading hash character on purpose, and four or more spaces of indentation are too many for a heading.
+This rule ignores anything that can't open an ATX heading. `#######Installation` has no whitespace to delimit the hash characters, `\####### Installation` and `&#35;###### Installation` escape their leading hash character on purpose, and four or more spaces of indentation are too many for a heading. It also ignores hash characters inside a code span or inside the title of a link or an image, even when those span lines, because they aren't paragraph text and either suggestion would change their content.
 
 This rule provides suggestions rather than an automatic fix, because the number of hash characters alone doesn't reveal which correction the author intended:
 

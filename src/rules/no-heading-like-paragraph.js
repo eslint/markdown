@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Blockquote, FootnoteDefinition, ListItem, Node, Paragraph } from "mdast";
+ * @import { Blockquote, FootnoteDefinition, Image, InlineCode, Link, ListItem, Node, Paragraph } from "mdast";
  * @import { MarkdownSourceCode } from "../language/markdown-source-code.js";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"headingLikeParagraph" | "useMaxDepthHashes" | "escapeLeadingHash"} NoHeadingLikeParagraphMessageIds
@@ -59,6 +59,13 @@ const footnoteDefinitionIndent = 4;
 
 /** The longest opening sequence an ATX heading allows. */
 const maxDepthHashes = "######";
+
+/**
+ * Replaces source text that mustn't take part in heading detection, such as the content
+ * of a code span. It isn't whitespace, `>`, or `#`, so a masked range can neither pass
+ * as indentation or a block quote marker nor look like an opening sequence.
+ */
+const maskCharacter = "\uFFFD";
 
 /**
  * Checks whether a node is a container block whose continuation lines repeat a prefix.
@@ -302,6 +309,102 @@ function getListItemIndent(
 }
 
 /**
+ * Checks whether a character is a space, a tab, or part of a line ending.
+ * @param {string} character The character to check.
+ * @returns {boolean} Whether the character is whitespace.
+ */
+function isWhitespace(character) {
+	return (
+		character === " " ||
+		character === "\t" ||
+		character === "\n" ||
+		character === "\r"
+	);
+}
+
+/**
+ * Checks whether the character at the given index is backslash-escaped.
+ * @param {string} text The text to read.
+ * @param {number} index The index of the character.
+ * @returns {boolean} Whether an odd number of backslashes precedes the character.
+ */
+function isEscaped(text, index) {
+	let backslashes = 0;
+
+	while (text[index - backslashes - 1] === "\\") {
+		backslashes++;
+	}
+
+	return backslashes % 2 === 1;
+}
+
+/**
+ * Returns the range of a link's or image's title, including its delimiters, by reading
+ * the source backward from the closing `)` of the resource. The title is the last part
+ * of the resource, so its closing delimiter is the last character before that `)` that
+ * isn't whitespace.
+ *
+ * A quoted title can't contain its delimiter unescaped, so the nearest unescaped one
+ * opens it. The parser allows an unescaped `(` inside a parenthesized title, so the
+ * nearest `(` isn't necessarily the opening one. The opening `(` always follows the
+ * whitespace that separates the destination from the title, so the outermost `(` after
+ * whitespace is used. That search stops at an unescaped `)`, which can't occur inside
+ * the title, and at the `(` that opens the resource after the `]` of the link text or
+ * image description.
+ *
+ * If no opening delimiter is found, the range is empty and nothing is masked, so a
+ * heading-like line is never hidden by mistake.
+ * @param {Link | Image} node The link or image node, which must have a title.
+ * @param {MarkdownSourceCode} sourceCode The Markdown source code object.
+ * @returns {[number, number]} The range of the title.
+ */
+function getTitleRange(node, sourceCode) {
+	const { text } = sourceCode;
+	const [startOffset, endOffset] = sourceCode.getRange(node);
+	let index = endOffset - 2; // the character before the closing ")"
+
+	while (isWhitespace(text[index])) {
+		index--;
+	}
+
+	const closingIndex = index;
+	const closingDelimiter = text[closingIndex];
+	let openingIndex = closingIndex;
+
+	if (closingDelimiter === ")") {
+		for (index--; index > startOffset; index--) {
+			if (isEscaped(text, index)) {
+				continue;
+			}
+
+			const character = text[index];
+
+			if (
+				character === ")" ||
+				(character === "(" &&
+					text[index - 1] === "]" &&
+					!isEscaped(text, index - 1))
+			) {
+				break;
+			}
+
+			if (character === "(" && isWhitespace(text[index - 1])) {
+				openingIndex = index;
+			}
+		}
+	} else {
+		for (index--; index > startOffset; index--) {
+			if (text[index] === closingDelimiter && !isEscaped(text, index)) {
+				openingIndex = index;
+				break;
+			}
+		}
+	}
+
+	return [openingIndex, closingIndex + 1];
+}
+
+/**
  * Returns the prefixes a continuation line of a paragraph repeats to stay inside each
  * enclosing container, ordered from the outermost container to the innermost.
  * @param {Paragraph} node The paragraph node.
@@ -369,6 +472,23 @@ export default /** @satisfies {NoHeadingLikeParagraphRuleDefinition} */ ({
 	create(context) {
 		const { sourceCode } = context;
 
+		/** @type {string[]} */
+		let buffer;
+		/** @type {number} */
+		let nodeStartOffset;
+
+		/**
+		 * Masks a range of the current paragraph's source text.
+		 * @param {number} startOffset The offset at which the range begins.
+		 * @param {number} endOffset The offset at which the range ends.
+		 * @returns {void}
+		 */
+		function maskRange(startOffset, endOffset) {
+			for (let i = startOffset; i < endOffset; i++) {
+				buffer[i - nodeStartOffset] = maskCharacter;
+			}
+		}
+
 		return {
 			paragraph(node) {
 				/*
@@ -377,8 +497,39 @@ export default /** @satisfies {NoHeadingLikeParagraphRuleDefinition} */ ({
 				 * references. Both `\####### Foo` and `&#35;###### Foo` render as a
 				 * paragraph whose text starts with seven hash characters, but in each case
 				 * the author escaped the leading hash on purpose.
+				 *
+				 * Split into UTF-16 code units so the buffer stays aligned with source
+				 * offsets while inline nodes are masked.
 				 */
-				const text = sourceCode.getText(node);
+				buffer = sourceCode.getText(node).split("");
+				nodeStartOffset = node.position.start.offset;
+			},
+
+			"paragraph inlineCode"(/** @type {InlineCode} */ node) {
+				/*
+				 * A code span that spans lines can put hash characters at the start of
+				 * a line, but they're code rather than paragraph text, and both
+				 * suggestions would change the code.
+				 */
+				maskRange(...sourceCode.getRange(node));
+			},
+
+			"paragraph :matches(link, image)"(
+				/** @type {Link | Image} */ node,
+			) {
+				/*
+				 * The same goes for a title that spans lines. The link text and the
+				 * image description stay visible, because they're still paragraph text
+				 * and a heading with six hash characters would break the link or image
+				 * there just as it would anywhere else in the paragraph.
+				 */
+				if (typeof node.title === "string") {
+					maskRange(...getTitleRange(node, sourceCode));
+				}
+			},
+
+			"paragraph:exit"(node) {
+				const text = buffer.join("");
 				const containerPrefixes = getContainerPrefixes(
 					node,
 					sourceCode,
@@ -426,8 +577,7 @@ export default /** @satisfies {NoHeadingLikeParagraphRuleDefinition} */ ({
 					}
 
 					const { hashes } = match.groups;
-					const startOffset =
-						node.position.start.offset + match.index;
+					const startOffset = nodeStartOffset + match.index;
 					const endOffset = startOffset + hashes.length;
 
 					context.report({

@@ -52,6 +52,21 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 
 		// InlineCode
 		"`####### Installation`",
+		"`example\n####### text\n`", // a code span that spans lines isn't paragraph text
+		"`a\n`####### text", // the closing backtick keeps the hash characters off the line start
+
+		// Link and image titles that span lines
+		'[link](https://example.com "\n####### title\n")',
+		'![image](https://example.com "\n####### title\n")',
+		"[link](https://example.com '\n####### title\n')",
+		"[link](https://example.com (\n####### title\n))",
+		'[link](https://example.com "a \\" b\n####### title\n")', // an escaped delimiter doesn't end the title
+		'[link](https://example.com "\n####### title\n" )', // whitespace may separate the title from the closing parenthesis
+		"[link](https://example.com (\n####### title\n(nested)))", // the parser allows an unescaped "(" inside a parenthesized title
+		"[link](https://example.com (a(b\n####### title\n))",
+		"[link](https://example.com/(a) (\n####### title\n))", // parentheses in the destination don't confuse the title search
+		"[link](https://example.com (a\\) (\n####### title\n))", // an escaped ")" doesn't end the title
+		"[link](https://example.com (a\\](b\n####### title\n))", // an escaped "]" doesn't end the link text
 
 		// HTML
 		"<div>\n####### Installation\n</div>",
@@ -596,6 +611,172 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 						{
 							messageId: "escapeLeadingHash",
 							output: "Some paragraph text.\n####### Installation\n\\####### Configuration",
+						},
+					],
+				},
+			],
+		},
+
+		// Link text and image descriptions are still paragraph text
+		{
+			code: "[foo\n####### bar](https://example.com)",
+			errors: [
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 8,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: "[foo\n###### bar](https://example.com)",
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: "[foo\n\\####### bar](https://example.com)",
+						},
+					],
+				},
+			],
+		},
+		{
+			code: "![foo\n####### bar](https://example.com)",
+			errors: [
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 8,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: "![foo\n###### bar](https://example.com)",
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: "![foo\n\\####### bar](https://example.com)",
+						},
+					],
+				},
+			],
+		},
+		{
+			code: '![foo\n####### bar](https://example.com "\n####### title\n")',
+			errors: [
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 8,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: '![foo\n###### bar](https://example.com "\n####### title\n")',
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: '![foo\n\\####### bar](https://example.com "\n####### title\n")',
+						},
+					],
+				},
+			],
+		},
+
+		// A destination or link text at the start of a line is still paragraph text
+		{
+			code: "[link](\n####### (title))",
+			errors: [
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 8,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: "[link](\n###### (title))",
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: "[link](\n\\####### (title))",
+						},
+					],
+				},
+			],
+		},
+		{
+			code: "[a (\n####### b](https://example.com (title))",
+			errors: [
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 8,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: "[a (\n###### b](https://example.com (title))",
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: "[a (\n\\####### b](https://example.com (title))",
+						},
+					],
+				},
+			],
+		},
+		{
+			code: "![a (\n####### b](https://example.com (title))",
+			errors: [
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 8,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: "![a (\n###### b](https://example.com (title))",
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: "![a (\n\\####### b](https://example.com (title))",
 						},
 					],
 				},
