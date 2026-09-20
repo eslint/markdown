@@ -47,6 +47,20 @@ Examples of **correct** code for this rule:
 
 This rule has no options.
 
+## Known Limitations
+
+This rule uses a regular expression to parse the link/image label, and JavaScript regular expressions cannot match arbitrarily nested parentheses. A label may contain at most one level of nested parentheses, so `[Mercury (the planet)](mercury)` is still checked, while labels nesting two or more levels deep are not.
+
+Examples of code that this rule **does not** flag, even though the URL matches a defined reference identifier:
+
+```markdown
+<!-- eslint markdown/no-reference-like-urls: "error" -->
+
+[Mercury (the (first) planet)](mercury)
+
+[mercury]: https://example.com/mercury/
+```
+
 ## When Not to Use It
 
 If you prefer inline link syntax even when reference definitions are available, or if you're working in an environment where reference syntax is not preferred, you can safely disable this rule.
