@@ -452,9 +452,11 @@ function getContainerPrefixes(node, sourceCode) {
 export default /** @satisfies {NoHeadingLikeParagraphRuleDefinition} */ ({
 	meta: {
 		type: "problem",
+		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
 			description: "Disallow paragraphs that look like ATX headings",
+			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-heading-like-paragraph.md",
 		},
 
