@@ -1,5 +1,6 @@
 {
   "extra-label": "triage:no",
+  "pull-request-footer": "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please).\n\n<!-- @coderabbitai ignore -->",
   "packages": {
     ".": {
       "release-type": "node",
