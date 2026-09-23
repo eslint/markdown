@@ -370,6 +370,42 @@ ruleTester.run("require-alt-text", rule, {
 			],
 		},
 		{
+			code: '<img src="b.png" title="an alt">',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 33,
+				},
+			],
+		},
+		{
+			code: '<img src="c.png" class="no alt">',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 33,
+				},
+			],
+		},
+		{
+			code: '<img src="d.png" data-caption="Photo alt">',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 43,
+				},
+			],
+		},
+		{
 			code: '<img src="image.png" title=" alt=\'text\' ">',
 			errors: [
 				{
