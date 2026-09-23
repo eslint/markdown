@@ -29,27 +29,10 @@ const imgTagPattern = /<img(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?\/?>/giu;
 const ariaHiddenTruePattern =
 	/[\s"']aria-hidden\s*=\s*(?:"true"|'true'|true(?=\s|\/?>))/iu;
 
-const attributePattern =
-	/(?<name>[^\s"'<>/=]+)(?:\s*=\s*(?:"(?<doubleQuoted>[^"]*)"|'(?<singleQuoted>[^']*)'|(?<unquoted>[^\s"'=<>`]+)))?/gu;
-
-/**
- * Gets the value of an HTML attribute from an `<img>` tag.
- * @param {string} tag The `<img>` tag to search.
- * @param {string} name The lowercase attribute name to look for.
- * @returns {string | undefined} The attribute value (an empty string if the
- * attribute has no value), or `undefined` if the attribute is not present.
- */
-function getHtmlAttribute(tag, name) {
-	for (const match of tag.slice("<img".length).matchAll(attributePattern)) {
-		const { doubleQuoted, singleQuoted, unquoted } = match.groups;
-
-		if (match.groups.name.toLowerCase() === name) {
-			return doubleQuoted ?? singleQuoted ?? unquoted ?? "";
-		}
-	}
-
-	return undefined;
-}
+// The leading group skips the preceding attributes, including their values,
+// so that "alt" inside another attribute's name or value is not matched.
+const altAttributePattern =
+	/^<img(?:\s+[^\s"'<>/=]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'=<>`]+))?)*?\s+alt(?=[\s/=>])(?:\s*=\s*['"]([^'"]*)['"])?/iu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -100,10 +83,12 @@ export default /** @satisfies {RequireAltTextRuleDefinition} */ ({
 						continue;
 					}
 
-					const alt = getHtmlAttribute(imgTag, "alt");
+					const altMatch = imgTag.match(altAttributePattern);
 					if (
-						alt === undefined ||
-						(alt.length > 0 && alt.trim().length === 0)
+						!altMatch ||
+						(altMatch[1] &&
+							altMatch[1].trim().length === 0 &&
+							altMatch[1].length > 0)
 					) {
 						const startOffset = // Adjust `imgTagPattern` match indices to the full source code.
 							match.index + node.position.start.offset;
