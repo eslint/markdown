@@ -29,14 +29,10 @@ const imgTagPattern = /<img(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?\/?>/giu;
 const ariaHiddenTruePattern =
 	/[\s"']aria-hidden\s*=\s*(?:"true"|'true'|true(?=\s|\/?>))/iu;
 
-/**
- * Creates a regex to match HTML attributes
- * @param {string} name The attribute name to match
- * @returns {RegExp} Regular expression for matching the attribute
- */
-function getHtmlAttributeRe(name) {
-	return new RegExp(`\\s${name}(?:\\s*=\\s*['"]([^'"]*)['"])?`, "iu");
-}
+// The leading group skips the preceding attributes, including their values,
+// so that "alt" inside another attribute's name or value is not matched.
+const altAttributePattern =
+	/^<img(?:\s+[^\s"'<>/=]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'=<>`]+))?)*?\s+alt(?=[\s/=>])(?:\s*=\s*['"]([^'"]*)['"])?/iu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -87,7 +83,7 @@ export default /** @satisfies {RequireAltTextRuleDefinition} */ ({
 						continue;
 					}
 
-					const altMatch = imgTag.match(getHtmlAttributeRe("alt"));
+					const altMatch = imgTag.match(altAttributePattern);
 					if (
 						!altMatch ||
 						(altMatch[1] &&

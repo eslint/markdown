@@ -71,6 +71,11 @@ ruleTester.run("require-alt-text", rule, {
 		'<img before="true"aria-hidden="true"after="true">',
 		"<img before='true'aria-hidden='true'after='true'>",
 
+		// "alt" inside another attribute's name or value
+		'<img src="image.png" title="an alt" alt="Descriptive text">',
+		'<img src="image.png" alt="Descriptive text" title="an alt">',
+		'<img src="image.png" data-alt="text" alt="Descriptive text">',
+
 		'<p><img src="image.png" alt="Descriptive text" /></p>',
 		'<!-- <img src="image.png" /> -->',
 		'Some text <!-- <img src="image.png" /> --> more text.',
@@ -311,6 +316,140 @@ ruleTester.run("require-alt-text", rule, {
 					column: 1,
 					endLine: 1,
 					endColumn: 67,
+				},
+			],
+		},
+
+		// "alt" inside another attribute's name or value
+		{
+			code: '<img src="image.png" title="an alt">',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 37,
+				},
+			],
+		},
+		{
+			code: "<img src='image.png' title='an alt'>",
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 37,
+				},
+			],
+		},
+		{
+			code: '<img src="image.png" class="no alt">',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 37,
+				},
+			],
+		},
+		{
+			code: '<img src="image.png" data-caption="Photo alt">',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 47,
+				},
+			],
+		},
+		{
+			code: '<img src="b.png" title="an alt">',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 33,
+				},
+			],
+		},
+		{
+			code: '<img src="c.png" class="no alt">',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 33,
+				},
+			],
+		},
+		{
+			code: '<img src="d.png" data-caption="Photo alt">',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 43,
+				},
+			],
+		},
+		{
+			code: '<img src="image.png" title=" alt=\'text\' ">',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 43,
+				},
+			],
+		},
+		{
+			code: '<img src="image.png" title="an alt" alt=" ">',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 45,
+				},
+			],
+		},
+		{
+			code: '<img src="image.png" alternate="text">',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 39,
+				},
+			],
+		},
+		{
+			code: '<img src="image.png" alt-text="text">',
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 38,
 				},
 			],
 		},
