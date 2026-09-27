@@ -388,6 +388,19 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 				},
 			],
 		},
+		{
+			// This report is intentional because the alt text is also affected by the emphasis or strong formatting.
+			code: "*![alt](image.png)*",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 20,
+				},
+			],
+		},
 
 		// `markdownlint` does not flag emphasis with trailing spaces as a heading, but this rule does.
 		{
@@ -915,18 +928,6 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 					column: 1,
 					endLine: 1,
 					endColumn: 15,
-				},
-			],
-		},
-		{
-			code: "*![alt](image.png)*",
-			errors: [
-				{
-					messageId: "noEmphasisAsHeadings",
-					line: 1,
-					column: 1,
-					endLine: 1,
-					endColumn: 20,
 				},
 			],
 		},
