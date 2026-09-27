@@ -146,6 +146,9 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 					parentNode.position.start.line !==
 						parentNode.position.end.line
 				) {
+					// Early return if:
+					// 1. The parent node is not a paragraph.
+					// 2. The paragraph spans multiple lines.
 					return;
 				}
 
