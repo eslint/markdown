@@ -116,6 +116,7 @@ export default /** @satisfies {NoEmphasisAsHeadingsRuleDefinition} */ ({
 				lastText = value;
 			},
 
+			// Do not intentionally reset `lastText` for `html` or `linkReference` nodes.
 			":matches(emphasis, strong) :matches(footnoteReference, image, imageReference, inlineCode, inlineMath)"() {
 				// These nodes are content, but their punctuation is ignored.
 				lastText = "";

@@ -88,6 +88,8 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 		"**`foo`?**",
 		"*foo.**<!-- comment -->***",
 		"**foo.*<!-- comment -->***",
+		"*foo[bar.][ref]*\n\n[ref]: https://example.com/",
+		"**foo.<strong>bar.</strong>**",
 		{
 			code: "*foo $bar$.*",
 			languageOptions: {
@@ -1026,6 +1028,30 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 					column: 1,
 					endLine: 1,
 					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: "*foo[bar][ref]*\n\n[ref]: https://example.com/",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: "**foo.<strong>bar</strong>**",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 29,
 				},
 			],
 		},
