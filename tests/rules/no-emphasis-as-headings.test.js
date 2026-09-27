@@ -357,6 +357,37 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 				},
 			],
 		},
+		{
+			code: "foo\n\n**bar**\n\nbaz\n\n__qux__",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 8,
+				},
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 7,
+					column: 1,
+					endLine: 7,
+					endColumn: 8,
+				},
+			],
+		},
+		{
+			code: "*Heading&nbsp;*",
+			errors: [
+				{
+					messageId: "noEmphasisAsHeadings",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 16,
+				},
+			],
+		},
 
 		// `markdownlint` does not flag emphasis with trailing spaces as a heading, but this rule does.
 		{
@@ -822,37 +853,6 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 			],
 		},
 		{
-			code: "foo\n\n**bar**\n\nbaz\n\n__qux__",
-			errors: [
-				{
-					messageId: "noEmphasisAsHeadings",
-					line: 3,
-					column: 1,
-					endLine: 3,
-					endColumn: 8,
-				},
-				{
-					messageId: "noEmphasisAsHeadings",
-					line: 7,
-					column: 1,
-					endLine: 7,
-					endColumn: 8,
-				},
-			],
-		},
-		{
-			code: "*Heading&nbsp;*",
-			errors: [
-				{
-					messageId: "noEmphasisAsHeadings",
-					line: 1,
-					column: 1,
-					endLine: 1,
-					endColumn: 16,
-				},
-			],
-		},
-		{
 			code: "*`foo.`*",
 			errors: [
 				{
@@ -1032,14 +1032,14 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 			],
 		},
 		{
-			code: "*foo[bar][ref]*\n\n[ref]: https://example.com/",
+			code: "*foo[bar][ref.]*\n\n[ref.]: https://example.com/",
 			errors: [
 				{
 					messageId: "noEmphasisAsHeadings",
 					line: 1,
 					column: 1,
 					endLine: 1,
-					endColumn: 16,
+					endColumn: 17,
 				},
 			],
 		},
