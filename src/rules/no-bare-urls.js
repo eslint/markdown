@@ -170,24 +170,26 @@ export default /** @satisfies {NoBareUrlsRuleDefinition} */ ({
 							node: linkNode,
 							messageId: "bareUrl",
 							fix(fixer) {
-								let replacementText = `<${text}>`;
-								// GFM parses `www` autolinks with an `http://` URL.
-								if (url === `http://${text}`) {
-									const escapedLinkText = text.replace(
-										linkTextSpecialCharacterPattern,
-										"\\$&",
+								if (url !== `http://${text}`) {
+									return fixer.replaceText(
+										linkNode,
+										`<${text}>`,
 									);
-									const escapedLinkDestination = url.replace(
-										linkDestinationSpecialCharacterPattern,
-										"\\$&",
-									);
-
-									replacementText = `[${escapedLinkText}](${escapedLinkDestination})`;
 								}
+
+								// GFM parses `www` autolinks with an `http://` URL.
+								const escapedLinkText = text.replace(
+									linkTextSpecialCharacterPattern,
+									"\\$&",
+								);
+								const escapedLinkDestination = url.replace(
+									linkDestinationSpecialCharacterPattern,
+									"\\$&",
+								);
 
 								return fixer.replaceText(
 									linkNode,
-									replacementText,
+									`[${escapedLinkText}](${escapedLinkDestination})`,
 								);
 							},
 						});
