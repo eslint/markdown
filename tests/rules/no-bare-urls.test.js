@@ -594,5 +594,51 @@ ruleTester.run("no-bare-urls", rule, {
 				},
 			],
 		},
+		{
+			code: "www.example.com/my_page_name",
+			output: "[www.example.com/my\\_page\\_name](http://www.example.com/my_page_name)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 29,
+				},
+			],
+		},
+		{
+			code: "www.example.com/__tests__/index",
+			output: "[www.example.com/\\_\\_tests\\_\\_/index](http://www.example.com/__tests__/index)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 32,
+				},
+			],
+		},
+		{
+			code: "See www.example.com/a_b and www.example.com/c_d",
+			output: "See [www.example.com/a\\_b](http://www.example.com/a_b) and [www.example.com/c\\_d](http://www.example.com/c_d)",
+			errors: [
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 5,
+					endLine: 1,
+					endColumn: 24,
+				},
+				{
+					messageId: "bareUrl",
+					line: 1,
+					column: 29,
+					endLine: 1,
+					endColumn: 48,
+				},
+			],
+		},
 	],
 });
