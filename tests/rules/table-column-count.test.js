@@ -7,53 +7,64 @@
 // Imports
 //------------------------------------------------------------------------------
 
-import rule from "../../src/rules/table-column-count.js";
-import markdown from "../../src/index.js";
-import { RuleTester } from "eslint";
 import dedent from "dedent";
+import ruleTester from "./_utils/rule-tester.js";
+import rule from "../../src/rules/table-column-count.js";
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-const ruleTester = new RuleTester({
-	plugins: {
-		markdown,
-	},
-	language: "markdown/gfm",
-});
-
-ruleTester.run("table-column-count", rule, {
+ruleTester("table-column-count", rule, {
 	valid: [
-		dedent`
+		{
+			code: dedent`
             | Header | Header |
             | ------ | ------ |
             | Cell   | Cell   |
             | Cell   | Cell   |
         `,
-		dedent`
+			language: "markdown/gfm",
+		},
+		{
+			code: dedent`
             | Header | Header | Header |
             | ------ | ------ | ------ |
             | Cell   | Cell   |
             | Cell   |        |
         `,
-		dedent`
+			language: "markdown/gfm",
+		},
+		{
+			code: dedent`
             | A | B |
             |---|---|
             |   |   |
             | C |   |
         `,
-		`Just some text. | not a table |`,
-		dedent`
+			language: "markdown/gfm",
+		},
+		{
+			code: `Just some text. | not a table |`,
+			language: "markdown/gfm",
+		},
+		{
+			code: dedent`
             | Header | Header |
             | ------ | ------ | ----- |
             | Cell   | Cell   |
         `,
-		dedent`
+			language: "markdown/gfm",
+		},
+		{
+			code: dedent`
             | Header | Header |
             | ------ | ------ |
         `,
-		dedent`
+			language: "markdown/gfm",
+		},
+		{
+			code: dedent`
             Some text before.
 
             | H1 | H2 |
@@ -62,48 +73,67 @@ ruleTester.run("table-column-count", rule, {
 
             Some text after.
         `,
-		dedent`
+			language: "markdown/gfm",
+		},
+		{
+			code: dedent`
             | Valid | Table |
             | ----- | ----- |
             | Row   | Here  |
         `,
-		dedent`
+			language: "markdown/gfm",
+		},
+		{
+			code: dedent`
 			| abc | defghi |
 			:-: | -----------:
 			bar | baz
 		`,
-		dedent`
+			language: "markdown/gfm",
+		},
+		{
+			code: dedent`
             | f|oo  |
             | ------ |
             | b \`|\` az |
             | b **|** im |
         `,
-		dedent`
+			language: "markdown/gfm",
+		},
+		{
+			code: dedent`
 			| abc | def |
 			| --- | --- |
 			| bar | baz |
 			> bar
 		`,
-		dedent`
+			language: "markdown/gfm",
+		},
+		{
+			code: dedent`
 			| abc | def |
 			| --- | --- |
 		`,
+			language: "markdown/gfm",
+		},
 		{
 			code: dedent`
             | Header | Header |
             | ------ | ------ |
-            | Cell   | Cell   |
-            | Cell   | Cell   |
+			| Cell   | Cell   |
+			| Cell   | Cell   |
         	`,
+			language: "markdown/gfm",
 			options: [{ checkMissingCells: true }],
 		},
 		{
 			code: dedent`
             | Header | Header |
             | ------ | ------ |
-            | Cell   |        |
-            | Cell   | Cell   |
+			| Cell   |        |
+			| Cell   | Cell   |
         	`,
+			language: "markdown/gfm",
 			options: [{ checkMissingCells: true }],
 		},
 	],
@@ -115,6 +145,7 @@ ruleTester.run("table-column-count", rule, {
                 | ----- | ----- |
                 | R1C1  | R1C2  | R2C3  |
             `,
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "extraCells",
@@ -132,6 +163,7 @@ ruleTester.run("table-column-count", rule, {
                 | ----- | ----- |
                 | R1C1  | R1C2  | R2C3  | R3C4 |
             `,
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "extraCells",
@@ -149,6 +181,7 @@ ruleTester.run("table-column-count", rule, {
                 | - |
                 | 1 | 2 |
             `,
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "extraCells",
@@ -171,6 +204,7 @@ ruleTester.run("table-column-count", rule, {
 
                 Some concluding text.
             `,
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "extraCells",
@@ -189,6 +223,7 @@ ruleTester.run("table-column-count", rule, {
 				bar | baz
 				bar | baz | bad
             `,
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "extraCells",
@@ -207,6 +242,7 @@ ruleTester.run("table-column-count", rule, {
 					| bar | baz | Extra |
 					> This is a blockquote after
 				`,
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "extraCells",
@@ -225,6 +261,7 @@ ruleTester.run("table-column-count", rule, {
 				| bar | baz | Extra1 |
 				| bar | baz | Extra2 |
 			`,
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "extraCells",
@@ -252,6 +289,7 @@ ruleTester.run("table-column-count", rule, {
 		    | bar | baz |
 			| bar | baz | Extra2 |
 		`,
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "extraCells",
@@ -277,6 +315,7 @@ ruleTester.run("table-column-count", rule, {
                 | ------ | ------ | ------ |
                 | Cell   | Cell   |
             `,
+			language: "markdown/gfm",
 			options: [{ checkMissingCells: true }],
 			errors: [
 				{
@@ -296,6 +335,7 @@ ruleTester.run("table-column-count", rule, {
                 | Cell  |       | Cell  |
                 | Cell  | Cell  |
             `,
+			language: "markdown/gfm",
 			options: [{ checkMissingCells: true }],
 			errors: [
 				{
@@ -316,6 +356,7 @@ ruleTester.run("table-column-count", rule, {
                 | Cell  | Cell  |
                 | Cell  | Cell  | Cell  |
             `,
+			language: "markdown/gfm",
 			options: [{ checkMissingCells: true }],
 			errors: [
 				{
@@ -344,6 +385,7 @@ ruleTester.run("table-column-count", rule, {
                 | Cell  |
                 | Cell  | Cell  |
             `,
+			language: "markdown/gfm",
 			options: [{ checkMissingCells: true }],
 			errors: [
 				{
@@ -372,6 +414,7 @@ ruleTester.run("table-column-count", rule, {
                 | Cell  |
                 | Cell  | Cell   |
             `,
+			language: "markdown/gfm",
 			options: [{ checkMissingCells: true }],
 			errors: [
 				{
@@ -400,6 +443,7 @@ ruleTester.run("table-column-count", rule, {
                 | Cell  | Cell   | Cell   | Cell   |
                 | Cell  |
             `,
+			language: "markdown/gfm",
 			options: [{ checkMissingCells: true }],
 			errors: [
 				{

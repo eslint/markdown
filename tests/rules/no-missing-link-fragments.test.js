@@ -7,23 +7,17 @@
 // Imports
 //------------------------------------------------------------------------------
 
-import rule from "../../src/rules/no-missing-link-fragments.js";
-import markdown from "../../src/index.js";
-import { Linter, RuleTester } from "eslint";
 import dedent from "dedent";
+import { Linter } from "eslint";
+import ruleTester from "./_utils/rule-tester.js";
+import markdown from "../../src/index.js";
+import rule from "../../src/rules/no-missing-link-fragments.js";
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-const ruleTester = new RuleTester({
-	plugins: {
-		markdown,
-	},
-	language: "markdown/gfm",
-});
-
-ruleTester.run("no-missing-link-fragments", rule, {
+ruleTester("no-missing-link-fragments", rule, {
 	valid: [
 		// Basic heading match with `Link` node
 		dedent`

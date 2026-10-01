@@ -7,23 +7,15 @@
 // Imports
 //------------------------------------------------------------------------------
 
-import rule from "../../src/rules/no-html.js";
-import markdown from "../../src/index.js";
-import { RuleTester } from "eslint";
 import dedent from "dedent";
+import ruleTester from "./_utils/rule-tester.js";
+import rule from "../../src/rules/no-html.js";
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-const ruleTester = new RuleTester({
-	plugins: {
-		markdown,
-	},
-	language: "markdown/commonmark",
-});
-
-ruleTester.run("no-html", rule, {
+ruleTester("no-html", rule, {
 	valid: [
 		"Hello world!",
 		" 1 < 5",

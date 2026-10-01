@@ -81,6 +81,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.3",
+    "@eslint-markdown/parser": "^0.0.0-canary.3",
     "@eslint/js": "^10.0.1",
     "@eslint/json": "^2.1.0",
     "@types/mdast": "^4.0.4",
