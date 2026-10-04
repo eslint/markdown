@@ -27,8 +27,8 @@ import { illegalShorthandTailPattern } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-/** matches i.e., `[foo][bar]` */
-const labelPattern = /\]\[([^\]]+)\]/u;
+/** Matches a reference tail whose first closing bracket is not escaped. */
+const labelPattern = /\](?<=(?<!\\)(?:\\{2})*\])\[([^\]]+)\]/gu;
 
 /**
  * Checks whether a character is escaped by consecutive backslashes.
@@ -80,53 +80,25 @@ function findOpeningBracket(text, closeIndex, lowerBound) {
 }
 
 /**
- * Finds missing references in a node.
+ * Finds invalid label references in a node.
  * @param {Text} node The node to check.
  * @param {MarkdownSourceCode} sourceCode The Markdown source code object.
  * @param {number} lowerBound The containing inline block's start offset.
- * @returns {Array<{label:string,position:Position}>} The missing references.
+ * @returns {Array<{label:string,position:Position}>} The invalid references.
  */
 function findInvalidLabelReferences(node, sourceCode, lowerBound) {
 	const nodeText = sourceCode.getText(node);
 	const docText = sourceCode.text;
 	const invalid = [];
-	let startIndex = 0;
 
-	/*
-	 * This loop works by searching the string inside the node for the next
-	 * label reference. If it finds one, it checks to see if there is any
-	 * white space between the [ and ]. If there is, it reports an error.
-	 * It then moves the start index to the end of the label reference and
-	 * continues searching the text until the end of the text is found.
-	 */
-	while (startIndex < nodeText.length) {
-		const value = nodeText.slice(startIndex);
-		const match = value.match(labelPattern);
-
-		if (!match) {
-			break;
-		}
-
+	for (const match of nodeText.matchAll(labelPattern)) {
 		if (!illegalShorthandTailPattern.test(match[0])) {
-			startIndex += match.index + match[0].length;
 			continue;
 		}
 
-		/*
-		 * Adjust `labelPattern` match index to the full source code.
-		 */
-		const startOffset =
-			startIndex + match.index + node.position.start.offset;
+		const startOffset = match.index + node.position.start.offset;
 		const endOffset = startOffset + match[0].length;
 
-		if (isEscaped(docText, startOffset)) {
-			startIndex += match.index + match[0].length;
-			continue;
-		}
-
-		/*
-		 * Find the matching opening bracket, ignoring escaped brackets.
-		 */
 		const openBracketIndex = findOpeningBracket(
 			docText,
 			startOffset,
@@ -134,14 +106,8 @@ function findInvalidLabelReferences(node, sourceCode, lowerBound) {
 		);
 
 		if (openBracketIndex === -1) {
-			startIndex += match.index + match[0].length;
 			continue;
 		}
-
-		/*
-		 * Note: `label` can contain leading and trailing newlines, so we need to
-		 * take that into account when calculating the line and column offsets.
-		 */
 		const label = docText.slice(openBracketIndex + 1, startOffset);
 
 		invalid.push({
@@ -151,8 +117,6 @@ function findInvalidLabelReferences(node, sourceCode, lowerBound) {
 				end: sourceCode.getLocFromIndex(endOffset),
 			},
 		});
-
-		startIndex += match.index + match[0].length;
 	}
 
 	return invalid;
