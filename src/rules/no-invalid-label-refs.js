@@ -28,7 +28,7 @@ import { illegalShorthandTailPattern } from "../util.js";
 //-----------------------------------------------------------------------------
 
 /** Matches unescaped brackets and optional reference tails. */
-const bracketPattern =
+const labelPattern =
 	/\[(?<=(?<!\\)(?:\\{2})*\[)|\](?<=(?<!\\)(?:\\{2})*\])(?:\[[^\]]+\])?/gu;
 
 /**
@@ -43,7 +43,7 @@ function findInvalidLabelReferences(node, sourceCode, openingBrackets) {
 	const docText = sourceCode.text;
 	const invalid = [];
 
-	for (const match of nodeText.matchAll(bracketPattern)) {
+	for (const match of nodeText.matchAll(labelPattern)) {
 		const startOffset = node.position.start.offset + match.index;
 
 		if (match[0][0] === "[") {
