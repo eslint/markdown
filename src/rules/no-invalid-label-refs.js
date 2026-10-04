@@ -104,11 +104,11 @@ export default /** @satisfies {NoInvalidLabelRefsRuleDefinition} */ ({
 		const openingBracketStack = [];
 
 		return {
-			":matches(heading, paragraph, tableCell, link, linkReference, image, imageReference)"() {
+			":matches(heading, paragraph, tableCell, link, linkReference)"() {
 				openingBracketStack.push([]);
 			},
 
-			":matches(heading, paragraph, tableCell, link, linkReference, image, imageReference):exit"() {
+			":matches(heading, paragraph, tableCell, link, linkReference):exit"() {
 				openingBracketStack.pop();
 			},
 
