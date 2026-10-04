@@ -33,6 +33,8 @@ ruleTester.run("no-invalid-label-refs", rule, {
 		"[  foo ][]\n\n[foo]: http://bar.com/image.jpg",
 		"[eslint][\n\n]",
 		"[*eslint*][]\n\n[*eslint*]: http://bar.com",
+		String.raw`\[foo][ ]`,
+		String.raw`[foo\][ ]`,
 	],
 	invalid: [
 		{
@@ -217,6 +219,32 @@ ruleTester.run("no-invalid-label-refs", rule, {
 					column: 11,
 					endLine: 1,
 					endColumn: 14,
+				},
+			],
+		},
+		{
+			code: String.raw`\\[foo][ ]`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo" },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 11,
+				},
+			],
+		},
+		{
+			code: String.raw`[foo\\][ ]`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: String.raw`foo\\` },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 11,
 				},
 			],
 		},

@@ -31,6 +31,22 @@ import { illegalShorthandTailPattern } from "../util.js";
 const labelPattern = /\]\[([^\]]+)\]/u;
 
 /**
+ * Checks whether a character is escaped by consecutive backslashes.
+ * @param {string} text The document text.
+ * @param {number} index The character offset.
+ * @returns {boolean} Whether the character is escaped.
+ */
+function isEscaped(text, index) {
+	let count = 0;
+
+	for (let i = index - 1; i >= 0 && text[i] === "\\"; i--) {
+		count++;
+	}
+
+	return count % 2 === 1;
+}
+
+/**
  * Finds missing references in a node.
  * @param {Text} node The node to check.
  * @param {MarkdownSourceCode} sourceCode The Markdown source code object.
@@ -69,12 +85,20 @@ function findInvalidLabelReferences(node, sourceCode) {
 			startIndex + match.index + node.position.start.offset;
 		const endOffset = startOffset + match[0].length;
 
+		if (isEscaped(docText, startOffset)) {
+			startIndex += match.index + match[0].length;
+			continue;
+		}
+
 		/*
 		 * Search the entire document text to find the preceding open bracket.
 		 */
 		const lastOpenBracketIndex = docText.lastIndexOf("[", startOffset);
 
-		if (lastOpenBracketIndex === -1) {
+		if (
+			lastOpenBracketIndex === -1 ||
+			isEscaped(docText, lastOpenBracketIndex)
+		) {
 			startIndex += match.index + match[0].length;
 			continue;
 		}
