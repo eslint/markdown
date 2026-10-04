@@ -50,12 +50,13 @@ function isEscaped(text, index) {
  * Finds the opening bracket paired with a closing bracket.
  * @param {string} text The document text.
  * @param {number} closeIndex The closing bracket offset.
+ * @param {number} lowerBound The containing inline block's start offset.
  * @returns {number} The opening bracket offset, or -1 if none exists.
  */
-function findOpeningBracket(text, closeIndex) {
+function findOpeningBracket(text, closeIndex, lowerBound) {
 	let depth = 1;
 
-	for (let i = closeIndex - 1; i >= 0; i--) {
+	for (let i = closeIndex - 1; i >= lowerBound; i--) {
 		const character = text[i];
 
 		if (character !== "[" && character !== "]") {
@@ -82,9 +83,10 @@ function findOpeningBracket(text, closeIndex) {
  * Finds missing references in a node.
  * @param {Text} node The node to check.
  * @param {MarkdownSourceCode} sourceCode The Markdown source code object.
+ * @param {number} lowerBound The containing inline block's start offset.
  * @returns {Array<{label:string,position:Position}>} The missing references.
  */
-function findInvalidLabelReferences(node, sourceCode) {
+function findInvalidLabelReferences(node, sourceCode, lowerBound) {
 	const nodeText = sourceCode.getText(node);
 	const docText = sourceCode.text;
 	const invalid = [];
@@ -125,7 +127,11 @@ function findInvalidLabelReferences(node, sourceCode) {
 		/*
 		 * Find the matching opening bracket, ignoring escaped brackets.
 		 */
-		const openBracketIndex = findOpeningBracket(docText, startOffset);
+		const openBracketIndex = findOpeningBracket(
+			docText,
+			startOffset,
+			lowerBound,
+		);
 
 		if (openBracketIndex === -1) {
 			startIndex += match.index + match[0].length;
@@ -176,12 +182,23 @@ export default /** @satisfies {NoInvalidLabelRefsRuleDefinition} */ ({
 
 	create(context) {
 		const { sourceCode } = context;
+		/** @type {number[]} */
+		const blockStarts = [];
 
 		return {
+			":matches(heading, paragraph, tableCell)"(node) {
+				blockStarts.push(node.position.start.offset);
+			},
+
+			":matches(heading, paragraph, tableCell):exit"() {
+				blockStarts.pop();
+			},
+
 			text(node) {
 				const invalidReferences = findInvalidLabelReferences(
 					node,
 					sourceCode,
+					blockStarts.at(-1) ?? node.position.start.offset,
 				);
 
 				for (const invalidReference of invalidReferences) {

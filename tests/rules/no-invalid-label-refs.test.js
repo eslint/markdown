@@ -36,6 +36,8 @@ ruleTester.run("no-invalid-label-refs", rule, {
 		String.raw`\[foo][ ]`,
 		String.raw`[foo\][ ]`,
 		String.raw`[before] \[foo][ ]`,
+		// Do not pair brackets across paragraphs.
+		"[before\n\n\\[foo][ ]",
 	],
 	invalid: [
 		{
