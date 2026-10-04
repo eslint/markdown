@@ -47,6 +47,38 @@ function isEscaped(text, index) {
 }
 
 /**
+ * Finds the opening bracket paired with a closing bracket.
+ * @param {string} text The document text.
+ * @param {number} closeIndex The closing bracket offset.
+ * @returns {number} The opening bracket offset, or -1 if none exists.
+ */
+function findOpeningBracket(text, closeIndex) {
+	let depth = 1;
+
+	for (let i = closeIndex - 1; i >= 0; i--) {
+		const character = text[i];
+
+		if (character !== "[" && character !== "]") {
+			continue;
+		}
+
+		if (isEscaped(text, i)) {
+			continue;
+		}
+
+		if (character === "]") {
+			depth++;
+		} else {
+			depth--;
+			if (depth === 0) {
+				return i;
+			}
+		}
+	}
+	return -1;
+}
+
+/**
  * Finds missing references in a node.
  * @param {Text} node The node to check.
  * @param {MarkdownSourceCode} sourceCode The Markdown source code object.
@@ -91,14 +123,11 @@ function findInvalidLabelReferences(node, sourceCode) {
 		}
 
 		/*
-		 * Search the entire document text to find the preceding open bracket.
+		 * Find the matching opening bracket, ignoring escaped brackets.
 		 */
-		const lastOpenBracketIndex = docText.lastIndexOf("[", startOffset);
+		const openBracketIndex = findOpeningBracket(docText, startOffset);
 
-		if (
-			lastOpenBracketIndex === -1 ||
-			isEscaped(docText, lastOpenBracketIndex)
-		) {
+		if (openBracketIndex === -1) {
 			startIndex += match.index + match[0].length;
 			continue;
 		}
@@ -107,9 +136,7 @@ function findInvalidLabelReferences(node, sourceCode) {
 		 * Note: `label` can contain leading and trailing newlines, so we need to
 		 * take that into account when calculating the line and column offsets.
 		 */
-		const label = docText
-			.slice(lastOpenBracketIndex, endOffset)
-			.match(/!?\[([^\]]+)\]/u)[1];
+		const label = docText.slice(openBracketIndex + 1, startOffset);
 
 		invalid.push({
 			label: label.trim(),
