@@ -33,6 +33,11 @@ ruleTester.run("no-invalid-label-refs", rule, {
 		"[  foo ][]\n\n[foo]: http://bar.com/image.jpg",
 		"[eslint][\n\n]",
 		"[*eslint*][]\n\n[*eslint*]: http://bar.com",
+		String.raw`\[foo][ ]`,
+		String.raw`[foo\][ ]`,
+		String.raw`[before] \[foo][ ]`,
+		// Do not pair brackets across paragraphs.
+		"[before\n\n\\[foo][ ]",
 	],
 	invalid: [
 		{
@@ -217,6 +222,84 @@ ruleTester.run("no-invalid-label-refs", rule, {
 					column: 11,
 					endLine: 1,
 					endColumn: 14,
+				},
+			],
+		},
+		{
+			code: String.raw`\\[foo][ ]`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo" },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 11,
+				},
+			],
+		},
+		{
+			code: String.raw`[foo\\][ ]`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: String.raw`foo\\` },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 11,
+				},
+			],
+		},
+		{
+			code: String.raw`[foo \[bar][ ]`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: String.raw`foo \[bar` },
+					line: 1,
+					column: 12,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: String.raw`[foo\]bar][ ]`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: String.raw`foo\]bar` },
+					line: 1,
+					column: 11,
+					endLine: 1,
+					endColumn: 14,
+				},
+			],
+		},
+		{
+			code: String.raw`\[foo][ ] [bar][ ]`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "bar" },
+					line: 1,
+					column: 16,
+					endLine: 1,
+					endColumn: 19,
+				},
+			],
+		},
+		{
+			code: String.raw`[foo][ ] \[bar][ ]`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo" },
+					line: 1,
+					column: 6,
+					endLine: 1,
+					endColumn: 9,
 				},
 			],
 		},
