@@ -39,6 +39,7 @@ import type {
 	Yaml,
 } from "mdast";
 import type { InlineMath, Math } from "mdast-util-math";
+import type { Position } from "unist";
 import type {
 	LanguageContext,
 	LanguageOptions,
@@ -66,7 +67,7 @@ export interface RangeMap {
 
 export interface BlockBase {
 	baseIndentText: string;
-	comments: string[];
+	comments: { text: string; position: Position }[];
 	rangeMap: RangeMap[];
 }
 
