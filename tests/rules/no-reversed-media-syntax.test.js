@@ -588,6 +588,137 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 				},
 			],
 		},
+		// Nested parentheses with escaped characters
+		{
+			code: "(a (b \\(c\\)) d)[x]",
+			output: "[a (b \\(c\\)) d](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 19,
+				},
+			],
+		},
+		{
+			code: "!(a (b \\(c\\)) d)[x]",
+			output: "![a (b \\(c\\)) d](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: "(a (b\\( c))[x]",
+			output: "[a (b\\( c)](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: "!(a (b\\( c))[x]",
+			output: "![a (b\\( c)](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: "(a (b\\) c))[x]",
+			output: "[a (b\\) c)](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: "!(a (b\\) c))[x]",
+			output: "![a (b\\) c)](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: "(a (b\\\\) c)[x]",
+			output: "[a (b\\\\) c](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: "!(a (b\\\\) c)[x]",
+			output: "![a (b\\\\) c](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: "(a (b\\\nc))[x]",
+			output: "[a (b\\\nc)](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 1,
+					endLine: 2,
+					endColumn: 7,
+				},
+			],
+		},
+		{
+			code: "!(a (b\\\nc))[x]",
+			output: "![a (b\\\nc)](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 2,
+					endLine: 2,
+					endColumn: 7,
+				},
+			],
+		},
 		// Heading
 		{
 			code: "# (ESLint)[https://eslint.org/]",
