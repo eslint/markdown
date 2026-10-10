@@ -28,7 +28,6 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 		"  ",
 		"foo\nbar\nbaz",
 		"foo\n\nbar\n\nbaz\n\nqux",
-		"`*foo*`",
 
 		"*foo*\nbar\nbaz",
 		"_foo_\nbar\nbaz",
@@ -63,10 +62,6 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 		"*foo*\u202F", // Narrow non-breaking space
 		"*foo*\u3000", // Ideographic space
 		"*foo*\uFEFF", // Zero width non-breaking space
-
-		// Indented code blocks are not checked by this rule.
-		"\t*foo*",
-		"    *foo*",
 
 		// Punctuation
 		"*foo.*",
@@ -108,6 +103,14 @@ ruleTester.run("no-emphasis-as-headings", rule, {
 		"_foo\nbar_",
 		"**foo\nbar**",
 		"__foo\nbar__",
+
+		// `code` is not checked by this rule.
+		"\t*foo*", // indented
+		"    *foo*", // indented
+		"```\n*foo*\n```",
+
+		// `inlinecode` is not checked by this rule.
+		"`*foo*`",
 
 		// `blockquote` is not checked by this rule.
 		// This behavior aligns with `markdownlint`.
