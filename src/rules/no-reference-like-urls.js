@@ -31,7 +31,7 @@ import { normalizeIdentifier } from "../util.js";
  * other alternatives. Overlapping alternatives cause catastrophic backtracking.
  */
 const linkOrImagePattern =
-	/\[(?<label>(?:\\.|[^()\\]|\((?:\\[\s\S]|[^()\\])*\))*?)\]\((?<destination>[ \t]*\r?\n?(?<![ \t])[ \t]*(?:<[^>]*>|[^ \t()]+))(?:[ \t]*\r?\n?(?<![ \t])[ \t]*(?:"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*\r?\n?(?<![ \t])[ \t]*\)$/u;
+	/^!?\[(?<label>(?:\\.|[^()\\]|\((?:\\[\s\S]|[^()\\])*\))*?)\]\((?<destination>[ \t]*\r?\n?(?<![ \t])[ \t]*(?:<[^>]*>|[^ \t()]+))(?:[ \t]*\r?\n?(?<![ \t])[ \t]*(?:"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*\r?\n?(?<![ \t])[ \t]*\)$/u;
 
 //-----------------------------------------------------------------------------
 // Rule Definition

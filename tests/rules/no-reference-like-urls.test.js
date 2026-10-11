@@ -164,6 +164,8 @@ ruleTester.run("no-reference-like-urls", rule, {
 		`[${"()".repeat(30)}](http://example.com "a\\"b")`,
 		// A label may contain at most one level of nested parentheses.
 		"[a (b (c)) d](x)\n\n[x]: y",
+		"[outer (deep (nest)) [inner]](x)\n\n[x]: https://example.com",
+		"![outer (deep (nest)) [inner]](x)\n\n[x]: https://example.com",
 	],
 	invalid: [
 		{
