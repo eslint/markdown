@@ -4,15 +4,15 @@ Disallow paragraphs that look like ATX headings.
 
 ## Background
 
-In Markdown, an ATX heading opens with one to six hash (`#`) characters followed by a space, a tab, or a line ending, so `###### Installation` is a level 6 heading. Seven or more hash characters aren't heading syntax at all, so Markdown reads `####### Installation` as paragraph text that begins with seven literal hash characters.
+In Markdown, an ATX heading opens with one to six hash (`#`) characters followed by a space or a tab, so `###### Installation` is a level 6 heading. A sequence that ends the line is an empty heading, as in `######` on its own. Seven or more hash characters aren't heading syntax, so Markdown reads `####### Installation` as paragraph text that begins with seven literal hash characters.
 
 This is almost always a typo, and it's easy to miss in review because the source still reads like a heading.
 
 ## Rule Details
 
-This rule flags a line of a paragraph that begins with seven or more hash characters followed by a space, a tab, a line ending, or the end of the paragraph. It checks continuation lines as well as the first line, because six or fewer hash characters in the same position would open a real heading. Block quote markers and up to three spaces of indentation may precede the hash characters, the same positions where an ATX heading is allowed to start. Indentation that belongs to an enclosing container, such as the content indentation of a list item or a footnote definition, doesn't count toward those three spaces.
+This rule warns when a paragraph contains a line that looks like an ATX heading but uses seven or more hash (`#`) characters. This includes paragraphs in block quotes, list items, and footnote definitions.
 
-This rule ignores anything that can't open an ATX heading. `#######Installation` has no whitespace to delimit the hash characters, `\####### Installation` and `&#35;###### Installation` escape their leading hash character on purpose, and four or more spaces of indentation are too many for a heading. It also ignores hash characters inside a code span or inside the title of a link or an image, even when those span lines, because they aren't paragraph text and either suggestion would change their content.
+This rule ignores hash characters that can't open a heading, such as `#######Installation` (no space or tab after the hash characters), `\####### Installation` (an escaped hash character), and `    ####### Installation` (four spaces of indentation at the top level). It also ignores hash characters inside a code span or inside the title of a link or an image.
 
 This rule provides suggestions rather than an automatic fix, because the number of hash characters alone doesn't reveal which correction the author intended:
 

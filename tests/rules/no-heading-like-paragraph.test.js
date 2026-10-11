@@ -103,6 +103,29 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 			code: "| ####### Installation |\n| --- |",
 			language: "markdown/gfm",
 		},
+
+		// GFM task list item: the checkbox precedes the hash characters on the line,
+		// so six or fewer of them wouldn't open a heading there
+		{
+			code: "- [x] ####### task",
+			language: "markdown/gfm",
+		},
+		{
+			code: "- [ ] ####### task",
+			language: "markdown/gfm",
+		},
+		{
+			code: "- [X] ####### task",
+			language: "markdown/gfm",
+		},
+		{
+			code: "- [x]\t####### task",
+			language: "markdown/gfm",
+		},
+		{
+			code: "- [x] ####### task",
+			language: "markdown/commonmark", // not a task list item, so the paragraph begins with "[x]"
+		},
 	],
 
 	invalid: [
@@ -1302,6 +1325,119 @@ ruleTester.run("no-heading-like-paragraph", rule, {
 						{
 							messageId: "escapeLeadingHash",
 							output: "\\####### Installation",
+						},
+					],
+				},
+			],
+		},
+		// GFM task list item: only the line with the checkbox is exempt
+		{
+			code: "- [x] foo\n  ####### bar",
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 2,
+					column: 3,
+					endLine: 2,
+					endColumn: 10,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: "- [x] foo\n  ###### bar",
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: "- [x] foo\n  \\####### bar",
+						},
+					],
+				},
+			],
+		},
+		{
+			code: "- [ ] foo\n####### bar",
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 8,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: "- [ ] foo\n###### bar",
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: "- [ ] foo\n\\####### bar",
+						},
+					],
+				},
+			],
+		},
+		{
+			code: "- [x] foo\n\n  ####### bar",
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 3,
+					column: 3,
+					endLine: 3,
+					endColumn: 10,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: "- [x] foo\n\n  ###### bar",
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: "- [x] foo\n\n  \\####### bar",
+						},
+					],
+				},
+			],
+		},
+		{
+			code: "- [x] ####### task\n  ####### bar",
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "headingLikeParagraph",
+					data: { count: "7" },
+					line: 2,
+					column: 3,
+					endLine: 2,
+					endColumn: 10,
+					suggestions: [
+						{
+							messageId: "useMaxDepthHashes",
+							data: {
+								hashes: "#######",
+								maxDepthHashes: "######",
+							},
+							output: "- [x] ####### task\n  ###### bar",
+						},
+						{
+							messageId: "escapeLeadingHash",
+							output: "- [x] ####### task\n  \\####### bar",
 						},
 					],
 				},

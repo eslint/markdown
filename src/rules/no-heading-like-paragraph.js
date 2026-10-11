@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Blockquote, FootnoteDefinition, Image, InlineCode, Link, ListItem, Node, Paragraph } from "mdast";
+ * @import { Blockquote, FootnoteDefinition, Image, InlineCode, Link, ListItem, Node, Paragraph, Parents } from "mdast";
  * @import { MarkdownSourceCode } from "../language/markdown-source-code.js";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"headingLikeParagraph" | "useMaxDepthHashes" | "escapeLeadingHash"} NoHeadingLikeParagraphMessageIds
@@ -37,12 +37,6 @@
  * a delimiter.
  */
 const hashesPattern = /(?<hashes>#{7,})(?=[ \t\r\n]|$)/uy;
-
-/**
- * Matches a Markdown line ending. This rule never relies on the `m` flag, which would
- * also treat U+2028 and U+2029 as line boundaries even though Markdown doesn't.
- */
-const lineEndingPattern = /\r\n|\r|\n/gu;
 
 /** Matches a list marker: a bullet, or up to nine digits followed by `.` or `)`. */
 const listItemMarkerPattern = /[*+-]|\d{1,9}[.)]/uy;
@@ -110,25 +104,6 @@ function consumeIndent(text, cursor, max) {
 }
 
 /**
- * Consumes exactly `columns` columns of indentation, or nothing at all.
- * @param {string} text The text to read.
- * @param {Cursor} cursor The position to read from.
- * @param {number} columns The number of columns to consume.
- * @returns {boolean} Whether the indentation was found.
- */
-function skipIndent(text, cursor, columns) {
-	const { index, column } = cursor;
-
-	if (consumeIndent(text, cursor, columns) === columns) {
-		return true;
-	}
-
-	cursor.index = index;
-	cursor.column = column;
-	return false;
-}
-
-/**
  * Advances the cursor to the given index, counting the columns of the characters it
  * passes over.
  * @param {string} text The text to read.
@@ -151,16 +126,13 @@ function advanceTo(text, cursor, index) {
  * column of whitespace that belongs to the marker, if present.
  * @param {string} text The text to read.
  * @param {Cursor} cursor The position to read from.
- * @returns {boolean} Whether a marker was found.
+ * @returns {boolean} Whether a marker was found. If not, the cursor is left after the
+ * indentation.
  */
 function skipBlockQuoteMarker(text, cursor) {
-	const { index, column } = cursor;
-
 	consumeIndent(text, cursor, tabSize - 1);
 
 	if (text[cursor.index] !== ">") {
-		cursor.index = index;
-		cursor.column = column;
 		return false;
 	}
 
@@ -224,12 +196,15 @@ function skipListItemMarker(text, cursor, listItem) {
  */
 function skipContinuationPrefixes(text, cursor, prefixes) {
 	for (const prefix of prefixes) {
+		const { index, column } = cursor;
 		const found =
 			prefix === "blockquote"
 				? skipBlockQuoteMarker(text, cursor)
-				: skipIndent(text, cursor, prefix);
+				: consumeIndent(text, cursor, prefix) === prefix;
 
 		if (!found) {
+			cursor.index = index;
+			cursor.column = column;
 			return;
 		}
 	}
@@ -532,33 +507,45 @@ export default /** @satisfies {NoHeadingLikeParagraphRuleDefinition} */ ({
 
 			"paragraph:exit"(node) {
 				const text = buffer.join("");
-				const containerPrefixes = getContainerPrefixes(
-					node,
-					sourceCode,
+				const { start, end } = node.position;
+				const parent = /** @type {Parents} */ (
+					sourceCode.getParent(node)
 				);
-				const lineStartIndexes = [0];
 
-				for (const lineEnding of text.matchAll(lineEndingPattern)) {
-					lineStartIndexes.push(
-						lineEnding.index + lineEnding[0].length,
-					);
-				}
+				/*
+				 * The paragraph of a GFM task list item begins after the checkbox, so
+				 * its first line can't open a heading. Its continuation lines can.
+				 */
+				const followsCheckbox =
+					parent.type === "listItem" &&
+					typeof parent.checked === "boolean" &&
+					parent.children[0] === node;
 
-				for (const [
-					lineNumber,
-					lineStartIndex,
-				] of lineStartIndexes.entries()) {
-					const cursor = { index: lineStartIndex, column: 0 };
+				const containerPrefixes =
+					end.line > start.line
+						? getContainerPrefixes(node, sourceCode)
+						: [];
 
-					/*
-					 * The paragraph's position begins after the container prefixes and
-					 * indentation of its first line, so only the lines after a line
-					 * ending still carry them. Indentation that a container consumes
-					 * doesn't count toward the three columns a heading allows, and a
-					 * line indented by four or more columns after its prefixes continues
-					 * the paragraph instead of opening a heading.
-					 */
-					if (lineNumber > 0) {
+				for (let line = start.line; line <= end.line; line++) {
+					const cursor = { index: 0, column: 0 };
+
+					if (line === start.line) {
+						if (followsCheckbox) {
+							continue;
+						}
+					} else {
+						/*
+						 * The paragraph's position begins after the container prefixes and
+						 * indentation of its first line, so only the following lines still
+						 * carry them. Indentation that a container consumes doesn't count
+						 * toward the three columns a heading allows, and a line indented
+						 * by four or more columns after its prefixes continues the
+						 * paragraph instead of opening a heading.
+						 */
+						cursor.index =
+							sourceCode.getIndexFromLoc({ line, column: 1 }) -
+							nodeStartOffset;
+
 						skipContinuationPrefixes(
 							text,
 							cursor,
