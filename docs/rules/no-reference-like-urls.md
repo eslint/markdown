@@ -49,7 +49,7 @@ This rule has no options.
 
 ## Known Limitations
 
-This rule uses a regular expression to parse the link/image label, and JavaScript regular expressions cannot match arbitrarily nested parentheses. A label may contain at most one level of nested parentheses, so `[Mercury (the planet)](mercury)` is still checked, while labels nesting two or more levels deep are not.
+This rule uses a regular expression to find the link/image label, and JavaScript regular expressions cannot match arbitrarily nested parentheses. A label may contain at most one level of nested parentheses, so `[Mercury (the planet)](mercury)` is still checked, while labels nesting two or more levels deep are not.
 
 Examples of code that this rule **does not** flag, even though the URL matches a defined reference identifier:
 
