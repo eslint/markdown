@@ -12,7 +12,7 @@ This is almost always a typo, and it's easy to miss in review because the source
 
 This rule warns when a paragraph contains a line that looks like an ATX heading but uses seven or more hash (`#`) characters. This includes paragraphs in block quotes, list items, and footnote definitions.
 
-This rule ignores hash characters that can't open a heading, such as `#######Installation` (no space or tab after the hash characters), `\####### Installation` (an escaped hash character), and `    ####### Installation` (four spaces of indentation at the top level). It also ignores hash characters inside a code span or inside the title of a link or an image.
+This rule ignores hash characters that can't open a heading, such as `#######Installation` (no space or tab after the hash characters), `\####### Installation` (an escaped hash character), and `    ####### Installation` (four spaces of indentation at the top level). It also ignores hash characters inside a code span, a link, an image, inline HTML, or inline math.
 
 This rule provides suggestions rather than an automatic fix, because the number of hash characters alone doesn't reveal which correction the author intended:
 
