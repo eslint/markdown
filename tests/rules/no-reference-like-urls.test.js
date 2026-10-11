@@ -1318,6 +1318,36 @@ ruleTester.run("no-reference-like-urls", rule, {
 				},
 			],
 		},
+		// Escaped parentheses inside nested parentheses
+		{
+			code: "[a (b \\(c\\)) d](x)\n\n[x]: https://example.com",
+			output: "[a (b \\(c\\)) d][x]\n\n[x]: https://example.com",
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 19,
+				},
+			],
+		},
+		// Backslash followed by a newline inside nested parentheses
+		{
+			code: "[a (b\\\nc)](x)\n\n[x]: https://example.com",
+			output: "[a (b\\\nc)][x]\n\n[x]: https://example.com",
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 2,
+					endColumn: 7,
+				},
+			],
+		},
 		// This test case is skipped when running on Bun
 		...(!process.versions.bun
 			? [

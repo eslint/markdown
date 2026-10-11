@@ -27,11 +27,11 @@ import { normalizeIdentifier } from "../util.js";
 
 /**
  * Pattern to match both inline links: `[text](url)` and images: `![alt](url)`, with optional title.
- * The nested group is `\([^()]*\)`, not `\([\s\S]*\)`, so that it cannot overlap the
+ * The nested group is `\((?:\\[\s\S]|[^()\\])*\)`, not `\([\s\S]*\)`, so that it cannot overlap the
  * other alternatives. Overlapping alternatives cause catastrophic backtracking.
  */
 const linkOrImagePattern =
-	/\[(?<label>(?:\\.|[^()\\]|\([^()]*\))*?)\]\((?<destination>[ \t]*\r?\n?(?<![ \t])[ \t]*(?:<[^>]*>|[^ \t()]+))(?:[ \t]*\r?\n?(?<![ \t])[ \t]*(?:"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*\r?\n?(?<![ \t])[ \t]*\)$/u;
+	/\[(?<label>(?:\\.|[^()\\]|\((?:\\[\s\S]|[^()\\])*\))*?)\]\((?<destination>[ \t]*\r?\n?(?<![ \t])[ \t]*(?:<[^>]*>|[^ \t()]+))(?:[ \t]*\r?\n?(?<![ \t])[ \t]*(?:"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*\r?\n?(?<![ \t])[ \t]*\)$/u;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
