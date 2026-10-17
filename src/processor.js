@@ -18,7 +18,8 @@ import { fromMarkdown } from "mdast-util-from-markdown";
  * @import { Node, Parent, Code, Html } from "mdast";
  * @import { Block, RangeMap } from "./types.js";
  * @typedef { Block['comments'][number] } Comment
- * @typedef {{ comment: Comment, jsOffset: number }} CommentMapping
+ * @typedef { Pick<RangeMap, "js" | "md"> } OffsetMapping
+ * @typedef {{ comment: Comment, jsOffset: number, rangeMap: OffsetMapping[] }} CommentMapping
  */
 
 //-----------------------------------------------------------------------------
@@ -32,11 +33,17 @@ const UNSATISFIABLE_RULES = new Set([
 const SUPPORTS_AUTOFIX = true;
 
 const BOM = "\uFEFF";
+
+const HTML_COMMENT_START = "<!--";
+const HTML_COMMENT_END = "-->";
+const JS_COMMENT_START = "/*";
+const JS_COMMENT_END = "*/";
+
 const unusedDirectiveMessagePattern =
 	/^Unused eslint-(?:disable|enable) directive/u;
 
 /**
- * @type {Map<string, Block[]>}
+ * @type {Map<string, { text: string, blocks: Block[] }>}
  */
 const blocksCache = new Map();
 
@@ -69,18 +76,19 @@ function traverse(node, callbacks) {
  *     an empty string if the text is not an ESLint HTML comment.
  */
 function getComment(html) {
-	const commentStart = "<!--";
-	const commentEnd = "-->";
 	const regex = /^(?:eslint\b|global\s)/u;
 
 	if (
-		html.slice(0, commentStart.length) !== commentStart ||
-		html.slice(-commentEnd.length) !== commentEnd
+		html.slice(0, HTML_COMMENT_START.length) !== HTML_COMMENT_START ||
+		html.slice(-HTML_COMMENT_END.length) !== HTML_COMMENT_END
 	) {
 		return "";
 	}
 
-	const comment = html.slice(commentStart.length, -commentEnd.length);
+	const comment = html.slice(
+		HTML_COMMENT_START.length,
+		-HTML_COMMENT_END.length,
+	);
 
 	if (!regex.test(comment.trim())) {
 		return "";
@@ -242,6 +250,69 @@ function getBlockRangeMap(text, node, comments) {
 }
 
 /**
+ * Builds a range map for a configuration comment so that fixes inside it can be
+ * mapped from the linted JS back to the HTML comment in the Markdown.
+ *
+ * The comment's text starts after `/*` in the JS but after `<!--` in the
+ * Markdown. The Markdown parser also strips container prefixes, such as
+ * blockquote markers (`>`) and list item indentation, from every line after the
+ * first, and each stripped prefix shifts the rest of the comment by its length.
+ * @param {string} text The text of the file.
+ * @param {Comment} comment A configuration comment inserted into the linted JS.
+ * @param {number} jsOffset The offset of the comment in the linted JS.
+ * @returns {OffsetMapping[]} One entry per line of the comment, where `js` is
+ *     the offset at which the line's text starts in the linted JS and `md` is
+ *     the delta that maps offsets on that line to the Markdown.
+ */
+function getCommentRangeMap(text, comment, jsOffset) {
+	const { start, end } = comment.position;
+	const jsLines = comment.text
+		.slice(JS_COMMENT_START.length, -JS_COMMENT_END.length)
+		.split("\n");
+	const mdLines = text
+		.slice(
+			start.offset + HTML_COMMENT_START.length,
+			end.offset - HTML_COMMENT_END.length,
+		)
+		.split("\n");
+
+	let jsLineStart = jsOffset + JS_COMMENT_START.length;
+	let mdDelta = start.offset + HTML_COMMENT_START.length - jsLineStart;
+
+	const rangeMap = [{ js: jsLineStart, md: mdDelta }];
+
+	for (let i = 1; i < jsLines.length; i++) {
+		jsLineStart += jsLines[i - 1].length + 1;
+		mdDelta += mdLines[i].length - jsLines[i].length;
+
+		rangeMap.push({ js: jsLineStart, md: mdDelta });
+	}
+
+	return rangeMap;
+}
+
+/**
+ * Maps an offset in the linted JS to the corresponding offset in the original
+ * Markdown by applying the delta of the last range that starts at or before it.
+ * @param {OffsetMapping[]} rangeMap A list of offset-based adjustments, sorted
+ *     by their `js` keys.
+ * @param {number} offset An offset in the linted JS.
+ * @returns {number} The corresponding offset in the Markdown source.
+ */
+function mapOffset(rangeMap, offset) {
+	// Advance through the range map to find the last matching range by finding
+	// the first range too far and then going back one.
+	let i = 1;
+
+	while (i < rangeMap.length && rangeMap[i].js <= offset) {
+		i++;
+	}
+
+	// Apply the mapping delta for this range.
+	return offset + rangeMap[i - 1].md;
+}
+
+/**
  * Determines whether a message reports an unused directive.
  * @param {LintMessage} message The message to check.
  * @returns {boolean} True if the message reports an unused directive.
@@ -266,7 +337,7 @@ function adjustCommentMessage(message, commentMappings) {
 		return message;
 	}
 
-	const { comment: foundComment, jsOffset } = mapping;
+	const { comment: foundComment, jsOffset, rangeMap } = mapping;
 	const { start, end } = foundComment.position;
 	const { fix, ...messageWithoutFix } = message;
 
@@ -289,11 +360,10 @@ function adjustCommentMessage(message, commentMappings) {
 				text: fix.text,
 			};
 		} else {
-			// '4' is the length of '<!--' and '2' is the length of '/*'.
-			const offsetDelta = start.offset + 4 - (jsOffset + 2);
-
 			adjustedMessage.fix = {
-				range: [fix.range[0] + offsetDelta, fix.range[1] + offsetDelta],
+				range: /** @type {SourceRange} */ (
+					fix.range.map(range => mapOffset(rangeMap, range))
+				),
 				text: fix.text,
 			};
 		}
@@ -335,7 +405,7 @@ function preprocess(sourceText, filename) {
 	/** @type {Block[]} */
 	const blocks = [];
 
-	blocksCache.set(filename, blocks);
+	blocksCache.set(filename, { text, blocks });
 
 	/**
 	 * During the depth-first traversal, keep track of any sequences of HTML
@@ -369,7 +439,7 @@ function preprocess(sourceText, filename) {
 					}
 
 					comments.push({
-						text: `/*${comment.text}*/`,
+						text: `${JS_COMMENT_START}${comment.text}${JS_COMMENT_END}`,
 						position: comment.position,
 					});
 				}
@@ -429,22 +499,7 @@ function preprocess(sourceText, filename) {
 function adjustFix(block, fix) {
 	return {
 		range: /** @type {SourceRange} */ (
-			fix.range.map(range => {
-				// Advance through the block's range map to find the last
-				// matching range by finding the first range too far and
-				// then going back one.
-				let i = 1;
-
-				while (
-					i < block.rangeMap.length &&
-					block.rangeMap[i].js <= range
-				) {
-					i++;
-				}
-
-				// Apply the mapping delta for this range.
-				return range + block.rangeMap[i - 1].md;
-			})
+			fix.range.map(range => mapOffset(block.rangeMap, range))
 		),
 		text: fix.text.replace(/\n/gu, `\n${block.baseIndentText}`),
 	};
@@ -453,9 +508,10 @@ function adjustFix(block, fix) {
 /**
  * Creates a map function that adjusts messages in a code block.
  * @param {Block} block A code block.
+ * @param {string} text The text of the file.
  * @returns {(message: LintMessage) => LintMessage | null} A function that adjusts messages in a code block.
  */
-function adjustBlock(block) {
+function adjustBlock(block, text) {
 	/** @type {Map<number, CommentMapping>} */
 	const commentMappings = new Map();
 	let currentLine = 1;
@@ -463,7 +519,11 @@ function adjustBlock(block) {
 
 	for (const comment of block.comments) {
 		const commentLines = comment.text.split("\n").length;
-		const mapping = { comment, jsOffset };
+		const mapping = {
+			comment,
+			jsOffset,
+			rangeMap: getCommentRangeMap(text, comment, jsOffset),
+		};
 
 		for (let i = 0; i < commentLines; i++) {
 			commentMappings.set(currentLine + i, mapping);
@@ -499,14 +559,24 @@ function adjustBlock(block) {
 				: null;
 		}
 
-		/** @type {Pick<LintMessage, "line" | "column" | "endLine" | "suggestions">} */
+		/** @type {Pick<LintMessage, "line" | "column" | "endLine" | "endColumn" | "suggestions">} */
 		const out = {
 			line: lineInCode + blockStart,
 			column: message.column + block.rangeMap[lineInCode].indent,
 		};
 
 		if (Number.isInteger(message.endLine)) {
-			out.endLine = message.endLine - leadingCommentLines + blockStart;
+			const endLineInCode = message.endLine - leadingCommentLines;
+
+			out.endLine = endLineInCode + blockStart;
+
+			if (
+				Number.isInteger(message.endColumn) &&
+				endLineInCode < block.rangeMap.length
+			) {
+				out.endColumn =
+					message.endColumn + block.rangeMap[endLineInCode].indent;
+			}
 		}
 
 		if (Array.isArray(message.suggestions)) {
@@ -543,12 +613,12 @@ function excludeUnsatisfiableRules(message) {
  * @returns {LintMessage[]} A flattened array of messages with mapped locations.
  */
 function postprocess(messages, filename) {
-	const blocks = blocksCache.get(filename);
+	const { text, blocks } = blocksCache.get(filename);
 
 	blocksCache.delete(filename);
 
 	return messages.flatMap((group, i) => {
-		const adjust = adjustBlock(blocks[i]);
+		const adjust = adjustBlock(blocks[i], text);
 
 		return group.map(adjust).filter(excludeUnsatisfiableRules);
 	});
