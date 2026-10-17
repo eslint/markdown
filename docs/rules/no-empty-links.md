@@ -20,6 +20,10 @@ Examples of **incorrect** code for this rule:
 [Skip to Content](#)
 ```
 
+## Options
+
+This rule has no options.
+
 ## When Not to Use It
 
 If you aren't concerned with empty links, you can safely disable this rule.

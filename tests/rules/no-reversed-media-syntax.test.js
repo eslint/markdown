@@ -92,6 +92,11 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 		// LinkReference
 		"[()[]][ref]\n\n[ref]: https://example.com",
 		"[(hi)[something]][ref]\n\n[ref]: https://example.com",
+		// FootnoteReference
+		{
+			code: "(foo)[^bar]\n\n[^bar]: footnote",
+			language: "markdown/gfm",
+		},
 		// TableCell
 		{
 			code: dedent`

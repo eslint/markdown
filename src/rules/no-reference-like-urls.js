@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { normalizeIdentifier } from "micromark-util-normalize-identifier";
+import { normalizeIdentifier } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -79,8 +79,7 @@ export default /** @satisfies {NoReferenceLikeUrlsRuleDefinition} */ ({
 						const { label, destination } = match.groups;
 						const { type, title } = node;
 						const prefix = type === "image" ? "!" : "";
-						const url =
-							normalizeIdentifier(destination).toLowerCase();
+						const url = normalizeIdentifier(destination);
 
 						if (definitionIdentifiers.has(url)) {
 							context.report({

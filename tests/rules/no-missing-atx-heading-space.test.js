@@ -235,6 +235,24 @@ const validHeadings = [
 		code: `# Backslash Escaping${"\\".repeat(7)}#`,
 		options: [{ checkClosedHeadings: true }],
 	},
+
+	// 15. Empty heading
+	{
+		code: "#",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "##",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "###",
+		options: [{ checkClosedHeadings: true }],
+	},
+	{
+		code: "# #",
+		options: [{ checkClosedHeadings: true }],
+	},
 ];
 
 //------------------------------------------------------------------------------

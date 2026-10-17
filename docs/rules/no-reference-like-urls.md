@@ -43,6 +43,10 @@ Examples of **correct** code for this rule:
 [venus]: https://example.com/venus.jpg
 ```
 
+## Options
+
+This rule has no options.
+
 ## When Not to Use It
 
 If you prefer inline link syntax even when reference definitions are available, or if you're working in an environment where reference syntax is not preferred, you can safely disable this rule.

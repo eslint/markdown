@@ -8,7 +8,11 @@
 //------------------------------------------------------------------------------
 
 import assert from "node:assert";
-import { frontmatterHasTitle, stripHtmlComments } from "../src/util.js";
+import {
+	frontmatterHasTitle,
+	normalizeIdentifier,
+	stripHtmlComments,
+} from "../src/util.js";
 
 //------------------------------------------------------------------------------
 // Tests
@@ -69,6 +73,50 @@ describe("util", () => {
 				frontmatterHasTitle(frontmatter, pattern),
 				false,
 			);
+		});
+	});
+
+	describe("normalizeIdentifier()", () => {
+		it("should preserve an already normalized identifier", () => {
+			const input = "example";
+			const result = normalizeIdentifier(input);
+			assert.strictEqual(result, "example");
+		});
+
+		it("should convert a mixed-case identifier to lowercase", () => {
+			const input = "ExAmPlE";
+			const result = normalizeIdentifier(input);
+			assert.strictEqual(result, "example");
+		});
+
+		it("should trim leading and trailing spaces", () => {
+			const input = "  example  ";
+			const result = normalizeIdentifier(input);
+			assert.strictEqual(result, "example");
+		});
+
+		it("should collapse consecutive internal spaces into a single space", () => {
+			const input = "foo   bar";
+			const result = normalizeIdentifier(input);
+			assert.strictEqual(result, "foo bar");
+		});
+
+		it("should normalize tabs and line breaks to a single space", () => {
+			const input = "foo\t\r\nbar";
+			const result = normalizeIdentifier(input);
+			assert.strictEqual(result, "foo bar");
+		});
+
+		it("should preserve an empty string", () => {
+			const input = "";
+			const result = normalizeIdentifier(input);
+			assert.strictEqual(result, "");
+		});
+
+		it("should return an empty string for Markdown whitespace only", () => {
+			const input = " \t\r\n ";
+			const result = normalizeIdentifier(input);
+			assert.strictEqual(result, "");
 		});
 	});
 

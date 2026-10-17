@@ -82,7 +82,7 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.3",
     "@eslint/js": "^10.0.1",
-    "@eslint/json": "^2.0.1",
+    "@eslint/json": "^2.1.1",
     "@types/mdast": "^4.0.4",
     "@types/unist": "^3.0.3",
     "c8": "^12.0.0",
@@ -94,15 +94,15 @@
     "globals": "^17.1.0",
     "knip": "^6.0.0",
     "lint-staged": "^16.0.0",
-    "mocha": "^11.7.5",
-    "prettier": "3.9.6",
+    "mocha": "^12.0.0",
+    "prettier": "3.9.9",
     "semver": "^7.7.3",
     "typescript": "^6.0.3",
     "yorkie": "^2.0.0"
   },
   "dependencies": {
     "@eslint/core": "^1.2.1",
-    "@eslint/plugin-kit": "^0.7.2",
+    "@eslint/plugin-kit": "^0.7.3",
     "github-slugger": "^2.0.0",
     "mdast-util-from-markdown": "^2.0.2",
     "mdast-util-frontmatter": "^2.0.1",

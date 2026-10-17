@@ -24,7 +24,7 @@ import { math } from "micromark-extension-math";
 
 /**
  * @import { Language, File, ParseResult, OkParseResult } from "@eslint/core";
- * @import { Root } from "mdast";
+ * @import { Node, Root } from "mdast";
  * @import { Options } from "mdast-util-from-markdown";
  * @import { MarkdownLanguageOptions, MarkdownLanguageContext } from "../types.js";
  * @typedef {Options['extensions']} Extensions
@@ -111,7 +111,7 @@ function createParserOptions(mode, languageOptions) {
 
 /**
  * Markdown Language Object
- * @implements {Language}
+ * @implements {Language<{ LangOptions: MarkdownLanguageOptions; Code: MarkdownSourceCode; RootNode: Root; Node: Node }>}
  */
 export class MarkdownLanguage {
 	/**
@@ -185,7 +185,7 @@ export class MarkdownLanguage {
 			!validFrontmatterOptions.has(frontmatterOption)
 		) {
 			throw new Error(
-				`Invalid language option value \`${frontmatterOption}\` for frontmatter. Expected one of \`false\`, \`"yaml"\`, \`"toml"\`, or \`"json"\`.`,
+				`Invalid language option value \`${String(frontmatterOption)}\` for frontmatter. Expected one of \`false\`, \`"yaml"\`, \`"toml"\`, or \`"json"\`.`,
 			);
 		}
 
@@ -194,7 +194,7 @@ export class MarkdownLanguage {
 
 		if (mathOption !== undefined && typeof mathOption !== "boolean") {
 			throw new Error(
-				`Invalid language option value \`${mathOption}\` for math. Expected a boolean.`,
+				`Invalid language option value \`${String(mathOption)}\` for math. Expected a boolean.`,
 			);
 		}
 	}

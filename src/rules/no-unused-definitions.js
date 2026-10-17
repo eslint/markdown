@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { normalizeIdentifier } from "micromark-util-normalize-identifier";
+import { normalizeIdentifier } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -81,13 +81,11 @@ export default /** @satisfies {NoUnusedDefinitionsRuleDefinition} */ ({
 
 	create(context) {
 		const allowDefinitions = new Set(
-			context.options[0].allowDefinitions.map(identifier =>
-				normalizeIdentifier(identifier).toLowerCase(),
-			),
+			context.options[0].allowDefinitions.map(normalizeIdentifier),
 		);
 		const allowFootnoteDefinitions = new Set(
-			context.options[0].allowFootnoteDefinitions.map(identifier =>
-				normalizeIdentifier(identifier).toLowerCase(),
+			context.options[0].allowFootnoteDefinitions.map(
+				normalizeIdentifier,
 			),
 		);
 		const [{ checkFootnoteDefinitions }] = context.options;

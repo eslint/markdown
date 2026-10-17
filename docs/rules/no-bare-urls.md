@@ -57,6 +57,10 @@ Not a clickable link: `https://www.example.com/`
 [Read the \[docs\]](https://www.example.com/)
 ```
 
+## Options
+
+This rule has no options.
+
 ## When Not to Use It
 
 If you're working in an environment where GFM autolink literals are fully supported and you prefer their simplicity, you can safely disable this rule.

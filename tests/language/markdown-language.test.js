@@ -58,6 +58,17 @@ describe("MarkdownLanguage", () => {
 						'Invalid language option value `123` for frontmatter. Expected one of `false`, `"yaml"`, `"toml"`, or `"json"`.',
 				},
 			);
+			assert.throws(
+				() => {
+					language.validateLanguageOptions({
+						frontmatter: Symbol("frontmatter"),
+					});
+				},
+				{
+					message:
+						'Invalid language option value `Symbol(frontmatter)` for frontmatter. Expected one of `false`, `"yaml"`, `"toml"`, or `"json"`.',
+				},
+			);
 		});
 
 		it("should not throw an error when `frontmatter` has a correct value in commonmark mode", () => {
@@ -114,6 +125,17 @@ describe("MarkdownLanguage", () => {
 				{
 					message:
 						"Invalid language option value `123` for math. Expected a boolean.",
+				},
+			);
+			assert.throws(
+				() => {
+					language.validateLanguageOptions({
+						math: Symbol("math"),
+					});
+				},
+				{
+					message:
+						"Invalid language option value `Symbol(math)` for math. Expected a boolean.",
 				},
 			);
 		});
