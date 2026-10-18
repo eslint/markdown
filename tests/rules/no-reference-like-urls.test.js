@@ -160,6 +160,12 @@ ruleTester.run("no-reference-like-urls", rule, {
 		`${"\\".repeat(3)}[Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
 		`${"\\".repeat(5)}[Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
 		`${"\\".repeat(7)}[Mercury](mercury)\n\n[mercury]: https://example.com/mercury`,
+		// ReDoS regression test
+		`[${"()".repeat(30)}](http://example.com "a\\"b")`,
+		// A label may contain at most one level of nested parentheses.
+		"[a (b (c)) d](x)\n\n[x]: y",
+		"[outer (deep (nest)) [inner]](x)\n\n[x]: https://example.com",
+		"![outer (deep (nest)) [inner]](x)\n\n[x]: https://example.com",
 	],
 	invalid: [
 		{
@@ -1311,6 +1317,36 @@ ruleTester.run("no-reference-like-urls", rule, {
 					column: 7,
 					endLine: 1,
 					endColumn: 26,
+				},
+			],
+		},
+		// Escaped parentheses inside nested parentheses
+		{
+			code: "[a (b \\(c\\)) d](x)\n\n[x]: https://example.com",
+			output: "[a (b \\(c\\)) d][x]\n\n[x]: https://example.com",
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 19,
+				},
+			],
+		},
+		// Backslash followed by a newline inside nested parentheses
+		{
+			code: "[a (b\\\nc)](x)\n\n[x]: https://example.com",
+			output: "[a (b\\\nc)][x]\n\n[x]: https://example.com",
+			errors: [
+				{
+					messageId: "referenceLikeUrl",
+					data: { type: "link", prefix: "" },
+					line: 1,
+					column: 1,
+					endLine: 2,
+					endColumn: 7,
 				},
 			],
 		},
