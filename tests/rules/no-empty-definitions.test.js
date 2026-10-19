@@ -7,23 +7,15 @@
 // Imports
 //------------------------------------------------------------------------------
 
-import rule from "../../src/rules/no-empty-definitions.js";
-import markdown from "../../src/index.js";
-import { RuleTester } from "eslint";
 import dedent from "dedent";
+import ruleTester from "./_utils/rule-tester.js";
+import rule from "../../src/rules/no-empty-definitions.js";
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-const ruleTester = new RuleTester({
-	plugins: {
-		markdown,
-	},
-	language: "markdown/gfm",
-});
-
-ruleTester.run("no-empty-definitions", rule, {
+ruleTester("no-empty-definitions", rule, {
 	valid: [
 		"[foo]: bar",
 		"[foo]: #bar",
@@ -31,24 +23,57 @@ ruleTester.run("no-empty-definitions", rule, {
 		"[foo]: <https://bar.com>",
 		"[//]: # (This is a comment 1)",
 		"[//]: <> (This is a comment 2)",
-		"[^note]: This is a footnote.",
-		"[^note]: ![]()",
-		"[^note]: [text](url)",
-		"[^note]:\n    Content",
-		"[^note]:\n    > blockquote",
-		"[^note]: <span></span>",
+		{
+			code: "[^note]: This is a footnote.",
+			language: "markdown/gfm",
+		},
+		{
+			code: "[^note]: ![]()",
+			language: "markdown/gfm",
+		},
+		{
+			code: "[^note]: [text](url)",
+			language: "markdown/gfm",
+		},
+		{
+			code: "[^note]:\n    Content",
+			language: "markdown/gfm",
+		},
+		{
+			code: "[^note]:\n    > blockquote",
+			language: "markdown/gfm",
+		},
+		{
+			code: "[^note]: <span></span>",
+			language: "markdown/gfm",
+		},
 		"\\[^note]:",
 		"[\\^note]:",
 		"[^note\\]:",
 		"[^note]\\:",
-		"[^foo]: <span></span> <!-- comment -->",
-		"[^foo]: content <!-- comment -->",
-		"[^foo]: <!-- comment --> content",
-		"[^foo]: <!-- comment --> content <!-- comment -->",
-		dedent`
-		[^foo]: <!-- comm
-		    ent --> content <!-- comment -->
-		`,
+		{
+			code: "[^foo]: <span></span> <!-- comment -->",
+			language: "markdown/gfm",
+		},
+		{
+			code: "[^foo]: content <!-- comment -->",
+			language: "markdown/gfm",
+		},
+		{
+			code: "[^foo]: <!-- comment --> content",
+			language: "markdown/gfm",
+		},
+		{
+			code: "[^foo]: <!-- comment --> content <!-- comment -->",
+			language: "markdown/gfm",
+		},
+		{
+			code: dedent`
+			[^foo]: <!-- comm
+			    ent --> content <!-- comment -->
+			`,
+			language: "markdown/gfm",
+		},
 		{
 			code: "[foo]: #",
 			options: [{ allowDefinitions: ["foo"] }],
@@ -63,10 +88,12 @@ ruleTester.run("no-empty-definitions", rule, {
 		},
 		{
 			code: "[^note]:",
+			language: "markdown/gfm",
 			options: [{ checkFootnoteDefinitions: false }],
 		},
 		{
 			code: "[^note]:",
+			language: "markdown/gfm",
 			options: [
 				{
 					checkFootnoteDefinitions: true,
@@ -124,18 +151,22 @@ ruleTester.run("no-empty-definitions", rule, {
 		},
 		{
 			code: "[^NOTE]:",
+			language: "markdown/gfm",
 			options: [{ allowFootnoteDefinitions: ["NOTE"] }],
 		},
 		{
 			code: "[^note]:",
+			language: "markdown/gfm",
 			options: [{ allowFootnoteDefinitions: ["NOTE"] }],
 		},
 		{
 			code: "[^NOTE]:",
+			language: "markdown/gfm",
 			options: [{ allowFootnoteDefinitions: ["note"] }],
 		},
 		{
 			code: "[^note]:",
+			language: "markdown/gfm",
 			options: [{ allowFootnoteDefinitions: ["   note   "] }],
 		},
 		// This test case is skipped when running on Bun
@@ -151,6 +182,7 @@ ruleTester.run("no-empty-definitions", rule, {
 					},
 					{
 						code: "[^Grüsse]:",
+						language: "markdown/gfm",
 						options: [{ allowFootnoteDefinitions: ["GRÜẞE"] }],
 					},
 				]
@@ -235,6 +267,7 @@ ruleTester.run("no-empty-definitions", rule, {
 		},
 		{
 			code: "[^note]:",
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "emptyFootnoteDefinition",
@@ -248,6 +281,7 @@ ruleTester.run("no-empty-definitions", rule, {
 		},
 		{
 			code: "[^Note]:",
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "emptyFootnoteDefinition",
@@ -261,6 +295,7 @@ ruleTester.run("no-empty-definitions", rule, {
 		},
 		{
 			code: "[^note]:   ",
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "emptyFootnoteDefinition",
@@ -274,6 +309,7 @@ ruleTester.run("no-empty-definitions", rule, {
 		},
 		{
 			code: "[^note]:\n",
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "emptyFootnoteDefinition",
@@ -287,6 +323,7 @@ ruleTester.run("no-empty-definitions", rule, {
 		},
 		{
 			code: "[^a]:\n[^b]:",
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "emptyFootnoteDefinition",
@@ -308,6 +345,7 @@ ruleTester.run("no-empty-definitions", rule, {
 		},
 		{
 			code: "[foo]: #\n[^note]:",
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "emptyDefinition",
@@ -329,6 +367,7 @@ ruleTester.run("no-empty-definitions", rule, {
 		},
 		{
 			code: "[foo]: #\n[^note]:",
+			language: "markdown/gfm",
 			options: [{ checkFootnoteDefinitions: false }],
 			errors: [
 				{
@@ -343,6 +382,7 @@ ruleTester.run("no-empty-definitions", rule, {
 		},
 		{
 			code: "[^foo]: <!-- comment -->",
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "emptyFootnoteDefinition",
@@ -358,6 +398,7 @@ ruleTester.run("no-empty-definitions", rule, {
 			code: dedent`
 			[^foo]: <!-- comment
 			    -->`,
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "emptyFootnoteDefinition",
@@ -373,6 +414,7 @@ ruleTester.run("no-empty-definitions", rule, {
 			code: dedent`
 			[^foo]: <!-- comment -->
 			    <!-- another comment -->`,
+			language: "markdown/gfm",
 			errors: [
 				{
 					messageId: "emptyFootnoteDefinition",
@@ -418,6 +460,7 @@ ruleTester.run("no-empty-definitions", rule, {
 		},
 		{
 			code: "[^foo]:",
+			language: "markdown/gfm",
 			options: [
 				{
 					allowDefinitions: ["foo"],

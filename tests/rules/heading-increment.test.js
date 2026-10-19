@@ -7,23 +7,15 @@
 // Imports
 //------------------------------------------------------------------------------
 
-import rule from "../../src/rules/heading-increment.js";
-import markdown from "../../src/index.js";
-import { RuleTester } from "eslint";
 import dedent from "dedent";
+import ruleTester from "./_utils/rule-tester.js";
+import rule from "../../src/rules/heading-increment.js";
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-const ruleTester = new RuleTester({
-	plugins: {
-		markdown,
-	},
-	language: "markdown/commonmark",
-});
-
-ruleTester.run("heading-increment", rule, {
+ruleTester("heading-increment", rule, {
 	valid: [
 		"# Heading 1",
 		"## Heading 2",
