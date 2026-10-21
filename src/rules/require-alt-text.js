@@ -25,14 +25,12 @@ import { stripHtmlComments } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-const imgTagPattern = /<img(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?\/?>/giu;
+const imgTagPattern =
+	/<img(?<attributes>(?:\s(?:[^>"']|"[^"]*"|'[^']*')*?)?)\/?>/giu;
 const ariaHiddenTruePattern =
-	/[\s"']aria-hidden\s*=\s*(?:"true"|'true'|true(?=\s|\/?>))/iu;
-
-// The leading group skips the preceding attributes, including their values,
-// so that "alt" inside another attribute's name or value is not matched.
+	/[\s"']aria-hidden\s*=\s*(?:"true"|'true'|true(?=\s|$))/iu;
 const altAttributePattern =
-	/^<img(?:\s+[^\s"'<>/=]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'=<>`]+))?)*?\s+alt(?=[\s/=>])(?:\s*=\s*['"]([^'"]*)['"])?/iu;
+	/^(?:[^"']|"[^"]*"|'[^']*')*?\salt(?=[\s=]|$)(?:\s*=\s*['"]([^'"]*)['"])?/iu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -78,12 +76,13 @@ export default /** @satisfies {RequireAltTextRuleDefinition} */ ({
 
 				while ((match = imgTagPattern.exec(text)) !== null) {
 					const imgTag = match[0];
+					const { attributes } = match.groups;
 
-					if (ariaHiddenTruePattern.test(imgTag)) {
+					if (ariaHiddenTruePattern.test(attributes)) {
 						continue;
 					}
 
-					const altMatch = imgTag.match(altAttributePattern);
+					const altMatch = attributes.match(altAttributePattern);
 					if (
 						!altMatch ||
 						(altMatch[1] &&
