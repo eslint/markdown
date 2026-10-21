@@ -719,6 +719,20 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 				},
 			],
 		},
+		{
+			// An unmatched outer opening parenthesis is excluded from the match.
+			code: "(a (b (c\\)) d)[x]",
+			output: "(a [b (c\\)) d](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 4,
+					endLine: 1,
+					endColumn: 18,
+				},
+			],
+		},
 		// Heading
 		{
 			code: "# (ESLint)[https://eslint.org/]",
