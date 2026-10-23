@@ -25,18 +25,12 @@ import { stripHtmlComments } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-const imgTagPattern = /<img(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?\/?>/giu;
+const imgTagPattern =
+	/<img(?<attributes>(?:\s(?:[^>"']|"[^"]*"|'[^']*')*?)?)\/?>/giu;
 const ariaHiddenTruePattern =
-	/[\s"']aria-hidden\s*=\s*(?:"true"|'true'|true(?=\s|\/?>))/iu;
-
-/**
- * Creates a regex to match HTML attributes
- * @param {string} name The attribute name to match
- * @returns {RegExp} Regular expression for matching the attribute
- */
-function getHtmlAttributeRe(name) {
-	return new RegExp(`\\s${name}(?:\\s*=\\s*['"]([^'"]*)['"])?`, "iu");
-}
+	/[\s"']aria-hidden\s*=\s*(?:"true"|'true'|true(?=\s|$))/iu;
+const altAttributePattern =
+	/^(?:[^"']|"[^"]*"|'[^']*')*?\salt(?=[\s=]|$)(?:\s*=\s*['"]([^'"]*)['"])?/iu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -82,12 +76,13 @@ export default /** @satisfies {RequireAltTextRuleDefinition} */ ({
 
 				while ((match = imgTagPattern.exec(text)) !== null) {
 					const imgTag = match[0];
+					const { attributes } = match.groups;
 
-					if (ariaHiddenTruePattern.test(imgTag)) {
+					if (ariaHiddenTruePattern.test(attributes)) {
 						continue;
 					}
 
-					const altMatch = imgTag.match(getHtmlAttributeRe("alt"));
+					const altMatch = attributes.match(altAttributePattern);
 					if (
 						!altMatch ||
 						(altMatch[1] &&
