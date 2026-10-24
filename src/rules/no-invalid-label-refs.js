@@ -27,41 +27,65 @@ import { illegalShorthandTailPattern } from "../util.js";
 // Helpers
 //-----------------------------------------------------------------------------
 
-/** Matches unescaped brackets and optional reference tails. */
-const labelPattern =
-	/\[(?<=(?<!\\)(?:\\{2})*\[)|\](?<=(?<!\\)(?:\\{2})*\])(?:\[[^\]]+\])?/gu;
+/** matches i.e., `[foo][bar]` */
+const labelPattern = /\]\[([^\]]+)\]/u;
 
 /**
- * Finds invalid label references in a node.
+ * Finds missing references in a node.
  * @param {Text} node The node to check.
  * @param {MarkdownSourceCode} sourceCode The Markdown source code object.
- * @param {number[]} openingBrackets The opening bracket offsets in the current scope.
- * @returns {Array<{label:string,position:Position}>} The invalid references.
+ * @returns {Array<{label:string,position:Position}>} The missing references.
  */
-function findInvalidLabelReferences(node, sourceCode, openingBrackets) {
+function findInvalidLabelReferences(node, sourceCode) {
 	const nodeText = sourceCode.getText(node);
 	const docText = sourceCode.text;
 	const invalid = [];
+	let startIndex = 0;
 
-	for (const match of nodeText.matchAll(labelPattern)) {
-		const startOffset = node.position.start.offset + match.index;
+	/*
+	 * This loop works by searching the string inside the node for the next
+	 * label reference. If it finds one, it checks to see if there is any
+	 * white space between the [ and ]. If there is, it reports an error.
+	 * It then moves the start index to the end of the label reference and
+	 * continues searching the text until the end of the text is found.
+	 */
+	while (startIndex < nodeText.length) {
+		const value = nodeText.slice(startIndex);
+		const match = value.match(labelPattern);
 
-		if (match[0][0] === "[") {
-			openingBrackets.push(startOffset);
+		if (!match) {
+			break;
+		}
+
+		if (!illegalShorthandTailPattern.test(match[0])) {
+			startIndex += match.index + match[0].length;
 			continue;
 		}
 
-		const openBracketIndex = openingBrackets.pop();
-
-		if (
-			openBracketIndex === undefined ||
-			!illegalShorthandTailPattern.test(match[0])
-		) {
-			continue;
-		}
-
+		/*
+		 * Adjust `labelPattern` match index to the full source code.
+		 */
+		const startOffset =
+			startIndex + match.index + node.position.start.offset;
 		const endOffset = startOffset + match[0].length;
-		const label = docText.slice(openBracketIndex + 1, startOffset);
+
+		/*
+		 * Search the entire document text to find the preceding open bracket.
+		 */
+		const lastOpenBracketIndex = docText.lastIndexOf("[", startOffset);
+
+		if (lastOpenBracketIndex === -1) {
+			startIndex += match.index + match[0].length;
+			continue;
+		}
+
+		/*
+		 * Note: `label` can contain leading and trailing newlines, so we need to
+		 * take that into account when calculating the line and column offsets.
+		 */
+		const label = docText
+			.slice(lastOpenBracketIndex, endOffset)
+			.match(/!?\[([^\]]+)\]/u)[1];
 
 		invalid.push({
 			label: label.trim(),
@@ -70,6 +94,8 @@ function findInvalidLabelReferences(node, sourceCode, openingBrackets) {
 				end: sourceCode.getLocFromIndex(endOffset),
 			},
 		});
+
+		startIndex += match.index + match[0].length;
 	}
 
 	return invalid;
@@ -100,23 +126,11 @@ export default /** @satisfies {NoInvalidLabelRefsRuleDefinition} */ ({
 	create(context) {
 		const { sourceCode } = context;
 
-		/** @type {number[][]} */
-		const openingBracketStack = [];
-
 		return {
-			":matches(heading, paragraph, tableCell, link, linkReference)"() {
-				openingBracketStack.push([]);
-			},
-
-			":matches(heading, paragraph, tableCell, link, linkReference):exit"() {
-				openingBracketStack.pop();
-			},
-
 			text(node) {
 				const invalidReferences = findInvalidLabelReferences(
 					node,
 					sourceCode,
-					openingBracketStack.at(-1) ?? [],
 				);
 
 				for (const invalidReference of invalidReferences) {
