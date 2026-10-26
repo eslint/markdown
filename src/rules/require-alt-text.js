@@ -30,7 +30,7 @@ const imgTagPattern =
 const ariaHiddenTruePattern =
 	/[\s"']aria-hidden\s*=\s*(?:"true"|'true'|true(?=\s|$))/iu;
 const altAttributePattern =
-	/^(?:[^"']|"[^"]*"|'[^']*')*?\salt(?=[\s=]|$)(?:\s*=\s*['"]([^'"]*)['"])?/iu;
+	/^(?:[^"']|"[^"]*"|'[^']*')*?(?<![=\s])\s+alt(?=[\s=]|$)(?:\s*=\s*['"]([^'"]*)['"])?/iu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition

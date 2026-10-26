@@ -75,6 +75,7 @@ ruleTester.run("require-alt-text", rule, {
 		'<img src="image.png" title="an alt" alt="Descriptive text">',
 		'<img src="image.png" alt="Descriptive text" title="an alt">',
 		'<img src="image.png" data-alt="text" alt="Descriptive text">',
+		'<img title="text"   alt="text">',
 
 		'<p><img src="image.png" alt="Descriptive text" /></p>',
 		'<!-- <img src="image.png" /> -->',
@@ -450,6 +451,18 @@ ruleTester.run("require-alt-text", rule, {
 					column: 1,
 					endLine: 1,
 					endColumn: 38,
+				},
+			],
+		},
+		{
+			code: "<img data = alt>",
+			errors: [
+				{
+					messageId: "altTextRequired",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 17,
 				},
 			],
 		},
