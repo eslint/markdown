@@ -178,7 +178,6 @@ export default /** @satisfies {NoMissingLabelRefsRuleDefinition} */ ({
 						missingReference.label !== node.identifier,
 				);
 
-				// Also ignore matching references encountered after this definition.
 				allowLabels.add(node.identifier);
 			},
 		};
