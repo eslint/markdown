@@ -730,6 +730,58 @@ describe("LegacyESLint", () => {
 					assert.strictEqual(results[0].messages[1].endLine, 6);
 					assert.strictEqual(results[0].messages[1].endColumn, 30);
 				});
+
+				it("reports only the directive comment when other HTML follows it", async () => {
+					const code = [
+						"<!-- eslint-disable no-console -- justification -->Important<!-- comment -->",
+						"",
+						"```js",
+						"var answer = 42;",
+						"```",
+					].join("\n");
+
+					const results = await unusedDisableESLint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results.length, 1);
+					assert.strictEqual(results[0].messages.length, 1);
+					assert.strictEqual(
+						results[0].messages[0].message,
+						"Unused eslint-disable directive (no problems were reported from 'no-console').",
+					);
+					assert.strictEqual(results[0].messages[0].line, 1);
+					assert.strictEqual(results[0].messages[0].column, 1);
+					assert.strictEqual(results[0].messages[0].endLine, 1);
+					assert.strictEqual(results[0].messages[0].endColumn, 52);
+				});
+
+				it("reports only a multiline directive comment when other HTML follows it in a blockquote", async () => {
+					const code = [
+						"> <!--",
+						"> eslint-disable no-console",
+						"> -->Important<!-- comment -->",
+						">",
+						"> ```js",
+						"> var answer = 42;",
+						"> ```",
+					].join("\n");
+
+					const results = await unusedDisableESLint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results.length, 1);
+					assert.strictEqual(results[0].messages.length, 1);
+					assert.strictEqual(
+						results[0].messages[0].message,
+						"Unused eslint-disable directive (no problems were reported from 'no-console').",
+					);
+					assert.strictEqual(results[0].messages[0].line, 1);
+					assert.strictEqual(results[0].messages[0].column, 3);
+					assert.strictEqual(results[0].messages[0].endLine, 3);
+					assert.strictEqual(results[0].messages[0].endColumn, 6);
+				});
 			});
 
 			describe("autofixing unused disable directives", () => {
@@ -1067,6 +1119,56 @@ describe("LegacyESLint", () => {
 					assert.strictEqual(results[0].messages[0].column, 15);
 					assert.strictEqual(results[0].messages[0].endLine, 6);
 					assert.strictEqual(results[0].messages[0].endColumn, 30);
+				});
+
+				it("removes only the directive comment when other HTML follows it", async () => {
+					const code = [
+						"<!-- eslint-disable no-console -- justification -->Important<!-- comment -->",
+						"",
+						"```js",
+						"var answer = 42;",
+						"```",
+					].join("\n");
+
+					const expected = [
+						" Important<!-- comment -->",
+						"",
+						"```js",
+						"var answer = 42;",
+						"```",
+					].join("\n");
+
+					const results = await fixUnusedEslint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results[0].output, expected);
+				});
+
+				it("removes only a multiline directive comment when other HTML follows it in a blockquote", async () => {
+					const code = [
+						"> <!--",
+						"> eslint-disable no-console",
+						"> -->Important<!-- comment -->",
+						">",
+						"> ```js",
+						"> var answer = 42;",
+						"> ```",
+					].join("\n");
+
+					const expected = [
+						">  Important<!-- comment -->",
+						">",
+						"> ```js",
+						"> var answer = 42;",
+						"> ```",
+					].join("\n");
+
+					const results = await fixUnusedEslint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results[0].output, expected);
 				});
 			});
 		});
@@ -2463,6 +2565,58 @@ describe("FlatESLint", () => {
 					assert.strictEqual(results[0].messages[1].endLine, 6);
 					assert.strictEqual(results[0].messages[1].endColumn, 30);
 				});
+
+				it("reports only the directive comment when other HTML follows it", async () => {
+					const code = [
+						"<!-- eslint-disable no-console -- justification -->Important<!-- comment -->",
+						"",
+						"```js",
+						"const answer = 42;",
+						"```",
+					].join("\n");
+
+					const results = await unusedDisableESLint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results.length, 1);
+					assert.strictEqual(results[0].messages.length, 1);
+					assert.strictEqual(
+						results[0].messages[0].message,
+						"Unused eslint-disable directive (no problems were reported from 'no-console').",
+					);
+					assert.strictEqual(results[0].messages[0].line, 1);
+					assert.strictEqual(results[0].messages[0].column, 1);
+					assert.strictEqual(results[0].messages[0].endLine, 1);
+					assert.strictEqual(results[0].messages[0].endColumn, 52);
+				});
+
+				it("reports only a multiline directive comment when other HTML follows it in a blockquote", async () => {
+					const code = [
+						"> <!--",
+						"> eslint-disable no-console",
+						"> -->Important<!-- comment -->",
+						">",
+						"> ```js",
+						"> const answer = 42;",
+						"> ```",
+					].join("\n");
+
+					const results = await unusedDisableESLint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results.length, 1);
+					assert.strictEqual(results[0].messages.length, 1);
+					assert.strictEqual(
+						results[0].messages[0].message,
+						"Unused eslint-disable directive (no problems were reported from 'no-console').",
+					);
+					assert.strictEqual(results[0].messages[0].line, 1);
+					assert.strictEqual(results[0].messages[0].column, 3);
+					assert.strictEqual(results[0].messages[0].endLine, 3);
+					assert.strictEqual(results[0].messages[0].endColumn, 6);
+				});
 			});
 
 			describe("autofixing unused disable directives", () => {
@@ -2804,6 +2958,56 @@ describe("FlatESLint", () => {
 					assert.strictEqual(results[0].messages[0].column, 15);
 					assert.strictEqual(results[0].messages[0].endLine, 6);
 					assert.strictEqual(results[0].messages[0].endColumn, 30);
+				});
+
+				it("removes only the directive comment when other HTML follows it", async () => {
+					const code = [
+						"<!-- eslint-disable no-console -- justification -->Important<!-- comment -->",
+						"",
+						"```js",
+						"const answer = 42;",
+						"```",
+					].join("\n");
+
+					const expected = [
+						" Important<!-- comment -->",
+						"",
+						"```js",
+						"const answer = 42;",
+						"```",
+					].join("\n");
+
+					const results = await fixUnusedEslint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results[0].output, expected);
+				});
+
+				it("removes only a multiline directive comment when other HTML follows it in a blockquote", async () => {
+					const code = [
+						"> <!--",
+						"> eslint-disable no-console",
+						"> -->Important<!-- comment -->",
+						">",
+						"> ```js",
+						"> const answer = 42;",
+						"> ```",
+					].join("\n");
+
+					const expected = [
+						">  Important<!-- comment -->",
+						">",
+						"> ```js",
+						"> const answer = 42;",
+						"> ```",
+					].join("\n");
+
+					const results = await fixUnusedEslint.lintText(code, {
+						filePath: "test.md",
+					});
+
+					assert.strictEqual(results[0].output, expected);
 				});
 			});
 		});

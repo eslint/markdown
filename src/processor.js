@@ -16,6 +16,7 @@ import { fromMarkdown } from "mdast-util-from-markdown";
 /**
  * @import { LintMessage, RuleTextEdit, SourceRange } from "@eslint/core";
  * @import { Node, Parent, Code, Html } from "mdast";
+ * @import { Position } from "unist";
  * @import { Block, RangeMap } from "./types.js";
  * @typedef { Block['comments'][number] } Comment
  * @typedef { Pick<RangeMap, "js" | "md"> } OffsetMapping
@@ -87,7 +88,7 @@ function getComment(html) {
 
 	const comment = html.slice(
 		HTML_COMMENT_START.length,
-		-HTML_COMMENT_END.length,
+		html.indexOf(HTML_COMMENT_END, HTML_COMMENT_START.length),
 	);
 
 	if (!regex.test(comment.trim())) {
@@ -95,6 +96,32 @@ function getComment(html) {
 	}
 
 	return comment;
+}
+
+/**
+ * Gets the position of an `eslint-*` or `global` comment at the beginning of an
+ * HTML node. The node may contain other HTML after the comment, such as
+ * `<!-- eslint-disable no-console -->text<!-- another comment -->`, in which
+ * case the comment ends before the node does.
+ * @param {Html} node An HTML AST node.
+ * @param {string} comment The comment's text without the opening and closing
+ *     tags.
+ * @returns {Position} The position of the HTML comment in the Markdown source.
+ */
+function getCommentPosition(node, comment) {
+	const { start, end } = node.position;
+	const trailingLength =
+		node.value.length -
+		(HTML_COMMENT_START.length + comment.length + HTML_COMMENT_END.length);
+
+	return {
+		start,
+		end: {
+			line: end.line,
+			column: end.column - trailingLength,
+			offset: end.offset - trailingLength,
+		},
+	};
 }
 
 // Before a code block, blockquote characters (`>`) are also considered
@@ -464,7 +491,10 @@ function preprocess(sourceText, filename) {
 			const comment = getComment(node.value);
 
 			if (comment) {
-				htmlComments.push({ text: comment, position: node.position });
+				htmlComments.push({
+					text: comment,
+					position: getCommentPosition(node, comment),
+				});
 			} else {
 				htmlComments = [];
 			}
