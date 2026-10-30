@@ -177,6 +177,8 @@ export default /** @satisfies {NoMissingLabelRefsRuleDefinition} */ ({
 					missingReference =>
 						missingReference.label !== node.identifier,
 				);
+
+				allowLabels.add(node.identifier);
 			},
 		};
 	},
