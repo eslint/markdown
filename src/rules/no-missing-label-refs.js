@@ -139,11 +139,15 @@ export default /** @satisfies {NoMissingLabelRefsRuleDefinition} */ ({
 		const allowLabels = new Set(context.options[0].allowLabels);
 
 		/** @type {Array<{label:string,position:Position}>} */
-		let allMissingReferences = [];
+		const allMissingReferences = [];
 
 		return {
 			"root:exit"() {
 				for (const missingReference of allMissingReferences) {
+					if (allowLabels.has(missingReference.label)) {
+						continue;
+					}
+
 					context.report({
 						loc: missingReference.position,
 						messageId: "notFound",
@@ -168,15 +172,7 @@ export default /** @satisfies {NoMissingLabelRefsRuleDefinition} */ ({
 			},
 
 			definition(node) {
-				/*
-				 * Sometimes a poorly-formatted link will end up a text node instead of a link node
-				 * even though the label definition exists. Here, we remove any missing references
-				 * that have a matching label definition.
-				 */
-				allMissingReferences = allMissingReferences.filter(
-					missingReference =>
-						missingReference.label !== node.identifier,
-				);
+				allowLabels.add(node.identifier);
 			},
 		};
 	},
