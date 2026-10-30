@@ -103,29 +103,30 @@ export default defineConfig([
 
 <!-- Rule Table Start -->
 
-| **Rule Name**                                                                  | **Description**                                                                                   | **Recommended** |
-| :----------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ | :-------------: |
-| [`fenced-code-language`](./docs/rules/fenced-code-language.md)                 | Require languages for fenced code blocks                                                          |       yes       |
-| [`fenced-code-meta`](./docs/rules/fenced-code-meta.md)                         | Require or disallow metadata for fenced code blocks                                               |       no        |
-| [`heading-increment`](./docs/rules/heading-increment.md)                       | Enforce heading levels increment by one                                                           |       yes       |
-| [`no-bare-urls`](./docs/rules/no-bare-urls.md)                                 | Disallow bare URLs                                                                                |       no        |
-| [`no-duplicate-definitions`](./docs/rules/no-duplicate-definitions.md)         | Disallow duplicate definitions                                                                    |       yes       |
-| [`no-duplicate-headings`](./docs/rules/no-duplicate-headings.md)               | Disallow duplicate headings in the same document                                                  |       no        |
-| [`no-empty-definitions`](./docs/rules/no-empty-definitions.md)                 | Disallow empty definitions                                                                        |       yes       |
-| [`no-empty-images`](./docs/rules/no-empty-images.md)                           | Disallow empty images                                                                             |       yes       |
-| [`no-empty-links`](./docs/rules/no-empty-links.md)                             | Disallow empty links                                                                              |       yes       |
-| [`no-html`](./docs/rules/no-html.md)                                           | Disallow HTML tags                                                                                |       no        |
-| [`no-invalid-label-refs`](./docs/rules/no-invalid-label-refs.md)               | Disallow invalid label references                                                                 |       yes       |
-| [`no-missing-atx-heading-space`](./docs/rules/no-missing-atx-heading-space.md) | Disallow headings without a space after the hash characters                                       |       yes       |
-| [`no-missing-label-refs`](./docs/rules/no-missing-label-refs.md)               | Disallow missing label references                                                                 |       yes       |
-| [`no-missing-link-fragments`](./docs/rules/no-missing-link-fragments.md)       | Disallow link fragments that do not reference valid headings                                      |       yes       |
-| [`no-multiple-h1`](./docs/rules/no-multiple-h1.md)                             | Disallow multiple H1 headings in the same document                                                |       yes       |
-| [`no-reference-like-urls`](./docs/rules/no-reference-like-urls.md)             | Disallow URLs that match defined reference identifiers                                            |       yes       |
-| [`no-reversed-media-syntax`](./docs/rules/no-reversed-media-syntax.md)         | Disallow reversed link and image syntax                                                           |       yes       |
-| [`no-space-in-emphasis`](./docs/rules/no-space-in-emphasis.md)                 | Disallow spaces around emphasis markers                                                           |       yes       |
-| [`no-unused-definitions`](./docs/rules/no-unused-definitions.md)               | Disallow unused definitions                                                                       |       yes       |
-| [`require-alt-text`](./docs/rules/require-alt-text.md)                         | Require alternative text for images                                                               |       yes       |
-| [`table-column-count`](./docs/rules/table-column-count.md)                     | Disallow data rows in a GitHub Flavored Markdown table from having more cells than the header row |       no        |
+| **Rule Name**                                                                        | **Description**                                                                                   | **Recommended** |
+| :----------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ | :-------------: |
+| [`fenced-code-language`](./docs/rules/fenced-code-language.md)                       | Require languages for fenced code blocks                                                          |       yes       |
+| [`fenced-code-meta`](./docs/rules/fenced-code-meta.md)                               | Require or disallow metadata for fenced code blocks                                               |       no        |
+| [`heading-increment`](./docs/rules/heading-increment.md)                             | Enforce heading levels increment by one                                                           |       yes       |
+| [`no-bare-urls`](./docs/rules/no-bare-urls.md)                                       | Disallow bare URLs                                                                                |       no        |
+| [`no-duplicate-definition-content`](./docs/rules/no-duplicate-definition-content.md) | Disallow duplicate definition content                                                             |       no        |
+| [`no-duplicate-definitions`](./docs/rules/no-duplicate-definitions.md)               | Disallow duplicate definitions                                                                    |       yes       |
+| [`no-duplicate-headings`](./docs/rules/no-duplicate-headings.md)                     | Disallow duplicate headings in the same document                                                  |       no        |
+| [`no-empty-definitions`](./docs/rules/no-empty-definitions.md)                       | Disallow empty definitions                                                                        |       yes       |
+| [`no-empty-images`](./docs/rules/no-empty-images.md)                                 | Disallow empty images                                                                             |       yes       |
+| [`no-empty-links`](./docs/rules/no-empty-links.md)                                   | Disallow empty links                                                                              |       yes       |
+| [`no-html`](./docs/rules/no-html.md)                                                 | Disallow HTML tags                                                                                |       no        |
+| [`no-invalid-label-refs`](./docs/rules/no-invalid-label-refs.md)                     | Disallow invalid label references                                                                 |       yes       |
+| [`no-missing-atx-heading-space`](./docs/rules/no-missing-atx-heading-space.md)       | Disallow headings without a space after the hash characters                                       |       yes       |
+| [`no-missing-label-refs`](./docs/rules/no-missing-label-refs.md)                     | Disallow missing label references                                                                 |       yes       |
+| [`no-missing-link-fragments`](./docs/rules/no-missing-link-fragments.md)             | Disallow link fragments that do not reference valid headings                                      |       yes       |
+| [`no-multiple-h1`](./docs/rules/no-multiple-h1.md)                                   | Disallow multiple H1 headings in the same document                                                |       yes       |
+| [`no-reference-like-urls`](./docs/rules/no-reference-like-urls.md)                   | Disallow URLs that match defined reference identifiers                                            |       yes       |
+| [`no-reversed-media-syntax`](./docs/rules/no-reversed-media-syntax.md)               | Disallow reversed link and image syntax                                                           |       yes       |
+| [`no-space-in-emphasis`](./docs/rules/no-space-in-emphasis.md)                       | Disallow spaces around emphasis markers                                                           |       yes       |
+| [`no-unused-definitions`](./docs/rules/no-unused-definitions.md)                     | Disallow unused definitions                                                                       |       yes       |
+| [`require-alt-text`](./docs/rules/require-alt-text.md)                               | Require alternative text for images                                                               |       yes       |
+| [`table-column-count`](./docs/rules/table-column-count.md)                           | Disallow data rows in a GitHub Flavored Markdown table from having more cells than the header row |       no        |
 
 <!-- Rule Table End -->
 
