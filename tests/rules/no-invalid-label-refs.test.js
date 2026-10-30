@@ -7,22 +7,14 @@
 // Imports
 //------------------------------------------------------------------------------
 
+import ruleTester from "./_utils/rule-tester.js";
 import rule from "../../src/rules/no-invalid-label-refs.js";
-import markdown from "../../src/index.js";
-import { RuleTester } from "eslint";
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-const ruleTester = new RuleTester({
-	plugins: {
-		markdown,
-	},
-	language: "markdown/commonmark",
-});
-
-ruleTester.run("no-invalid-label-refs", rule, {
+ruleTester("no-invalid-label-refs", rule, {
 	valid: [
 		"[*foo*]",
 		"[foo]\n\n[foo]: http://bar.com",
