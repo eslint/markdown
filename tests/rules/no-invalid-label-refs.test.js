@@ -46,6 +46,13 @@ ruleTester.run("no-invalid-label-refs", rule, {
 		),
 		"[foo](http://bar.com)",
 		"[foo][bar]\n\n[bar]: http://bar.com",
+		String.raw`[before] \[foo][ ]
+			[foo]: http://bar.com`,
+		String.raw`[before
+
+		][ ]
+
+		[before]: http://bar.com`,
 	],
 	invalid: [
 		{
@@ -319,6 +326,20 @@ ruleTester.run("no-invalid-label-refs", rule, {
 					column: 8,
 					endLine: 3,
 					endColumn: 11,
+				},
+			],
+		},
+		{
+			code: String.raw`[foo \[bar][ ]
+			[foo \[bar]: http://bar.com`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: String.raw`foo \[bar` },
+					line: 1,
+					column: 12,
+					endLine: 1,
+					endColumn: 15,
 				},
 			],
 		},

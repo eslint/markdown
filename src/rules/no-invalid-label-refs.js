@@ -47,6 +47,37 @@ function isEscaped(text, index) {
 }
 
 /**
+ * Finds an unescaped opening bracket within the current scope.
+ * @param {string} text The source text.
+ * @param {number} closingIndex The closing bracket offset.
+ * @param {number} scopeStart The start of the current scope.
+ * @returns {number} The opening bracket offset, or -1.
+ */
+function findOpeningBracket(text, closingIndex, scopeStart) {
+	const index = text.lastIndexOf("[", closingIndex - 1);
+
+	if (index < scopeStart) {
+		return -1;
+	}
+
+	if (!isEscaped(text, index)) {
+		return index;
+	}
+
+	for (let i = closingIndex - 1; i >= scopeStart; i--) {
+		if (text[i] === "]" && !isEscaped(text, i)) {
+			return -1;
+		}
+
+		if (text[i] === "[" && !isEscaped(text, i)) {
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+/**
  * Finds missing references in a node.
  * @param {Text} node The node to check.
  * @param {MarkdownSourceCode} sourceCode The Markdown source code object.
@@ -57,6 +88,17 @@ function findInvalidLabelReferences(node, sourceCode) {
 	const docText = sourceCode.text;
 	const invalid = [];
 	let startIndex = 0;
+
+	let container = sourceCode.getParent(node);
+
+	while (
+		container &&
+		!["paragraph", "heading", "tableCell"].includes(container.type)
+	) {
+		container = sourceCode.getParent(container);
+	}
+
+	const scopeStart = container?.position?.start.offset ?? 0;
 
 	/*
 	 * This loop works by searching the string inside the node for the next
@@ -94,12 +136,13 @@ function findInvalidLabelReferences(node, sourceCode) {
 		/*
 		 * Search the entire document text to find the preceding open bracket.
 		 */
-		const lastOpenBracketIndex = docText.lastIndexOf("[", startOffset);
+		const lastOpenBracketIndex = findOpeningBracket(
+			docText,
+			startOffset,
+			scopeStart,
+		);
 
-		if (
-			lastOpenBracketIndex === -1 ||
-			isEscaped(docText, lastOpenBracketIndex)
-		) {
+		if (lastOpenBracketIndex === -1) {
 			startIndex += match.index + match[0].length;
 			continue;
 		}
