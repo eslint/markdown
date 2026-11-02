@@ -60,6 +60,7 @@ ruleTester.run("no-invalid-label-refs", rule, {
 
 [foo]: http://foo.com
 [bar]: http://bar.com`,
+		"[before] \\[foo `]` baz][ ]",
 	],
 	invalid: [
 		{
@@ -412,6 +413,46 @@ ruleTester.run("no-invalid-label-refs", rule, {
 					column: 26,
 					endLine: 1,
 					endColumn: 29,
+				},
+			],
+		},
+
+		{
+			code: "[foo \\[bar `]` baz][ ]",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo \\[bar `]` baz" },
+					line: 1,
+					column: 20,
+					endLine: 1,
+					endColumn: 23,
+				},
+			],
+		},
+		{
+			code: "[foo \\[bar `[x]` baz][ ]",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo \\[bar `[x]` baz" },
+					line: 1,
+					column: 22,
+					endLine: 1,
+					endColumn: 25,
+				},
+			],
+		},
+		{
+			code: "[foo \\[bar ``]`` baz][ ]",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo \\[bar ``]`` baz" },
+					line: 1,
+					column: 22,
+					endLine: 1,
+					endColumn: 25,
 				},
 			],
 		},

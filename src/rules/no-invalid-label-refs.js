@@ -15,7 +15,7 @@ import { illegalShorthandTailPattern } from "../util.js";
 
 /**
  * @import { Position } from "unist";
- * @import { Text } from "mdast";
+ * @import { Node, Text } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @import { MarkdownSourceCode } from "../language/markdown-source-code.js";
  * @typedef {"invalidLabelRef"} NoInvalidLabelRefsMessageIds
@@ -47,31 +47,68 @@ function isEscaped(text, index) {
 }
 
 /**
+ * Checks whether an offset falls within an inline code span.
+ * @param {Node} node The Markdown AST node to check.
+ * @param {number} offset The source offset.
+ * @returns {boolean} Whether the offset belongs to an inline code span.
+ */
+function isInsideInlineCode(node, offset) {
+	const start = node.position?.start?.offset;
+	const end = node.position?.end?.offset;
+
+	if (
+		start === undefined ||
+		end === undefined ||
+		offset < start ||
+		offset >= end
+	) {
+		return false;
+	}
+
+	if (node.type === "inlineCode") {
+		return true;
+	}
+
+	if ("children" in node && Array.isArray(node.children)) {
+		return node.children.some(child => isInsideInlineCode(child, offset));
+	}
+
+	return false;
+}
+
+/**
  * Finds the opening bracket for a potential invalid shorthand reference.
  * @param {string} text The source text.
  * @param {number} closingIndex The closing bracket offset.
  * @param {number} scopeStart The enclosing Markdown block's start offset.
+ * @param {Node} container The enclosing Markdown AST node.
  * @returns {number} The opening bracket offset, or -1.
  */
-function findOpeningBracket(text, closingIndex, scopeStart) {
+function findOpeningBracket(text, closingIndex, scopeStart, container) {
 	const index = text.lastIndexOf("[", closingIndex - 1);
 
 	if (index < scopeStart) {
 		return -1;
 	}
 
-	if (!isEscaped(text, index)) {
+	if (!isEscaped(text, index) && !isInsideInlineCode(container, index)) {
 		return index;
 	}
 
 	for (let i = closingIndex - 1; i >= scopeStart; i--) {
-		if (text[i] === "]" && !isEscaped(text, i)) {
+		if (text[i] !== "[" && text[i] !== "]") {
+			continue;
+		}
+
+		if (isEscaped(text, i) || isInsideInlineCode(container, i)) {
+			continue;
+		}
+
+		if (text[i] === "]") {
 			return -1;
 		}
 
-		if (text[i] === "[" && !isEscaped(text, i)) {
-			return i;
-		}
+		return i;
 	}
 
 	return -1;
@@ -142,6 +179,7 @@ function findInvalidLabelReferences(node, sourceCode) {
 			docText,
 			startOffset,
 			scopeStart,
+			container ?? sourceCode.ast,
 		);
 
 		if (lastOpenBracketIndex === -1) {
