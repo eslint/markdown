@@ -88,7 +88,6 @@ function findInvalidLabelReferences(node, sourceCode) {
 	const docText = sourceCode.text;
 	const invalid = [];
 	let startIndex = 0;
-
 	let container = sourceCode.getParent(node);
 
 	while (

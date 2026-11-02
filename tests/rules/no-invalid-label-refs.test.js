@@ -53,6 +53,10 @@ ruleTester.run("no-invalid-label-refs", rule, {
 		][ ]
 
 		[before]: http://bar.com`,
+		String.raw`\[foo][ ] \[bar][ ]
+
+		[foo]: http://foo.com
+		[bar]: http://bar.com`,
 	],
 	invalid: [
 		{
@@ -340,6 +344,31 @@ ruleTester.run("no-invalid-label-refs", rule, {
 					column: 12,
 					endLine: 1,
 					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: String.raw`[one][ ] \[skip][ ] [two][ ]
+
+			[one]: http://one.com
+			[skip]: http://skip.com
+			[two]: http://two.com`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "one" },
+					line: 1,
+					column: 6,
+					endLine: 1,
+					endColumn: 9,
+				},
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "two" },
+					line: 1,
+					column: 26,
+					endLine: 1,
+					endColumn: 29,
 				},
 			],
 		},
