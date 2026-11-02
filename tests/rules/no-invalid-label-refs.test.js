@@ -44,6 +44,8 @@ ruleTester.run("no-invalid-label-refs", rule, {
 		...[1, 3, 5].map(
 			count => `[foo${"\\".repeat(count)}][ ]\n\n[foo]: http://bar.com`,
 		),
+		"[foo](http://bar.com)",
+		"[foo][bar]\n\n[bar]: http://bar.com",
 	],
 	invalid: [
 		{
@@ -293,5 +295,32 @@ ruleTester.run("no-invalid-label-refs", rule, {
 				],
 			};
 		}),
+		{
+			code: "# [foo][ ]\n\n[foo]: http://bar.com",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo" },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 11,
+				},
+			],
+		},
+		{
+			code: "| Label |\n| --- |\n| [foo][ ] |\n\n[foo]: http://bar.com",
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo" },
+					line: 3,
+					column: 8,
+					endLine: 3,
+					endColumn: 11,
+				},
+			],
+		},
 	],
 });
