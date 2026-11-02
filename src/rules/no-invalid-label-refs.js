@@ -31,6 +31,22 @@ import { illegalShorthandTailPattern } from "../util.js";
 const labelPattern = /\]\[([^\]]+)\]/u;
 
 /**
+ * Checks if a character is escaped by an odd number of backslashes.
+ * @param {string} text The source text.
+ * @param {number} index The character index.
+ * @returns {boolean} Whether the character is escaped.
+ */
+function isEscaped(text, index) {
+	let count = 0;
+
+	for (let i = index - 1; i >= 0 && text[i] === "\\"; i--) {
+		count++;
+	}
+
+	return count % 2 === 1;
+}
+
+/**
  * Finds missing references in a node.
  * @param {Text} node The node to check.
  * @param {MarkdownSourceCode} sourceCode The Markdown source code object.
@@ -74,7 +90,10 @@ function findInvalidLabelReferences(node, sourceCode) {
 		 */
 		const lastOpenBracketIndex = docText.lastIndexOf("[", startOffset);
 
-		if (lastOpenBracketIndex === -1) {
+		if (
+			lastOpenBracketIndex === -1 ||
+			isEscaped(docText, lastOpenBracketIndex)
+		) {
 			startIndex += match.index + match[0].length;
 			continue;
 		}
