@@ -34,29 +34,32 @@ ruleTester.run("no-invalid-label-refs", rule, {
 		"[eslint][\n\n]",
 		"[*eslint*][]\n\n[*eslint*]: http://bar.com",
 		String.raw`\[foo][ ]
-			[foo]: http://bar.com`,
+
+		[foo]: http://bar.com`,
+
 		// Opening bracket: odd number of backslashes.
-		...[3, 5].map(
-			count => `${"\\".repeat(count)}[foo][ ]\n\n[foo]: http://bar.com`,
-		),
+		`${"\\".repeat(3)}[foo][ ]\n\n[foo]: http://bar.com`,
+		`${"\\".repeat(5)}[foo][ ]\n\n[foo]: http://bar.com`,
 
 		// Closing bracket: odd number of backslashes.
-		...[1, 3, 5].map(
-			count => `[foo${"\\".repeat(count)}][ ]\n\n[foo]: http://bar.com`,
-		),
+		`[foo${"\\".repeat(1)}][ ]\n\n[foo]: http://bar.com`,
+		`[foo${"\\".repeat(3)}][ ]\n\n[foo]: http://bar.com`,
+		`[foo${"\\".repeat(5)}][ ]\n\n[foo]: http://bar.com`,
+
 		"[foo](http://bar.com)",
 		"[foo][bar]\n\n[bar]: http://bar.com",
 		String.raw`[before] \[foo][ ]
-			[foo]: http://bar.com`,
+
+[foo]: http://bar.com`,
 		String.raw`[before
 
-		][ ]
+][ ]
 
-		[before]: http://bar.com`,
+[before]: http://bar.com`,
 		String.raw`\[foo][ ] \[bar][ ]
 
-		[foo]: http://foo.com
-		[bar]: http://bar.com`,
+[foo]: http://foo.com
+[bar]: http://bar.com`,
 	],
 	invalid: [
 		{
@@ -246,7 +249,8 @@ ruleTester.run("no-invalid-label-refs", rule, {
 		},
 		{
 			code: String.raw`\\[foo][ ]
-			[foo]: http://bar.com`,
+
+[foo]: http://bar.com`,
 			errors: [
 				{
 					messageId: "invalidLabelRef",
@@ -260,7 +264,8 @@ ruleTester.run("no-invalid-label-refs", rule, {
 		},
 		{
 			code: String.raw`][foo\]bar][ ]
-			[foo\]bar]: /url`,
+
+[foo\]bar]: /url`,
 			errors: [
 				{
 					messageId: "invalidLabelRef",
@@ -274,38 +279,75 @@ ruleTester.run("no-invalid-label-refs", rule, {
 				},
 			],
 		},
+
 		// Opening bracket: even number of backslashes.
-		...[4, 6].map(count => ({
-			code: `${"\\".repeat(count)}[foo][ ]\n\n[foo]: http://bar.com`,
+		{
+			code: `${"\\".repeat(4)}[foo][ ]\n\n[foo]: http://bar.com`,
 			errors: [
 				{
 					messageId: "invalidLabelRef",
 					data: { label: "foo" },
 					line: 1,
-					column: count + 6,
+					column: 10,
 					endLine: 1,
-					endColumn: count + 9,
+					endColumn: 13,
 				},
 			],
-		})),
-		// Closing bracket: even number of backslashes.
-		...[2, 4, 6].map(count => {
-			const backslashes = "\\".repeat(count);
+		},
+		{
+			code: `${"\\".repeat(6)}[foo][ ]\n\n[foo]: http://bar.com`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo" },
+					line: 1,
+					column: 12,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
 
-			return {
-				code: `[foo${backslashes}][ ]\n\n[foo${backslashes}]: http://bar.com`,
-				errors: [
-					{
-						messageId: "invalidLabelRef",
-						data: { label: `foo${backslashes}` },
-						line: 1,
-						column: count + 6,
-						endLine: 1,
-						endColumn: count + 9,
-					},
-				],
-			};
-		}),
+		// Closing bracket: even number of backslashes.
+		{
+			code: `[foo${"\\".repeat(2)}][ ]\n\n[foo${"\\".repeat(2)}]: http://bar.com`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: `foo${"\\".repeat(2)}` },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 11,
+				},
+			],
+		},
+		{
+			code: `[foo${"\\".repeat(4)}][ ]\n\n[foo${"\\".repeat(4)}]: http://bar.com`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: `foo${"\\".repeat(4)}` },
+					line: 1,
+					column: 10,
+					endLine: 1,
+					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: `[foo${"\\".repeat(6)}][ ]\n\n[foo${"\\".repeat(6)}]: http://bar.com`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: `foo${"\\".repeat(6)}` },
+					line: 1,
+					column: 12,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
 		{
 			code: "# [foo][ ]\n\n[foo]: http://bar.com",
 			errors: [
@@ -335,7 +377,8 @@ ruleTester.run("no-invalid-label-refs", rule, {
 		},
 		{
 			code: String.raw`[foo \[bar][ ]
-			[foo \[bar]: http://bar.com`,
+
+[foo \[bar]: http://bar.com`,
 			errors: [
 				{
 					messageId: "invalidLabelRef",
@@ -350,9 +393,9 @@ ruleTester.run("no-invalid-label-refs", rule, {
 		{
 			code: String.raw`[one][ ] \[skip][ ] [two][ ]
 
-			[one]: http://one.com
-			[skip]: http://skip.com
-			[two]: http://two.com`,
+[one]: http://one.com
+[skip]: http://skip.com
+[two]: http://two.com`,
 			errors: [
 				{
 					messageId: "invalidLabelRef",
