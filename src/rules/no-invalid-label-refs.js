@@ -85,6 +85,12 @@ function findInvalidLabelReferences(node, sourceCode) {
 			startIndex + match.index + node.position.start.offset;
 		const endOffset = startOffset + match[0].length;
 
+		// Ignore escaped closing brackets.
+		if (isEscaped(docText, startOffset)) {
+			startIndex += match.index + match[0].length;
+			continue;
+		}
+
 		/*
 		 * Search the entire document text to find the preceding open bracket.
 		 */

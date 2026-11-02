@@ -35,6 +35,15 @@ ruleTester.run("no-invalid-label-refs", rule, {
 		"[*eslint*][]\n\n[*eslint*]: http://bar.com",
 		String.raw`\[foo][ ]
 			[foo]: http://bar.com`,
+		// Opening bracket: odd number of backslashes.
+		...[3, 5].map(
+			count => `${"\\".repeat(count)}[foo][ ]\n\n[foo]: http://bar.com`,
+		),
+
+		// Closing bracket: odd number of backslashes.
+		...[1, 3, 5].map(
+			count => `[foo${"\\".repeat(count)}][ ]\n\n[foo]: http://bar.com`,
+		),
 	],
 	invalid: [
 		{
@@ -252,5 +261,37 @@ ruleTester.run("no-invalid-label-refs", rule, {
 				},
 			],
 		},
+		// Opening bracket: even number of backslashes.
+		...[4, 6].map(count => ({
+			code: `${"\\".repeat(count)}[foo][ ]\n\n[foo]: http://bar.com`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo" },
+					line: 1,
+					column: count + 6,
+					endLine: 1,
+					endColumn: count + 9,
+				},
+			],
+		})),
+		// Closing bracket: even number of backslashes.
+		...[2, 4, 6].map(count => {
+			const backslashes = "\\".repeat(count);
+
+			return {
+				code: `[foo${backslashes}][ ]\n\n[foo${backslashes}]: http://bar.com`,
+				errors: [
+					{
+						messageId: "invalidLabelRef",
+						data: { label: `foo${backslashes}` },
+						line: 1,
+						column: count + 6,
+						endLine: 1,
+						endColumn: count + 9,
+					},
+				],
+			};
+		}),
 	],
 });
