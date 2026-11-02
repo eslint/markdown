@@ -236,5 +236,21 @@ ruleTester.run("no-invalid-label-refs", rule, {
 				},
 			],
 		},
+		{
+			code: String.raw`][foo\]bar][ ]
+			[foo\]bar]: /url`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: {
+						label: String.raw`foo\]bar`,
+					},
+					line: 1,
+					column: 12,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
 	],
 });

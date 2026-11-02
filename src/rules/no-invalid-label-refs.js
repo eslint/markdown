@@ -102,9 +102,7 @@ function findInvalidLabelReferences(node, sourceCode) {
 		 * Note: `label` can contain leading and trailing newlines, so we need to
 		 * take that into account when calculating the line and column offsets.
 		 */
-		const label = docText
-			.slice(lastOpenBracketIndex, endOffset)
-			.match(/!?\[([^\]]+)\]/u)[1];
+		const label = docText.slice(lastOpenBracketIndex + 1, startOffset);
 
 		invalid.push({
 			label: label.trim(),
