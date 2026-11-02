@@ -31,10 +31,10 @@ import { illegalShorthandTailPattern } from "../util.js";
 const labelPattern = /\]\[([^\]]+)\]/u;
 
 /**
- * Checks if a character is escaped by an odd number of backslashes.
+ * Checks whether the character at the given offset is escaped.
  * @param {string} text The source text.
- * @param {number} index The character index.
- * @returns {boolean} Whether the character is escaped.
+ * @param {number} index The character offset.
+ * @returns {boolean} Whether an odd number of backslashes precedes the character.
  */
 function isEscaped(text, index) {
 	let count = 0;
@@ -47,10 +47,10 @@ function isEscaped(text, index) {
 }
 
 /**
- * Finds an unescaped opening bracket within the current scope.
+ * Finds the opening bracket for a potential invalid shorthand reference.
  * @param {string} text The source text.
  * @param {number} closingIndex The closing bracket offset.
- * @param {number} scopeStart The start of the current scope.
+ * @param {number} scopeStart The enclosing Markdown block's start offset.
  * @returns {number} The opening bracket offset, or -1.
  */
 function findOpeningBracket(text, closingIndex, scopeStart) {
@@ -78,16 +78,19 @@ function findOpeningBracket(text, closingIndex, scopeStart) {
 }
 
 /**
- * Finds missing references in a node.
+ * Finds invalid label references in a node.
  * @param {Text} node The node to check.
  * @param {MarkdownSourceCode} sourceCode The Markdown source code object.
- * @returns {Array<{label:string,position:Position}>} The missing references.
+ * @returns {Array<{label:string,position:Position}>} The invalid references.
  */
 function findInvalidLabelReferences(node, sourceCode) {
 	const nodeText = sourceCode.getText(node);
 	const docText = sourceCode.text;
 	const invalid = [];
 	let startIndex = 0;
+
+	// Prevent a closing bracket in one block from matching an opening bracket
+	// in a preceding paragraph, heading, or table cell.
 	let container = sourceCode.getParent(node);
 
 	while (
