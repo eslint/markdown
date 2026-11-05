@@ -74,6 +74,7 @@ export default /** @satisfies {NoBareUrlsRuleDefinition} */ ({
 		languages: ["markdown/gfm"],
 
 		docs: {
+			recommended: false,
 			description: "Disallow bare URLs",
 			dialects: ["GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-bare-urls.md",

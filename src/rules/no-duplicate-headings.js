@@ -24,6 +24,7 @@ export default /** @satisfies {NoDuplicateHeadingsRuleDefinition} */ ({
 		languages: ["markdown/commonmark", "markdown/gfm"],
 
 		docs: {
+			recommended: false,
 			description: "Disallow duplicate headings in the same document",
 			dialects: ["CommonMark", "GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-duplicate-headings.md",
