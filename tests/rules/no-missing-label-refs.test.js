@@ -260,6 +260,35 @@ ruleTester.run("no-missing-label-refs", rule, {
 			],
 		},
 		{
+			code: "[foo]\n[bar]\n[foo]",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "foo" },
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 5,
+				},
+				{
+					messageId: "notFound",
+					data: { label: "bar" },
+					line: 2,
+					column: 2,
+					endLine: 2,
+					endColumn: 5,
+				},
+				{
+					messageId: "notFound",
+					data: { label: "foo" },
+					line: 3,
+					column: 2,
+					endLine: 3,
+					endColumn: 5,
+				},
+			],
+		},
+		{
 			code: "- - - [foo]",
 			errors: [
 				{
