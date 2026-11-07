@@ -250,7 +250,13 @@ export class MarkdownLanguage {
 
 		const {
 			parser = this.defaultLanguageOptions.parser,
-			parserOptions,
+			parserOptions: {
+				// eslint-disable-next-line no-unused-vars -- Excluded from parser arguments.
+				parser: unusedParser,
+				// eslint-disable-next-line no-unused-vars -- Excluded from parser arguments.
+				parserOptions: unusedParserOptions,
+				...restParserOptions
+			} = {},
 			...restLanguageOptions
 		} = context?.languageOptions ?? {};
 
@@ -263,7 +269,7 @@ export class MarkdownLanguage {
 		try {
 			const root = parser.parse(text, {
 				...restLanguageOptions,
-				...parserOptions,
+				...restParserOptions,
 				mode: this.#mode,
 			});
 

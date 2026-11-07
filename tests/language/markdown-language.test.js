@@ -461,6 +461,35 @@ describe("MarkdownLanguage", () => {
 			assert.strictEqual(result.ast.children[0].type, "paragraph");
 		});
 
+		it("should omit `parser` and `parserOptions` from custom parser arguments", () => {
+			const language = new MarkdownLanguage();
+			let receivedOptions;
+
+			language.parse(
+				{ body: "", path: "test.md" },
+				{
+					languageOptions: {
+						parser: {
+							parse(text, options) {
+								receivedOptions = options;
+								return { type: "root", children: [] };
+							},
+						},
+						parserOptions: {
+							parser: "nested-parser",
+							parserOptions: {},
+							customOption: true,
+						},
+					},
+				},
+			);
+
+			assert.deepStrictEqual(receivedOptions, {
+				customOption: true,
+				mode: "commonmark",
+			});
+		});
+
 		it("should not allow `parserOptions` to override commonmark mode", () => {
 			const language = new MarkdownLanguage({
 				mode: "commonmark",
