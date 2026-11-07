@@ -221,6 +221,8 @@ const invalidLanguageOptions2: MarkdownLanguageOptions = {
 declare const parserOptions: Parameters<MarkdownParser["parse"]>[1];
 parserOptions.frontmatter satisfies MarkdownLanguageOptions["frontmatter"];
 parserOptions.math satisfies MarkdownLanguageOptions["math"];
+parserOptions.parser satisfies undefined;
+parserOptions.parserOptions satisfies undefined;
 
 (): MarkdownRuleDefinition => ({
 	create({ sourceCode }): MarkdownRuleVisitor {
