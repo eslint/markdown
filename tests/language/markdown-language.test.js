@@ -461,9 +461,29 @@ describe("MarkdownLanguage", () => {
 			assert.strictEqual(result.ast.children[0].type, "paragraph");
 		});
 
-		it("should give `parserOptions` precedence over language options and the language mode", () => {
+		it("should not allow `parserOptions` to override commonmark mode", () => {
 			const language = new MarkdownLanguage({
 				mode: "commonmark",
+			});
+			const result = language.parse(
+				{
+					body: "| Column 1 | Column 2 |\n| -------- | -------- |\n| Cell 1   | Cell 2   |",
+					path: "test.md",
+				},
+				{
+					languageOptions: {
+						parserOptions: { mode: "gfm" },
+					},
+				},
+			);
+
+			assert.strictEqual(result.ok, true);
+			assert.strictEqual(result.ast.children[0].type, "paragraph");
+		});
+
+		it("should give `parserOptions` precedence over `languageOptions`", () => {
+			const language = new MarkdownLanguage({
+				mode: "gfm",
 			});
 			const result = language.parse(
 				{
@@ -472,11 +492,9 @@ describe("MarkdownLanguage", () => {
 				},
 				{
 					languageOptions: {
-						mode: "commonmark",
 						frontmatter: false,
 						math: false,
 						parserOptions: {
-							mode: "gfm",
 							frontmatter: "yaml",
 							math: true,
 						},

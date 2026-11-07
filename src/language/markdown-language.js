@@ -263,8 +263,8 @@ export class MarkdownLanguage {
 		try {
 			const root = parser.parse(text, {
 				...restLanguageOptions,
-				mode: this.#mode,
 				...parserOptions,
+				mode: this.#mode,
 			});
 
 			return {
