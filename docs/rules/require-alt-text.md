@@ -50,6 +50,10 @@ Examples of **correct** code:
 <img src="decorative.png" aria-hidden="true">
 ```
 
+## Options
+
+This rule has no options.
+
 ## When Not to Use It
 
 If you aren't concerned with image accessibility or if your images are purely decorative and don't convey meaningful content, you can safely disable this rule.

@@ -7,7 +7,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { normalizeIdentifier } from "micromark-util-normalize-identifier";
+import { normalizeIdentifier } from "../util.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -25,9 +25,13 @@ import { normalizeIdentifier } from "micromark-util-normalize-identifier";
 // Helpers
 //-----------------------------------------------------------------------------
 
-/** Pattern to match both inline links: `[text](url)` and images: `![alt](url)`, with optional title */
+/**
+ * Pattern to match both inline links: `[text](url)` and images: `![alt](url)`, with optional title.
+ * The nested group is `\((?:\\[\s\S]|[^()\\])*\)`, not `\([\s\S]*\)`, so that it cannot overlap the
+ * other alternatives. Overlapping alternatives cause catastrophic backtracking.
+ */
 const linkOrImagePattern =
-	/\[(?<label>(?:\\.|[^()\\]|\([\s\S]*\))*?)\]\((?<destination>[ \t]*\r?\n?(?<![ \t])[ \t]*(?:<[^>]*>|[^ \t()]+))(?:[ \t]*\r?\n?(?<![ \t])[ \t]*(?:"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*\r?\n?(?<![ \t])[ \t]*\)$/u;
+	/^!?\[(?<label>(?:\\.|[^()\\]|\((?:\\[\s\S]|[^()\\])*\))*?)\]\((?<destination>[ \t]*\r?\n?(?<![ \t])[ \t]*(?:<[^>]*>|[^ \t()]+))(?:[ \t]*\r?\n?(?<![ \t])[ \t]*(?:"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*\r?\n?(?<![ \t])[ \t]*\)$/u;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -79,8 +83,7 @@ export default /** @satisfies {NoReferenceLikeUrlsRuleDefinition} */ ({
 						const { label, destination } = match.groups;
 						const { type, title } = node;
 						const prefix = type === "image" ? "!" : "";
-						const url =
-							normalizeIdentifier(destination).toLowerCase();
+						const url = normalizeIdentifier(destination);
 
 						if (definitionIdentifiers.has(url)) {
 							context.report({

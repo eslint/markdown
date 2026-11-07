@@ -41,6 +41,8 @@
 //-----------------------------------------------------------------------------
 
 const htmlTagNamePattern = /^<(?<tagName>[^!>][^/\s>]*)/u;
+const linkTextSpecialCharacterPattern = /[[\]\\*_~`$&|]/gu;
+const linkDestinationSpecialCharacterPattern = /[\\()&|]/gu;
 
 /**
  * Parses an HTML tag to extract its name and closing status
@@ -72,6 +74,7 @@ export default /** @satisfies {NoBareUrlsRuleDefinition} */ ({
 		languages: ["markdown/gfm"],
 
 		docs: {
+			recommended: false,
 			description: "Disallow bare URLs",
 			dialects: ["GFM"],
 			url: "https://github.com/eslint/markdown/blob/main/docs/rules/no-bare-urls.md",
@@ -170,7 +173,27 @@ export default /** @satisfies {NoBareUrlsRuleDefinition} */ ({
 							node: linkNode,
 							messageId: "bareUrl",
 							fix(fixer) {
-								return fixer.replaceText(linkNode, `<${text}>`);
+								if (url !== `http://${text}`) {
+									return fixer.replaceText(
+										linkNode,
+										`<${text}>`,
+									);
+								}
+
+								// GFM parses `www` autolinks with an `http://` URL.
+								const escapedLinkText = text.replace(
+									linkTextSpecialCharacterPattern,
+									"\\$&",
+								);
+								const escapedLinkDestination = url.replace(
+									linkDestinationSpecialCharacterPattern,
+									"\\$&",
+								);
+
+								return fixer.replaceText(
+									linkNode,
+									`[${escapedLinkText}](${escapedLinkDestination})`,
+								);
 							},
 						});
 					}

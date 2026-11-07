@@ -97,6 +97,7 @@ export default defineConfig([
 		rules: {
 			"eslint-plugin/require-meta-schema": "off", // `schema` defaults to []
 			"eslint-plugin/require-meta-schema-description": "off",
+			"eslint-plugin/require-meta-docs-recommended": "error",
 			"eslint-plugin/prefer-placeholders": "error",
 			"eslint-plugin/prefer-replace-text": "error",
 			"eslint-plugin/report-message-format": ["error", "^[^a-z].*\\.$"],

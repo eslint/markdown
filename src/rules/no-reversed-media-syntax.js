@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 
 /**
- * @import { Heading, Paragraph, TableCell, Html, Image, ImageReference, InlineCode, LinkReference } from "mdast";
+ * @import { Heading, Paragraph, TableCell, FootnoteReference, Html, Image, ImageReference, InlineCode, LinkReference } from "mdast";
  * @import { InlineMath } from "mdast-util-math";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @typedef {"reversedSyntax"} NoReversedMediaSyntaxMessageIds
@@ -22,11 +22,11 @@
 
 /**
  * Matches reversed link/image syntax like `(text)[url]`, ignoring escaped characters like `\(text\)[url]`.
- * The nested group is `\([^()]*\)`, not `\([\s\S]*\)`, so that it cannot overlap the
+ * The nested group is `\((?:\\[\s\S]|[^()\\])*\)`, not `\([\s\S]*\)`, so that it cannot overlap the
  * other alternatives. Overlapping alternatives cause catastrophic backtracking.
  */
 const reversedPattern =
-	/(?<=(?<!\\)(?:\\{2})*)\((?<label>(?:\\.|[^()\\]|\([^()]*\))*)\)\[(?<url>(?:\\.|[^\]\\\r\n])*)\](?!\()/gu;
+	/(?<=(?<!\\)(?:\\{2})*)\((?<label>(?:\\.|[^()\\]|\((?:\\[\s\S]|[^()\\])*\))*)\)\[(?<url>(?:\\.|[^\]\\\r\n])*)\](?!\()/gu;
 
 //-----------------------------------------------------------------------------
 // Rule Definition
@@ -71,12 +71,12 @@ export default /** @satisfies {NoReversedMediaSyntaxRuleDefinition} */ ({
 				nodeStartOffset = node.position.start.offset;
 			},
 
-			":matches(heading, paragraph, tableCell) :matches(html, image, imageReference, inlineCode, linkReference, inlineMath)"(
-				/** @type {Html | Image | ImageReference | InlineCode | LinkReference | InlineMath} */ node,
+			":matches(heading, paragraph, tableCell) :matches(footnoteReference, html, image, imageReference, inlineCode, linkReference, inlineMath)"(
+				/** @type {FootnoteReference | Html | Image | ImageReference | InlineCode | LinkReference | InlineMath} */ node,
 			) {
 				const [startOffset, endOffset] = sourceCode.getRange(node);
 
-				// Mask the content of `html`, `image`, `imageReference`, `inlineCode`, `linkReference`, and `inlineMath` nodes with whitespaces.
+				// Mask the content of `footnoteReference`, `html`, `image`, `imageReference`, `inlineCode`, `linkReference`, and `inlineMath` nodes with whitespaces.
 				for (let i = startOffset; i < endOffset; i++) {
 					buffer[i - nodeStartOffset] = " ";
 				}

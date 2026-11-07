@@ -33,6 +33,10 @@ Examples of **incorrect** code for this rule:
 ]
 ```
 
+## Options
+
+This rule has no options.
+
 ## When Not to Use It
 
 If you publish your Markdown exclusively on GitHub, then you can safely disable this rule.

@@ -94,6 +94,11 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 		// LinkReference
 		"[()[]][ref]\n\n[ref]: https://example.com",
 		"[(hi)[something]][ref]\n\n[ref]: https://example.com",
+		// FootnoteReference
+		{
+			code: "(foo)[^bar]\n\n[^bar]: footnote",
+			language: "markdown/gfm",
+		},
 		// TableCell
 		{
 			code: dedent`
@@ -582,6 +587,151 @@ ruleTester.run("no-reversed-media-syntax", rule, {
 					column: 9,
 					endLine: 1,
 					endColumn: 19,
+				},
+			],
+		},
+		// Nested parentheses with escaped characters
+		{
+			code: "(a (b \\(c\\)) d)[x]",
+			output: "[a (b \\(c\\)) d](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 19,
+				},
+			],
+		},
+		{
+			code: "!(a (b \\(c\\)) d)[x]",
+			output: "![a (b \\(c\\)) d](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 20,
+				},
+			],
+		},
+		{
+			code: "(a (b\\( c))[x]",
+			output: "[a (b\\( c)](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: "!(a (b\\( c))[x]",
+			output: "![a (b\\( c)](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: "(a (b\\) c))[x]",
+			output: "[a (b\\) c)](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: "!(a (b\\) c))[x]",
+			output: "![a (b\\) c)](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: "(a (b\\\\) c)[x]",
+			output: "[a (b\\\\) c](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: "!(a (b\\\\) c)[x]",
+			output: "![a (b\\\\) c](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 2,
+					endLine: 1,
+					endColumn: 16,
+				},
+			],
+		},
+		{
+			code: "(a (b\\\nc))[x]",
+			output: "[a (b\\\nc)](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 1,
+					endLine: 2,
+					endColumn: 7,
+				},
+			],
+		},
+		{
+			code: "!(a (b\\\nc))[x]",
+			output: "![a (b\\\nc)](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 2,
+					endLine: 2,
+					endColumn: 7,
+				},
+			],
+		},
+		{
+			// An unmatched outer opening parenthesis is excluded from the match.
+			code: "(a (b (c\\)) d)[x]",
+			output: "(a [b (c\\)) d](x)",
+			errors: [
+				{
+					messageId: "reversedSyntax",
+					line: 1,
+					column: 4,
+					endLine: 1,
+					endColumn: 18,
 				},
 			],
 		},
