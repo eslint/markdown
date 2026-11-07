@@ -42,6 +42,7 @@ import type { InlineMath, Math } from "mdast-util-math";
 import type {
 	LanguageContext,
 	LanguageOptions,
+	ObjectMetaProperties,
 	RuleVisitor,
 } from "@eslint/core";
 import type {
@@ -134,6 +135,57 @@ declare module "mdast" {
 //------------------------------------------------------------------------------
 
 /**
+ * @deprecated Use `MarkdownParserMode` instead.
+ */
+export type ParserMode = MarkdownParserMode;
+
+/**
+ * The mode of the Markdown parser to use.
+ * @default "commonmark"
+ */
+export type MarkdownParserMode = "commonmark" | "gfm";
+
+/**
+ * A parser that converts Markdown source text into an
+ * [`mdast`](https://github.com/syntax-tree/mdast#readme) syntax tree.
+ */
+export type MarkdownParser = ObjectMetaProperties & {
+	/**
+	 * Parses Markdown source text into an
+	 * [`mdast`](https://github.com/syntax-tree/mdast#readme) syntax tree.
+	 * @param text The Markdown source text to parse.
+	 * @param options The language options merged with parser-specific options.
+	 * @returns The root of the mdast syntax tree.
+	 */
+	parse(
+		text: string,
+
+		/*
+		 * Don't use `Omit<MarkdownLanguageOptions, "parser" | "parserOptions">` here.
+		 * Because `MarkdownLanguageOptions` has a string index signature,
+		 * `Omit` would lose its named option properties.
+		 */
+		options: MarkdownLanguageOptions & {
+			/**
+			 * The mode of the Markdown parser to use.
+			 * @default "commonmark"
+			 */
+			mode: MarkdownParserMode;
+
+			/**
+			 * Parsers cannot override the `parser` used by the language.
+			 */
+			parser?: never;
+
+			/**
+			 * Parsers cannot receive `parserOptions` as a nested object.
+			 */
+			parserOptions?: never;
+		},
+	): Root;
+};
+
+/**
  * Language options provided for Markdown files.
  */
 export interface MarkdownLanguageOptions extends LanguageOptions {
@@ -148,6 +200,20 @@ export interface MarkdownLanguageOptions extends LanguageOptions {
 	 * @default false
 	 */
 	math?: boolean;
+
+	/**
+	 * An object with a `parse()` method and optional metadata properties.
+	 * If not configured, the default ESLint Markdown parser (`mdast-util-from-markdown`) will be used.
+	 */
+	parser?: MarkdownParser;
+
+	/**
+	 * Additional parser-specific options passed to the parser's `parse()` method.
+	 *
+	 * The options in `languageOptions.parserOptions` take precedence
+	 * over those in `languageOptions` for the parser.
+	 */
+	parserOptions?: Record<string, unknown>;
 }
 
 /**

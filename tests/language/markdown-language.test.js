@@ -161,6 +161,22 @@ describe("MarkdownLanguage", () => {
 				language.validateLanguageOptions({ math: false });
 			});
 		});
+
+		it("should throw the expected error when `parser` is a symbol", () => {
+			const language = new MarkdownLanguage();
+
+			assert.throws(
+				() => {
+					language.validateLanguageOptions({
+						parser: Symbol("parser"),
+					});
+				},
+				{
+					message:
+						"Invalid language option `parser`. Expected a non-null object with a `parse` method.",
+				},
+			);
+		});
 	});
 
 	describe("parse()", () => {
@@ -423,6 +439,105 @@ describe("MarkdownLanguage", () => {
 			assert.strictEqual(result.ast.children[1].type, "paragraph");
 			assert.strictEqual(result.ast.children[1].children[0].type, "text");
 			assert.strictEqual(result.ast.children[2].type, "math");
+		});
+
+		it("should not allow `languageOptions` to override commonmark mode", () => {
+			const language = new MarkdownLanguage({
+				mode: "commonmark",
+			});
+			const result = language.parse(
+				{
+					body: "| Column 1 | Column 2 |\n| -------- | -------- |\n| Cell 1   | Cell 2   |",
+					path: "test.md",
+				},
+				{
+					languageOptions: {
+						mode: "gfm",
+					},
+				},
+			);
+
+			assert.strictEqual(result.ok, true);
+			assert.strictEqual(result.ast.children[0].type, "paragraph");
+		});
+
+		it("should omit `parser` and `parserOptions` from custom parser arguments", () => {
+			const language = new MarkdownLanguage();
+			let receivedOptions;
+
+			language.parse(
+				{ body: "", path: "test.md" },
+				{
+					languageOptions: {
+						parser: {
+							parse(text, options) {
+								receivedOptions = options;
+								return { type: "root", children: [] };
+							},
+						},
+						parserOptions: {
+							parser: "nested-parser",
+							parserOptions: {},
+							customOption: true,
+						},
+					},
+				},
+			);
+
+			assert.deepStrictEqual(receivedOptions, {
+				customOption: true,
+				mode: "commonmark",
+			});
+		});
+
+		it("should not allow `parserOptions` to override commonmark mode", () => {
+			const language = new MarkdownLanguage({
+				mode: "commonmark",
+			});
+			const result = language.parse(
+				{
+					body: "| Column 1 | Column 2 |\n| -------- | -------- |\n| Cell 1   | Cell 2   |",
+					path: "test.md",
+				},
+				{
+					languageOptions: {
+						parserOptions: { mode: "gfm" },
+					},
+				},
+			);
+
+			assert.strictEqual(result.ok, true);
+			assert.strictEqual(result.ast.children[0].type, "paragraph");
+		});
+
+		it("should give `parserOptions` precedence over `languageOptions`", () => {
+			const language = new MarkdownLanguage({
+				mode: "gfm",
+			});
+			const result = language.parse(
+				{
+					body: "---\ntitle: Hello\n---\n\n| Math |\n| --- |\n| $x$ |",
+					path: "test.md",
+				},
+				{
+					languageOptions: {
+						frontmatter: false,
+						math: false,
+						parserOptions: {
+							frontmatter: "yaml",
+							math: true,
+						},
+					},
+				},
+			);
+
+			assert.strictEqual(result.ok, true);
+			assert.strictEqual(result.ast.children[0].type, "yaml");
+			assert.strictEqual(result.ast.children[1].type, "table");
+			assert.strictEqual(
+				result.ast.children[1].children[1].children[0].children[0].type,
+				"inlineMath",
+			);
 		});
 	});
 
