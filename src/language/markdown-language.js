@@ -155,6 +155,7 @@ export class MarkdownLanguage {
 				);
 			},
 		},
+		parserOptions: {},
 	};
 
 	/**
