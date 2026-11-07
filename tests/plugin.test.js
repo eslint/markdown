@@ -2462,7 +2462,7 @@ describe("FlatESLint", () => {
 	});
 
 	describe("CLI", () => {
-		it("should override the Markdown parser with `--parser @eslint-markdown/parser`", () => {
+		it("should override the Markdown parser with `--parser eslint-markdown-parser`", () => {
 			const eslintPath = fileURLToPath(
 				new URL(
 					"bin/eslint.js",
@@ -2495,7 +2495,7 @@ describe("FlatESLint", () => {
 
 			const withParser = spawnSync(
 				process.execPath,
-				[...args, "--parser", "@eslint-markdown/parser"],
+				[...args, "--parser", "eslint-markdown-parser"],
 				options,
 			);
 

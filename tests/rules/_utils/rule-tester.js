@@ -1,5 +1,5 @@
 /**
- * @fileoverview A rule tester helper for running code with both `mdast-util-from-markdown` and `@eslint-markdown/parser`.
+ * @fileoverview A rule tester helper for running code with both `mdast-util-from-markdown` and `eslint-markdown-parser`.
  * @author lumir(lumirlumir)
  */
 
@@ -7,7 +7,7 @@
 // Imports
 // --------------------------------------------------------------------------------
 
-import parser from "@eslint-markdown/parser";
+import parser from "eslint-markdown-parser";
 import { RuleTester } from "eslint";
 import markdown from "../../../src/index.js";
 
@@ -44,7 +44,7 @@ const ruleTesterJSGFM = new RuleTester({
 });
 
 /**
- * Creates a new `RuleTester` instance with the `@eslint-markdown/parser` Rust parser and CommonMark syntax.
+ * Creates a new `RuleTester` instance with the `eslint-markdown-parser` Rust parser and CommonMark syntax.
  */
 const ruleTesterRustCommonMark = new RuleTester({
 	plugins: {
@@ -57,7 +57,7 @@ const ruleTesterRustCommonMark = new RuleTester({
 });
 
 /**
- * Creates a new `RuleTester` instance with the `@eslint-markdown/parser` Rust parser and GFM syntax.
+ * Creates a new `RuleTester` instance with the `eslint-markdown-parser` Rust parser and GFM syntax.
  */
 const ruleTesterRustGFM = new RuleTester({
 	plugins: {
@@ -90,7 +90,7 @@ export default function ruleTester(ruleName, rule, tests) {
 		});
 	});
 
-	describe("Rust: @eslint-markdown/parser", () => {
+	describe("Rust: eslint-markdown-parser", () => {
 		describe("CommonMark", () => {
 			ruleTesterRustCommonMark.run(ruleName, rule, tests);
 		});
