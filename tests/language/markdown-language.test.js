@@ -151,7 +151,7 @@ describe("MarkdownLanguage", () => {
 				},
 				{
 					message:
-						"Invalid language option value `Symbol(parser)` for parser. Expected a non-null object.",
+						"Invalid language option `parser`. Expected a non-null object with a `parse` method.",
 				},
 			);
 		});

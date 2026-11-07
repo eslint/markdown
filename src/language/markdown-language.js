@@ -212,18 +212,15 @@ export class MarkdownLanguage {
 		// `parser` option validation
 		const parserOption = languageOptions?.parser;
 
-		if (parserOption !== undefined) {
-			if (typeof parserOption !== "object" || parserOption === null) {
-				throw new Error(
-					`Invalid language option value \`${String(parserOption)}\` for parser. Expected a non-null object.`,
-				);
-			}
-
-			if (typeof parserOption.parse !== "function") {
-				throw new Error(
-					"Invalid language option `parser`. Expected an object with a `parse` method.",
-				);
-			}
+		if (
+			parserOption !== undefined &&
+			(typeof parserOption !== "object" ||
+				parserOption === null ||
+				typeof parserOption.parse !== "function")
+		) {
+			throw new Error(
+				"Invalid language option value `parser`. Expected a non-null object with a `parse` method.",
+			);
 		}
 
 		// `parserOptions` option validation
