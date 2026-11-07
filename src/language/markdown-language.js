@@ -219,7 +219,7 @@ export class MarkdownLanguage {
 				typeof parserOption.parse !== "function")
 		) {
 			throw new Error(
-				"Invalid language option value `parser`. Expected a non-null object with a `parse` method.",
+				"Invalid language option `parser`. Expected a non-null object with a `parse` method.",
 			);
 		}
 
