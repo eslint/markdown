@@ -419,7 +419,7 @@ describe("MarkdownLanguage", () => {
 			assert.strictEqual(result.ast.children[2].type, "math");
 		});
 
-		it("should not allow language options to override commonmark mode", () => {
+		it("should not allow `languageOptions` to override commonmark mode", () => {
 			const language = new MarkdownLanguage({
 				mode: "commonmark",
 			});
@@ -437,6 +437,38 @@ describe("MarkdownLanguage", () => {
 
 			assert.strictEqual(result.ok, true);
 			assert.strictEqual(result.ast.children[0].type, "paragraph");
+		});
+
+		it("should give `parserOptions` precedence over language options and the language mode", () => {
+			const language = new MarkdownLanguage({
+				mode: "commonmark",
+			});
+			const result = language.parse(
+				{
+					body: "---\ntitle: Hello\n---\n\n| Math |\n| --- |\n| $x$ |",
+					path: "test.md",
+				},
+				{
+					languageOptions: {
+						mode: "commonmark",
+						frontmatter: false,
+						math: false,
+						parserOptions: {
+							mode: "gfm",
+							frontmatter: "yaml",
+							math: true,
+						},
+					},
+				},
+			);
+
+			assert.strictEqual(result.ok, true);
+			assert.strictEqual(result.ast.children[0].type, "yaml");
+			assert.strictEqual(result.ast.children[1].type, "table");
+			assert.strictEqual(
+				result.ast.children[1].children[1].children[0].children[0].type,
+				"inlineMath",
+			);
 		});
 	});
 

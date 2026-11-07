@@ -224,6 +224,20 @@ export class MarkdownLanguage {
 				);
 			}
 		}
+
+		// `parserOptions` option validation
+		const parserOptionsOption = languageOptions?.parserOptions;
+
+		if (
+			parserOptionsOption !== undefined &&
+			(typeof parserOptionsOption !== "object" ||
+				parserOptionsOption === null ||
+				Array.isArray(parserOptionsOption))
+		) {
+			throw new Error(
+				"Invalid language option `parserOptions`. Expected a non-null, non-array object.",
+			);
+		}
 	}
 
 	/**
@@ -238,6 +252,7 @@ export class MarkdownLanguage {
 
 		const {
 			parser = this.defaultLanguageOptions.parser,
+			parserOptions,
 			...restLanguageOptions
 		} = context?.languageOptions ?? {};
 
@@ -251,6 +266,7 @@ export class MarkdownLanguage {
 			const root = parser.parse(text, {
 				...restLanguageOptions,
 				mode: this.#mode,
+				...parserOptions,
 			});
 
 			return {

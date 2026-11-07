@@ -154,7 +154,7 @@ export type MarkdownParser = ObjectMetaProperties & {
 	 * Parses Markdown source text into an
 	 * [mdast](https://github.com/syntax-tree/mdast#readme) syntax tree.
 	 * @param text The Markdown source text to parse.
-	 * @param options The parser-specific options.
+	 * @param options The language options merged with parser-specific options.
 	 * @returns The root of the mdast syntax tree.
 	 */
 	parse(
@@ -167,14 +167,20 @@ export type MarkdownParser = ObjectMetaProperties & {
 			mode: MarkdownParserMode;
 
 			/*
-			 * Don't use `Omit<MarkdownLanguageOptions, "parser">` here.
+			 * Don't use `Omit<MarkdownLanguageOptions, "parser" | "parserOptions">` here.
 			 * Because `MarkdownLanguageOptions` has a string index signature,
 			 * `Omit` would lose its named option properties.
 			 */
+
 			/**
 			 * Parsers cannot override the `parser` used by the language.
 			 */
 			parser?: never;
+
+			/**
+			 * Parsers cannot receive `parserOptions` as a nested object.
+			 */
+			parserOptions?: never;
 		},
 	): Root;
 };
@@ -200,6 +206,14 @@ export interface MarkdownLanguageOptions extends LanguageOptions {
 	 * If not configured, the default ESLint Markdown parser (`mdast-util-from-markdown`) will be used.
 	 */
 	parser?: MarkdownParser;
+
+	/**
+	 * Additional parser-specific options passed to the parser's `parse()` method.
+	 *
+	 * Note that the options in `languageOptions.parserOptions` take precedence
+	 * over those in `languageOptions` for the parser.
+	 */
+	parserOptions?: Record<string, any>;
 }
 
 /**
