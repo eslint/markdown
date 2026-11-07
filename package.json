@@ -89,7 +89,7 @@
     "dedent": "^1.7.1",
     "eslint": "^10.8.1",
     "eslint-config-eslint": "^14.0.0",
-    "eslint-markdown-parser": "^0.0.0-canary.1",
+    "eslint-markdown-parser": "0.0.0-canary.1",
     "eslint-plugin-eslint-plugin": "^7.3.2",
     "eslint-v9": "npm:eslint@9.x",
     "globals": "^17.1.0",
