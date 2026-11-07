@@ -147,30 +147,30 @@ export type MarkdownParserMode = "commonmark" | "gfm";
 
 /**
  * A parser that converts Markdown source text into an
- * [mdast](https://github.com/syntax-tree/mdast#readme) syntax tree.
+ * [`mdast`](https://github.com/syntax-tree/mdast#readme) syntax tree.
  */
 export type MarkdownParser = ObjectMetaProperties & {
 	/**
 	 * Parses Markdown source text into an
-	 * [mdast](https://github.com/syntax-tree/mdast#readme) syntax tree.
+	 * [`mdast`](https://github.com/syntax-tree/mdast#readme) syntax tree.
 	 * @param text The Markdown source text to parse.
 	 * @param options The language options merged with parser-specific options.
 	 * @returns The root of the mdast syntax tree.
 	 */
 	parse(
 		text: string,
+
+		/*
+		 * Don't use `Omit<MarkdownLanguageOptions, "parser" | "parserOptions">` here.
+		 * Because `MarkdownLanguageOptions` has a string index signature,
+		 * `Omit` would lose its named option properties.
+		 */
 		options: MarkdownLanguageOptions & {
 			/**
 			 * The mode of the Markdown parser to use.
 			 * @default "commonmark"
 			 */
 			mode: MarkdownParserMode;
-
-			/*
-			 * Don't use `Omit<MarkdownLanguageOptions, "parser" | "parserOptions">` here.
-			 * Because `MarkdownLanguageOptions` has a string index signature,
-			 * `Omit` would lose its named option properties.
-			 */
 
 			/**
 			 * Parsers cannot override the `parser` used by the language.
@@ -210,10 +210,10 @@ export interface MarkdownLanguageOptions extends LanguageOptions {
 	/**
 	 * Additional parser-specific options passed to the parser's `parse()` method.
 	 *
-	 * Note that the options in `languageOptions.parserOptions` take precedence
+	 * The options in `languageOptions.parserOptions` take precedence
 	 * over those in `languageOptions` for the parser.
 	 */
-	parserOptions?: Record<string, any>;
+	parserOptions?: Record<string, unknown>;
 }
 
 /**

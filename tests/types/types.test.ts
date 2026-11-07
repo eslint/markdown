@@ -1,6 +1,7 @@
 import markdown from "@eslint/markdown";
 import type {
 	MarkdownLanguageOptions,
+	MarkdownParser,
 	MarkdownRuleDefinition,
 	MarkdownRuleVisitor,
 	MarkdownSourceCode,
@@ -215,6 +216,11 @@ const invalidLanguageOptions2: MarkdownLanguageOptions = {
 	// @ts-expect-error Invalid value for `math`
 	math: "invalid",
 };
+
+// Check that parser options preserve named language option types.
+declare const parserOptions: Parameters<MarkdownParser["parse"]>[1];
+parserOptions.frontmatter satisfies MarkdownLanguageOptions["frontmatter"];
+parserOptions.math satisfies MarkdownLanguageOptions["math"];
 
 (): MarkdownRuleDefinition => ({
 	create({ sourceCode }): MarkdownRuleVisitor {
