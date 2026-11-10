@@ -15,6 +15,14 @@ import assert from "node:assert";
 //-----------------------------------------------------------------------------
 
 describe("MarkdownLanguage", () => {
+	describe("constructor()", () => {
+		it("should not throw an error when options or mode are not provided", () => {
+			assert.doesNotThrow(() => new MarkdownLanguage());
+			assert.doesNotThrow(() => new MarkdownLanguage(undefined));
+			assert.doesNotThrow(() => new MarkdownLanguage({}));
+		});
+	});
+
 	describe("validateLanguageOptions()", () => {
 		it("should not throw an error when `frontmatter` or `math` is not provided", () => {
 			const language = new MarkdownLanguage();
@@ -24,6 +32,14 @@ describe("MarkdownLanguage", () => {
 			});
 			assert.doesNotThrow(() => {
 				language.validateLanguageOptions({});
+			});
+		});
+
+		it("should not throw an error when language options are explicitly undefined", () => {
+			const language = new MarkdownLanguage();
+
+			assert.doesNotThrow(() => {
+				language.validateLanguageOptions(undefined);
 			});
 		});
 
@@ -170,6 +186,22 @@ describe("MarkdownLanguage", () => {
 				body: "# Hello, World!\n\nHello, World!",
 				path: "test.md",
 			});
+
+			assert.strictEqual(result.ok, true);
+			assert.strictEqual(result.ast.type, "root");
+			assert.strictEqual(result.ast.children[0].type, "heading");
+			assert.strictEqual(result.ast.children[1].type, "paragraph");
+		});
+
+		it("should parse markdown when context is explicitly undefined", () => {
+			const language = new MarkdownLanguage();
+			const result = language.parse(
+				{
+					body: "# Hello, World!\n\nHello, World!",
+					path: "test.md",
+				},
+				undefined,
+			);
 
 			assert.strictEqual(result.ok, true);
 			assert.strictEqual(result.ast.type, "root");

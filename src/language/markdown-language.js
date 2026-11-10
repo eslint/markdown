@@ -56,7 +56,7 @@ const jsonFrontmatterConfig = {
 /**
  * Create parser options based on `mode` and `languageOptions`.
  * @param {ParserMode} mode The markdown parser mode.
- * @param {MarkdownLanguageOptions} languageOptions Language options.
+ * @param {MarkdownLanguageOptions} [languageOptions] Language options.
  * @returns {{extensions: Extensions, mdastExtensions: MdastExtensions}} Parser options for micromark and mdast.
  */
 function createParserOptions(mode, languageOptions) {
@@ -155,7 +155,7 @@ export class MarkdownLanguage {
 
 	/**
 	 * Creates a new instance.
-	 * @param {Object} options The options to use for this instance.
+	 * @param {Object} [options] The options to use for this instance.
 	 * @param {ParserMode} [options.mode] The Markdown parser mode to use.
 	 */
 	constructor({ mode } = {}) {
@@ -166,7 +166,7 @@ export class MarkdownLanguage {
 
 	/**
 	 * Validates the language options.
-	 * @param {MarkdownLanguageOptions} languageOptions The language options to validate.
+	 * @param {MarkdownLanguageOptions} [languageOptions] The language options to validate.
 	 * @returns {void}
 	 * @throws {Error} When the language options are invalid.
 	 */
@@ -202,7 +202,7 @@ export class MarkdownLanguage {
 	/**
 	 * Parses the given file into an AST.
 	 * @param {File} file The virtual file to parse.
-	 * @param {MarkdownLanguageContext} context The options to use for parsing.
+	 * @param {MarkdownLanguageContext} [context] The options to use for parsing.
 	 * @returns {ParseResult<Root>} The result of parsing.
 	 */
 	parse(file, context) {
