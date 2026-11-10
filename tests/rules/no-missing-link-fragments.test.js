@@ -418,6 +418,21 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		<a id="bookmark"></a>
 		[Link](#bookmark)
 		`,
+		dedent`
+		<a id="Foo.Bar"></a>
+		[Link](#foo.bar)
+		`,
+		dedent`
+        [Link](#eslintExplicitGlobalComment)
+        ## <a id="eslintExplicitGlobalComment"></a> Heading
+        `,
+		{
+			code: dedent`
+			[Link](#eslintExplicitGlobalComment)
+			## <a id="eslintExplicitGlobalComment"></a> Heading
+			`,
+			options: [{ ignoreCase: false }],
+		},
 
 		// HTML anchor tags case-insensitive
 		dedent`
@@ -436,6 +451,21 @@ ruleTester.run("no-missing-link-fragments", rule, {
 		<a name="old-style"></a>
 		[Link](#old-style)
 		`,
+		dedent`
+		<a name="Foo.Bar"></a>
+		[Link](#foo.bar)
+		`,
+		dedent`
+        [Link](#eslintExplicitGlobalComment)
+        ## <a name="eslintExplicitGlobalComment"></a> Heading
+        `,
+		{
+			code: dedent`
+			[Link](#eslintExplicitGlobalComment)
+			## <a name="eslintExplicitGlobalComment"></a> Heading
+			`,
+			options: [{ ignoreCase: false }],
+		},
 
 		// HTML name attribute case-insensitive
 		dedent`
@@ -1081,6 +1111,40 @@ ruleTester.run("no-missing-link-fragments", rule, {
 					column: 1,
 					endLine: 2,
 					endColumn: 25,
+				},
+			],
+		},
+		{
+			code: dedent`
+			<a id="Foo"></a>
+			[Link](#foo)
+			`,
+			options: [{ ignoreCase: false }],
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "foo" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: dedent`
+			<a name="Foo"></a>
+			[Link](#foo)
+			`,
+			options: [{ ignoreCase: false }],
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "foo" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 13,
 				},
 			],
 		},

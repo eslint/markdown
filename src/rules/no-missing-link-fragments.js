@@ -122,7 +122,7 @@ export default /** @satisfies {NoMissingLinkFragmentsRuleDefinition} */ ({
 				)) {
 					const { id } = match.groups;
 
-					fragmentIds.add(slugger.slug(id));
+					fragmentIds.add(ignoreCase ? id.toLowerCase() : id);
 				}
 
 				// 3. Finally, look for headings in the HTML
