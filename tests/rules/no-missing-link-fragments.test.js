@@ -1149,6 +1149,24 @@ ruleTester.run("no-missing-link-fragments", rule, {
 			],
 		},
 
+		// HTML anchor IDs preserve punctuation
+		{
+			code: dedent`
+			<a id="Foo.Bar"></a>
+			[Link](#foobar)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "foobar" },
+					line: 2,
+					column: 1,
+					endLine: 2,
+					endColumn: 16,
+				},
+			],
+		},
+
 		// Invalid with existing headings
 		{
 			code: dedent`
