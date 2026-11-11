@@ -709,6 +709,34 @@ describe("processor", () => {
 					);
 				});
 
+				it("should read configuration comments with surrounding text", () => {
+					const code =
+						prefix +
+						[
+							"  <!-- eslint-disable no-console -->",
+							"<!-- eslint-disable quotes --> note",
+							"<!-- global foo --> ",
+							"",
+							"```js",
+							"console.log(foo);",
+							"```",
+						].join("\n");
+					const blocks = processor.preprocess(code);
+
+					assert.strictEqual(blocks.length, 1);
+					assert.strictEqual(blocks[0].filename, "0.js");
+					assert.strictEqual(
+						blocks[0].text,
+						[
+							"/* eslint-disable no-console */",
+							"/* eslint-disable quotes */",
+							"/* global foo */",
+							"console.log(foo);",
+							"",
+						].join("\n"),
+					);
+				});
+
 				it("should ignore non-comment html", () => {
 					const code =
 						prefix +

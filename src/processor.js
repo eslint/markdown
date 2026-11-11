@@ -68,15 +68,19 @@ function getComment(html) {
 	const commentStart = "<!--";
 	const commentEnd = "-->";
 	const regex = /^(?:eslint\b|global\s)/u;
+	const start = html.length - html.trimStart().length;
 
-	if (
-		html.slice(0, commentStart.length) !== commentStart ||
-		html.slice(-commentEnd.length) !== commentEnd
-	) {
+	if (!html.startsWith(commentStart, start)) {
 		return "";
 	}
 
-	const comment = html.slice(commentStart.length, -commentEnd.length);
+	const end = html.indexOf(commentEnd, start + commentStart.length);
+
+	if (end === -1) {
+		return "";
+	}
+
+	const comment = html.slice(start + commentStart.length, end);
 
 	if (!regex.test(comment.trim())) {
 		return "";
