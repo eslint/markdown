@@ -456,5 +456,34 @@ ruleTester.run("no-invalid-label-refs", rule, {
 				},
 			],
 		},
+
+		{
+			code: "[outer [inner] text][ ]",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "outer [inner] text" },
+					line: 1,
+					column: 21,
+					endLine: 1,
+					endColumn: 24,
+				},
+			],
+		},
+		{
+			code: String.raw`[outer [inner] \[x][ ]`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: {
+						label: String.raw`outer [inner] \[x`,
+					},
+					line: 1,
+					column: 20,
+					endLine: 1,
+					endColumn: 23,
+				},
+			],
+		},
 	],
 });

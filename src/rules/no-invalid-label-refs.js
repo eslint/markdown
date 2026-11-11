@@ -47,12 +47,14 @@ function isEscaped(text, index) {
 }
 
 /**
- * Checks whether an offset falls within an inline code span.
+ * Checks whether an offset falls within syntax whose brackets
+ * should not affect Markdown link-text matching.
  * @param {Node} node The Markdown AST node to check.
  * @param {number} offset The source offset.
- * @returns {boolean} Whether the offset belongs to an inline code span.
+ * @param {string} text The full source text.
+ * @returns {boolean} Whether the offset should be ignored.
  */
-function isInsideInlineCode(node, offset) {
+function isInsideIgnoredSyntax(node, offset, text) {
 	const start = node.position?.start?.offset;
 	const end = node.position?.end?.offset;
 
@@ -65,12 +67,17 @@ function isInsideInlineCode(node, offset) {
 		return false;
 	}
 
-	if (node.type === "inlineCode") {
+	const isIgnoredNode = node.type === "inlineCode" || node.type === "html";
+	const isAutolink = node.type === "link" && text[start] === "<";
+
+	if (isIgnoredNode || isAutolink) {
 		return true;
 	}
 
 	if ("children" in node && Array.isArray(node.children)) {
-		return node.children.some(child => isInsideInlineCode(child, offset));
+		return node.children.some(child =>
+			isInsideIgnoredSyntax(child, offset, text),
+		);
 	}
 
 	return false;
@@ -85,30 +92,26 @@ function isInsideInlineCode(node, offset) {
  * @returns {number} The opening bracket offset, or -1.
  */
 function findOpeningBracket(text, closingIndex, scopeStart, container) {
-	const index = text.lastIndexOf("[", closingIndex - 1);
-
-	if (index < scopeStart) {
-		return -1;
-	}
-
-	if (!isEscaped(text, index) && !isInsideInlineCode(container, index)) {
-		return index;
-	}
+	let depth = 0;
 
 	for (let i = closingIndex - 1; i >= scopeStart; i--) {
-		if (text[i] !== "[" && text[i] !== "]") {
+		const char = text[i];
+
+		if (char !== "[" && char !== "]") {
 			continue;
 		}
 
-		if (isEscaped(text, i) || isInsideInlineCode(container, i)) {
+		if (isEscaped(text, i) || isInsideIgnoredSyntax(container, i, text)) {
 			continue;
 		}
 
-		if (text[i] === "]") {
-			return -1;
+		if (char === "]") {
+			depth++;
+		} else if (depth > 0) {
+			depth--;
+		} else {
+			return i;
 		}
-
-		return i;
 	}
 
 	return -1;
