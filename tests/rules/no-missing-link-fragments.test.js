@@ -1167,6 +1167,27 @@ ruleTester.run("no-missing-link-fragments", rule, {
 			],
 		},
 
+		// HTML anchor IDs do not affect heading slug numbering
+		{
+			code: dedent`
+			<a id="foo"></a>
+
+			# foo
+
+			[Link](#foo-1)
+			`,
+			errors: [
+				{
+					messageId: "invalidFragment",
+					data: { fragment: "foo-1" },
+					line: 5,
+					column: 1,
+					endLine: 5,
+					endColumn: 15,
+				},
+			],
+		},
+
 		// Invalid with existing headings
 		{
 			code: dedent`
