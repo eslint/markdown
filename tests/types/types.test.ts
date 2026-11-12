@@ -1,4 +1,4 @@
-import markdown from "@eslint/markdown";
+import markdown, { MarkdownLanguage } from "@eslint/markdown";
 import type {
 	MarkdownLanguageOptions,
 	MarkdownRuleDefinition,
@@ -10,7 +10,7 @@ import type {
 	RangeMap,
 	Block,
 } from "@eslint/markdown";
-import type { Plugin, SourceLocation, SourceRange } from "@eslint/core";
+import type { File, Plugin, SourceLocation, SourceRange } from "@eslint/core";
 import type { ESLint, Linter } from "eslint";
 import type { Position } from "unist";
 import type {
@@ -178,6 +178,20 @@ typeof processorPlugins satisfies {};
 ({}) as Math satisfies BlockContentMap["math"];
 ({}) as Math satisfies RootContent;
 ({}) as Math satisfies RootContentMap["math"];
+
+// Check that constructor options and mode are optional.
+new MarkdownLanguage();
+new MarkdownLanguage(undefined);
+new MarkdownLanguage({});
+
+// Check that language options can be omitted or explicitly undefined.
+markdown.languages.commonmark.validateLanguageOptions();
+markdown.languages.commonmark.validateLanguageOptions(undefined);
+
+// Check that parse context can be omitted or explicitly undefined.
+declare const file: File;
+markdown.languages.commonmark.parse(file);
+markdown.languages.commonmark.parse(file, undefined);
 
 const validLanguageOptions1: MarkdownLanguageOptions = {
 	frontmatter: false,
