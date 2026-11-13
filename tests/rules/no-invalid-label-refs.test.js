@@ -33,6 +33,34 @@ ruleTester.run("no-invalid-label-refs", rule, {
 		"[  foo ][]\n\n[foo]: http://bar.com/image.jpg",
 		"[eslint][\n\n]",
 		"[*eslint*][]\n\n[*eslint*]: http://bar.com",
+		String.raw`\[foo][ ]
+
+		[foo]: http://bar.com`,
+
+		// Opening bracket: odd number of backslashes.
+		`${"\\".repeat(3)}[foo][ ]\n\n[foo]: http://bar.com`,
+		`${"\\".repeat(5)}[foo][ ]\n\n[foo]: http://bar.com`,
+
+		// Closing bracket: odd number of backslashes.
+		`[foo${"\\".repeat(1)}][ ]\n\n[foo]: http://bar.com`,
+		`[foo${"\\".repeat(3)}][ ]\n\n[foo]: http://bar.com`,
+		`[foo${"\\".repeat(5)}][ ]\n\n[foo]: http://bar.com`,
+
+		"[foo](http://bar.com)",
+		"[foo][bar]\n\n[bar]: http://bar.com",
+		String.raw`[before] \[foo][ ]
+
+[foo]: http://bar.com`,
+		String.raw`[before
+
+][ ]
+
+[before]: http://bar.com`,
+		String.raw`\[foo][ ] \[bar][ ]
+
+[foo]: http://foo.com
+[bar]: http://bar.com`,
+		"[before] \\[foo `]` baz][ ]",
 	],
 	invalid: [
 		{
@@ -217,6 +245,243 @@ ruleTester.run("no-invalid-label-refs", rule, {
 					column: 11,
 					endLine: 1,
 					endColumn: 14,
+				},
+			],
+		},
+		{
+			code: String.raw`\\[foo][ ]
+
+[foo]: http://bar.com`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo" },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 11,
+				},
+			],
+		},
+		{
+			code: String.raw`][foo\]bar][ ]
+
+[foo\]bar]: /url`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: {
+						label: String.raw`foo\]bar`,
+					},
+					line: 1,
+					column: 12,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
+
+		// Opening bracket: even number of backslashes.
+		{
+			code: `${"\\".repeat(4)}[foo][ ]\n\n[foo]: http://bar.com`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo" },
+					line: 1,
+					column: 10,
+					endLine: 1,
+					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: `${"\\".repeat(6)}[foo][ ]\n\n[foo]: http://bar.com`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo" },
+					line: 1,
+					column: 12,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
+
+		// Closing bracket: even number of backslashes.
+		{
+			code: `[foo${"\\".repeat(2)}][ ]\n\n[foo${"\\".repeat(2)}]: http://bar.com`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: `foo${"\\".repeat(2)}` },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 11,
+				},
+			],
+		},
+		{
+			code: `[foo${"\\".repeat(4)}][ ]\n\n[foo${"\\".repeat(4)}]: http://bar.com`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: `foo${"\\".repeat(4)}` },
+					line: 1,
+					column: 10,
+					endLine: 1,
+					endColumn: 13,
+				},
+			],
+		},
+		{
+			code: `[foo${"\\".repeat(6)}][ ]\n\n[foo${"\\".repeat(6)}]: http://bar.com`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: `foo${"\\".repeat(6)}` },
+					line: 1,
+					column: 12,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: "# [foo][ ]\n\n[foo]: http://bar.com",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo" },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 11,
+				},
+			],
+		},
+		{
+			code: "| Label |\n| --- |\n| [foo][ ] |\n\n[foo]: http://bar.com",
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo" },
+					line: 3,
+					column: 8,
+					endLine: 3,
+					endColumn: 11,
+				},
+			],
+		},
+		{
+			code: String.raw`[foo \[bar][ ]
+
+[foo \[bar]: http://bar.com`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: String.raw`foo \[bar` },
+					line: 1,
+					column: 12,
+					endLine: 1,
+					endColumn: 15,
+				},
+			],
+		},
+		{
+			code: String.raw`[one][ ] \[skip][ ] [two][ ]
+
+[one]: http://one.com
+[skip]: http://skip.com
+[two]: http://two.com`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "one" },
+					line: 1,
+					column: 6,
+					endLine: 1,
+					endColumn: 9,
+				},
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "two" },
+					line: 1,
+					column: 26,
+					endLine: 1,
+					endColumn: 29,
+				},
+			],
+		},
+
+		{
+			code: "[foo \\[bar `]` baz][ ]",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo \\[bar `]` baz" },
+					line: 1,
+					column: 20,
+					endLine: 1,
+					endColumn: 23,
+				},
+			],
+		},
+		{
+			code: "[foo \\[bar `[x]` baz][ ]",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo \\[bar `[x]` baz" },
+					line: 1,
+					column: 22,
+					endLine: 1,
+					endColumn: 25,
+				},
+			],
+		},
+		{
+			code: "[foo \\[bar ``]`` baz][ ]",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "foo \\[bar ``]`` baz" },
+					line: 1,
+					column: 22,
+					endLine: 1,
+					endColumn: 25,
+				},
+			],
+		},
+
+		{
+			code: "[outer [inner] text][ ]",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: { label: "outer [inner] text" },
+					line: 1,
+					column: 21,
+					endLine: 1,
+					endColumn: 24,
+				},
+			],
+		},
+		{
+			code: String.raw`[outer [inner] \[x][ ]`,
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: {
+						label: String.raw`outer [inner] \[x`,
+					},
+					line: 1,
+					column: 20,
+					endLine: 1,
+					endColumn: 23,
 				},
 			],
 		},
