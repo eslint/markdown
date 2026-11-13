@@ -39,14 +39,14 @@ const blocksCache = new Map();
 /**
  * Performs a depth-first traversal of the Markdown AST.
  * @param {Node} node A Markdown AST node.
- * @param {{[key: string]: (() => void) | ((node: Code) => void) | ((node: Html) => void)}} callbacks A map of node types to callbacks.
+ * @param {{[key: string]: ((node: Node) => void) | ((node: Code) => void) | ((node: Html) => void)}} callbacks A map of node types to callbacks.
  * @returns {void}
  */
 function traverse(node, callbacks) {
 	if (callbacks[node.type]) {
 		/** @type {(node: Node) => void} */ (callbacks[node.type])(node);
 	} else {
-		/** @type {() => void} */ (callbacks["*"])();
+		/** @type {(node: Node) => void} */ (callbacks["*"])(node);
 	}
 
 	const parent = /** @type {Parent} */ (node);
@@ -68,25 +68,50 @@ function getComment(html) {
 	const commentStart = "<!--";
 	const commentEnd = "-->";
 	const regex = /^(?:eslint\b|global\s)/u;
-	const start = html.length - html.trimStart().length;
+	let fromIndex = 0;
 
-	if (!html.startsWith(commentStart, start)) {
-		return "";
+	while (fromIndex < html.length) {
+		const start = html.indexOf(commentStart, fromIndex);
+
+		if (start === -1) {
+			return "";
+		}
+
+		const end = html.indexOf(commentEnd, start + commentStart.length);
+
+		if (end === -1) {
+			return "";
+		}
+
+		const comment = html.slice(start + commentStart.length, end);
+
+		if (regex.test(comment.trim())) {
+			return comment;
+		}
+
+		fromIndex = end + commentEnd.length;
 	}
 
-	const end = html.indexOf(commentEnd, start + commentStart.length);
+	return "";
+}
 
-	if (end === -1) {
-		return "";
+/**
+ * Determines whether a node contains an ESLint configuration comment.
+ * @param {Node} node A Markdown AST node.
+ * @returns {boolean} `true` if the node contains a configuration comment.
+ */
+function containsConfigComment(node) {
+	if (node.type === "html" && getComment(/** @type {Html} */ (node).value)) {
+		return true;
 	}
 
-	const comment = html.slice(start + commentStart.length, end);
+	const parent = /** @type {Parent} */ (node);
 
-	if (!regex.test(comment.trim())) {
-		return "";
+	if (typeof parent.children === "undefined") {
+		return false;
 	}
 
-	return comment;
+	return parent.children.some(child => containsConfigComment(child));
 }
 
 // Before a code block, blockquote characters (`>`) are also considered
@@ -287,7 +312,15 @@ function preprocess(sourceText, filename) {
 	let htmlComments = [];
 
 	traverse(ast, {
-		"*"() {
+		"*"(node) {
+			if (node.type === "text") {
+				return;
+			}
+
+			if (node.type === "paragraph" && containsConfigComment(node)) {
+				return;
+			}
+
 			htmlComments = [];
 		},
 

@@ -714,8 +714,9 @@ describe("processor", () => {
 						prefix +
 						[
 							"  <!-- eslint-disable no-console -->",
-							"<!-- eslint-disable quotes --> note",
-							"<!-- global foo --> ",
+							"before <!-- eslint-disable quotes --> after",
+							"<!-- eslint-disable semi --> note",
+							"<!-- note --><!-- global foo -->",
 							"",
 							"```js",
 							"console.log(foo);",
@@ -730,10 +731,32 @@ describe("processor", () => {
 						[
 							"/* eslint-disable no-console */",
 							"/* eslint-disable quotes */",
+							"/* eslint-disable semi */",
 							"/* global foo */",
 							"console.log(foo);",
 							"",
 						].join("\n"),
+					);
+				});
+
+				it("should ignore configuration comments separated by a paragraph", () => {
+					const code =
+						prefix +
+						[
+							"<!-- eslint-disable no-console -->",
+							"",
+							"hello",
+							"",
+							"```js",
+							"console.log('Hello, world!');",
+							"```",
+						].join("\n");
+					const blocks = processor.preprocess(code);
+
+					assert.strictEqual(blocks.length, 1);
+					assert.strictEqual(
+						blocks[0].text,
+						["console.log('Hello, world!');", ""].join("\n"),
 					);
 				});
 
