@@ -312,6 +312,11 @@ function preprocess(sourceText, filename) {
 	let htmlComments = [];
 
 	traverse(ast, {
+		/**
+		 * Visit any node that is not a code or HTML node.
+		 * @param {Node} node The visited node.
+		 * @returns {void}
+		 */
 		"*"(node) {
 			if (node.type === "text") {
 				return;
