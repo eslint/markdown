@@ -709,6 +709,30 @@ describe("processor", () => {
 					);
 				});
 
+				it("should ignore html after a configuration comment", () => {
+					const code =
+						prefix +
+						[
+							"<!-- eslint-disable no-console -->Important<!-- not an eslint comment -->",
+							"",
+							"```js",
+							"console.log('Hello, world!');",
+							"```",
+						].join("\n");
+					const blocks = processor.preprocess(code);
+
+					assert.strictEqual(blocks.length, 1);
+					assert.strictEqual(blocks[0].filename, "0.js");
+					assert.strictEqual(
+						blocks[0].text,
+						[
+							"/* eslint-disable no-console */",
+							"console.log('Hello, world!');",
+							"",
+						].join("\n"),
+					);
+				});
+
 				it("should ignore non-comment html", () => {
 					const code =
 						prefix +

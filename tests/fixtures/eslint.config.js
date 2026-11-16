@@ -9,6 +9,9 @@ export default [
 		languageOptions: {
 			globals: globals.browser,
 		},
+		linterOptions: {
+			reportUnusedDisableDirectives: "off",
+		},
 		rules: {
 			"eol-last": "error",
 			"no-console": "error",
