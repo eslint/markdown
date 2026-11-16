@@ -709,6 +709,133 @@ describe("processor", () => {
 					);
 				});
 
+				it("should read configuration comments with surrounding text", () => {
+					const code =
+						prefix +
+						[
+							"  <!-- eslint-disable no-console -->",
+							"before <!-- eslint-disable quotes --> after",
+							"<!-- eslint-disable semi --> note",
+							"<!-- note --><!-- global foo -->",
+							"",
+							"```js",
+							"console.log(foo);",
+							"```",
+						].join("\n");
+					const blocks = processor.preprocess(code);
+
+					assert.strictEqual(blocks.length, 1);
+					assert.strictEqual(blocks[0].filename, "0.js");
+					assert.strictEqual(
+						blocks[0].text,
+						[
+							"/* eslint-disable no-console */",
+							"/* eslint-disable quotes */",
+							"/* eslint-disable semi */",
+							"/* global foo */",
+							"console.log(foo);",
+							"",
+						].join("\n"),
+					);
+				});
+
+				it("should apply every configuration comment in one html node", () => {
+					const code =
+						prefix +
+						[
+							"<!-- eslint-disable no-console --><!-- eslint-disable quotes -->",
+							"",
+							"```js",
+							'console.log("hi");',
+							"```",
+						].join("\n");
+					const blocks = processor.preprocess(code);
+
+					assert.strictEqual(blocks.length, 1);
+					assert.strictEqual(
+						blocks[0].text,
+						[
+							"/* eslint-disable no-console */",
+							"/* eslint-disable quotes */",
+							'console.log("hi");',
+							"",
+						].join("\n"),
+					);
+				});
+
+				it("should ignore configuration comments inside other markup", () => {
+					const code =
+						prefix +
+						[
+							"<div><!-- eslint-disable no-console --></div>",
+							"",
+							"```js",
+							'console.log("hi");',
+							"```",
+							"",
+							"<div></div><!-- eslint-disable no-console -->",
+							"",
+							"```js",
+							'console.log("hi");',
+							"```",
+						].join("\n");
+					const blocks = processor.preprocess(code);
+
+					assert.strictEqual(blocks.length, 2);
+					assert.strictEqual(
+						blocks[0].text,
+						['console.log("hi");', ""].join("\n"),
+					);
+					assert.strictEqual(
+						blocks[1].text,
+						['console.log("hi");', ""].join("\n"),
+					);
+				});
+
+				it("should keep */ in a configuration comment from ending the generated comment", () => {
+					const code =
+						prefix +
+						[
+							"<!-- eslint-disable no-console -- see src/**/*.js -->",
+							"",
+							"```js",
+							'console.log("hi");',
+							"```",
+						].join("\n");
+					const blocks = processor.preprocess(code);
+
+					assert.strictEqual(blocks.length, 1);
+					assert.strictEqual(
+						blocks[0].text,
+						[
+							"/* eslint-disable no-console -- see src/**\\/*.js */",
+							'console.log("hi");',
+							"",
+						].join("\n"),
+					);
+				});
+
+				it("should ignore configuration comments separated by a paragraph", () => {
+					const code =
+						prefix +
+						[
+							"<!-- eslint-disable no-console -->",
+							"",
+							"hello",
+							"",
+							"```js",
+							"console.log('Hello, world!');",
+							"```",
+						].join("\n");
+					const blocks = processor.preprocess(code);
+
+					assert.strictEqual(blocks.length, 1);
+					assert.strictEqual(
+						blocks[0].text,
+						["console.log('Hello, world!');", ""].join("\n"),
+					);
+				});
+
 				it("should ignore non-comment html", () => {
 					const code =
 						prefix +
@@ -767,6 +894,25 @@ describe("processor", () => {
 						assert.strictEqual(
 							blocks[0].text,
 							"var answer = 6 * 7;\n",
+						);
+					});
+
+					it("should not skip a block when the comment is inside other markup", () => {
+						const code =
+							prefix +
+							[
+								"<div><!-- eslint-skip --></div>",
+								"",
+								"```js",
+								'console.log("hi");',
+								"```",
+							].join("\n");
+						const blocks = processor.preprocess(code);
+
+						assert.strictEqual(blocks.length, 1);
+						assert.strictEqual(
+							blocks[0].text,
+							'console.log("hi");\n',
 						);
 					});
 

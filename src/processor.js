@@ -39,14 +39,14 @@ const blocksCache = new Map();
 /**
  * Performs a depth-first traversal of the Markdown AST.
  * @param {Node} node A Markdown AST node.
- * @param {{[key: string]: (() => void) | ((node: Code) => void) | ((node: Html) => void)}} callbacks A map of node types to callbacks.
+ * @param {{[key: string]: ((node: Node) => void) | ((node: Code) => void) | ((node: Html) => void)}} callbacks A map of node types to callbacks.
  * @returns {void}
  */
 function traverse(node, callbacks) {
 	if (callbacks[node.type]) {
 		/** @type {(node: Node) => void} */ (callbacks[node.type])(node);
 	} else {
-		/** @type {() => void} */ (callbacks["*"])();
+		/** @type {(node: Node) => void} */ (callbacks["*"])(node);
 	}
 
 	const parent = /** @type {Parent} */ (node);
@@ -59,30 +59,85 @@ function traverse(node, callbacks) {
 }
 
 /**
- * Extracts `eslint-*` or `global` comments from HTML comments if present.
+ * Extracts `eslint-*` or `global` comments from a leading run of HTML comments.
+ * Leading whitespace is allowed. The run stops at the first non-whitespace
+ * character that does not begin another HTML comment, so a comment buried in
+ * other markup is ignored. Text after the run is ignored.
  * @param {string} html The text content of an HTML AST node.
- * @returns {string} The comment's text without the opening and closing tags or
- *     an empty string if the text is not an ESLint HTML comment.
+ * @returns {string[]} Comment texts without the opening and closing tags.
  */
-function getComment(html) {
+function getComments(html) {
 	const commentStart = "<!--";
 	const commentEnd = "-->";
 	const regex = /^(?:eslint\b|global\s)/u;
+	const comments = [];
+	let index = /^\s*/u.exec(html)[0].length;
 
+	while (html.startsWith(commentStart, index)) {
+		const end = html.indexOf(commentEnd, index + commentStart.length);
+
+		if (end === -1) {
+			break;
+		}
+
+		const comment = html.slice(index + commentStart.length, end);
+
+		if (regex.test(comment.trim())) {
+			comments.push(comment);
+		}
+
+		index = end + commentEnd.length;
+		index += /^\s*/u.exec(html.slice(index))[0].length;
+	}
+
+	return comments;
+}
+
+/**
+ * Wraps a configuration comment for the JavaScript parser.
+ * A star-slash sequence ends a block comment early. When that sequence
+ * appears after the directive, only the justification is escaped, so the
+ * directive text is unchanged. Otherwise the whole comment is escaped so
+ * the code block still parses.
+ * @param {string} comment Comment text between the HTML comment delimiters.
+ * @returns {string} A JavaScript block comment.
+ */
+function toJsComment(comment) {
+	if (!comment.includes("*/")) {
+		return `/*${comment}*/`;
+	}
+
+	const separator = /\s-{2,}\s/u.exec(comment);
+	const directiveEnd =
+		separator && !comment.slice(0, separator.index).includes("*/")
+			? separator.index
+			: 0;
+
+	return `/*${comment.slice(0, directiveEnd)}${comment
+		.slice(directiveEnd)
+		.replaceAll("*/", "*\\/")}*/`;
+}
+
+/**
+ * Determines whether a node contains an ESLint configuration comment.
+ * @param {Node} node A Markdown AST node.
+ * @returns {boolean} `true` if the node contains a configuration comment.
+ */
+function containsConfigComment(node) {
 	if (
-		html.slice(0, commentStart.length) !== commentStart ||
-		html.slice(-commentEnd.length) !== commentEnd
+		node.type === "html" &&
+		getComments(/** @type {Html} */ (node).value).length > 0
 	) {
-		return "";
+		return true;
 	}
 
-	const comment = html.slice(commentStart.length, -commentEnd.length);
+	const parent = /** @type {Parent} */ (node);
 
-	if (!regex.test(comment.trim())) {
-		return "";
+	if (typeof parent.children === "undefined") {
+		return false;
 	}
 
-	return comment;
+	return parent.children.some(child => containsConfigComment(child));
 }
 
 // Before a code block, blockquote characters (`>`) are also considered
@@ -283,7 +338,20 @@ function preprocess(sourceText, filename) {
 	let htmlComments = [];
 
 	traverse(ast, {
-		"*"() {
+		/**
+		 * Visit any node that is not a code or HTML node.
+		 * @param {Node} node The visited node.
+		 * @returns {void}
+		 */
+		"*"(node) {
+			if (node.type === "text") {
+				return;
+			}
+
+			if (node.type === "paragraph" && containsConfigComment(node)) {
+				return;
+			}
+
 			htmlComments = [];
 		},
 
@@ -303,7 +371,7 @@ function preprocess(sourceText, filename) {
 						return;
 					}
 
-					comments.push(`/*${comment}*/`);
+					comments.push(toJsComment(comment));
 				}
 
 				htmlComments = [];
@@ -323,10 +391,10 @@ function preprocess(sourceText, filename) {
 		 * @returns {void}
 		 */
 		html(node) {
-			const comment = getComment(node.value);
+			const comments = getComments(node.value);
 
-			if (comment) {
-				htmlComments.push(comment);
+			if (comments.length > 0) {
+				htmlComments.push(...comments);
 			} else {
 				htmlComments = [];
 			}
