@@ -739,6 +739,82 @@ describe("processor", () => {
 					);
 				});
 
+				it("should apply every configuration comment in one html node", () => {
+					const code =
+						prefix +
+						[
+							"<!-- eslint-disable no-console --><!-- eslint-disable quotes -->",
+							"",
+							"```js",
+							'console.log("hi");',
+							"```",
+						].join("\n");
+					const blocks = processor.preprocess(code);
+
+					assert.strictEqual(blocks.length, 1);
+					assert.strictEqual(
+						blocks[0].text,
+						[
+							"/* eslint-disable no-console */",
+							"/* eslint-disable quotes */",
+							'console.log("hi");',
+							"",
+						].join("\n"),
+					);
+				});
+
+				it("should ignore configuration comments inside other markup", () => {
+					const code =
+						prefix +
+						[
+							"<div><!-- eslint-disable no-console --></div>",
+							"",
+							"```js",
+							'console.log("hi");',
+							"```",
+							"",
+							"<div></div><!-- eslint-disable no-console -->",
+							"",
+							"```js",
+							'console.log("hi");',
+							"```",
+						].join("\n");
+					const blocks = processor.preprocess(code);
+
+					assert.strictEqual(blocks.length, 2);
+					assert.strictEqual(
+						blocks[0].text,
+						['console.log("hi");', ""].join("\n"),
+					);
+					assert.strictEqual(
+						blocks[1].text,
+						['console.log("hi");', ""].join("\n"),
+					);
+				});
+
+				it("should keep */ in a configuration comment from ending the generated comment", () => {
+					const code =
+						prefix +
+						[
+							"<!-- eslint-disable no-console -- see src/**/*.js -->",
+							"",
+							"```js",
+							'console.log("hi");',
+							"```",
+						].join("\n");
+					const blocks = processor.preprocess(code);
+
+					assert.strictEqual(blocks.length, 1);
+					assert.strictEqual(
+						blocks[0].text,
+						[
+							"/* eslint-disable no-console -- see src/**\\/*.js */",
+							'console.log("hi");',
+							"",
+						].join("\n"),
+					);
+				});
+
 				it("should ignore configuration comments separated by a paragraph", () => {
 					const code =
 						prefix +
@@ -818,6 +894,25 @@ describe("processor", () => {
 						assert.strictEqual(
 							blocks[0].text,
 							"var answer = 6 * 7;\n",
+						);
+					});
+
+					it("should not skip a block when the comment is inside other markup", () => {
+						const code =
+							prefix +
+							[
+								"<div><!-- eslint-skip --></div>",
+								"",
+								"```js",
+								'console.log("hi");',
+								"```",
+							].join("\n");
+						const blocks = processor.preprocess(code);
+
+						assert.strictEqual(blocks.length, 1);
+						assert.strictEqual(
+							blocks[0].text,
+							'console.log("hi");\n',
 						);
 					});
 

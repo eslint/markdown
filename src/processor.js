@@ -59,40 +59,63 @@ function traverse(node, callbacks) {
 }
 
 /**
- * Extracts `eslint-*` or `global` comments from HTML comments if present.
+ * Extracts `eslint-*` or `global` comments from a leading run of HTML comments.
+ * Leading whitespace is allowed. The run stops at the first non-whitespace
+ * character that does not begin another HTML comment, so a comment buried in
+ * other markup is ignored. Text after the run is ignored.
  * @param {string} html The text content of an HTML AST node.
- * @returns {string} The comment's text without the opening and closing tags or
- *     an empty string if the text is not an ESLint HTML comment.
+ * @returns {string[]} Comment texts without the opening and closing tags.
  */
-function getComment(html) {
+function getComments(html) {
 	const commentStart = "<!--";
 	const commentEnd = "-->";
 	const regex = /^(?:eslint\b|global\s)/u;
-	let fromIndex = 0;
+	const comments = [];
+	let index = /^\s*/u.exec(html)[0].length;
 
-	while (fromIndex < html.length) {
-		const start = html.indexOf(commentStart, fromIndex);
-
-		if (start === -1) {
-			return "";
-		}
-
-		const end = html.indexOf(commentEnd, start + commentStart.length);
+	while (html.startsWith(commentStart, index)) {
+		const end = html.indexOf(commentEnd, index + commentStart.length);
 
 		if (end === -1) {
-			return "";
+			break;
 		}
 
-		const comment = html.slice(start + commentStart.length, end);
+		const comment = html.slice(index + commentStart.length, end);
 
 		if (regex.test(comment.trim())) {
-			return comment;
+			comments.push(comment);
 		}
 
-		fromIndex = end + commentEnd.length;
+		index = end + commentEnd.length;
+		index += /^\s*/u.exec(html.slice(index))[0].length;
 	}
 
-	return "";
+	return comments;
+}
+
+/**
+ * Wraps a configuration comment for the JavaScript parser.
+ * A star-slash sequence ends a block comment early. When that sequence
+ * appears after the directive, only the justification is escaped, so the
+ * directive text is unchanged. Otherwise the whole comment is escaped so
+ * the code block still parses.
+ * @param {string} comment Comment text between the HTML comment delimiters.
+ * @returns {string} A JavaScript block comment.
+ */
+function toJsComment(comment) {
+	if (!comment.includes("*/")) {
+		return `/*${comment}*/`;
+	}
+
+	const separator = /\s-{2,}\s/u.exec(comment);
+	const directiveEnd =
+		separator && !comment.slice(0, separator.index).includes("*/")
+			? separator.index
+			: 0;
+
+	return `/*${comment.slice(0, directiveEnd)}${comment
+		.slice(directiveEnd)
+		.replaceAll("*/", "*\\/")}*/`;
 }
 
 /**
@@ -101,7 +124,10 @@ function getComment(html) {
  * @returns {boolean} `true` if the node contains a configuration comment.
  */
 function containsConfigComment(node) {
-	if (node.type === "html" && getComment(/** @type {Html} */ (node).value)) {
+	if (
+		node.type === "html" &&
+		getComments(/** @type {Html} */ (node).value).length > 0
+	) {
 		return true;
 	}
 
@@ -345,7 +371,7 @@ function preprocess(sourceText, filename) {
 						return;
 					}
 
-					comments.push(`/*${comment}*/`);
+					comments.push(toJsComment(comment));
 				}
 
 				htmlComments = [];
@@ -365,10 +391,10 @@ function preprocess(sourceText, filename) {
 		 * @returns {void}
 		 */
 		html(node) {
-			const comment = getComment(node.value);
+			const comments = getComments(node.value);
 
-			if (comment) {
-				htmlComments.push(comment);
+			if (comments.length > 0) {
+				htmlComments.push(...comments);
 			} else {
 				htmlComments = [];
 			}
