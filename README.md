@@ -114,6 +114,7 @@ export default defineConfig([
 | [`no-empty-definitions`](./docs/rules/no-empty-definitions.md)                 | Disallow empty definitions                                                                        |       yes       |
 | [`no-empty-images`](./docs/rules/no-empty-images.md)                           | Disallow empty images                                                                             |       yes       |
 | [`no-empty-links`](./docs/rules/no-empty-links.md)                             | Disallow empty links                                                                              |       yes       |
+| [`no-heading-like-paragraph`](./docs/rules/no-heading-like-paragraph.md)       | Disallow paragraphs that look like ATX headings                                                   |       no        |
 | [`no-html`](./docs/rules/no-html.md)                                           | Disallow HTML tags                                                                                |       no        |
 | [`no-invalid-label-refs`](./docs/rules/no-invalid-label-refs.md)               | Disallow invalid label references                                                                 |       yes       |
 | [`no-missing-atx-heading-space`](./docs/rules/no-missing-atx-heading-space.md) | Disallow headings without a space after the hash characters                                       |       yes       |
