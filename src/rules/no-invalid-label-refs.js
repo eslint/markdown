@@ -15,7 +15,7 @@ import { illegalShorthandTailPattern } from "../util.js";
 
 /**
  * @import { Position } from "unist";
- * @import { Node, Text } from "mdast";
+ * @import { Link, Node, Text } from "mdast";
  * @import { MarkdownRuleDefinition } from "../types.js";
  * @import { MarkdownSourceCode } from "../language/markdown-source-code.js";
  * @typedef {"invalidLabelRef"} NoInvalidLabelRefsMessageIds
@@ -72,6 +72,23 @@ function isInsideIgnoredSyntax(node, offset, text) {
 
 	if (isIgnoredNode || isAutolink) {
 		return true;
+	}
+
+	if (node.type === "link" && text[start] === "[") {
+		const link = /** @type {Link} */ (node);
+
+		const lastChildEnd =
+			link.children.at(-1)?.position?.end?.offset ?? start + 1;
+
+		const linkTextClose = text.indexOf("](", lastChildEnd);
+
+		if (
+			linkTextClose !== -1 &&
+			linkTextClose < end &&
+			offset > linkTextClose
+		) {
+			return true;
+		}
 	}
 
 	if ("children" in node && Array.isArray(node.children)) {

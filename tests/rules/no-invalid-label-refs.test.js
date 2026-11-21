@@ -485,5 +485,36 @@ ruleTester.run("no-invalid-label-refs", rule, {
 				},
 			],
 		},
+
+		{
+			code: "[Compare [items](https://api.example.com/items?ids]=1) here][ ]",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: {
+						label: "Compare [items](https://api.example.com/items?ids]=1) here",
+					},
+					line: 1,
+					column: 61,
+					endLine: 1,
+					endColumn: 64,
+				},
+			],
+		},
+		{
+			code: "[Compare [items](https://api.example.com/items?ids[0]=1) here][ ]",
+			errors: [
+				{
+					messageId: "invalidLabelRef",
+					data: {
+						label: "Compare [items](https://api.example.com/items?ids[0]=1) here",
+					},
+					line: 1,
+					column: 63,
+					endLine: 1,
+					endColumn: 66,
+				},
+			],
+		},
 	],
 });
