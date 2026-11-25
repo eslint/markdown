@@ -96,6 +96,12 @@ ruleTester.run("no-duplicate-headings", rule, {
 		"# foo \\###\n# foo ###",
 		"# foo #\\##\n# foo ###",
 		"# foo \\#",
+		"# ![Sun](a.png)\n# ![Moon](a.png)",
+		"# ![Sun](a.png)\n# ![Sun](b.png)",
+		"# ![Sun,Moon](icon.png)\n# ![Sun](Moon,icon.png)",
+		"# x![a](b)\n# x][image,1:a1:b",
+		"# ![]()\n# ![](a.png)\n# ![](b.png)",
+		"# ![]()\n# ![Sun]()\n# ![Moon]()",
 		"Heading  \nHi\n===\n\nHeading\nHi\n===", // The first setext heading uses a Break node (double spaces), so the second setext heading isn't considered a duplicate.
 		{
 			code: dedent`
@@ -604,6 +610,42 @@ Heading 1
 					data: {
 						text: "Subsection A",
 					},
+				},
+			],
+		},
+		{
+			code: dedent`
+				# ![Sun](a.png)
+
+				# ![Sun](a.png)
+			`,
+			errors: [
+				{
+					messageId: "duplicateHeading",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 16,
+					data: {
+						text: "Sun",
+					},
+				},
+			],
+		},
+		{
+			code: dedent`
+				# ![]()
+
+				# ![]()
+			`,
+			errors: [
+				{
+					messageId: "duplicateHeading",
+					line: 3,
+					column: 1,
+					endLine: 3,
+					endColumn: 8,
+					data: { text: "" },
 				},
 			],
 		},
