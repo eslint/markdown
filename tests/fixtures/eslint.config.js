@@ -13,11 +13,11 @@ export default [
 			reportUnusedDisableDirectives: "off",
 		},
 		rules: {
-			"eol-last": "error",
+			"dot-notation": "error",
 			"no-console": "error",
 			"no-undef": "error",
-			quotes: "error",
-			"spaced-comment": "error",
+			"no-warning-comments": ["error", { terms: ["eslint-disable"] }],
+			yoda: "error",
 		},
 	},
 	{

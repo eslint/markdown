@@ -36,7 +36,7 @@ This is a paragraph with an inline config comment. <!-- eslint-disable-line no-c
 
 <!--
 eslint-enable no-console -- ok to use console here
--->Something something<!-- eslint-disable semi -->
+-->Something something<!-- eslint-disable yoda -->
 
 <!--
  eslint-disable-line no-console
@@ -334,7 +334,7 @@ describe("MarkdownSourceCode", () => {
 			});
 
 			assert.deepEqual(nodes[3], {
-				value: "eslint-disable semi",
+				value: "eslint-disable yoda",
 				position: {
 					start: { line: 19, column: 23, offset: 356 },
 					end: { line: 19, column: 51, offset: 384 },
@@ -427,7 +427,7 @@ describe("MarkdownSourceCode", () => {
 			);
 
 			assert.strictEqual(directives[3].type, "disable");
-			assert.strictEqual(directives[3].value, "semi");
+			assert.strictEqual(directives[3].value, "yoda");
 			assert.strictEqual(directives[3].justification, "");
 
 			assert.strictEqual(directives[4].type, "disable");
@@ -525,12 +525,12 @@ describe("MarkdownSourceCode", () => {
 				[
 					1,
 					"html",
-					"<!--\neslint-enable no-console -- ok to use console here\n-->Something something<!-- eslint-disable semi -->",
+					"<!--\neslint-enable no-console -- ok to use console here\n-->Something something<!-- eslint-disable yoda -->",
 				],
 				[
 					2,
 					"html",
-					"<!--\neslint-enable no-console -- ok to use console here\n-->Something something<!-- eslint-disable semi -->",
+					"<!--\neslint-enable no-console -- ok to use console here\n-->Something something<!-- eslint-disable yoda -->",
 				],
 				[1, "html", "<!--\n eslint-disable-line no-console\n -->"],
 				[2, "html", "<!--\n eslint-disable-line no-console\n -->"],

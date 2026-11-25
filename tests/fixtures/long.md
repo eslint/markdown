@@ -18,24 +18,24 @@ function foo() {
 ```
 
 <!-- global process -->
-<!-- eslint-disable eol-last, quotes -->
+<!-- eslint-disable yoda, dot-notation -->
 
 ```js
-console.log(process.version);
+console.log("linux" === process["platform"]);
 ```
 
 How about some JSX?
 
 <!--
-    eslint quotes: [
+    eslint yoda: [
         "error",
-        "single"
+        "always"
     ]
 -->
 <!--eslint-disable no-console-->
 
 ```js
-console.log("Error!");
+console.log(window.length === 0);
 ```
 
     I may be a code block, but don't lint me!
