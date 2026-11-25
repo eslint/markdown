@@ -2,16 +2,16 @@ import { defineConfig } from "eslint/config";
 import js from "@eslint/js";
 import markdown from "../../src/index.js";
 import globals from "globals";
-import reactPlugin from "eslint-plugin-react";
+import reactPlugin from "@eslint-react/eslint-plugin";
 
 export default defineConfig([
 	js.configs.recommended,
 	markdown.configs.processor,
-	reactPlugin.configs.flat.recommended,
+	reactPlugin.configs.recommended,
 	{
 		settings: {
-			react: {
-				version: "16.8.0",
+			"react-x": {
+				version: "19.3.0",
 			},
 		},
 		languageOptions: {
