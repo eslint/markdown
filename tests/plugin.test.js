@@ -215,8 +215,8 @@ describe("LegacyESLint", () => {
 		it("should emit correct columns for a message spanning lines with different indentation", async () => {
 			const code = [
 				"> ```js",
-				"> var x = 'Hello, \\",
-				">world!';",
+				"> var x = 0 ===",
+				">screenX;",
 				"> ```",
 			].join("\n");
 			const results = await eslint.lintText(code, {
@@ -226,7 +226,7 @@ describe("LegacyESLint", () => {
 			assert.strictEqual(results[0].messages.length, 1);
 			assert.strictEqual(
 				results[0].messages[0].message,
-				"Strings must use doublequote.",
+				"Expected literal to be on the right side of ===.",
 			);
 			assert.strictEqual(results[0].messages[0].line, 2);
 			assert.strictEqual(results[0].messages[0].column, 11);
@@ -267,13 +267,13 @@ describe("LegacyESLint", () => {
 			const code = [
 				"# Hello, world!",
 				"",
-				"<!-- eslint-disable quotes -->",
-				"<!-- eslint-disable semi -->",
+				"<!-- eslint-disable yoda -->",
+				"<!-- eslint-disable no-console -->",
 				"",
 				"```js",
 				"var bar = baz",
 				"",
-				"var str = 'single quotes'",
+				"console.log(0 === window.length)",
 				"",
 				"var foo = blah",
 				"```",
@@ -379,7 +379,7 @@ describe("LegacyESLint", () => {
 			assert.strictEqual(results[0].messages[2].column, 1);
 			assert.strictEqual(
 				results[0].messages[3].message,
-				"Strings must use singlequote.",
+				"Expected literal to be on the left side of ===.",
 			);
 			assert.strictEqual(results[0].messages[3].line, 38);
 			assert.strictEqual(results[0].messages[3].column, 13);
@@ -412,7 +412,7 @@ describe("LegacyESLint", () => {
 				"",
 				"```js",
 				"// test.md/0_0.markdown/0_0.js",
-				"console.log('single quotes')",
+				"console.log(0 === window.length)",
 				"```",
 				"````",
 			].join("\n");
@@ -432,7 +432,7 @@ describe("LegacyESLint", () => {
 			assert.strictEqual(results[0].messages[0].line, 10);
 			assert.strictEqual(
 				results[0].messages[1].message,
-				"Strings must use doublequote.",
+				"Expected literal to be on the right side of ===.",
 			);
 			assert.strictEqual(results[0].messages[1].line, 10);
 		});
@@ -440,20 +440,20 @@ describe("LegacyESLint", () => {
 		describe("configuration comments", () => {
 			it("apply only to the code block immediately following", async () => {
 				const code = [
-					'<!-- eslint "quotes": ["error", "single"] -->',
+					'<!-- eslint "yoda": ["error", "always"] -->',
 					"<!-- eslint-disable no-console -->",
 					"",
 					"```js",
-					"var single = 'single';",
+					"var single = 1 === window.length;",
 					"console.log(single);",
-					'var double = "double";',
+					"var double = window.length === 2;",
 					"console.log(double);",
 					"```",
 					"",
 					"```js",
-					"var single = 'single';",
+					"var single = 1 === window.length;",
 					"console.log(single);",
-					'var double = "double";',
+					"var double = window.length === 2;",
 					"console.log(double);",
 					"```",
 				].join("\n");
@@ -465,12 +465,12 @@ describe("LegacyESLint", () => {
 				assert.strictEqual(results[0].messages.length, 4);
 				assert.strictEqual(
 					results[0].messages[0].message,
-					"Strings must use singlequote.",
+					"Expected literal to be on the left side of ===.",
 				);
 				assert.strictEqual(results[0].messages[0].line, 7);
 				assert.strictEqual(
 					results[0].messages[1].message,
-					"Strings must use doublequote.",
+					"Expected literal to be on the right side of ===.",
 				);
 				assert.strictEqual(results[0].messages[1].line, 12);
 				assert.strictEqual(
@@ -488,7 +488,7 @@ describe("LegacyESLint", () => {
 			// https://github.com/eslint/markdown/issues/78
 			it("preserves leading empty lines", async () => {
 				const code = [
-					"<!-- eslint lines-around-directive: ['error', 'never'] -->",
+					"<!-- eslint no-restricted-syntax: ['error', 'Program > :first-child[directive][loc.start.line>2]'] -->",
 					"",
 					"```js",
 					"",
@@ -502,8 +502,8 @@ describe("LegacyESLint", () => {
 				assert.strictEqual(results.length, 1);
 				assert.strictEqual(results[0].messages.length, 1);
 				assert.strictEqual(
-					results[0].messages[0].message,
-					'Unexpected newline before "use strict" directive.',
+					results[0].messages[0].ruleId,
+					"no-restricted-syntax",
 				);
 				assert.strictEqual(results[0].messages[0].line, 5);
 			});
@@ -550,11 +550,11 @@ describe("LegacyESLint", () => {
 					const code = [
 						"# Title",
 						"",
-						"<!-- eslint-disable quotes -->",
+						"<!-- eslint-disable yoda -->",
 						"<!-- eslint-disable no-console -->",
 						"",
 						"```js",
-						"var message = 'single quotes';",
+						"var single = 1 === window.length;",
 						"```",
 					].join("\n");
 
@@ -1183,7 +1183,7 @@ describe("LegacyESLint", () => {
 					"This is Markdown.",
 					"",
 					"```js",
-					"console.log('Hello, world!')",
+					'console["log"]("Hello, world!")',
 					"```",
 				].join("\n");
 				const expected = [
@@ -1206,8 +1206,8 @@ describe("LegacyESLint", () => {
 					"This is Markdown.",
 					"",
 					"```js",
-					"console.log('Hello, world!')",
-					"console.log('Hello, world!')",
+					'console["log"]("Hello, world!")',
+					'console["log"]("Hello, world!")',
 					"```",
 				].join("\n");
 				const expected = [
@@ -1231,11 +1231,11 @@ describe("LegacyESLint", () => {
 					"This is Markdown.",
 					"",
 					"```js",
-					"console.log('Hello, world!')",
+					'console["log"]("Hello, world!")',
 					"```",
 					"",
 					"```js",
-					"console.log('Hello, world!')",
+					'console["log"]("Hello, world!")',
 					"```",
 				].join("\n");
 				const expected = [
@@ -1263,7 +1263,7 @@ describe("LegacyESLint", () => {
 					"",
 					"```js",
 					"function test() {",
-					"    console.log('Hello, world!')",
+					'    console["log"]("Hello, world!")',
 					"}",
 					"```",
 				].join("\n");
@@ -1290,7 +1290,7 @@ describe("LegacyESLint", () => {
 					"",
 					"```js",
 					"function test() {",
-					"\tconsole.log('Hello, world!')",
+					'\tconsole["log"]("Hello, world!")',
 					"}",
 					"```",
 				].join("\n");
@@ -1316,14 +1316,14 @@ describe("LegacyESLint", () => {
 					"This is Markdown.",
 					"",
 					"```js",
-					"'use strict'",
+					"0 === window.length",
 					"```",
 				].join("\n");
 				const expected = [
 					"This is Markdown.",
 					"",
 					"```js",
-					'"use strict"',
+					"window.length === 0",
 					"```",
 				].join("\n");
 				const results = await eslint.lintText(input, {
@@ -1339,7 +1339,7 @@ describe("LegacyESLint", () => {
 					"This is Markdown.",
 					"",
 					"````js",
-					"console.log('Hello, world!')",
+					'console["log"]("Hello, world!")',
 					"````",
 				].join("\n");
 				const expected = [
@@ -1359,14 +1359,14 @@ describe("LegacyESLint", () => {
 
 			it("with configuration comments", async () => {
 				const input = [
-					"<!-- eslint semi: 2 -->",
+					"<!-- eslint no-unused-labels: 2 -->",
 					"",
 					"```js",
-					"console.log('Hello, world!')",
+					'log: console["log"]("Hello, world!");',
 					"```",
 				].join("\n");
 				const expected = [
-					"<!-- eslint semi: 2 -->",
+					"<!-- eslint no-unused-labels: 2 -->",
 					"",
 					"```js",
 					'console.log("Hello, world!");',
@@ -1385,7 +1385,7 @@ describe("LegacyESLint", () => {
 					"- Inside a list",
 					"",
 					"  ```js",
-					"  console.log('Hello, world!')",
+					'  console["log"]("Hello, world!")',
 					"  ```",
 				].join("\n");
 				const expected = [
@@ -1408,11 +1408,11 @@ describe("LegacyESLint", () => {
 					"- Inside a list",
 					"",
 					"   ```js",
-					"   console.log('Hello, world!')",
-					"   console.log('Hello, world!')",
+					'   console["log"]("Hello, world!")',
+					'   console["log"]("Hello, world!")',
 					"   ",
 					"   var obj = {",
-					"     hello: 'value'",
+					"     hello: window['name']",
 					"   }",
 					"   ```",
 				].join("\n");
@@ -1424,7 +1424,7 @@ describe("LegacyESLint", () => {
 					'   console.log("Hello, world!")',
 					"   ",
 					"   var obj = {",
-					'     hello: "value"',
+					"     hello: window.name",
 					"   }",
 					"   ```",
 				].join("\n");
@@ -1442,19 +1442,19 @@ describe("LegacyESLint", () => {
 					"",
 					"```js",
 					"console.log('Hello, \\",
-					"world!')",
+					"world!' === window.name)",
 					"console.log('Hello, \\",
-					"world!')",
+					"world!' === window.name)",
 					"```",
 				].join("\r\n");
 				const expected = [
 					"This is Markdown.",
 					"",
 					"```js",
-					'console.log("Hello, \\',
-					'world!")',
-					'console.log("Hello, \\',
-					'world!")',
+					"console.log(window.name === 'Hello, \\",
+					"world!')",
+					"console.log(window.name === 'Hello, \\",
+					"world!')",
 					"```",
 				].join("\r\n");
 				const results = await eslint.lintText(input, {
@@ -1472,8 +1472,8 @@ describe("LegacyESLint", () => {
 						"This is Markdown.",
 						"",
 						" ```js",
-						" console.log('Hello, world!')",
-						" console.log('Hello, world!')",
+						' console["log"]("Hello, world!")',
+						' console["log"]("Hello, world!")',
 						" ```",
 					].join("\n");
 					const expected = [
@@ -1497,8 +1497,8 @@ describe("LegacyESLint", () => {
 						"This is Markdown.",
 						"",
 						"  ```js",
-						"  console.log('Hello, world!')",
-						"  console.log('Hello, world!')",
+						'  console["log"]("Hello, world!")',
+						'  console["log"]("Hello, world!")',
 						"  ```",
 					].join("\n");
 					const expected = [
@@ -1522,8 +1522,8 @@ describe("LegacyESLint", () => {
 						"This is Markdown.",
 						"",
 						"   ```js",
-						"   console.log('Hello, world!')",
-						"   console.log('Hello, world!')",
+						'   console["log"]("Hello, world!")',
+						'   console["log"]("Hello, world!")',
 						"   ```",
 					].join("\n");
 					const expected = [
@@ -1547,8 +1547,8 @@ describe("LegacyESLint", () => {
 						"This is Markdown.",
 						"",
 						" ```js",
-						" console.log('Hello, world!')",
-						" console.log('Hello, world!')",
+						' console["log"]("Hello, world!")',
+						' console["log"]("Hello, world!")',
 						"   ```",
 					].join("\n");
 					const expected = [
@@ -1572,9 +1572,9 @@ describe("LegacyESLint", () => {
 						"This is Markdown.",
 						"",
 						"   ```js",
-						" console.log('Hello, world!')",
-						"  console.log('Hello, world!')",
-						"     console.log('Hello, world!')",
+						' console["log"]("Hello, world!")',
+						'  console["log"]("Hello, world!")',
+						'     console["log"]("Hello, world!")',
 						"   ```",
 					].join("\n");
 					const expected = [
@@ -1600,19 +1600,19 @@ describe("LegacyESLint", () => {
 						"",
 						"   ```js",
 						"   console.log('Hello, \\",
-						"   world!')",
+						"   world!' === window.name)",
 						"   console.log('Hello, \\",
-						"   world!')",
+						"   world!' === window.name)",
 						"   ```",
 					].join("\n");
 					const expected = [
 						"This is Markdown.",
 						"",
 						"   ```js",
-						'   console.log("Hello, \\',
-						'   world!")',
-						'   console.log("Hello, \\',
-						'   world!")',
+						"   console.log(window.name === 'Hello, \\",
+						"   world!')",
+						"   console.log(window.name === 'Hello, \\",
+						"   world!')",
 						"   ```",
 					].join("\n");
 					const results = await eslint.lintText(input, {
@@ -1626,10 +1626,10 @@ describe("LegacyESLint", () => {
 				it("underindented multiline autofix", async () => {
 					const input = [
 						"   ```js",
-						" console.log('Hello, world!')",
+						' console["log"]("Hello, world!")',
 						"  console.log('Hello, \\",
-						"  world!')",
-						"     console.log('Hello, world!')",
+						"  world!' === window.name)",
+						'     console["log"]("Hello, world!")',
 						"   ```",
 					].join("\n");
 
@@ -1640,8 +1640,8 @@ describe("LegacyESLint", () => {
 					const expected = [
 						"   ```js",
 						' console.log("Hello, world!")',
-						'  console.log("Hello, \\',
-						'   world!")',
+						"  console.log(window.name === 'Hello, \\",
+						"   world!')",
 						'     console.log("Hello, world!")',
 						"   ```",
 					].join("\n");
@@ -1659,19 +1659,19 @@ describe("LegacyESLint", () => {
 						"",
 						">   ```js",
 						">   console.log('Hello, \\",
-						">   world!')",
+						">   world!' === window.name)",
 						">   console.log('Hello, \\",
-						">   world!')",
+						">   world!' === window.name)",
 						">   ```",
 					].join("\n");
 					const expected = [
 						"This is Markdown.",
 						"",
 						">   ```js",
-						'>   console.log("Hello, \\',
-						'>   world!")',
-						'>   console.log("Hello, \\',
-						'>   world!")',
+						">   console.log(window.name === 'Hello, \\",
+						">   world!')",
+						">   console.log(window.name === 'Hello, \\",
+						">   world!')",
 						">   ```",
 					].join("\n");
 					const results = await eslint.lintText(input, {
@@ -1691,9 +1691,9 @@ describe("LegacyESLint", () => {
 						"> >   ```js",
 						"> >  console.log('Hello, \\",
 						"> > new\\",
-						"> > world!')",
+						"> > world!' === window.name)",
 						"> >  console.log('Hello, \\",
-						"> >    world!')",
+						"> >    world!' === window.name)",
 						"> >   ```",
 					].join("\n");
 
@@ -1707,11 +1707,11 @@ describe("LegacyESLint", () => {
 						"> This is a nested blockquote.",
 						">",
 						"> >   ```js",
-						'> >  console.log("Hello, \\',
+						"> >  console.log(window.name === 'Hello, \\",
 						"> >   new\\",
-						'> >   world!")',
-						'> >  console.log("Hello, \\',
-						'> >    world!")',
+						"> >   world!')",
+						"> >  console.log(window.name === 'Hello, \\",
+						"> >    world!')",
 						"> >   ```",
 					].join("\n");
 					const results = await eslint.lintText(input, {
@@ -1726,18 +1726,18 @@ describe("LegacyESLint", () => {
 					const input = [
 						"This is Markdown.",
 						"",
-						"<!-- eslint semi: 2 -->",
+						"<!-- eslint no-unused-labels: 2 -->",
 						"<!-- global foo: true -->",
 						"",
 						" ```js",
-						" console.log('Hello, world!')",
-						" console.log('Hello, world!')",
+						' log: console["log"]("Hello, world!");',
+						' log: console["log"]("Hello, world!");',
 						" ```",
 					].join("\n");
 					const expected = [
 						"This is Markdown.",
 						"",
-						"<!-- eslint semi: 2 -->",
+						"<!-- eslint no-unused-labels: 2 -->",
 						"<!-- global foo: true -->",
 						"",
 						" ```js",
@@ -1757,19 +1757,19 @@ describe("LegacyESLint", () => {
 					const input = [
 						"This is Markdown.",
 						"",
-						"<!-- eslint semi: 2 -->",
+						"<!-- eslint no-unused-labels: 2 -->",
 						"<!-- global foo: true -->",
 						"",
 						"  ```js",
-						" console.log('Hello, world!')",
-						"  console.log('Hello, world!')",
-						"   console.log('Hello, world!')",
+						' log: console["log"]("Hello, world!");',
+						'  log: console["log"]("Hello, world!");',
+						'   log: console["log"]("Hello, world!");',
 						"  ```",
 					].join("\n");
 					const expected = [
 						"This is Markdown.",
 						"",
-						"<!-- eslint semi: 2 -->",
+						"<!-- eslint no-unused-labels: 2 -->",
 						"<!-- global foo: true -->",
 						"",
 						"  ```js",
@@ -1792,8 +1792,8 @@ describe("LegacyESLint", () => {
 							"- This is a Markdown list.",
 							"",
 							"  ```js",
-							"  console.log('Hello, world!')",
-							"  console.log('Hello, world!')",
+							'  console["log"]("Hello, world!")',
+							'  console["log"]("Hello, world!")',
 							"  ```",
 						].join("\n");
 						const expected = [
@@ -1817,8 +1817,8 @@ describe("LegacyESLint", () => {
 							"- This is a Markdown list.",
 							"",
 							"   ```js",
-							"   console.log('Hello, world!')",
-							"   console.log('Hello, world!')",
+							'   console["log"]("Hello, world!")',
+							'   console["log"]("Hello, world!")',
 							"   ```",
 						].join("\n");
 						const expected = [
@@ -1843,29 +1843,29 @@ describe("LegacyESLint", () => {
 				const input = [
 					"## Hello!",
 					"",
-					"<!-- eslint semi: 2 -->",
+					"<!-- eslint no-unused-labels: 2 -->",
 					"",
 					"```js",
 					"var obj = {",
-					"  some: 'value'",
+					"  some: window['name']",
 					"}",
 					"",
-					"console.log('opop');",
+					'console["log"]("opop");',
 					"",
 					"function hello() {",
-					"  return false",
+					"  done: return false;",
 					"};",
 					"```",
 				].join("\n");
 				const expected = [
 					"## Hello!",
 					"",
-					"<!-- eslint semi: 2 -->",
+					"<!-- eslint no-unused-labels: 2 -->",
 					"",
 					"```js",
 					"var obj = {",
-					'  some: "value"',
-					"};",
+					"  some: window.name",
+					"}",
 					"",
 					'console.log("opop");',
 					"",
@@ -2031,8 +2031,8 @@ describe("FlatESLint", () => {
 		it("should emit correct columns for a message spanning lines with different indentation", async () => {
 			const code = [
 				"> ```js",
-				"> var x = 'Hello, \\",
-				">world!';",
+				"> var x = 0 ===",
+				">screenX;",
 				"> ```",
 			].join("\n");
 			const results = await eslint.lintText(code, {
@@ -2042,7 +2042,7 @@ describe("FlatESLint", () => {
 			assert.strictEqual(results[0].messages.length, 1);
 			assert.strictEqual(
 				results[0].messages[0].message,
-				"Strings must use doublequote.",
+				"Expected literal to be on the right side of ===.",
 			);
 			assert.strictEqual(results[0].messages[0].line, 2);
 			assert.strictEqual(results[0].messages[0].column, 11);
@@ -2083,13 +2083,13 @@ describe("FlatESLint", () => {
 			const code = [
 				"# Hello, world!",
 				"",
-				"<!-- eslint-disable quotes -->",
-				"<!-- eslint-disable semi -->",
+				"<!-- eslint-disable yoda -->",
+				"<!-- eslint-disable no-console -->",
 				"",
 				"```js",
 				"var bar = baz",
 				"",
-				"var str = 'single quotes'",
+				"console.log(0 === window.length)",
 				"",
 				"var foo = blah",
 				"```",
@@ -2195,7 +2195,7 @@ describe("FlatESLint", () => {
 			assert.strictEqual(results[0].messages[2].column, 1);
 			assert.strictEqual(
 				results[0].messages[3].message,
-				"Strings must use singlequote.",
+				"Expected literal to be on the left side of ===.",
 			);
 			assert.strictEqual(results[0].messages[3].line, 38);
 			assert.strictEqual(results[0].messages[3].column, 13);
@@ -2243,7 +2243,7 @@ describe("FlatESLint", () => {
 				"",
 				"```js",
 				"// test.md/0_0.markdown/0_0.js",
-				"console.log('single quotes')",
+				"console.log(0 === window.length)",
 				"```",
 				"````",
 			].join("\n");
@@ -2263,7 +2263,7 @@ describe("FlatESLint", () => {
 			assert.strictEqual(results[0].messages[0].line, 10);
 			assert.strictEqual(
 				results[0].messages[1].message,
-				"Strings must use doublequote.",
+				"Expected literal to be on the right side of ===.",
 			);
 			assert.strictEqual(results[0].messages[1].line, 10);
 		});
@@ -2271,20 +2271,20 @@ describe("FlatESLint", () => {
 		describe("configuration comments", () => {
 			it("apply only to the code block immediately following", async () => {
 				const code = [
-					'<!-- eslint "quotes": ["error", "single"] -->',
+					'<!-- eslint "yoda": ["error", "always"] -->',
 					"<!-- eslint-disable no-console -->",
 					"",
 					"```js",
-					"var single = 'single';",
+					"var single = 1 === window.length;",
 					"console.log(single);",
-					'var double = "double";',
+					"var double = window.length === 2;",
 					"console.log(double);",
 					"```",
 					"",
 					"```js",
-					"var single = 'single';",
+					"var single = 1 === window.length;",
 					"console.log(single);",
-					'var double = "double";',
+					"var double = window.length === 2;",
 					"console.log(double);",
 					"```",
 				].join("\n");
@@ -2296,12 +2296,12 @@ describe("FlatESLint", () => {
 				assert.strictEqual(results[0].messages.length, 4);
 				assert.strictEqual(
 					results[0].messages[0].message,
-					"Strings must use singlequote.",
+					"Expected literal to be on the left side of ===.",
 				);
 				assert.strictEqual(results[0].messages[0].line, 7);
 				assert.strictEqual(
 					results[0].messages[1].message,
-					"Strings must use doublequote.",
+					"Expected literal to be on the right side of ===.",
 				);
 				assert.strictEqual(results[0].messages[1].line, 12);
 				assert.strictEqual(
@@ -2319,7 +2319,7 @@ describe("FlatESLint", () => {
 			// https://github.com/eslint/markdown/issues/78
 			it("preserves leading empty lines", async () => {
 				const code = [
-					"<!-- eslint lines-around-directive: ['error', 'never'] -->",
+					"<!-- eslint no-restricted-syntax: ['error', 'Program > :first-child[directive][loc.start.line>2]'] -->",
 					"",
 					"```js",
 					"",
@@ -2333,8 +2333,8 @@ describe("FlatESLint", () => {
 				assert.strictEqual(results.length, 1);
 				assert.strictEqual(results[0].messages.length, 1);
 				assert.strictEqual(
-					results[0].messages[0].message,
-					'Unexpected newline before "use strict" directive.',
+					results[0].messages[0].ruleId,
+					"no-restricted-syntax",
 				);
 				assert.strictEqual(results[0].messages[0].line, 5);
 			});
@@ -2385,11 +2385,11 @@ describe("FlatESLint", () => {
 					const code = [
 						"# Title",
 						"",
-						"<!-- eslint-disable quotes -->",
+						"<!-- eslint-disable yoda -->",
 						"<!-- eslint-disable no-console -->",
 						"",
 						"```js",
-						"const message = 'single quotes';",
+						"const single = 1 === window.length;",
 						"```",
 					].join("\n");
 
@@ -3022,7 +3022,7 @@ describe("FlatESLint", () => {
 					"This is Markdown.",
 					"",
 					"```js",
-					"console.log('Hello, world!')",
+					'console["log"]("Hello, world!")',
 					"```",
 				].join("\n");
 				const expected = [
@@ -3045,8 +3045,8 @@ describe("FlatESLint", () => {
 					"This is Markdown.",
 					"",
 					"```js",
-					"console.log('Hello, world!')",
-					"console.log('Hello, world!')",
+					'console["log"]("Hello, world!")',
+					'console["log"]("Hello, world!")',
 					"```",
 				].join("\n");
 				const expected = [
@@ -3070,11 +3070,11 @@ describe("FlatESLint", () => {
 					"This is Markdown.",
 					"",
 					"```js",
-					"console.log('Hello, world!')",
+					'console["log"]("Hello, world!")',
 					"```",
 					"",
 					"```js",
-					"console.log('Hello, world!')",
+					'console["log"]("Hello, world!")',
 					"```",
 				].join("\n");
 				const expected = [
@@ -3102,7 +3102,7 @@ describe("FlatESLint", () => {
 					"",
 					"```js",
 					"function test() {",
-					"    console.log('Hello, world!')",
+					'    console["log"]("Hello, world!")',
 					"}",
 					"```",
 				].join("\n");
@@ -3129,7 +3129,7 @@ describe("FlatESLint", () => {
 					"",
 					"```js",
 					"function test() {",
-					"\tconsole.log('Hello, world!')",
+					'\tconsole["log"]("Hello, world!")',
 					"}",
 					"```",
 				].join("\n");
@@ -3155,14 +3155,14 @@ describe("FlatESLint", () => {
 					"This is Markdown.",
 					"",
 					"```js",
-					"'use strict'",
+					"0 === window.length",
 					"```",
 				].join("\n");
 				const expected = [
 					"This is Markdown.",
 					"",
 					"```js",
-					'"use strict"',
+					"window.length === 0",
 					"```",
 				].join("\n");
 				const results = await eslint.lintText(input, {
@@ -3178,7 +3178,7 @@ describe("FlatESLint", () => {
 					"This is Markdown.",
 					"",
 					"````js",
-					"console.log('Hello, world!')",
+					'console["log"]("Hello, world!")',
 					"````",
 				].join("\n");
 				const expected = [
@@ -3198,14 +3198,14 @@ describe("FlatESLint", () => {
 
 			it("with configuration comments", async () => {
 				const input = [
-					"<!-- eslint semi: 2 -->",
+					"<!-- eslint no-unused-labels: 2 -->",
 					"",
 					"```js",
-					"console.log('Hello, world!')",
+					'log: console["log"]("Hello, world!");',
 					"```",
 				].join("\n");
 				const expected = [
-					"<!-- eslint semi: 2 -->",
+					"<!-- eslint no-unused-labels: 2 -->",
 					"",
 					"```js",
 					'console.log("Hello, world!");',
@@ -3224,7 +3224,7 @@ describe("FlatESLint", () => {
 					"- Inside a list",
 					"",
 					"  ```js",
-					"  console.log('Hello, world!')",
+					'  console["log"]("Hello, world!")',
 					"  ```",
 				].join("\n");
 				const expected = [
@@ -3247,11 +3247,11 @@ describe("FlatESLint", () => {
 					"- Inside a list",
 					"",
 					"   ```js",
-					"   console.log('Hello, world!')",
-					"   console.log('Hello, world!')",
+					'   console["log"]("Hello, world!")',
+					'   console["log"]("Hello, world!")',
 					"   ",
 					"   var obj = {",
-					"     hello: 'value'",
+					"     hello: window['name']",
 					"   }",
 					"   ```",
 				].join("\n");
@@ -3263,7 +3263,7 @@ describe("FlatESLint", () => {
 					'   console.log("Hello, world!")',
 					"   ",
 					"   var obj = {",
-					'     hello: "value"',
+					"     hello: window.name",
 					"   }",
 					"   ```",
 				].join("\n");
@@ -3281,19 +3281,19 @@ describe("FlatESLint", () => {
 					"",
 					"```js",
 					"console.log('Hello, \\",
-					"world!')",
+					"world!' === window.name)",
 					"console.log('Hello, \\",
-					"world!')",
+					"world!' === window.name)",
 					"```",
 				].join("\r\n");
 				const expected = [
 					"This is Markdown.",
 					"",
 					"```js",
-					'console.log("Hello, \\',
-					'world!")',
-					'console.log("Hello, \\',
-					'world!")',
+					"console.log(window.name === 'Hello, \\",
+					"world!')",
+					"console.log(window.name === 'Hello, \\",
+					"world!')",
 					"```",
 				].join("\r\n");
 				const results = await eslint.lintText(input, {
@@ -3311,8 +3311,8 @@ describe("FlatESLint", () => {
 						"This is Markdown.",
 						"",
 						" ```js",
-						" console.log('Hello, world!')",
-						" console.log('Hello, world!')",
+						' console["log"]("Hello, world!")',
+						' console["log"]("Hello, world!")',
 						" ```",
 					].join("\n");
 					const expected = [
@@ -3336,8 +3336,8 @@ describe("FlatESLint", () => {
 						"This is Markdown.",
 						"",
 						"  ```js",
-						"  console.log('Hello, world!')",
-						"  console.log('Hello, world!')",
+						'  console["log"]("Hello, world!")',
+						'  console["log"]("Hello, world!")',
 						"  ```",
 					].join("\n");
 					const expected = [
@@ -3361,8 +3361,8 @@ describe("FlatESLint", () => {
 						"This is Markdown.",
 						"",
 						"   ```js",
-						"   console.log('Hello, world!')",
-						"   console.log('Hello, world!')",
+						'   console["log"]("Hello, world!")',
+						'   console["log"]("Hello, world!")',
 						"   ```",
 					].join("\n");
 					const expected = [
@@ -3386,8 +3386,8 @@ describe("FlatESLint", () => {
 						"This is Markdown.",
 						"",
 						" ```js",
-						" console.log('Hello, world!')",
-						" console.log('Hello, world!')",
+						' console["log"]("Hello, world!")',
+						' console["log"]("Hello, world!")',
 						"   ```",
 					].join("\n");
 					const expected = [
@@ -3411,9 +3411,9 @@ describe("FlatESLint", () => {
 						"This is Markdown.",
 						"",
 						"   ```js",
-						" console.log('Hello, world!')",
-						"  console.log('Hello, world!')",
-						"     console.log('Hello, world!')",
+						' console["log"]("Hello, world!")',
+						'  console["log"]("Hello, world!")',
+						'     console["log"]("Hello, world!")',
 						"   ```",
 					].join("\n");
 					const expected = [
@@ -3439,19 +3439,19 @@ describe("FlatESLint", () => {
 						"",
 						"   ```js",
 						"   console.log('Hello, \\",
-						"   world!')",
+						"   world!' === window.name)",
 						"   console.log('Hello, \\",
-						"   world!')",
+						"   world!' === window.name)",
 						"   ```",
 					].join("\n");
 					const expected = [
 						"This is Markdown.",
 						"",
 						"   ```js",
-						'   console.log("Hello, \\',
-						'   world!")',
-						'   console.log("Hello, \\',
-						'   world!")',
+						"   console.log(window.name === 'Hello, \\",
+						"   world!')",
+						"   console.log(window.name === 'Hello, \\",
+						"   world!')",
 						"   ```",
 					].join("\n");
 					const results = await eslint.lintText(input, {
@@ -3465,10 +3465,10 @@ describe("FlatESLint", () => {
 				it("underindented multiline autofix", async () => {
 					const input = [
 						"   ```js",
-						" console.log('Hello, world!')",
+						' console["log"]("Hello, world!")',
 						"  console.log('Hello, \\",
-						"  world!')",
-						"     console.log('Hello, world!')",
+						"  world!' === window.name)",
+						'     console["log"]("Hello, world!")',
 						"   ```",
 					].join("\n");
 
@@ -3479,8 +3479,8 @@ describe("FlatESLint", () => {
 					const expected = [
 						"   ```js",
 						' console.log("Hello, world!")',
-						'  console.log("Hello, \\',
-						'   world!")',
+						"  console.log(window.name === 'Hello, \\",
+						"   world!')",
 						'     console.log("Hello, world!")',
 						"   ```",
 					].join("\n");
@@ -3498,19 +3498,19 @@ describe("FlatESLint", () => {
 						"",
 						">   ```js",
 						">   console.log('Hello, \\",
-						">   world!')",
+						">   world!' === window.name)",
 						">   console.log('Hello, \\",
-						">   world!')",
+						">   world!' === window.name)",
 						">   ```",
 					].join("\n");
 					const expected = [
 						"This is Markdown.",
 						"",
 						">   ```js",
-						'>   console.log("Hello, \\',
-						'>   world!")',
-						'>   console.log("Hello, \\',
-						'>   world!")',
+						">   console.log(window.name === 'Hello, \\",
+						">   world!')",
+						">   console.log(window.name === 'Hello, \\",
+						">   world!')",
 						">   ```",
 					].join("\n");
 					const results = await eslint.lintText(input, {
@@ -3530,9 +3530,9 @@ describe("FlatESLint", () => {
 						"> >   ```js",
 						"> >  console.log('Hello, \\",
 						"> > new\\",
-						"> > world!')",
+						"> > world!' === window.name)",
 						"> >  console.log('Hello, \\",
-						"> >    world!')",
+						"> >    world!' === window.name)",
 						"> >   ```",
 					].join("\n");
 
@@ -3546,11 +3546,11 @@ describe("FlatESLint", () => {
 						"> This is a nested blockquote.",
 						">",
 						"> >   ```js",
-						'> >  console.log("Hello, \\',
+						"> >  console.log(window.name === 'Hello, \\",
 						"> >   new\\",
-						'> >   world!")',
-						'> >  console.log("Hello, \\',
-						'> >    world!")',
+						"> >   world!')",
+						"> >  console.log(window.name === 'Hello, \\",
+						"> >    world!')",
 						"> >   ```",
 					].join("\n");
 					const results = await eslint.lintText(input, {
@@ -3565,18 +3565,18 @@ describe("FlatESLint", () => {
 					const input = [
 						"This is Markdown.",
 						"",
-						"<!-- eslint semi: 2 -->",
+						"<!-- eslint no-unused-labels: 2 -->",
 						"<!-- global foo: true -->",
 						"",
 						" ```js",
-						" console.log('Hello, world!')",
-						" console.log('Hello, world!')",
+						' log: console["log"]("Hello, world!");',
+						' log: console["log"]("Hello, world!");',
 						" ```",
 					].join("\n");
 					const expected = [
 						"This is Markdown.",
 						"",
-						"<!-- eslint semi: 2 -->",
+						"<!-- eslint no-unused-labels: 2 -->",
 						"<!-- global foo: true -->",
 						"",
 						" ```js",
@@ -3596,19 +3596,19 @@ describe("FlatESLint", () => {
 					const input = [
 						"This is Markdown.",
 						"",
-						"<!-- eslint semi: 2 -->",
+						"<!-- eslint no-unused-labels: 2 -->",
 						"<!-- global foo: true -->",
 						"",
 						"  ```js",
-						" console.log('Hello, world!')",
-						"  console.log('Hello, world!')",
-						"   console.log('Hello, world!')",
+						' log: console["log"]("Hello, world!");',
+						'  log: console["log"]("Hello, world!");',
+						'   log: console["log"]("Hello, world!");',
 						"  ```",
 					].join("\n");
 					const expected = [
 						"This is Markdown.",
 						"",
-						"<!-- eslint semi: 2 -->",
+						"<!-- eslint no-unused-labels: 2 -->",
 						"<!-- global foo: true -->",
 						"",
 						"  ```js",
@@ -3631,8 +3631,8 @@ describe("FlatESLint", () => {
 							"- This is a Markdown list.",
 							"",
 							"  ```js",
-							"  console.log('Hello, world!')",
-							"  console.log('Hello, world!')",
+							'  console["log"]("Hello, world!")',
+							'  console["log"]("Hello, world!")',
 							"  ```",
 						].join("\n");
 						const expected = [
@@ -3656,8 +3656,8 @@ describe("FlatESLint", () => {
 							"- This is a Markdown list.",
 							"",
 							"   ```js",
-							"   console.log('Hello, world!')",
-							"   console.log('Hello, world!')",
+							'   console["log"]("Hello, world!")',
+							'   console["log"]("Hello, world!")',
 							"   ```",
 						].join("\n");
 						const expected = [
@@ -3682,29 +3682,29 @@ describe("FlatESLint", () => {
 				const input = [
 					"## Hello!",
 					"",
-					"<!-- eslint semi: 2 -->",
+					"<!-- eslint no-unused-labels: 2 -->",
 					"",
 					"```js",
 					"var obj = {",
-					"  some: 'value'",
+					"  some: window['name']",
 					"}",
 					"",
-					"console.log('opop');",
+					'console["log"]("opop");',
 					"",
 					"function hello() {",
-					"  return false",
+					"  done: return false;",
 					"};",
 					"```",
 				].join("\n");
 				const expected = [
 					"## Hello!",
 					"",
-					"<!-- eslint semi: 2 -->",
+					"<!-- eslint no-unused-labels: 2 -->",
 					"",
 					"```js",
 					"var obj = {",
-					'  some: "value"',
-					"};",
+					"  some: window.name",
+					"}",
 					"",
 					'console.log("opop");',
 					"",

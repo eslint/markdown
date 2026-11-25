@@ -593,9 +593,9 @@ describe("processor", () => {
 						[
 							"<!-- eslint-env browser -->",
 							"<!--",
-							"    eslint quotes: [",
+							"    eslint yoda: [",
 							'        "error",',
-							'        "single"',
+							'        "always"',
 							"    ]",
 							"-->",
 							"",
@@ -612,9 +612,9 @@ describe("processor", () => {
 						[
 							"/* eslint-env browser */",
 							"/*",
-							"    eslint quotes: [",
+							"    eslint yoda: [",
 							'        "error",',
-							'        "single"',
+							'        "always"',
 							"    ]",
 							"*/",
 							"alert('Hello, world!');",
@@ -800,7 +800,7 @@ describe("processor", () => {
 							[
 								"<!-- eslint-disable no-console -->",
 								"<!-- eslint-skip -->",
-								"<!-- eslint-disable quotes -->",
+								"<!-- eslint-disable no-alert -->",
 								"",
 								"```js",
 								"alert('Hello, world!');",
@@ -840,19 +840,19 @@ describe("processor", () => {
 						"1. First item",
 						"",
 						"   ```JavaScript",
-						"   var arr = [",
-						"       1,",
-						"       2",
-						"   ];",
+						"   var obj = {",
+						"       a: 1,",
+						"       b",
+						"   };",
 						"   ```",
 						"",
 						"1. Second item",
 						"",
 						"  ```JS",
-						"  function boolean(arg) {",
+						"  (function boolean(arg) {",
 						"  \treturn",
 						"  \t!!arg;",
-						"  };",
+						"  }).bind(null);",
 						"  ```",
 					].join("\n");
 				const messages = [
@@ -886,10 +886,10 @@ describe("processor", () => {
 						{
 							line: 3,
 							endLine: 3,
-							column: 6,
-							message: "Missing trailing comma.",
-							ruleId: "comma-dangle",
-							fix: { range: [24, 24], text: "," },
+							column: 5,
+							message: "Expected longform property syntax.",
+							ruleId: "object-shorthand",
+							fix: { range: [27, 27], text: ": b" },
 						},
 					],
 					[
@@ -903,10 +903,10 @@ describe("processor", () => {
 						{
 							line: 4,
 							endLine: 4,
-							column: 2,
-							message: "Unnecessary semicolon.",
-							ruleId: "no-extra-semi",
-							fix: { range: [41, 42], text: "" },
+							column: 4,
+							message: "The function binding is unnecessary.",
+							ruleId: "no-extra-bind",
+							fix: { range: [43, 54], text: "" },
 						},
 					],
 				];
@@ -935,7 +935,7 @@ describe("processor", () => {
 					);
 					assert.strictEqual(
 						result[2].message,
-						"Missing trailing comma.",
+						"Expected longform property syntax.",
 					);
 					assert.strictEqual(
 						result[3].message,
@@ -943,7 +943,7 @@ describe("processor", () => {
 					);
 					assert.strictEqual(
 						result[4].message,
-						"Unnecessary semicolon.",
+						"The function binding is unnecessary.",
 					);
 				});
 
@@ -977,24 +977,24 @@ describe("processor", () => {
 				it("should translate indented column numbers", () => {
 					const result = processor.postprocess(messages);
 
-					assert.strictEqual(result[2].column, 9);
+					assert.strictEqual(result[2].column, 8);
 					assert.strictEqual(result[3].column, 4);
-					assert.strictEqual(result[4].column, 4);
+					assert.strictEqual(result[4].column, 6);
 				});
 
 				it("should adjust fix range properties", () => {
 					const result = processor.postprocess(messages);
 
-					assert.deepStrictEqual(result[2].fix.range, [179, 179]);
-					assert.deepStrictEqual(result[4].fix.range, [267, 268]);
+					assert.deepStrictEqual(result[2].fix.range, [182, 182]);
+					assert.deepStrictEqual(result[4].fix.range, [272, 283]);
 				});
 
 				// https://github.com/eslint/markdown/pull/282
 				it("should adjust fix range properties (2)", () => {
-					const codeWithSpaceInParens =
-						prefix + ["```js", "( a)", "```"].join("\n");
+					const codeWithLooseEquality =
+						prefix + ["```js", "1==2", "```"].join("\n");
 
-					processor.preprocess(codeWithSpaceInParens);
+					processor.preprocess(codeWithLooseEquality);
 
 					const messagesForBlocks = [
 						[
@@ -1002,17 +1002,16 @@ describe("processor", () => {
 								line: 1,
 								endLine: 1,
 								column: 2,
-								message:
-									"There should be no space after this paren.",
-								ruleId: "space-in-parens",
-								fix: { range: [1, 2], text: "" },
+								message: "Expected '===' and instead saw '=='.",
+								ruleId: "eqeqeq",
+								fix: { range: [1, 3], text: "===" },
 							},
 						],
 					];
 
 					const result = processor.postprocess(messagesForBlocks);
 
-					assert.deepStrictEqual(result[0].fix.range, [7, 8]);
+					assert.deepStrictEqual(result[0].fix.range, [7, 9]);
 				});
 
 				it("should adjust suggestion fix range properties", () => {
