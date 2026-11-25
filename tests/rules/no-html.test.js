@@ -342,6 +342,21 @@ ruleTester.run("no-html", rule, {
 			],
 		},
 		{
+			code: "<my--element>Hello world!</my--element>",
+			errors: [
+				{
+					messageId: "disallowedElement",
+					line: 1,
+					column: 1,
+					endLine: 1,
+					endColumn: 14,
+					data: {
+						name: "my--element",
+					},
+				},
+			],
+		},
+		{
 			code: "<div>Hello world!</div>",
 			options: [{ allowed: ["DIV"] }],
 			errors: [
