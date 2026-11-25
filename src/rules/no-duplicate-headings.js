@@ -93,13 +93,22 @@ export default /** @satisfies {NoDuplicateHeadingsRuleDefinition} */ ({
 				}
 			},
 
-			"heading *"({ type, value }) {
-				if (value) {
-					headingChildrenSequence += `[${type},${value}]`; // We use a custom sequence representation to keep track of heading children.
+			"heading *"({ type, alt, url, value }) {
+				/** @type {string} */
+				let comparisonValue = value;
+				/** @type {string} */
+				let text = value;
 
-					if (type !== "html") {
-						headingText += value;
-					}
+				if (type === "image") {
+					comparisonValue = `${alt.length}:${alt}${url.length}:${url}`;
+					text = alt;
+				} else if (type === "html") {
+					text = "";
+				}
+
+				if (comparisonValue) {
+					headingChildrenSequence += `[${type},${comparisonValue.length}:${comparisonValue}]`;
+					headingText += text;
 				} else {
 					headingChildrenSequence += `[${type}]`;
 				}
