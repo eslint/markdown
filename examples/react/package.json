@@ -5,9 +5,9 @@
     "test": "eslint ."
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.4",
-    "eslint": "^9.39.4",
-    "eslint-plugin-react": "^7.37.5",
+    "@eslint-react/eslint-plugin": "^5.30.6",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.15.0",
     "globals": "^13.24.0"
   }
 }
