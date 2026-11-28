@@ -696,5 +696,43 @@ describe("MarkdownSourceCode", () => {
 				[23, 28],
 			);
 		});
+
+		it("should allocate separate ranges to consecutive text children after an autolink", () => {
+			const text = "a/www.example.invalid. tail";
+			const gfmAst = fromMarkdown(text, {
+				extensions: [gfm()],
+				mdastExtensions: [gfmFromMarkdown()],
+			});
+			const paragraph = gfmAst.children[0];
+
+			paragraph.children.splice(
+				2,
+				1,
+				{ type: "text", value: "." },
+				{ type: "text", value: " tail" },
+			);
+
+			const gfmSourceCode = new MarkdownSourceCode({
+				text,
+				ast: gfmAst,
+			});
+
+			assert.deepStrictEqual(
+				gfmSourceCode.getRange(paragraph.children[0]),
+				[0, 2],
+			);
+			assert.deepStrictEqual(
+				gfmSourceCode.getRange(paragraph.children[1]),
+				[2, 21],
+			);
+			assert.deepStrictEqual(
+				gfmSourceCode.getRange(paragraph.children[2]),
+				[21, 22],
+			);
+			assert.deepStrictEqual(
+				gfmSourceCode.getRange(paragraph.children[3]),
+				[22, 27],
+			);
+		});
 	});
 });

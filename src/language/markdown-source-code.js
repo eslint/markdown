@@ -188,17 +188,20 @@ function populateMissingChildPositions(parentNode, sourceCode) {
 
 			if (child.type === "text") {
 				const { value } = /** @type {Text} */ (child);
+				const hasFollowingSibling =
+					i < runEnd && !locatedLinks.has(i + 1);
 
 				if (
 					i === 0 &&
 					start === parentStart &&
+					!hasFollowingSibling &&
 					end - value.length >= start &&
 					text.endsWith(value, end)
 				) {
 					start = end - value.length;
 				} else if (
-					i === children.length - 1 &&
-					end === parentEnd &&
+					(hasFollowingSibling ||
+						(i === children.length - 1 && end === parentEnd)) &&
 					start + value.length <= end &&
 					text.startsWith(value, start)
 				) {
