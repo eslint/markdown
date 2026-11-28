@@ -21,7 +21,7 @@ import { lineEndingPattern } from "../util.js";
 
 /**
  * @import { Position } from "unist";
- * @import { Parent, Root, Node, Html } from "mdast";
+ * @import { Parent, Root, Node, Html, Text } from "mdast";
  * @import { TraversalStep, FileProblem, DirectiveType, RulesConfig } from "@eslint/core";
  * @import { MarkdownLanguageOptions } from "../types.js";
  */
@@ -60,6 +60,158 @@ export class InlineConfigComment {
 	constructor({ value, position }) {
 		this.value = value.trim();
 		this.position = position;
+	}
+}
+
+/**
+ * Creates a unist Position object from start and end character offsets.
+ * @param {MarkdownSourceCode} sourceCode The Markdown source code object.
+ * @param {number} startOffset The start character offset.
+ * @param {number} endOffset The end character offset.
+ * @returns {Position} The unist Position object.
+ */
+function createPositionFromOffsets(sourceCode, startOffset, endOffset) {
+	return {
+		start: {
+			...sourceCode.getLocFromIndex(startOffset),
+			offset: startOffset,
+		},
+		end: {
+			...sourceCode.getLocFromIndex(endOffset),
+			offset: endOffset,
+		},
+	};
+}
+
+/**
+ * Populates missing `position` properties on a parent's direct children.
+ * Some remark/mdast transforms (such as GFM autolink literals) split a text
+ * node into replacement nodes without setting `position` on them.
+ * @param {Parent} parentNode The parent node whose children should be checked.
+ * @param {MarkdownSourceCode} sourceCode The Markdown source code object.
+ * @returns {void}
+ */
+function populateMissingChildPositions(parentNode, sourceCode) {
+	const { children } = parentNode;
+
+	if (!children.some(child => !child.position)) {
+		return;
+	}
+
+	const text = sourceCode.text;
+	const parentStart = parentNode.position?.start.offset ?? 0;
+	const parentEnd = parentNode.position?.end.offset ?? text.length;
+
+	let index = 0;
+
+	while (index < children.length) {
+		if (children[index].position) {
+			index++;
+			continue;
+		}
+
+		const runStart = index;
+
+		while (index < children.length && !children[index].position) {
+			index++;
+		}
+
+		const runEnd = index - 1;
+		const regionStart =
+			runStart > 0 &&
+			children[runStart - 1].position?.end.offset !== undefined
+				? children[runStart - 1].position.end.offset
+				: parentStart;
+		const regionEnd =
+			runEnd + 1 < children.length &&
+			children[runEnd + 1].position?.start.offset !== undefined
+				? children[runEnd + 1].position.start.offset
+				: parentEnd;
+
+		/** @type {Map<number, {start: number, end: number}>} */
+		const locatedLinks = new Map();
+		let searchCursor = regionStart;
+
+		for (let i = runStart; i <= runEnd; i++) {
+			const child = children[i];
+
+			if (
+				child.type === "link" &&
+				"children" in child &&
+				child.children.length === 1 &&
+				child.children[0].type === "text"
+			) {
+				const linkText = /** @type {Text} */ (child.children[0]).value;
+				const matchIndex = text.indexOf(linkText, searchCursor);
+
+				if (
+					matchIndex !== -1 &&
+					matchIndex + linkText.length <= regionEnd
+				) {
+					const matchEnd = matchIndex + linkText.length;
+
+					locatedLinks.set(i, { start: matchIndex, end: matchEnd });
+					searchCursor = matchEnd;
+				}
+			}
+		}
+
+		let cursor = regionStart;
+
+		for (let i = runStart; i <= runEnd; i++) {
+			const child = children[i];
+			const located = locatedLinks.get(i);
+
+			if (located) {
+				child.position = createPositionFromOffsets(
+					sourceCode,
+					located.start,
+					located.end,
+				);
+				cursor = located.end;
+				continue;
+			}
+
+			let nextEnd = regionEnd;
+
+			for (let j = i + 1; j <= runEnd; j++) {
+				const nextLocated = locatedLinks.get(j);
+
+				if (nextLocated) {
+					nextEnd = nextLocated.start;
+					break;
+				}
+			}
+
+			let start = cursor;
+			let end = nextEnd;
+
+			if (child.type === "text") {
+				const { value } = /** @type {Text} */ (child);
+				const hasFollowingSibling =
+					i < runEnd && !locatedLinks.has(i + 1);
+
+				if (
+					i === 0 &&
+					start === parentStart &&
+					!hasFollowingSibling &&
+					end - value.length >= start &&
+					text.endsWith(value, end)
+				) {
+					start = end - value.length;
+				} else if (
+					(hasFollowingSibling ||
+						(i === children.length - 1 && end === parentEnd)) &&
+					start + value.length <= end &&
+					text.startsWith(value, start)
+				) {
+					end = start + value.length;
+				}
+			}
+
+			child.position = createPositionFromOffsets(sourceCode, start, end);
+			cursor = end;
+		}
 	}
 }
 
@@ -310,6 +462,13 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 		 * @returns {void}
 		 */
 		const visit = (node, parent) => {
+			// ensure every node has a position
+			if (!node.position) {
+				node.position =
+					parent?.position ??
+					createPositionFromOffsets(this, 0, this.text.length);
+			}
+
 			// first set the parent
 			this.#parents.set(node, parent);
 
@@ -330,6 +489,8 @@ export class MarkdownSourceCode extends TextSourceCodeBase {
 			// then visit the children
 			if ("children" in node) {
 				const parentNode = /** @type {Parent} */ (node);
+
+				populateMissingChildPositions(parentNode, this);
 
 				parentNode.children.forEach(child => {
 					visit(child, parentNode);

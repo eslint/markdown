@@ -13,6 +13,8 @@ import {
 	MarkdownSourceCode,
 } from "../../src/language/markdown-source-code.js";
 import { fromMarkdown } from "mdast-util-from-markdown";
+import { gfmFromMarkdown } from "mdast-util-gfm";
+import { gfm } from "micromark-extension-gfm";
 
 //------------------------------------------------------------------------------
 // Helpers
@@ -574,6 +576,163 @@ describe("MarkdownSourceCode", () => {
 				],
 				[2, "root", void 0],
 			]);
+		});
+
+		it("should populate missing positions on GFM autolink literal nodes and surrounding text", () => {
+			const cases = [
+				{
+					text: "Hello [World][https://example.com]",
+					expected: [
+						{
+							type: "text",
+							text: "Hello [World][",
+							range: [0, 14],
+						},
+						{
+							type: "link",
+							text: "https://example.com",
+							range: [14, 33],
+						},
+						{ type: "text", text: "]", range: [33, 34] },
+					],
+				},
+				{
+					text: "See a/www.example.invalid for more.",
+					expected: [
+						{ type: "text", text: "See a/", range: [0, 6] },
+						{
+							type: "link",
+							text: "www.example.invalid",
+							range: [6, 25],
+						},
+						{ type: "text", text: " for more.", range: [25, 35] },
+					],
+				},
+				{
+					text: "See a/www.a.invalid and b/www.b.invalid.",
+					expected: [
+						{ type: "text", text: "See a/", range: [0, 6] },
+						{ type: "link", text: "www.a.invalid", range: [6, 19] },
+						{ type: "text", text: " and b/", range: [19, 26] },
+						{
+							type: "link",
+							text: "www.b.invalid",
+							range: [26, 39],
+						},
+						{ type: "text", text: ".", range: [39, 40] },
+					],
+				},
+				{
+					text: "foo\\*bar a/www.example.invalid baz",
+					expected: [
+						{ type: "text", text: "foo\\*bar a/", range: [0, 11] },
+						{
+							type: "link",
+							text: "www.example.invalid",
+							range: [11, 30],
+						},
+						{ type: "text", text: " baz", range: [30, 34] },
+					],
+				},
+			];
+
+			for (const { text, expected } of cases) {
+				const gfmAst = fromMarkdown(text, {
+					extensions: [gfm()],
+					mdastExtensions: [gfmFromMarkdown()],
+				});
+				const gfmSourceCode = new MarkdownSourceCode({
+					text,
+					ast: gfmAst,
+				});
+				const paragraph = gfmAst.children[0];
+
+				assert.strictEqual(paragraph.children.length, expected.length);
+
+				paragraph.children.forEach((child, index) => {
+					assert.strictEqual(child.type, expected[index].type);
+					assert.ok(child.position);
+					assert.deepStrictEqual(
+						gfmSourceCode.getRange(child),
+						expected[index].range,
+					);
+					assert.strictEqual(
+						gfmSourceCode.getText(child),
+						expected[index].text,
+					);
+
+					if (child.type === "link") {
+						assert.deepStrictEqual(
+							gfmSourceCode.getRange(child.children[0]),
+							expected[index].range,
+						);
+					}
+				});
+			}
+		});
+
+		it("should populate missing positions inside inline formatting wrappers", () => {
+			const text = "**a/www.example.invalid tail**";
+			const gfmAst = fromMarkdown(text, {
+				extensions: [gfm()],
+				mdastExtensions: [gfmFromMarkdown()],
+			});
+			const gfmSourceCode = new MarkdownSourceCode({
+				text,
+				ast: gfmAst,
+			});
+			const strong = gfmAst.children[0].children[0];
+
+			assert.deepStrictEqual(
+				gfmSourceCode.getRange(strong.children[0]),
+				[2, 4],
+			);
+			assert.deepStrictEqual(
+				gfmSourceCode.getRange(strong.children[1]),
+				[4, 23],
+			);
+			assert.deepStrictEqual(
+				gfmSourceCode.getRange(strong.children[2]),
+				[23, 28],
+			);
+		});
+
+		it("should allocate separate ranges to consecutive text children after an autolink", () => {
+			const text = "a/www.example.invalid. tail";
+			const gfmAst = fromMarkdown(text, {
+				extensions: [gfm()],
+				mdastExtensions: [gfmFromMarkdown()],
+			});
+			const paragraph = gfmAst.children[0];
+
+			paragraph.children.splice(
+				2,
+				1,
+				{ type: "text", value: "." },
+				{ type: "text", value: " tail" },
+			);
+
+			const gfmSourceCode = new MarkdownSourceCode({
+				text,
+				ast: gfmAst,
+			});
+
+			assert.deepStrictEqual(
+				gfmSourceCode.getRange(paragraph.children[0]),
+				[0, 2],
+			);
+			assert.deepStrictEqual(
+				gfmSourceCode.getRange(paragraph.children[1]),
+				[2, 21],
+			);
+			assert.deepStrictEqual(
+				gfmSourceCode.getRange(paragraph.children[2]),
+				[21, 22],
+			);
+			assert.deepStrictEqual(
+				gfmSourceCode.getRange(paragraph.children[3]),
+				[22, 27],
+			);
 		});
 	});
 });
