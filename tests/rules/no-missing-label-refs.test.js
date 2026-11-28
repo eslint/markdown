@@ -729,6 +729,20 @@ ruleTester.run("no-missing-label-refs", rule, {
 				},
 			],
 		},
+		{
+			code: "Hello [World][https://example.com]",
+			language: "markdown/gfm",
+			errors: [
+				{
+					messageId: "notFound",
+					data: { label: "World" },
+					line: 1,
+					column: 8,
+					endLine: 1,
+					endColumn: 13,
+				},
+			],
+		},
 	],
 });
 
